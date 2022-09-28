@@ -1,0 +1,69 @@
+theme = "catppuccin_macchiato"
+
+[editor]
+line-number = "relative"
+mouse = true
+auto-pairs = true
+cursorline = true
+
+[editor.cursor-shape]
+insert = "bar"
+normal = "block"
+select = "underline"
+
+[editor.file-picker]
+hidden = false
+
+
+[keys.normal]
+q = { q = ":q!" }
+"space" = { s = ":w", m = ":format" }
+C-j = [
+  "move_line_down",
+  "move_line_down",
+  "move_line_down",
+  "move_line_down",
+  "move_line_down",
+]
+C-k = [
+  "move_line_up",
+  "move_line_up",
+  "move_line_up",
+  "move_line_up",
+  "move_line_up",
+]
+C-e = "scroll_down"
+C-y = "scroll_up"
+
+[keys.select]
+C-j = [
+  "extend_line_down",
+  "extend_line_down",
+  "extend_line_down",
+  "extend_line_down",
+  "extend_line_down",
+]
+C-k = [
+  "extend_line_up",
+  "extend_line_up",
+  "extend_line_up",
+  "extend_line_up",
+  "extend_line_up",
+]
+
+[editor.statusline]
+left = ["mode", "spinner"]
+center = ["file-name"]
+right = [
+  "diagnostics",
+  "selections",
+  "position",
+  "file-encoding",
+  "file-line-ending",
+  "file-type",
+]
+separator = "│"
+
+[editor.indent-guides]
+render = true
+character = "│"

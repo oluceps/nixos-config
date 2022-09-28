@@ -1,0 +1,8 @@
+keys:
+  - &riro age1jr2x2m85wtte9p0s7d833e0ug8xf3cf8a33l9kjprc9vlxmvjycq05p2qq
+creation_rules:
+  - path_regex: modules/secrets/[^/]+\.yaml$
+    key_groups:
+    
+    - age:
+      - *riro
