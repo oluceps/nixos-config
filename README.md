@@ -5,6 +5,8 @@ Secrets managing with [agenix](https://github.com/ryantm/agenix)
 
 
 ## Usage
+__Before deployment, customizing `hardware.nix` and `network.nix`  in `./hosts/`__
+
 flake outputs:  
 
 ```console
