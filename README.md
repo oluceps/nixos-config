@@ -3,12 +3,6 @@
 Home managing with [home-manager](https://github.com/nix-community/home-manager)  
 Secrets managing with [agenix](https://github.com/ryantm/agenix)  
 
-## Contents
-+ hosts: host-specific configuration  
-+ home: home-manager config  
-+ modules: as its name  
-+ modules/packs: self-packaged softwares
-
 
 ## Usage
 flake outputs:  
@@ -35,7 +29,15 @@ nixos-rebuild switch --flake github:oluceps/nixos-config#hastur
 |Bar|[waybar](https://github.com/oluceps/nixos-config/tree/pub/home/programs/waybar)|
 |Terminal|[wezterm](https://github.com/oluceps/nixos-config/tree/pub/home/programs/wezterm)|
 
-### Directory structure  
+
+## Contents
++ hosts: host-specific configuration  
++ home: home-manager config  
++ modules: as its name  
++ modules/packs: self-packaged softwares
+
+
+## Directory structure  
 ```console  
 > tree
 .
