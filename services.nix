@@ -4,7 +4,8 @@
 , ...
 }:
 
-let user = "riro"; in{
+let user = "riro"; in
+{
   # Enable CUPS to print documents.
   # services.printing.enable = true;
 
@@ -35,10 +36,8 @@ let user = "riro"; in{
       {
         enable =
           if
-            let var1 =
-              let var2 = import ./hosts/hastur/network.nix { inherit config pkgs; };
-              in var2.systemd.network.networks."20-wired".routes;
-            in (lib.lists.last var1).routeConfig.Gateway != "192.168.2.2"
+            (lib.lists.last (import ./hosts/hastur/network.nix { inherit config pkgs; }).systemd.network.networks."20-wired".routes).routeConfig.Gateway != "192.168.2.2"
+          # Switch depend on the Gateway before. Always false now
           then false
           else false;
       };
