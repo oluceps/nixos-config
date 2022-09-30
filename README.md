@@ -90,7 +90,7 @@ nixos-rebuild switch --flake github:oluceps/nixos-config#hastur
 │   │   ├── default.nix
 │   │   ├── hardware.nix
 │   │   └── network.nix
-│   └── kammbl
+│   └── kaambl
 │       ├── default.nix
 │       ├── hardware.nix
 │       └── network.nix

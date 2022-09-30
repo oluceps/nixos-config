@@ -46,6 +46,6 @@ in
   kaambl = nixosSystem {
     inherit system pkgs;
     specialArgs = { inherit inputs; };
-    modules = (import ./kammbl) ++ sharedModules;
+    modules = (import ./kaambl) ++ sharedModules;
   };
 }
