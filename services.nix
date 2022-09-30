@@ -36,8 +36,8 @@ let user = "riro"; in
       {
         enable =
           if
+          # Switching according to Gateway settings before. Always false now
             (lib.lists.last (import ./hosts/hastur/network.nix { inherit config pkgs; }).systemd.network.networks."20-wired".routes).routeConfig.Gateway != "192.168.2.2"
-          # Switch depend on the Gateway before. Always false now
           then false
           else false;
       };
