@@ -7,6 +7,7 @@
     # replicates the default behaviour.
     enableIPv6 = true;
     interfaces.wan.wakeOnLan.enable = true;
+    wireless.iwd.enable = true;
     useDHCP = false;
     # Configure network proxy if necessary
     # proxy.default = "http://127.0.0.1:7890";
@@ -51,10 +52,10 @@
         address = [ "192.168.0.9/24" ];
         #      dhcpV4Config.RouteMetric = 2048;
         #      dhcpV6Config.RouteMetric = 2048;
-        routes = [
-          { routeConfig = { Gateway = "192.168.0.1"; }; }
-          #{routeConfig = {Gateway = "fe80::c609:38ff:fef2:3ecb";};}
-        ];
+              routes = [
+                { routeConfig = { Gateway = "192.168.0.1"; }; }
+        #{routeConfig = {Gateway = "fe80::c609:38ff:fef2:3ecb";};}
+              ];
         #dns = ["192.168.2.2" "fe80::c609:38ff:fef2:3ecb"];
         #        dns = [ "127.0.0.1:53" "::1" ];
       };
