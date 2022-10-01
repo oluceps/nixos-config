@@ -48,6 +48,9 @@
     package = pkgs.nixVersions.stable;
 
     settings = {
+
+      trusted-public-keys = [ "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY=" "nur-pkgs.cachix.org-1:PAvPHVwmEBklQPwyNZfy4VQqQjzVIaFOkYYnmnKco78=" ];
+      substituters = [ "https://cache.nixos.org" "https://cache.nixos.org/" "https://nur-pkgs.cachix.org" ];
       auto-optimise-store = true;
       experimental-features = [ "nix-command" "flakes" ];
       trusted-users = [ "root" "riro" ];
@@ -85,10 +88,6 @@
     enableGhostscriptFonts = true;
     fonts = with pkgs; [
 
-      (pkgs.callPackage ./modules/packs/maple-font/default.nix { }).Mono-NF-v5
-      (pkgs.callPackage ./modules/packs/san-francisco/default.nix { })
-
-      (pkgs.callPackage ./modules/packs/plangothic/default.nix { })
       (nerdfonts.override {
         fonts = [
           "FiraCode"
@@ -106,7 +105,8 @@
       #      font-awesome
       #      fira-code-symbols
       #    cascadia-code
-    ] ++ (with (pkgs.callPackage ./modules/packs/glowsans/default.nix { }); [ glowsansSC glowsansTC glowsansJ ]);
+    ] ++ (with (pkgs.callPackage ./modules/packs/glowsans/default.nix { }); [ glowsansSC glowsansTC glowsansJ ])
+    ++ (with nur-pkgs;[ maple-font.Mono-NF-v5 san-francisco plangothic ]);
     #"HarmonyOS Sans SC" "HarmonyOS Sans TC"
     fontconfig = {
       defaultFonts = {
