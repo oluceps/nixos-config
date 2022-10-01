@@ -1,17 +1,17 @@
 inputs:
-let pkgs = inputs.nixpkgs; in
 [
   (final: prev: {
-    # sha256 = "0000000000000000000000000000000000000000000000000000";
+
+        # sha256 = "0000000000000000000000000000000000000000000000000000";
     #      nur-pkgs = inputs.nur-pkgs.packages."${prev.system}";
 
 
     picom = prev.picom.overrideAttrs (old: {
       src = prev.fetchFromGitHub {
-        owner = "Arian8j2";
+        owner = "yshui";
         repo = "picom";
-        rev = "31d25da22b44f37cbb9be49fe5c239ef8d00df12";
-        sha256 = "1z4bKDoNgmG40y2DKTSSh1NCafrE1rkHkCB3ob8ibm4=";
+        rev = "0fe4e0a1d4e2c77efac632b15f9a911e47fbadf3";
+        sha256 = "sha256-daLb7ebMVeL+f8WydH4DONkUA+0D6d+v+pohJb2qjOo=";
       };
     });
 
@@ -38,6 +38,7 @@ let pkgs = inputs.nixpkgs; in
         outputHash = "sha256-M2Tmh4P46thCgwu2SojuMdYtcemkwxt9mPUfGAl43t0=";
       });
     });
+
 
     #      tdesktop = prev.tdesktop.overrideAttrs (old: {
     #        pname = "t64";
