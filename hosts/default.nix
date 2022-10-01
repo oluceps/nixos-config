@@ -21,7 +21,6 @@ let
     ../boot.nix
     ../packages.nix
     ../sysvars.nix
-    ../modules
     {
       environment.systemPackages = [
         inputs.alejandra.defaultPackage.${system}
@@ -34,18 +33,19 @@ let
     grub2-themes.nixosModule
     home-manager.nixosModules.home-manager
 
-  ]);
+  ]) ++ (import ../modules );
+
 in
 {
   hastur = nixosSystem {
     inherit system pkgs;
-    specialArgs = { inherit inputs; };
+    specialArgs = { inherit inputs system; };
     modules = (import ./hastur) ++ sharedModules;
   };
 
   kaambl = nixosSystem {
     inherit system pkgs;
-    specialArgs = { inherit inputs; };
+    specialArgs = { inherit inputs system; };
     modules = (import ./kaambl) ++ sharedModules;
   };
 }
