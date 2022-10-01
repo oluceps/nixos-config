@@ -1,6 +1,8 @@
 { pkgs
 , config
 , lib
+, inputs
+, system
 , ...
 }:
 with lib;
@@ -15,8 +17,11 @@ in
     };
     package = mkOption {
       type = types.package;
-      default = pkgs.callPackage ../packs/clash-m { };
-      defaultText = literalExpression "pkgs.clash-meta";
+      default = inputs.clash-meta.packages.${system}.default;
+        #inputs.clash-meta.apps.${system};
+        #inputs.clash-meta.defaultPackages.${system};
+        #pkgs.callPackage ../packs/clash-m { };
+        defaultText = literalExpression "pkgs.clash-meta";
       description = lib.mdDoc ''
         package
       '';
@@ -35,7 +40,7 @@ in
           Type = "simple";
           User = "riro";
           WorkingDirectory = "/home/riro/.config/clash";
-          ExecStart = "${cfg.package}/bin/clash -d /home/riro/.config/clash";
+          ExecStart = "${cfg.package}/bin/clash-meta -d /home/riro/.config/clash";
           CapabilityBoundingSet = [
             "CAP_NET_RAW"
             "CAP_NET_ADMIN"
