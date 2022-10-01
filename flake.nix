@@ -24,6 +24,10 @@
       url = github:oluceps/nur-pkgs;
       inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
+    
+    clash-meta = {
+      url = github:oluceps/Clash.Meta;
+    };
 
     alejandra = {
       url = github:kamadorueda/alejandra;
@@ -64,6 +68,7 @@
     #
     gomod2nix = {
       url = github:tweag/gomod2nix;
+      inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
     grub2-themes.url = github:vinceliuice/grub2-themes;
 
