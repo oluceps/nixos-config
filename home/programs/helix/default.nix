@@ -1,9 +1,8 @@
-{
-  #  inputs,
-  specialArgs,
-  pkgs
+{ inputs
+, system
+, pkgs
 , ...
-} @ args: {
+}: {
   #  home.file.".config/helix/".source = ./config;
   xdg.configFile = {
     "helix/languages.toml".text = builtins.readFile ./config/languages.toml;
@@ -12,10 +11,7 @@
 
   programs.helix = {
     enable = true;
-    package = pkgs.helix;
-    #    inputs.helix.packages.${pkgs.system}.default;
-
-    #      languages = import ./languages.nix args;
+    package = inputs.helix.packages.${system}.default;
 
     settings = {
       theme = "catppuccin_macchiato";
