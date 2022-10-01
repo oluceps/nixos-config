@@ -1,8 +1,8 @@
 { inputs, system, ... }:
 
 
-with inputs;
-let homeProfile = ./home.nix;
+let
+  homeProfile = ./home.nix;
 in
 {
   home-manager = {
@@ -15,6 +15,10 @@ in
         ../modules/hyprland
         #        
       ];
+
     };
+
+    extraSpecialArgs = { inherit inputs system; };
   };
+
 }
