@@ -1,11 +1,10 @@
 { config
-, lib
 , pkgs
 , ...
 }:
 {
-  imports = import ./programs;
 
+  imports = import ./programs;
   home.stateVersion = "22.11";
   home.sessionVariables = {
     EDITOR = "hx";
@@ -134,7 +133,7 @@
     #    ".config/ranger/rc.conf".source = ./dotfiles/ranger/rc.conf;
   };
   services.swayidle = {
-    enable = true;
+    enable = false;
     timeouts = [
       # {
       #   timeout = 300;
@@ -353,12 +352,12 @@
         ))
       ]; #
       #extraConfig = ''
-#
-#        set viminfo+=n${config.xdg.stateHome}/viminfo
-#        lua << EOT
-#        ${builtins.readFile ../modules/nvim.lua}
-#        EOT
-#      '';
+      #
+      #        set viminfo+=n${config.xdg.stateHome}/viminfo
+      #        lua << EOT
+      #        ${builtins.readFile ../modules/nvim.lua}
+      #        EOT
+      #      '';
     };
     #nushell = {
     #  enable = true;
