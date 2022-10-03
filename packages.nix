@@ -5,11 +5,15 @@
     onefetch
     snapper
     cachix
-    nixpkgs-fmt
     android-tools
     qrencode
     wakelan
+    netcat-gnu
+    gdb
 
+
+    # languages related
+    nixpkgs-fmt
     zig
     lldb
     haskell-language-server
@@ -18,7 +22,25 @@
     zls
     android-file-transfer
     nixpkgs-review
+
+    shfmt
+    broot
+    rust-analyzer
+    pyright
+    rnix-lsp
+    kotlin-language-server
+    sumneko-lua-language-server
+    taplo-lsp
+    taplo-cli
+    yaml-language-server
+    tree-sitter
+    stylua
+    black
+
+
+
     powertop
+
     zbar
 
     lazygit
@@ -42,20 +64,6 @@
 
     bat
 
-    shfmt
-    broot
-    rust-analyzer
-    pyright
-    rnix-lsp
-    kotlin-language-server
-    sumneko-lua-language-server
-    taplo-lsp
-    taplo-cli
-    yaml-language-server
-    tree-sitter
-    stylua
-    black
-
     mongodb
 
     mtr
@@ -71,7 +79,6 @@
     wireguard-tools
     gnupg
     nftables
-    openssl.dev
     clang-tools
     libclang
     wget
@@ -81,7 +88,6 @@
     go
     binutils
     libcap
-    home-manager
     gnumake
     rustup
     nodejs-18_x
@@ -117,7 +123,9 @@
     (
       python3.withPackages
         (p: with p;[
+          wordcloud
           qrcode
+          matplotlib
           pylsp-mypy
 
           fontforge
