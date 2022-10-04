@@ -127,7 +127,7 @@
 
     # ".icons/default".source = "${pkgs.Graphite}/share/icons/Graphite";
     #".config/clash".source = ./dotfiles/clash;
-    ".config/nvim".source = ../modules/nvim;
+    #".config/nvim".source = ../modules/nvim;
     #".config/waybar".source = ./dotfiles/waybar;
 
     #    ".config/ranger/rc.conf".source = ./dotfiles/ranger/rc.conf;
@@ -306,59 +306,59 @@
       ];
     };
 
-    neovim = {
-      enable = true;
-      vimAlias = true;
-      vimdiffAlias = true;
-      plugins = with pkgs.vimPlugins; [
-        telescope-nvim
-        nvim-lspconfig
-        fidget-nvim
-        nvim-cmp
-        catppuccin-nvim
-        cmp-nvim-lsp
-        indent-blankline-nvim
-        everforest
-        luasnip
-        vim-lastplace
-        which-key-nvim
-        editorconfig-nvim
-        lualine-nvim
-        lspsaga-nvim
-        lualine-lsp-progress
-        #vim-wakatime
-        vimspector
-        nvim-notify
-        nvim-dap
-        nvim-dap-ui
-        rust-tools-nvim
-        nerdtree
-        surround
-        auto-pairs
-        nvim-ts-rainbow
-        nvim-treesitter-context
-        dashboard-nvim
-        null-ls-nvim
-        lspkind-nvim
-        cmp-treesitter
-        (nvim-treesitter.withPlugins (
-          plugins: with plugins; [
-            tree-sitter-nix
-            tree-sitter-lua
-            tree-sitter-rust
-            tree-sitter-go
-
-          ]
-        ))
-      ]; #
-      #extraConfig = ''
-      #
-      #        set viminfo+=n${config.xdg.stateHome}/viminfo
-      #        lua << EOT
-      #        ${builtins.readFile ../modules/nvim.lua}
-      #        EOT
-      #      '';
-    };
+    #    neovim = {
+    #      enable = true;
+    #      vimAlias = true;
+    #      vimdiffAlias = true;
+    #      plugins = with pkgs.vimPlugins; [
+    #        telescope-nvim
+    #        nvim-lspconfig
+    #        fidget-nvim
+    #        nvim-cmp
+    #        catppuccin-nvim
+    #        cmp-nvim-lsp
+    #        indent-blankline-nvim
+    #        everforest
+    #        luasnip
+    #        vim-lastplace
+    #        which-key-nvim
+    #        editorconfig-nvim
+    #        lualine-nvim
+    #        lspsaga-nvim
+    #        lualine-lsp-progress
+    #        #vim-wakatime
+    #        vimspector
+    #        nvim-notify
+    #        nvim-dap
+    #        nvim-dap-ui
+    #        rust-tools-nvim
+    #        nerdtree
+    #        surround
+    #        auto-pairs
+    #        nvim-ts-rainbow
+    #        nvim-treesitter-context
+    #        dashboard-nvim
+    #        null-ls-nvim
+    #        lspkind-nvim
+    #        cmp-treesitter
+    #        (nvim-treesitter.withPlugins (
+    #          plugins: with plugins; [
+    #            tree-sitter-nix
+    #            tree-sitter-lua
+    #            tree-sitter-rust
+    #            tree-sitter-go
+    #
+    #          ]
+    #        ))
+    #      ]; #
+    #      #extraConfig = ''
+    #      #
+    #      #        set viminfo+=n${config.xdg.stateHome}/viminfo
+    #      #        lua << EOT
+    #      #        ${builtins.readFile ../modules/nvim.lua}
+    #      #        EOT
+    #      #      '';
+    #    };
     #nushell = {
     #  enable = true;
     #  settings = {
