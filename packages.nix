@@ -1,6 +1,17 @@
 { pkgs, ... }:
 {
   environment.systemPackages = with pkgs; [
+    # common
+    hexyl
+    jq
+    fx
+    fd
+    choose
+    duf
+    procs
+    httpie
+    dog
+
     arti
     onefetch
     snapper
@@ -75,7 +86,6 @@
     nixpkgs-fmt
     dig
     btrfs-progs
-    jq
     wireguard-tools
     gnupg
     nftables
