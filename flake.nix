@@ -26,7 +26,7 @@
     };
     
     clash-meta = {
-      url = github:oluceps/Clash.Meta;
+      url = github:MetaCubeX/Clash.Meta/Alpha;
     };
 
     alejandra = {
