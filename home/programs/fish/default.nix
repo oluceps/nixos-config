@@ -36,7 +36,6 @@
       swc = "sudo nixos-rebuild switch";
       swcv = "sudo nixos-rebuild switch --verbose";
       sduo = "sudo";
-      vim = "hx";
       n = "neovide";
       off = "poweroff";
       proxy = "proxychains4 -f /home/riro/.config/proxychains/proxychains.conf";

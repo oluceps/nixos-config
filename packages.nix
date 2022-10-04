@@ -170,5 +170,30 @@
     node2nix
     markdownlint-cli2
     prettier
-  ]);
+  ]) ++
+  [
+    ((vim_configurable.override { }).customize {
+      name = "vim";
+      # Install plugins for example for syntax highlighting of nix files
+      vimrcConfig.packages.myplugins = with pkgs.vimPlugins; {
+        start = [ vim-nix vim-lastplace ];
+        opt = [ ];
+      };
+      vimrcConfig.customRC = ''
+        " your custom vimrc
+        set nocompatible
+        set backspace=indent,eol,start
+        " Turn on syntax highlighting by default
+        syntax on
+        
+        :let mapleader = " "
+        :map <leader>s :w<cr>
+        :map <C-j> 5j
+        :map <C-k> 5k
+        :map qq    :q!<cr>
+
+      '';
+    }
+    )
+  ];
 }
