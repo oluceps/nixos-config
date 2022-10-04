@@ -94,13 +94,13 @@ nixos-rebuild switch --flake github:oluceps/nixos-config#hastur
 │       ├── default.nix
 │       ├── hardware.nix
 │       └── network.nix
+├── LICENSE
 ├── misc.nix
 ├── modules
 │   ├── blog
 │   │   └── default.nix
 │   ├── clash-m
-│   │   ├── default.nix
-│   │   └── result -> /nix/store/kxzdgmar75jq51d1nkrkchc88k9w03zx-clash-meta-1.13.1
+│   │   └── default.nix
 │   ├── default.nix
 │   ├── foot
 │   │   └── foot.ini
@@ -110,50 +110,6 @@ nixos-rebuild switch --flake github:oluceps/nixos-config#hastur
 │   ├── hysteria
 │   │   ├── config.nix
 │   │   └── default.nix
-│   ├── nvim
-│   │   ├── init.lua
-│   │   └── lua
-│   │       ├── basic.lua
-│   │       ├── colorscheme.lua
-│   │       ├── keybindings.lua
-│   │       ├── lsp
-│   │       │   ├── cmp.lua
-│   │       │   ├── config
-│   │       │   │   ├── bash.lua
-│   │       │   │   ├── c.lua
-│   │       │   │   ├── css.lua
-│   │       │   │   ├── emmet.lua
-│   │       │   │   ├── go.lua
-│   │       │   │   ├── html.lua
-│   │       │   │   ├── json.lua
-│   │       │   │   ├── latex.lua
-│   │       │   │   ├── lua.lua
-│   │       │   │   ├── markdown.lua
-│   │       │   │   ├── pyright.lua
-│   │       │   │   ├── rnix.lua
-│   │       │   │   ├── rust.lua
-│   │       │   │   ├── toml.lua
-│   │       │   │   ├── ts.lua
-│   │       │   │   └── yamlls.lua
-│   │       │   ├── formatter.lua
-│   │       │   ├── null-ls.lua
-│   │       │   ├── setup.lua
-│   │       │   └── ui.lua
-│   │       └── plugin-config
-│   │           ├── bufferline.lua
-│   │           ├── catppuccin.lua
-│   │           ├── comment.lua
-│   │           ├── dashboard.lua
-│   │           ├── fidget.lua
-│   │           ├── gitsigns.lua
-│   │           ├── indent-blankline.lua
-│   │           ├── lualine.lua
-│   │           ├── nvim-autopairs.lua
-│   │           ├── nvim-treesitter.lua
-│   │           ├── project.lua
-│   │           ├── surround.lua
-│   │           ├── telescope.lua
-│   │           └── toggleterm.lua
 │   ├── packs
 │   │   ├── clash-m
 │   │   │   └── default.nix
@@ -162,23 +118,17 @@ nixos-rebuild switch --flake github:oluceps/nixos-config#hastur
 │   │   ├── glowsans
 │   │   │   └── default.nix
 │   │   ├── Graphite-cursors
-│   │   │   ├── default.nix
-│   │   │   └── result -> /nix/store/p0ma20yqzlmvmnzk6wfdp1p7a0vhhsaa-Graphite-cursors-2021-11-26
+│   │   │   └── default.nix
 │   │   ├── maple-font
-│   │   │   ├── default.nix
-│   │   │   ├── result -> /nix/store/pmy11x6hqqbfdqvnfnzvnsi0gir31abm-MapleMono-NF-5.5
-│   │   │   └── result-2 -> /nix/store/vik3wgcwmlk8yqa202xrkg173p2klnsn-MapleMono-5.5
+│   │   │   └── default.nix
 │   │   ├── opensk-udev-rules
 │   │   │   └── default.nix
 │   │   ├── plangothic
-│   │   │   ├── default.nix
-│   │   │   └── result -> /nix/store/4k7ww8i79j1c27s9nkvmb0q6gs0k9sn2-plangothic-font-0.5.5694
+│   │   │   └── default.nix
 │   │   ├── RustPlayer
-│   │   │   ├── default.nix
-│   │   │   └── result -> /nix/store/pdrgp01yzpp0018hjc7vljfx06kkfkas-RustPlayer-d37026dcc3c0b77e527b8e3e814de7e5be894d46
+│   │   │   └── default.nix
 │   │   ├── san-francisco
-│   │   │   ├── default.nix
-│   │   │   └── result -> /nix/store/xdha819h50jp8hf97bspjgm814r8vznz-san-francisco-53ffbe571bb83dbb4835a010b4a49ebb9a32fc55
+│   │   │   └── default.nix
 │   │   ├── sing-box
 │   │   │   └── default.nix
 │   │   └── v2ray-plugin
@@ -192,6 +142,8 @@ nixos-rebuild switch --flake github:oluceps/nixos-config#hastur
 │       └── default.nix
 ├── overlay.nix
 ├── packages.nix
+├── README.md
+├── screenshot.png
 ├── secrets
 │   ├── secrets.nix
 │   ├── sing.age
@@ -201,7 +153,7 @@ nixos-rebuild switch --flake github:oluceps/nixos-config#hastur
 ├── sysvars.nix
 └── users.nix
 
-46 directories, 111 files
+38 directories, 71 files
 ```  
 
 ## Screenshot  
