@@ -27,6 +27,7 @@ let user = "riro"; in
     };
     #    hysteria.enable = true;
 
+    fstrim.enable = true;
 
     ss = {
       enable = true;
