@@ -19,6 +19,8 @@
 
 
   home.packages = with pkgs; [
+    nur.repos.xddxdd.wechat-uos-bin
+    obsidian
     gnome.nautilus
     gnome.eog
     gnomecast
