@@ -1,12 +1,13 @@
 { config
 , pkgs
+, user
 , ...
 }: {
   users = {
-    users.riro = {
+    users.${user} = {
       isNormalUser = true;
       uid = 1000;
-      group = "riro";
+      group = "${user}";
       extraGroups = [
         "wheel"
         "docker"
@@ -21,7 +22,7 @@
       shell = pkgs.fish;
 
       openssh.authorizedKeys.keys = [
-        "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIEv3S53gBU3Hqvr5o5g+yrn1B7eiaE5Y/OIFlTwU+NEG riro@hastur"
+        "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIEv3S53gBU3Hqvr5o5g+yrn1B7eiaE5Y/OIFlTwU+NEG"
       ];
     };
     users.root.shell = pkgs.zsh;
@@ -32,13 +33,13 @@
     };
 
     groups = {
-      riro = { };
+      ${user} = { };
       proxy = { };
     };
   };
   security.sudo.extraRules = [
     {
-      users = [ "riro" ];
+      users = [ "${user}" ];
       commands = [
         {
           command = "ALL";
