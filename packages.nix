@@ -1,6 +1,7 @@
 { pkgs, ... }:
 {
   environment.systemPackages = with pkgs; [
+    editorconfig-checker
     # KVM
     virt-manager
     doas
