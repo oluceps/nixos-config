@@ -1,6 +1,8 @@
 { pkgs, ... }:
 {
   environment.systemPackages = with pkgs; [
+    # KVM
+    virt-manager
     doas
     # common
     hexyl
@@ -12,6 +14,7 @@
     procs
     httpie
     dog
+
 
     arti
     onefetch

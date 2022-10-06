@@ -7,7 +7,10 @@
 , ...
 }: {
   nixpkgs.config.allowUnfree = true;
-  virtualisation.docker.enable = true;
+  virtualisation = {
+    docker.enable = true;
+    libvirtd.enable = true;
+  };
   services.xserver =
     {
       enable = false;
@@ -80,6 +83,7 @@
   programs = {
     fish.enable = true;
     sway.enable = true;
+    dconf.enable = true;
   };
   #  programs.waybar.enable = true;
   #

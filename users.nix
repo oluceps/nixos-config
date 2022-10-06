@@ -1,13 +1,23 @@
 { config
 , pkgs
 , ...
-}:  {
+}: {
   users = {
     users.riro = {
       isNormalUser = true;
       uid = 1000;
       group = "riro";
-      extraGroups = [ "wheel" "docker" "networkmanager" "audio" "libvirtd" "qemu-libvirtd" "kvm" "logindev" "plugdev" ]; # Enable ‘sudo’ for the user.
+      extraGroups = [
+        "wheel"
+        "docker"
+        "networkmanager"
+        "audio"
+        "libvirtd"
+        "qemu-libvirtd"
+        "kvm"
+        "logindev"
+        "plugdev"
+      ]; # Enable ‘sudo’ for the user.
       shell = pkgs.fish;
 
       openssh.authorizedKeys.keys = [
@@ -15,9 +25,9 @@
       ];
     };
     users.root.shell = pkgs.zsh;
-    
+
     users.proxy = {
-    isSystemUser = true;
+      isSystemUser = true;
       group = "proxy";
     };
 
