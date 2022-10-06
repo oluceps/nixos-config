@@ -19,6 +19,7 @@
 
 
   home.packages = with pkgs; [
+    mdbook
     nur.repos.xddxdd.wechat-uos-bin
     obsidian
     gnome.nautilus
