@@ -1,4 +1,4 @@
-{ inputs, system, ... }:
+{ inputs, system, user, ... }:
 
 
 let
@@ -8,16 +8,14 @@ in
   home-manager = {
     useGlobalPkgs = true;
     # useUserPackages = true;
-    users.riro = {
+    users.${user} = {
       imports = [
         homeProfile
         inputs.hyprland.homeManagerModules.default
         ../modules/hyprland
         #        
       ];
-
     };
-
     extraSpecialArgs = { inherit inputs system; };
   };
 

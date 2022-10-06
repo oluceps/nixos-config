@@ -36,17 +36,24 @@ let
 
   ]) ++ (import ../modules);
 
+
 in
 {
-  hastur = nixosSystem {
-    inherit system pkgs;
-    specialArgs = { inherit inputs system; };
-    modules = (import ./hastur) ++ sharedModules;
-  };
+  hastur = nixosSystem (
+    let user = "riro"; in
+    {
+      inherit system pkgs;
+      specialArgs = { inherit inputs system user; };
+      modules = (import ./hastur) ++ sharedModules;
+    }
+  );
 
-  kaambl = nixosSystem {
-    inherit system pkgs;
-    specialArgs = { inherit inputs system; };
-    modules = (import ./kaambl) ++ sharedModules;
-  };
+  kaambl = nixosSystem (
+    let user = "elena"; in
+    {
+      inherit system pkgs;
+      specialArgs = { inherit inputs system user; };
+      modules = (import ./kaambl) ++ sharedModules;
+    }
+  );
 }
