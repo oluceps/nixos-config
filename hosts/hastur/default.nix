@@ -3,5 +3,4 @@
   ./network.nix
   ../../services.nix 
   ../../home
-
 ]
