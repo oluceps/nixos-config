@@ -22,9 +22,10 @@ let
     ../packages.nix
     ../sysvars.nix
     {
-      environment.systemPackages = [
-        inputs.alejandra.defaultPackage.${system}
-        inputs.agenix.defaultPackage.x86_64-linux
+      environment.systemPackages = with inputs; [
+        alejandra.defaultPackage.${system}
+        agenix.defaultPackage.${system}
+        helix.packages.${system}.default
       ];
     }
   ] ++ (with inputs;[
@@ -33,7 +34,7 @@ let
     grub2-themes.nixosModule
     home-manager.nixosModules.home-manager
 
-  ]) ++ (import ../modules );
+  ]) ++ (import ../modules);
 
 in
 {
