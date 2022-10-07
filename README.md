@@ -7,6 +7,11 @@ Secrets managing with [agenix](https://github.com/ryantm/agenix)
 ## Usage
 __Before deployment, customizing `hardware.nix` and `network.nix`  in `./hosts/`__
 
+You can replace hostname globally with:    
+```console  
+sed -i "s/hastur/YOUR_HOSTNAME/g" `rg -rl "hastur" ./`  
+```
+
 flake outputs:  
 
 ```console
