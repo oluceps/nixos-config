@@ -1,12 +1,13 @@
 { pkgs
 , config
 , lib
+, user
 , ...
 }:
 with lib;
 let
   cfg = config.services.sing-box;
-  dataDir = "/home/riro/.config/sing-box";
+  dataDir = "/home/${user}/.config/sing-box";
 in
 {
   options.services.sing-box = {
@@ -46,7 +47,7 @@ in
 
         serviceConfig = {
           Type = "simple";
-          User = "riro";
+          User = user;
           WorkingDirectory = dataDir;
           ExecStart = "${cfg.package}/bin/sing-box run -c ${configFile}";
           CapabilityBoundingSet = [

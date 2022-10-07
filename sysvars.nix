@@ -1,5 +1,6 @@
 { config
 , pkgs
+, user
 , ...
 }: {
   environment.sessionVariables = rec {
@@ -13,7 +14,7 @@
     NODE_PATH = "~/.npm-packages/lib/node_modules";
     PATH = [
       "\${XDG_BIN_HOME}"
-      "/home/riro/.npm-packages/bin"
+      "/home/${user}/.npm-packages/bin"
     ];
   };
 }

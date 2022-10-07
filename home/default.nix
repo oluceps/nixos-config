@@ -16,7 +16,7 @@ in
         #        
       ];
     };
-    extraSpecialArgs = { inherit inputs system; };
+    extraSpecialArgs = { inherit inputs system user; };
   };
 
 }

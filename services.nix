@@ -1,10 +1,10 @@
 { config
 , pkgs
 , lib
+, user
 , ...
 }:
 
-let user = "riro"; in
 {
   # Enable CUPS to print documents.
   # services.printing.enable = true;
