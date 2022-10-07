@@ -1,6 +1,7 @@
 { pkgs
 , config
 , lib
+, user
 , ...
 }:
 with lib;
@@ -45,8 +46,8 @@ in
         description = "shadowsocks-rust";
         serviceConfig = {
           Type = "simple";
-          User = "riro";
-          Group = "riro";
+          User = user;
+          Group = user;
           #/home/riro/.config/ss/config.json
           ExecStart = "${cfg.package}/bin/sslocal -c ${configFile}";
           AmbientCapabilities = [ "CAP_NET_ADMIN" "CAP_NET_BIND_SERVICE" ];

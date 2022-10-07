@@ -21,6 +21,7 @@ let
     ../boot.nix
     ../packages.nix
     ../sysvars.nix
+    ../services.nix
     {
       environment.systemPackages = with inputs; [
         alejandra.defaultPackage.${system}

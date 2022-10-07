@@ -1,4 +1,5 @@
 { pkgs
+, user
 , #  nix-colors,
   ...
 }:
@@ -24,7 +25,7 @@ let
     #        monitor=VGA-1,transform,1
             #workspace=VGA-1,1
 
-            exec-once=${swaybg} -i /home/riro/Pictures/Wallpapers/96668523_p0.png
+            exec-once=${swaybg} -i /home/${user}/Pictures/Wallpapers/96668523_p0.png
             exec-once=fcitx5
             exec-once=mako
             exec-once=waybar
