@@ -36,7 +36,6 @@
      };
       efi.canTouchEfiVariables = true;
     };
-    kernelPackages = pkgs.linuxPackages_latest;
     supportedFilesystems = [ "ntfs" "tcp_bbr" ];
     # kernelParams = ["nvidia-drm.modeset=1" "nouveau.blacklist=1"];
     kernel.sysctl = {
