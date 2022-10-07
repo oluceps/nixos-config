@@ -173,4 +173,6 @@ Excellent configurations that I've learned and copied:
 + [fufexan/dotfiles](https://github.com/fufexan/dotfiles)  
 + [gvolpe/nix-config](https://github.com/gvolpe/nix-config)
 
+[NixOS-CN-telegram](https://github.com/nixos-cn/NixOS-CN-telegram)
+
 
