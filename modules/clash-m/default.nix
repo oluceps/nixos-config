@@ -3,6 +3,7 @@
 , lib
 , inputs
 , system
+, user
 , ...
 }:
 with lib;
