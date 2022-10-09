@@ -8,7 +8,7 @@
     enableIPv6 = true;
     interfaces.wan.wakeOnLan.enable = true;
     wireless.iwd.enable = true;
-    useDHCP = false;
+    useDHCP = true;
     # Configure network proxy if necessary
     # proxy.default = "http://127.0.0.1:7890";
     networkmanager.enable = false;
