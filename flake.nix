@@ -2,13 +2,39 @@
   description = "a nixos flake";
   outputs = inputs:
     let
-      system = "x86_64-linux";
+      genSystems = inputs.nixpkgs.lib.genAttrs [ "aarch64-linux" "x86_64-linux" ];
+      pkgss = genSystems
+        (
+          system:
+          import inputs.nixpkgs {
+            inherit system;
+            config.allowUnfree = true;
+            config.allowBroken = false;
+            overlays = [
+              (final: prev: {
+                nur-pkgs = inputs.nur-pkgs.packages."${system}";
+              })
+
+              inputs.nur.overlay
+
+              inputs.fenix.overlay
+
+            ] ++ (import ./overlay.nix inputs);
+          }
+        );
     in
     {
       nixosConfigurations = (
         import ./hosts {
-          inherit inputs system;
+          inherit inputs pkgss;
         }
+      );
+
+      devShells = genSystems (system:
+        let
+          pkgs = pkgss.${system};
+        in
+        import ./shells.nix { inherit system pkgs inputs; }
       );
 
     };
@@ -24,7 +50,16 @@
       url = github:oluceps/nur-pkgs;
       inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
-    
+
+    fenix = {
+      url = github:nix-community/fenix;
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    surrealdb = {
+      url = github:surrealdb/surrealdb;
+    };
+
     clash-meta = {
       url = github:MetaCubeX/Clash.Meta/Alpha;
     };

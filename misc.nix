@@ -84,7 +84,9 @@
   programs = {
     fish.enable = true;
     sway.enable = true;
+    kdeconnect.enable = true;
     dconf.enable = true;
+    adb.enable = true;
   };
   #  programs.waybar.enable = true;
   #
@@ -107,6 +109,7 @@
           "FantasqueSansMono"
         ];
       })
+      fantasque-sans-mono
       noto-fonts
       noto-fonts-cjk-sans
       noto-fonts-cjk-serif
@@ -116,13 +119,14 @@
       #      font-awesome
       #      fira-code-symbols
       #    cascadia-code
-    ] ++ (with (pkgs.callPackage ./modules/packs/glowsans/default.nix { }); [ glowsansSC glowsansTC glowsansJ ])
-    ++ (with nur-pkgs;[ maple-font.Mono-NF-v5 san-francisco plangothic ]);
+    ]
+    ++ (with (pkgs.callPackage ./modules/packs/glowsans/default.nix { }); [ glowsansSC glowsansTC glowsansJ ])
+    ++ (with nur-pkgs;[ maple-font.Mono-NF-v5 san-francisco plangothic maoken-tangyuan ]);
     #"HarmonyOS Sans SC" "HarmonyOS Sans TC"
     fontconfig = {
       defaultFonts = {
         serif = [ "Glow Sans SC" "Glow Sans TC" "Glow Sans J" "Noto Serif" "Noto Serif CJK SC" "Noto Serif CJK TC" "Noto Serif CJK JP" ];
-        monospace = [ "SF Mono" ];
+        monospace = [ "SF Mono" "Fantasque Sans Mono" ];
         sansSerif = [ "Glow Sans SC" "Glow Sans TC" "Glow Sans J" "SF Pro Text" ];
         emoji = [ "twemoji-color-font" "noto-fonts-emoji" ];
       };

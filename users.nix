@@ -18,6 +18,7 @@
         "kvm"
         "logindev"
         "plugdev"
+        "adbusers"
       ]; # Enable ‘sudo’ for the user.
       shell = pkgs.fish;
 

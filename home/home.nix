@@ -16,11 +16,23 @@
     manpages.enable = false;
   };
 
+  xdg.mimeApps.defaultApplications = {
+    "text/html" = [ "firefox.desktop" ];
+    "tg" = [ "telegramdesktop.desktop" ];
+    "x-scheme-handler/http" = [ "firefox.desktop" ];
+    "x-scheme-handler/https" = [ "firefox.desktop" ];
+
+  };
+
+
 
 
   home.packages = with pkgs; [
+    tofi
+    zoom-us
     mdbook
     nur.repos.xddxdd.wechat-uos-bin
+    nur.repos.ocfox.gtk-qq
     obsidian
     gnome.nautilus
     gnome.eog
@@ -32,7 +44,6 @@
     conda
     gtk4
     lapce
-    vscode-with-extensions
     element-desktop-wayland
     #fluffychat
     tetrio-desktop
@@ -152,6 +163,10 @@
 
 
   programs = {
+    vscode = {
+      enable = true;
+      package = pkgs.vscode.fhsWithPackages (ps: with ps; [ rustup zlib ]);
+    };
     git = {
       enable = true;
       userName = "oluceps";
