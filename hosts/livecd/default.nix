@@ -1,0 +1,4 @@
+[
+  ./network.nix
+  ./home.nix
+]
