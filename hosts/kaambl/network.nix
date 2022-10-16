@@ -11,6 +11,7 @@
     enableIPv6 = true;
     interfaces.wan.wakeOnLan.enable = false;
     interfaces.wan.useDHCP = true;
+    wireless.iwd.enable = true;
 
     # interfaces.enp4s0.useDHCP = true;
     #  interfaces.wlp5s0.useDHCP = true;
