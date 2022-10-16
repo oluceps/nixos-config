@@ -5,7 +5,7 @@
 }: {
   #  home.file.".config/helix/".source = ./config;
   xdg.configFile = {
-    "helix/languages.toml".text = builtins.readFile ./config/languages.toml;
+    "helix/languages.toml".text = import ./config/languages.nix { inherit pkgs; };
     "helix/themes/catppuccin_macchiato.toml".text = builtins.readFile ./config/themes/catppuccin_macchiato.toml;
   };
 

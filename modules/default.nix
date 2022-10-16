@@ -5,6 +5,7 @@
   #    ./chrome
   ./ss
   ./clash-m
+  ./btrbk
   ./sing-box
   #    ./kitty.nix
   #    ./starship.nix

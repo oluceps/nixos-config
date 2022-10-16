@@ -15,8 +15,21 @@
   # Enable the OpenSSH daemon.
 
   security.pam.u2f.enable = true;
+  xdg.portal.enable = true;
   services = {
-    udev.packages = [ pkgs.android-udev-rules pkgs.qmk-udev-rules (pkgs.callPackage ./modules/packs/opensk-udev-rules { }) ];
+    flatpak.enable = true;
+    udev = {
+
+      packages = [
+        pkgs.android-udev-rules
+        pkgs.qmk-udev-rules
+        (pkgs.callPackage ./modules/packs/opensk-udev-rules { })
+      ];
+
+#      extraRules = ''
+#        ACTION=="add|remove", SUBSYSTEM=="net", ATTR{idVendor}=="22d9" ENV{ID_USB_DRIVER}=="rndis_host", SYMLINK+="android", RUN+="systemctl restart systemd-networkd.service"
+#      '';
+    };
     gnome.gnome-keyring.enable = true;
     pipewire = {
       enable = true;
@@ -27,7 +40,6 @@
     };
     #    hysteria.enable = true;
 
-    fstrim.enable = true;
 
     ss = {
       enable = true;
@@ -37,8 +49,9 @@
       {
         enable =
           if
-            (lib.lists.last (import ./hosts/hastur/network.nix { inherit config pkgs; }).systemd.network.networks."20-wired".routes).routeConfig.Gateway != "192.168.2.2"
-            # switch depend on the Gateway. Always false now
+            true
+          #            (lib.lists.last (import ./hosts/hastur/network.nix { inherit config pkgs; }).systemd.network.networks."20-wired".routes).routeConfig.Gateway != "192.168.2.2"
+          # switch depend on the Gateway. Always false now
           then false
           else false;
       };
@@ -49,40 +62,40 @@
 
 
 
-    snapper = {
-      snapshotRootOnBoot = true;
-      snapshotInterval = "hourly";
-      cleanupInterval = "3d";
-      configs = {
-
-        root = {
-          subvolume = "/";
-          extraConfig = ''
-            ALLOW_USERS="${user}"
-            TIMELINE_CREATE=yes
-            TIMELINE_CLEANUP=yes
-          '';
-        };
-
-        home = {
-          subvolume = "/home";
-          extraConfig = ''
-            ALLOW_USERS="${user}"
-            TIMELINE_CREATE=yes
-            TIMELINE_CLEANUP=yes
-          '';
-        };
-
-        nix = {
-          subvolume = "/nix";
-          extraConfig = ''
-            ALLOW_USERS="${user}"
-            TIMELINE_CREATE=yes
-            TIMELINE_CLEANUP=yes
-          '';
-        };
-      };
-    };
+    #snapper = {
+    #      snapshotRootOnBoot = true;
+    #      snapshotInterval = "hourly";
+    #      cleanupInterval = "3d";
+    #      configs = {
+    #
+    #        root = {
+    #          subvolume = "/";
+    #          extraConfig = ''
+    #            ALLOW_USERS="${user}"
+    #            TIMELINE_CREATE=yes
+    #            TIMELINE_CLEANUP=yes
+    #          '';
+    #        };
+    #
+    #        home = {
+    #          subvolume = "/home";
+    #          extraConfig = ''
+    #            ALLOW_USERS="${user}"
+    #            TIMELINE_CREATE=yes
+    #            TIMELINE_CLEANUP=yes
+    #          '';
+    #        };
+    #
+    #        nix = {
+    #          subvolume = "/nix";
+    #          extraConfig = ''
+    #            ALLOW_USERS="${user}"
+    #            TIMELINE_CREATE=yes
+    #            TIMELINE_CLEANUP=yes
+    #          '';
+    #        };
+    #      };
+    #    };
 
 
     btrfs.autoScrub = {
@@ -115,7 +128,7 @@
       enable = true;
       dnssec = "allow-downgrade";
       extraConfig = ''
-        DNS=223.6.6.6 101.6.6.6:5353 202.141.178.13:5353
+        DNS=223.6.6.6 202.141.178.13:5353
                   #223.6.6.6 101.6.6.6:5353 202.141.178.13:5353
         Domains=~.
         MulticastDNS=true
