@@ -8,7 +8,8 @@
     enableIPv6 = true;
     interfaces.wan.wakeOnLan.enable = true;
     wireless.iwd.enable = true;
-    useDHCP = true;
+    useNetworkd = true;
+    useDHCP = false;
     # Configure network proxy if necessary
     # proxy.default = "http://127.0.0.1:7890";
     networkmanager.enable = false;
@@ -41,23 +42,44 @@
   systemd.network = {
     enable = true;
 
+    wait-online = {
+      timeout = 5;
+    };
+
     links."10-wan" = {
       matchConfig.MACAddress = "3c:7c:3f:22:49:80";
       linkConfig.Name = "wan";
     };
+
+    links."30-rndis" = {
+      matchConfig.Driver = "rndis_host";
+      linkConfig = {
+        NamePolicy = "keep";
+        Name = "rndis";
+        MACAddressPolicy = "persistent";
+      };
+    };
+
     networks = {
       "20-wired" = {
         matchConfig.Name = "wan";
-        DHCP = "no";
-        address = [ "192.168.0.9/24" ];
-        #      dhcpV4Config.RouteMetric = 2048;
-        #      dhcpV6Config.RouteMetric = 2048;
-              routes = [
-                { routeConfig = { Gateway = "192.168.0.1"; }; }
-        #{routeConfig = {Gateway = "fe80::c609:38ff:fef2:3ecb";};}
-              ];
+        DHCP = "yes";
+        dhcpV4Config.RouteMetric = 2048;
+        # dhcpV6Config.RouteMetric = 20;
+        #address = [ "192.168.0.9/24" ];
+        #routes = [
+        #  { routeConfig = { Gateway = "192.168.0.1"; }; }
+        #        #{routeConfig = {Gateway = "fe80::c609:38ff:fef2:3ecb";};}
+        #];
         #dns = ["192.168.2.2" "fe80::c609:38ff:fef2:3ecb"];
         #        dns = [ "127.0.0.1:53" "::1" ];
+      };
+
+      "30-rndis" = {
+        matchConfig.Name = "rndis";
+        DHCP = "yes";
+        dhcpV4Config.RouteMetric = 2046;
+        dhcpV6Config.RouteMetric = 2046;
       };
     };
   };
