@@ -1,6 +1,9 @@
 { pkgs, ... }:
 {
   environment.systemPackages = with pkgs; [
+    hardinfo
+    mtr-gui
+    qjournalctl
     editorconfig-checker
     # KVM
     virt-manager
@@ -19,7 +22,7 @@
 
     arti
     onefetch
-    snapper
+    #snapper
     cachix
     android-tools
     qrencode
@@ -40,6 +43,7 @@
     nixpkgs-review
 
     shfmt
+    rustfmt
     broot
     rust-analyzer
     pyright
