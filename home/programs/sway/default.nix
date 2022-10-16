@@ -1,6 +1,7 @@
 { config
 , lib
 , pkgs
+, user
 , ...
 }: {
 
@@ -23,7 +24,7 @@
     '';
     wrapperFeatures.gtk = true;
     config = {
-      modifier = "Mod4";
+      modifier = if user == "riro" then "Mod4" else "Mod1";
       startup = [
         { command = "fcitx5 -d"; }
         { command = "firefox"; }
@@ -68,7 +69,7 @@
       output = {
         VGA-1 = {
           bg = "~/Pictures/Wallpapers/99030258_p0.jpg fill";
-          mode = "1920x1080";
+          mode = if user == "riro" then "1920x1080" else "1366x768";
           scale = "1";
         };
         #        HDMI-A-1 = {

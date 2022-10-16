@@ -1,6 +1,7 @@
 { pkgs
 , lib
 , config
+, user
 , ...
 }: {
   programs = {
@@ -91,7 +92,7 @@
           };
           network = {
             interval = 1;
-            interface = "wan";
+            interface = if user == "riro" then "wan" else "wlan";
             format = "{bandwidthDownOctets}";
             max-length = 10;
 
