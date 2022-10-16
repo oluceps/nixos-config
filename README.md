@@ -15,17 +15,26 @@ sed -i "s/hastur/YOUR_HOSTNAME/g" `rg -rl "hastur" ./`
 flake outputs:  
 
 ```console
-> nix flake show github:oluceps/nixos-config
-github:oluceps/nixos-config/d60a21a4d40a779f40b484bb9ef2445372bbfe34
+> nix flake show
+warning: Git tree '/etc/nixos' is dirty
+git+file:///etc/nixos
+├───devShells
+│   ├───aarch64-linux
+│   │   ├───default: development environment 'pythonEnv'
+│   │   └───general: development environment 'generalEnv'
+│   └───x86_64-linux
+│       ├───default: development environment 'pythonEnv'
+│       └───general: development environment 'generalEnv'
 └───nixosConfigurations
     ├───hastur: NixOS configuration
-    └───kaambl: NixOS configuration
+    ├───kaambl: NixOS configuration
+    └───livecd: NixOS configuration
 ```  
 
 ### NixOS Deployment
 
 ```console
-nixos-rebuild switch --flake github:oluceps/nixos-config#hastur
+nixos-rebuild switch --flake github:oluceps/nixos-config#<hostname>
   
 ```
 |Type|Program|
@@ -35,6 +44,19 @@ nixos-rebuild switch --flake github:oluceps/nixos-config#hastur
 |Shell|[fish](https://github.com/oluceps/nixos-config/tree/pub/home/programs/fish)|
 |Bar|[waybar](https://github.com/oluceps/nixos-config/tree/pub/home/programs/waybar)|
 |Terminal|[wezterm](https://github.com/oluceps/nixos-config/tree/pub/home/programs/wezterm)|
+|backup|[btrbk](https://github.com/oluceps/nixos-config/tree/pub/modules/btrbk)|  
+
+_To use devShell:_  
+```console
+nix develop .#devShells.x86_64-linux.<shell>
+```   
+
+_To build livecd:_
+
+```console
+nix build .#nixosConfigurations.livecd.config.system.build.isoImage
+```
+
 
 
 ## Contents
@@ -67,7 +89,7 @@ nixos-rebuild switch --flake github:oluceps/nixos-config#hastur
 │       ├── helix
 │       │   ├── config
 │       │   │   ├── config.toml
-│       │   │   ├── languages.toml
+│       │   │   ├── languages.nix
 │       │   │   └── themes
 │       │   │       └── catppuccin_macchiato.toml
 │       │   └── default.nix
@@ -95,14 +117,20 @@ nixos-rebuild switch --flake github:oluceps/nixos-config#hastur
 │   │   ├── default.nix
 │   │   ├── hardware.nix
 │   │   └── network.nix
-│   └── kaambl
-│       ├── default.nix
-│       ├── hardware.nix
-│       └── network.nix
-├── LICENSE
+│   ├── kaambl
+│   │   ├── default.nix
+│   │   ├── hardware.nix
+│   │   └── network.nix
+│   ├── livecd
+│   │   ├── default.nix
+│   │   ├── home.nix
+│   │   └── network.nix
+│   └── shares.nix
 ├── misc.nix
 ├── modules
 │   ├── blog
+│   │   └── default.nix
+│   ├── btrbk
 │   │   └── default.nix
 │   ├── clash-m
 │   │   └── default.nix
@@ -147,18 +175,16 @@ nixos-rebuild switch --flake github:oluceps/nixos-config#hastur
 │       └── default.nix
 ├── overlay.nix
 ├── packages.nix
-├── README.md
-├── screenshot.png
 ├── secrets
 │   ├── secrets.nix
 │   ├── sing.age
 │   └── ssconf.age
 ├── services.nix
-├── shell.nix
+├── shells.nix
 ├── sysvars.nix
 └── users.nix
 
-38 directories, 71 files
+40 directories, 73 files
 ```  
 
 ## Screenshot  
