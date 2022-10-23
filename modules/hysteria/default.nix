@@ -1,6 +1,7 @@
 { pkgs
 , config
 , lib
+, user
 , ...
 }:
 with lib;
@@ -27,11 +28,7 @@ in
 
 
   config =
-    let configFile =
-      pkgs.writeTextFile {
-        name = "hysteria.json";
-        test = builtins.toJSON (import ./config.nix);
-      };
+    let configFile = config.age.secrets.hyst.path;
     in
     mkIf
       cfg.enable
@@ -43,10 +40,8 @@ in
 
           serviceConfig = {
             Type = "simple";
-            # User = "clash";
-            # Group = "clash";
-            #WorkingDirectory = "/home/riro/.config/clash-meta/";
-            ExecStart = "${cfg.package}/bin/cmd -c ${configFile}";
+            User = user;
+            ExecStart = "${cfg.package}/bin/hysteria -c ${configFile}";
             AmbientCapabilities = [ "CAP_NET_ADMIN" "CAP_NET_BIND_SERVICE" ];
             Restart = "on-failure";
           };

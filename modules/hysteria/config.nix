@@ -1,7 +1,0 @@
-let 
-configText = {
-  
-};
-
-in configText
-
