@@ -11,6 +11,7 @@
   virtualisation = {
     docker.enable = true;
     libvirtd.enable = true;
+    waydroid.enable = true;
   };
   services.xserver =
     {
@@ -45,6 +46,22 @@
       owner = user;
       group = user;
     };
+
+    hyst = {
+      file = ./secrets/hyst.age;
+      mode = "770";
+      owner = user;
+      group = user;
+    };
+
+    tuic = {
+      file = ./secrets/tuic.age;
+      mode = "770";
+      owner = user;
+      group = user;
+    };
+
+
 
   };
   nix = {
