@@ -1,4 +1,4 @@
-{inputs, system, pkgs }:
+{ inputs, system, pkgs }:
 [
   ../misc.nix
   ../users.nix
@@ -13,7 +13,8 @@
         helix.packages.${system}.default
         surrealdb.packages.${system}.default
 
-      ] ++ (with pkgs;[
+      ]
+      ++ (with pkgs;[
         (fenix.complete.withComponents [
           "cargo"
           "clippy"

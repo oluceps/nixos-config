@@ -66,7 +66,7 @@
         DHCP = "yes";
         dhcpV4Config.RouteMetric = 2048;
         # dhcpV6Config.RouteMetric = 20;
-        #address = [ "192.168.0.9/24" ];
+#        address = [ "192.168.31.9/24" ];
         #routes = [
         #  { routeConfig = { Gateway = "192.168.0.1"; }; }
         #        #{routeConfig = {Gateway = "fe80::c609:38ff:fef2:3ecb";};}
