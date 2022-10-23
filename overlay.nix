@@ -2,7 +2,7 @@ inputs:
 [
   (final: prev: {
 
-        # sha256 = "0000000000000000000000000000000000000000000000000000";
+    # sha256 = "0000000000000000000000000000000000000000000000000000";
     #      nur-pkgs = inputs.nur-pkgs.packages."${prev.system}";
 
 
@@ -14,6 +14,17 @@ inputs:
         sha256 = "sha256-daLb7ebMVeL+f8WydH4DONkUA+0D6d+v+pohJb2qjOo=";
       };
     });
+
+    via = prev.via.overrideAttrs (old: rec{
+      version = "2.0.5";
+      src = prev.fetchurl {
+        url = "https://github.com/the-via/releases/releases/download/v${version}/via-${version}-linux.AppImage";
+        name = "via-${version}-linux.AppImage";
+        sha256 = "sha256-APNtzfeV6z8IF20bomcgMq7mwcK1fbDdFF77Xr0UPOs=";
+
+      };
+    }
+    );
 
     #      waybar = prev.waybar.overrideAttrs (old: {
     #        patchPhase = ''
