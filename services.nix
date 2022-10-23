@@ -20,15 +20,16 @@
     flatpak.enable = true;
     udev = {
 
-      packages = [
-        pkgs.android-udev-rules
-        pkgs.qmk-udev-rules
-        (pkgs.callPackage ./modules/packs/opensk-udev-rules { })
-      ];
+      packages = with pkgs;[
+        android-udev-rules
+        qmk-udev-rules
+        via
+      ] ++
+      [ (pkgs.callPackage ./modules/packs/opensk-udev-rules { }) ];
 
-#      extraRules = ''
-#        ACTION=="add|remove", SUBSYSTEM=="net", ATTR{idVendor}=="22d9" ENV{ID_USB_DRIVER}=="rndis_host", SYMLINK+="android", RUN+="systemctl restart systemd-networkd.service"
-#      '';
+      #      extraRules = ''
+      #        ACTION=="add|remove", SUBSYSTEM=="net", ATTR{idVendor}=="22d9" ENV{ID_USB_DRIVER}=="rndis_host", SYMLINK+="android", RUN+="systemctl restart systemd-networkd.service"
+      #      '';
     };
     gnome.gnome-keyring.enable = true;
     pipewire = {
@@ -41,10 +42,12 @@
     #    hysteria.enable = true;
 
 
-    ss = {
-      enable = true;
-    };
+    ss.enable = false;
+
     hysteria.enable = false;
+
+    tuic.enable = true;
+
     clash =
       {
         enable =
