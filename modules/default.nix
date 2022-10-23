@@ -7,6 +7,7 @@
   ./clash-m
   ./btrbk
   ./sing-box
+  ./tuic
   #    ./kitty.nix
   #    ./starship.nix
   #    ./nnn.nix
