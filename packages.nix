@@ -1,10 +1,18 @@
 { pkgs, ... }:
 {
   environment.systemPackages = with pkgs; [
+
+    socat
+    miniserve
+    any-nix-shell
     hardinfo
     mtr-gui
     qjournalctl
     editorconfig-checker
+#    (callPackage ./modules/packs/shadow-tls { })
+
+    nur-pkgs.shadow-tls
+    nur-pkgs.sing-box
     # KVM
     virt-manager
     doas
@@ -108,7 +116,7 @@
     binutils
     libcap
     gnumake
-    rustup
+    #rustup
     nodejs-18_x
     yarn
     unzip

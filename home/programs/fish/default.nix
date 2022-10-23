@@ -54,9 +54,12 @@
     '';
     functions = {
       fish_greeting = "";
-      haskellEnv = ''
-        nix-shell -p "haskellPackages.ghcWithPackages (pkgs: with pkgs; [ $argv ])"
-
+      fish_prompt = ''
+         set -l nix_shell_info (
+          if test -n "$IN_NIX_SHELL"
+            echo -n "<nix-shell> "
+         end
+        )
       '';
     };
   };

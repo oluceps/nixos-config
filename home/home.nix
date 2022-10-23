@@ -28,6 +28,11 @@
 
 
   home.packages = with pkgs; [
+    nur-pkgs.techmino
+    filezilla
+    steam-run
+    appimage-run
+    lutris
     tofi
     zoom-us
     mdbook
@@ -61,7 +66,7 @@
 
     mongodb-compass
 
-    via
+    vial
     discord-canary
 
     qemu
@@ -97,7 +102,7 @@
     netease-cloud-music-gtk
     cmatrix
     termius
-    kotatogram-desktop
+    # kotatogram-desktop
     autojump
     nmap
     lm_sensors
@@ -126,7 +131,7 @@
     file
     julia-bin
     tree
-    polymc
+    # polymc   INSECURE
   ];
   home.pointerCursor = {
     gtk.enable = true;
