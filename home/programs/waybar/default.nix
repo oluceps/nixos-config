@@ -13,15 +13,12 @@
         mainBar = {
           layer = "top";
           position = "top";
-          tray = {
-            height = 22;
-          };
 
           modules-left = [ "sway/workspaces" "sway/mode" ];
           #
           # "sway/mode"
           modules-center = [ "clock" ];
-          modules-right = [ "network" "temperature" "cpu" "memory" "pulseaudio" ];
+          modules-right = if user == "riro" then [ "network" "temperature" "cpu" "memory" "pulseaudio" ] else [ "network" "temperature" "cpu" "memory" "battery" "pulseaudio" ];
           "sway/mode" = {
             format = " {}";
           };
@@ -161,9 +158,6 @@
             tooltip = false;
           };
 
-          tray = {
-            icon-size = 18;
-          };
         };
       };
     };
