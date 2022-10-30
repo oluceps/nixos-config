@@ -11,4 +11,7 @@
   ./bspwm
   ./ranger
   ./wezterm
+  ./btop
+  ./alacritty
+  ./tmux
 ]

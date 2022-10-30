@@ -1,6 +1,7 @@
 { config
 , lib
 , pkgs
+, user
 , ...
 }: {
   programs.fish = {
@@ -26,11 +27,14 @@
       #          src = pkgs.fishPlugins.done.src;
       #        }
     ];
-    loginShellInit = ''
-      if test (id --user $USER) -ge 1000 && test (tty) = "/dev/tty1"
-        exec sway
-      end
-    '';
+    loginShellInit =
+      ''
+        if test (id --user $USER) -ge 1000 && test (tty) = "/dev/tty1"
+          exec sway
+        end
+
+      '';
+
     shellAliases = {
       nd = "cd /etc/nixos";
       swc = "sudo nixos-rebuild switch";
