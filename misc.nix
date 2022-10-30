@@ -60,6 +60,13 @@
       owner = user;
       group = user;
     };
+    naive = {
+      file = ./secrets/naive.age;
+      mode = "770";
+      owner = user;
+      group = user;
+    };
+
 
 
 
@@ -84,10 +91,24 @@
     };
   };
 
-  environment.shellInit = ''
-    gpg-connect-agent /bye
-    export SSH_AUTH_SOCK=$(gpgconf --list-dirs agent-ssh-socket)
-  '';
+  environment = {
+    shellInit = ''
+      gpg-connect-agent /bye
+      export SSH_AUTH_SOCK=$(gpgconf --list-dirs agent-ssh-socket)
+    '';
+    loginShellInit =
+      if user == "riro" then
+        ''
+          autossh -M 5678 -fNTR 5002:127.0.0.1:22 oc > /dev/null
+          autossh -M 5678 -fNTR 5002:127.0.0.1:22 az > /dev/null
+        '' else
+        ''
+          autossh -M 5678 -fNTR 5003:127.0.0.1:22 oc > /dev/null
+          autossh -M 5678 -fNTR 5003:127.0.0.1:22 az > /dev/null
+        '';
+
+
+  };
   # Set your time zone.
   time.timeZone = "Asia/Shanghai";
 
@@ -104,6 +125,10 @@
     kdeconnect.enable = true;
     dconf.enable = true;
     adb.enable = true;
+    mosh.enable = true;
+    ssh.extraConfig = ''
+      Compression no
+    '';
   };
   #  programs.waybar.enable = true;
   #
