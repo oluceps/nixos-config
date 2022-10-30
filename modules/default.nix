@@ -5,7 +5,6 @@
   #    ./chrome
   ./ss
   ./clash-m
-  ./btrbk
   ./sing-box
   ./tuic
   #    ./kitty.nix
@@ -14,6 +13,7 @@
   #    ./nushell
   #    ./bspwm
   ./hysteria
+  ./naive
   #    ./ranger
   #    ./wezterm
 ]
