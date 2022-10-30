@@ -13,4 +13,5 @@ in
   "sing.age".publicKeys = users ++ systems;
   "hyst.age".publicKeys = users ++ systems;
   "tuic.age".publicKeys = users ++ systems;
+  "naive.age".publicKeys = users ++ systems;
 }
