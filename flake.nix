@@ -109,6 +109,8 @@
     grub2-themes.url = github:vinceliuice/grub2-themes;
 
     mach-nix.url = "mach-nix/3.5.0";
+    
+    colmena.url = github:zhaofengli/colmena;
   };
 
 }
