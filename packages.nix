@@ -2,6 +2,9 @@
 {
   environment.systemPackages = with pkgs; [
 
+    nur-pkgs.naiveproxy
+    autossh
+    restic
     socat
     miniserve
     any-nix-shell
@@ -11,7 +14,7 @@
     editorconfig-checker
 #    (callPackage ./modules/packs/shadow-tls { })
 
-    nur-pkgs.shadow-tls
+#    nur-pkgs.shadow-tls
     nur-pkgs.sing-box
     # KVM
     virt-manager
@@ -95,7 +98,7 @@
     mongodb
 
     mtr
-    openssl_1_1
+    openssl
 
     tor
     iperf3
@@ -137,9 +140,8 @@
     jdk
     coreutils
     nix-index
-    tmux
+    
     dnsutils
-    openssl
     docker
     docker-compose
 
@@ -194,6 +196,7 @@
   (with pkgs.nodePackages; [
     vscode-json-languageserver
     typescript-language-server
+    vscode-css-languageserver-bin
     node2nix
     markdownlint-cli2
     prettier
