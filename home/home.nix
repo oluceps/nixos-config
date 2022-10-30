@@ -28,6 +28,8 @@
 
 
   home.packages = with pkgs; [
+    brightnessctl
+    alacritty
     nur-pkgs.techmino
     filezilla
     steam-run
