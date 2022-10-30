@@ -16,13 +16,20 @@
 
   security.pam.u2f.enable = true;
   xdg.portal.enable = true;
+
   services = {
     flatpak.enable = true;
+    journald.extraConfig =
+      ''
+        SystemMaxUse=1G
+      '';
     udev = {
 
       packages = with pkgs;[
         android-udev-rules
         qmk-udev-rules
+        yubikey-personalization
+        libu2f-host
         via
       ] ++
       [ (pkgs.callPackage ./modules/packs/opensk-udev-rules { }) ];
@@ -31,6 +38,7 @@
       #        ACTION=="add|remove", SUBSYSTEM=="net", ATTR{idVendor}=="22d9" ENV{ID_USB_DRIVER}=="rndis_host", SYMLINK+="android", RUN+="systemctl restart systemd-networkd.service"
       #      '';
     };
+
     gnome.gnome-keyring.enable = true;
     pipewire = {
       enable = true;
@@ -46,7 +54,9 @@
 
     hysteria.enable = false;
 
-    tuic.enable = true;
+    tuic.enable = false;
+
+    naive.enable = true;
 
     clash =
       {
@@ -63,43 +73,29 @@
       enable = true;
     };
 
+    btrbk = {
+      instances = {
+        base = {
+          onCalendar = "*:0/20"; # every quarter hour
+          settings = {
+            timestamp_format = "long";
+            snapshot_preserve_min = "18h";
+            snapshot_preserve = "72h";
+            volume = {
+              "/" = {
+                snapshot_dir = ".snapshots";
+                subvolume = {
+                  "." = { snapshot_create = "always"; };
+                  home = { snapshot_create = "always"; };
+                  nix = { snapshot_create = "always"; };
+                };
+              };
+            };
 
-
-    #snapper = {
-    #      snapshotRootOnBoot = true;
-    #      snapshotInterval = "hourly";
-    #      cleanupInterval = "3d";
-    #      configs = {
-    #
-    #        root = {
-    #          subvolume = "/";
-    #          extraConfig = ''
-    #            ALLOW_USERS="${user}"
-    #            TIMELINE_CREATE=yes
-    #            TIMELINE_CLEANUP=yes
-    #          '';
-    #        };
-    #
-    #        home = {
-    #          subvolume = "/home";
-    #          extraConfig = ''
-    #            ALLOW_USERS="${user}"
-    #            TIMELINE_CREATE=yes
-    #            TIMELINE_CLEANUP=yes
-    #          '';
-    #        };
-    #
-    #        nix = {
-    #          subvolume = "/nix";
-    #          extraConfig = ''
-    #            ALLOW_USERS="${user}"
-    #            TIMELINE_CREATE=yes
-    #            TIMELINE_CLEANUP=yes
-    #          '';
-    #        };
-    #      };
-    #    };
-
+          };
+        };
+      };
+    };
 
     btrfs.autoScrub = {
       enable = true;
@@ -111,9 +107,6 @@
     openssh = {
       enable = true;
       passwordAuthentication = false;
-      extraConfig = ''
-        useDNS no
-      '';
     };
 
     fail2ban = {
@@ -174,17 +167,5 @@
       enableSSHSupport = true;
     };
 
-    tmux = {
-      aggressiveResize = true;
-      clock24 = true;
-      enable = true;
-      newSession = true;
-      reverseSplit = true;
-
-      plugins = with pkgs.tmuxPlugins; [
-        prefix-highlight
-        nord
-      ];
-    };
   };
 }
