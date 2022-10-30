@@ -13,7 +13,7 @@
         mainBar = {
           layer = "top";
           position = "top";
-
+          height = 22;
           modules-left = [ "sway/workspaces" "sway/mode" ];
           #
           # "sway/mode"
@@ -25,31 +25,10 @@
           "sway/workspaces" = {
             format = "{name}";
             disable-scroll = true;
-
-            format-icons = {
-              "1" = "";
-              "2" = "";
-              "3" = "";
-              "4" = "";
-              "5" = "";
-              urgent = "";
-              active = "";
-              default = "";
-            };
           };
           "wlr/workspaces" = {
             format = "{icon}";
             on-click = "activate";
-            format-icons = {
-              "1" = "";
-              "2" = "";
-              "3" = "";
-              "4" = "";
-              "5" = "";
-              urgent = "";
-              active = "";
-              default = "";
-            };
           };
           "sway/window" = {
             max-length = 80;
@@ -57,6 +36,7 @@
           };
           clock = {
             format = "{:%H:%M}";
+            timezone = "Asia/Shanghai";
             format-alt = "{:%a %d %b}";
             format-alt-click = "click-right";
             tooltip = false;
@@ -66,7 +46,7 @@
             format-alt = "{time} {icon}";
             format-icons = [ "" "" "" "" "" ];
             format-charging = "{capacity}% ";
-            interval = 30;
+            interval = 10;
             states = {
               warning = 25;
               critical = 10;
@@ -77,23 +57,22 @@
             interval = 1;
             format = "{usage}% ";
             max-length = 10;
-
             min-length = 5;
           };
           memory = {
             interval = 1;
             format = "{}% ";
             max-length = 10;
-
             min-length = 5;
+            tooltip = false;
           };
           network = {
             interval = 1;
             interface = if user == "riro" then "wan" else "wlan";
             format = "{bandwidthDownOctets}";
             max-length = 10;
-
             min-length = 8;
+            tooltip = false;
           };
           pulseaudio = {
             min-length = 5;
@@ -113,25 +92,10 @@
             hwmon-path = "/sys/class/hwmon/hwmon1/temp1_input";
             format = "{temperatureC}°C ";
             max-length = 10;
-
             min-length = 5;
+            tooltip = false;
           };
 
-          "custom/spotify" = {
-            interval = 1;
-            return-type = "json";
-            exec = "~/.config/waybar/modules/spotify.sh";
-            exec-if = "pgrep spotify";
-            escape = true;
-          };
-          "custom/storage" = {
-            format = "{} ";
-            format-alt = "{percentage}% ";
-            format-alt-click = "click-right";
-            return-type = "json";
-            interval = 60;
-            exec = "~/.config/waybar/storage.sh";
-          };
           backlight = {
             format = "{icon}";
             format-alt = "{percent}% {icon}";
@@ -139,15 +103,6 @@
             format-icons = [ "" "" ];
             on-scroll-down = "light -A 1";
             on-scroll-up = "light -U 1";
-          };
-          "custom/weather" = {
-            format = "{}";
-            format-alt = "{alt}: {}";
-            format-alt-click = "click-right";
-            interval = 1800;
-            return-type = "json";
-            exec = "~/.config/waybar/weather.sh";
-            exec-if = "ping wttr.in -c1";
           };
           idle_inhibitor = {
             format = "{icon}";
