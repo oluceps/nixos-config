@@ -11,7 +11,7 @@ local catppuccin = require("catppuccin").setup({
 		dark = "mocha",
 	},
 	-- the default/fallback flavour, when syncing is disabled
-	flavour = "mocha",
+	flavour = "frappe",
 })
 
 return {
