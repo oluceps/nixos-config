@@ -66,20 +66,29 @@
         }
       ];
 
-      output = {
-        VGA-1 = {
-          bg = "~/Pictures/Wallpapers/99030258_p0.jpg fill";
-          mode = if user == "riro" then "1920x1080" else "1366x768";
-          scale = "1";
+      output =
+        if user == "riro" then {
+          VGA-1 = {
+            bg = "/home/${user}/Pictures/Wallpapers/99030258_p0.jpg fill";
+            mode = "1920x1080";
+            scale = "1";
+          };
+        } else {
+
+          eDP-1 = {
+            bg = "/home/${user}/Pictures/Wallpapers/99030258_p0.jpg fill";
+            mode = "1366x768";
+            scale = "1";
+          };
         };
-        #        HDMI-A-1 = {
-        #          bg = "~/Pictures/Wallpapers/rurudo-purple.jpg fill";
-        #          mode = "1920x1080";
-        #          scale = "1.5";
-        #          position = "0 0";
-        #          # transform = "180";
-        #        };
-      };
+
+      #        HDMI-A-1 = {
+      #          bg = "~/Pictures/Wallpapers/rurudo-purple.jpg fill";
+      #          mode = "1920x1080";
+      #          scale = "1.5";
+      #          position = "0 0";
+      #          # transform = "180";
+      #        };
 
       window.hideEdgeBorders = "smart";
       keybindings =
@@ -101,7 +110,7 @@
           "XF86MonBrightnessUp" = "exec brightnessctl set +3%";
           "XF86MonBrightnessdown" = "exec brightnessctl set 3%-";
           #"${modifier}+Shift+e" = "exec power-menu";
-          "${modifier}+Return" = "exec ${pkgs.wezterm}/bin/wezterm";
+          "${modifier}+Return" = "exec ${pkgs.alacritty}/bin/alacritty";
           "${modifier}+d" = "exec ${pkgs.fuzzel}/bin/fuzzel -I";
           "${modifier}+space" = "floating toggle";
           "${modifier}+Shift+space" = null;
