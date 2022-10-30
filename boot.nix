@@ -61,7 +61,7 @@
       "net.ipv4.conf.default.rp_filter" = 1;
       "net.ipv4.conf.all.rp_filter" = 1;
       # SYN flood protection
-      "net.ipv4.tcp_syncookies" = 1;
+      "net.ipv4.tcp_syncookies" = 0;
       # Do not accept ICMP redirects (prevent MITM attacks)
       "net.ipv4.conf.all.accept_redirects" = 1;
       "net.ipv4.conf.default.accept_redirects" = 1;
