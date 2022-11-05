@@ -63,7 +63,8 @@ injection-regex = "toml"
 file-types = ["toml"]
 roots = []
 comment-token = "#"
-language-server = { command = "taplo", args = ["lsp", "stdio"] }
+language-server = { command = "${pkgs.taplo}", args = ["lsp", "stdio"] }
+formatter = {command = "taplo", args = ["fmt","--stdin"]}
 indent = { tab-width = 2, unit = "  " }
 
 [[grammar]]
