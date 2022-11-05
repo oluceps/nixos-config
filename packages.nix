@@ -2,6 +2,8 @@
 {
   environment.systemPackages = with pkgs; [
 
+    pkg-config
+    compsize
     nur-pkgs.naiveproxy
     autossh
     restic
@@ -54,6 +56,7 @@
     nixpkgs-review
 
     shfmt
+    rustup
     rustfmt
     broot
     rust-analyzer
@@ -119,7 +122,7 @@
     binutils
     libcap
     gnumake
-    #rustup
+    
     nodejs-18_x
     yarn
     unzip
