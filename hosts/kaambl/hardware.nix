@@ -11,11 +11,12 @@
 
   boot = {
     initrd.availableKernelModules = [ "xhci_pci" "ehci_pci" "ahci" "usb_storage" "sd_mod" "sr_mod" "rtsx_usb_sdmmc" ];
-    initrd.kernelModules = [ "kvm-intel" "wl" ];
+    initrd.kernelModules = [ "kvm-intel" "wl" "intel_pstate" ];
     kernelModules = [ "kvm-intel" "wl" ];
     extraModulePackages = [ config.boot.kernelPackages.broadcom_sta ];
     kernelPackages = pkgs.linuxPackages_latest;
   };
+  powerManagement.cpuFreqGovernor = "schedutil";
 
 
   fileSystems."/" =
