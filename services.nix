@@ -143,9 +143,6 @@
     };
   };
 
-
-  qt5.platformTheme = "qt5ct";
-
   programs = {
     ssh.startAgent = false;
     proxychains = {

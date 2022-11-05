@@ -13,6 +13,11 @@
     libvirtd.enable = true;
     waydroid.enable = true;
   };
+  qt5 = {
+    enable = true;
+    platformTheme = "gnome";
+    style = "adwaita-dark";
+  };
   services.xserver =
     {
       enable = false;
@@ -126,9 +131,6 @@
     dconf.enable = true;
     adb.enable = true;
     mosh.enable = true;
-    ssh.extraConfig = ''
-      Compression no
-    '';
   };
   #  programs.waybar.enable = true;
   #
