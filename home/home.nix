@@ -28,6 +28,11 @@
 
 
   home.packages = with pkgs; [
+    dolphin
+    discord
+    krita
+#    davinci-resolve
+    nur.repos.linyinfeng.wemeet
     brightnessctl
     alacritty
     nur-pkgs.techmino
