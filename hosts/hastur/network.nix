@@ -59,14 +59,20 @@
         MACAddressPolicy = "persistent";
       };
     };
+    links."20-wlan" = {
+      matchConfig.MACAddress = "70:66:55:e7:1c:b1";
+      linkConfig.Name = "wlan";
+    };
+
 
     networks = {
       "20-wired" = {
         matchConfig.Name = "wan";
         DHCP = "yes";
         dhcpV4Config.RouteMetric = 2048;
+        dhcpV6Config.RouteMetric = 2048;
         # dhcpV6Config.RouteMetric = 20;
-#        address = [ "192.168.31.9/24" ];
+        #        address = [ "192.168.31.9/24" ];
         #routes = [
         #  { routeConfig = { Gateway = "192.168.0.1"; }; }
         #        #{routeConfig = {Gateway = "fe80::c609:38ff:fef2:3ecb";};}
@@ -81,6 +87,16 @@
         dhcpV4Config.RouteMetric = 2046;
         dhcpV6Config.RouteMetric = 2046;
       };
+
+      "20-wireless" = {
+        matchConfig.Name = "wlan";
+        DHCP = "yes";
+        dns = [ "127.0.0.1:53" "::1" ];
+        dhcpV4Config.RouteMetric = 2044;
+        dhcpV6Config.RouteMetric = 2044;
+      };
+      #      enp4s0 = {
+
     };
   };
 }
