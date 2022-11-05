@@ -67,7 +67,7 @@ window#waybar.solo {
     
 }
 #clock {
-    padding: 3px 3px 3px 3px;
+    padding: 3px 15px 3px 15px;
     margin: 0px 0px 0px 0px;
     color:      rgba(217, 216, 216, 1);
         border-radius: 6px;
