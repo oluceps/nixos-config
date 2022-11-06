@@ -1,5 +1,5 @@
 inputs:
-[
+let lib = inputs.nixpkgs.lib; in[
   (final: prev: {
 
     # sha256 = "0000000000000000000000000000000000000000000000000000";
@@ -36,19 +36,31 @@ inputs:
 
 
     shadowsocks-rust = prev.shadowsocks-rust.overrideAttrs (old: rec {
-      version = "1.15.0-alpha.8";
+      version = "1.15.0-alpha.9";
       src = prev.fetchFromGitHub {
         owner = "shadowsocks";
         repo = "shadowsocks-rust";
-        rev = "00df9d3c4d2222806485960924256c8f41f17aff";
-        sha256 = "sha256-OTgBCDwfILPDrEoZjdYzqcT82th8RYWcKnVWIaC/z3U=";
+        rev = "96500c1e844527b692df9841199360bffdf9c9b5";
+        sha256 = "sha256-pABPPM6cchwmXUNNaYmKYB81QDScbnKiSNOPh4bvupQ=";
       };
       cargoDeps = old.cargoDeps.overrideAttrs (prev.lib.const {
         inherit src;
         # otherwise the old "src" will be used.
-        outputHash = "sha256-M2Tmh4P46thCgwu2SojuMdYtcemkwxt9mPUfGAl43t0=";
+        outputHash = "sha256-wVwyNaLxBxLXgYZP1gp16XGWtTRD/1FiR5kuSoUjrGM=";
       });
     });
+    tdesktop = prev.tdesktop.overrideAttrs
+      (old: {
+        version = "4.3.0";
+        nativeBuildInputs = lib.remove "glibmm" (old.nativeBuildInputs or [ ]) ++ [ final.glibmm_2_68 ];
+        src = prev.fetchFromGitHub {
+          owner = "telegramdesktop";
+          repo = "tdesktop";
+          rev = "v4.3.0";
+          fetchSubmodules = true;
+          sha256 = "1ji9351vcvydkcrdwqx22j1nhl9vysd6ajvghaqxdirvqypiygj0";
+        };
+      });
 
 
     #      tdesktop = prev.tdesktop.overrideAttrs (old: {
