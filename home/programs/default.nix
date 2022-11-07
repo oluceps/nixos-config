@@ -14,4 +14,6 @@
   ./btop
   ./alacritty
   ./tmux
+  ./hyprland
+
 ]
