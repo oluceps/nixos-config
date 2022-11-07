@@ -49,7 +49,6 @@ let
                 gaps_in=3
                 gaps_out=3
                 border_size=2
-                damage_tracking=full
 
                 col.active_border=0x4DD7C4BB
                 col.inactive_border=0x4D947A6D
@@ -67,13 +66,13 @@ let
                 # the more passes, the more you can up the blur_size without noticing artifacts.
             }
 
-            animations {
-                enabled=1
-                animation=windows,1,2,default
-                animation=borders,1,2,default
-                animation=fadein,1,2,default
-                animation=workspaces,1,2,slide
-            }
+#            animations {
+#                enabled=1
+#                animation=windows,1,2,default
+#                animation=borders,1,2,default
+##                animation=fadein,1,2,default
+#                #animation=workspaces,1,2,slide
+#            }
 
             dwindle {
                 pseudotile=0 # enable pseudotiling on dwindle
