@@ -17,6 +17,9 @@
     kernelModules = [ "kvm-amd" ];
     extraModulePackages = [ ];
     kernelPackages = pkgs.linuxPackages_latest;
+    binfmt.emulatedSystems = [
+      "riscv64-linux"
+    ];
   };
 
 
