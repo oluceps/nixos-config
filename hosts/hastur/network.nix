@@ -44,6 +44,7 @@
 
     wait-online = {
       timeout = 5;
+      ignoredInterfaces = [ "wlan" ];
     };
 
     links."10-wan" = {
