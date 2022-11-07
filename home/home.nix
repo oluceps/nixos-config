@@ -28,6 +28,7 @@
 
 
   home.packages = with pkgs; [
+    calibre
     dolphin
     discord
     krita
