@@ -168,6 +168,7 @@
     ++ (with nur-pkgs;[ maple-font.Mono-NF-v5 san-francisco plangothic maoken-tangyuan ]);
     #"HarmonyOS Sans SC" "HarmonyOS Sans TC"
     fontconfig = {
+      subpixel.rgba = "none";
       defaultFonts = {
         serif = [ "Glow Sans SC" "Glow Sans TC" "Glow Sans J" "Noto Serif" "Noto Serif CJK SC" "Noto Serif CJK TC" "Noto Serif CJK JP" ];
         monospace = [ "SF Mono" "Fantasque Sans Mono" ];
