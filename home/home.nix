@@ -28,6 +28,11 @@
 
 
   home.packages = with pkgs; [
+    # stress
+    stress
+    s-tui
+    mprime
+
     calibre
     dolphin
     discord
@@ -134,7 +139,6 @@
     jetbrains.pycharm-professional
     jetbrains.datagrip
     bspwm
-    sxhkd
     tdesktop
     file
     julia-bin
