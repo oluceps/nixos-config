@@ -42,6 +42,7 @@
 
   inputs = {
     nixpkgs.url = github:NixOS/nixpkgs/nixos-unstable;
+    nil.url = github:oxalica/nil;
     nixpkgs-unstable.url = github:NixOS/nixpkgs/nixos-unstable;
     flake-utils.url = github:numtide/flake-utils;
     nix-colors.url = github:misterio77/nix-colors;
@@ -51,6 +52,8 @@
       url = github:oluceps/nur-pkgs;
       inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
+    
+    rnix-lsp.url = github:nix-community/rnix-lsp;
 
     fenix = {
       url = github:nix-community/fenix;
