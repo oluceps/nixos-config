@@ -1,6 +1,6 @@
 # Language support configuration.
 # See the languages documentation: https://docs.helix-editor.com/master/languages.html
-{ pkgs, ... }:
+{ system, pkgs, inputs, ... }:
 let
   configText = ''
 
@@ -480,14 +480,14 @@ scope = "source.nix"
 injection-regex = "nix"
 file-types = ["nix"]
 shebangs = []
-roots = []
+roots = ["flake.nix"]
 comment-token = "#"
-language-server = { command = "rnix-lsp" }
+language-server = { command = "${inputs.rnix-lsp.defaultPackage.${system}}/bin/rnix-lsp" }
 indent = { tab-width = 2, unit = "  " }
 
 [[grammar]]
 name = "nix"
-source = { git = "https://github.com/cstrahan/tree-sitter-nix", rev = "6b71a810c0acd49b980c50fc79092561f7cee307" }
+source = { git = "https://github.com/cstrahan/tree-sitter-nix", rev = "1b69cf1fa92366eefbe6863c184e5d2ece5f187d" }
 
 [[language]]
 name = "ruby"
@@ -495,7 +495,7 @@ scope = "source.ruby"
 injection-regex = "ruby"
 file-types = ["rb", "rake", "rakefile", "irb", "gemfile", "gemspec", "Rakefile", "Gemfile", "rabl", "jbuilder", "jb"]
 shebangs = ["ruby"]
-roots = []
+roots = [ ]
 comment-token = "#"
 language-server = { command = "solargraph", args = ["stdio"] }
 indent = { tab-width = 2, unit = "  " }
