@@ -19,10 +19,10 @@ in
     package = mkOption {
       type = types.package;
       default = inputs.clash-meta.packages.${system}.default;
-        #inputs.clash-meta.apps.${system};
-        #inputs.clash-meta.defaultPackages.${system};
-        #pkgs.callPackage ../packs/clash-m { };
-        defaultText = literalExpression "pkgs.clash-meta";
+      #inputs.clash-meta.apps.${system};
+      #inputs.clash-meta.defaultPackages.${system};
+      #pkgs.callPackage ../packs/clash-m { };
+      defaultText = literalExpression "pkgs.clash-meta";
       description = lib.mdDoc ''
         package
       '';
@@ -34,7 +34,7 @@ in
       systemd.services.clash = {
 
         wantedBy = [ "multi-user.target" ];
-        after = [ "network.target" ];
+        after = [ "network-online.target" ];
         description = "Clash-meta Daemon";
 
         serviceConfig = {
