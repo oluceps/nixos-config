@@ -30,5 +30,6 @@
   agenix.nixosModule
   grub2-themes.nixosModule
   home-manager.nixosModules.home-manager
+#  impermanence.nixosModules.impermanence
 
 ]) ++ (import ../modules)
