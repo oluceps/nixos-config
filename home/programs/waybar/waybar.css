@@ -1,86 +1,78 @@
 * {
-    border:        none;
-    border-radius: 0px;
-    font-family:   FiraCode Nerd Font Mono;
-    font-weight:   bold;
-    font-size:     15px;
-    box-shadow:    none;
-    text-shadow:   none;
-    transition-duration: 0s;
-    min-height: 0;
+	border: none;
+	border-radius: 0px;
+	font-family: FiraCode Nerd Font Mono;
+	font-weight: bold;
+	font-size: 15px;
+	box-shadow: none;
+	text-shadow: none;
+	transition-duration: 0s;
+	min-height: 0;
 }
 
 window {
-    color:      rgba(217, 216, 216, 1);
-    background: rgba(120, 120, 120, 0.6);
+	color: rgba(217, 216, 216, 1);
+	background: rgba(120, 120, 120, 0.6);
 }
 
 window#waybar.solo {
-    color:      rgba(217, 216, 216, 1);
-    background: rgba(35, 31, 32, 0.85);
+	color: rgba(217, 216, 216, 1);
+	background: rgba(35, 31, 32, 0.85);
 }
 
 #workspaces button {
-  padding: 0px 4px 0px 4px;
-  margin: 0px 0px 0px 0px;
-  color:      rgba(217, 216, 216, 0.4);
-  padding-left: 10px;
-  padding-right: 10px;
-
-}
-
-#workspaces button.visible {
-  padding: 0px 4px 0px 4px;
-  margin: 0px 0px 0px 0px;
-  color:      rgba(217, 216, 216, 1);
-  padding-left: 10px;
-  padding-right: 10px;
-}
-
-#workspaces button.focused {
-
-  padding: 0px 4px 0px 4px;
-  margin: 0px 0px 0px 0px;
-  border-top: 0px solid rgba(217, 216, 216, 1);
-  border-bottom: 2px solid rgba(217, 216, 216, 1);
-  padding-left: 10px;
-  padding-right: 10px;
-
+	padding: 0px 4px 0px 4px;
+	color: rgba(217, 216, 216, 0.6);
+	padding-left: 19px;
+	padding-right: 19px;
 }
 
 #workspaces button.urgent {
-    color:      rgba(238, 46, 36, 1);
+	color: rgba(238, 46, 36, 1);
 }
 
-#mode, #battery, #cpu, #memory, #network, #idle_inhibitor, #backlight, #custom-storage, #custom-spotify, #custom-weather, #custom-mail, #temperature {
-    color:   rgba(217, 216, 216, 1);
-    padding: 3px 3px 3px 3px;
-    margin: 0px 4px 0px 4px;
-        border-radius: 6px;
+#workspaces button:hover {
+	background-color: rgba(230, 210, 213, 0.2);
+	color: rgba(217, 216, 216, 0.8);
 }
+
+#workspaces button.active {
+	background-color: rgba(233, 215, 223, 0.2);
+	color: rgba(230, 210, 213, 0.6);
+}
+
+/*
+*/
+
+#tray, #mode, #battery, #cpu, #memory, #network, #idle_inhibitor, #backlight, #custom-storage, #custom-spotify, #custom-weather, #custom-mail, #temperature {
+	color: rgba(217, 216, 216, 1);
+	padding: 3px 3px 3px 3px;
+	margin: 0px 4px 0px 4px;
+	border-radius: 6px;
+}
+
 #pulseaudio {
-
-    color:   rgba(217, 216, 216, 1);
-    padding: 3px 7px 3px 7px;
-    margin: 0px 0px 0px 0px;
-    border-radius: 6px;
-    
+	color: rgba(217, 216, 216, 1);
+	padding: 3px 7px 3px 7px;
+	margin: 0px 0px 0px 0px;
+	border-radius: 6px;
 }
+
 #clock {
-    padding: 3px 15px 3px 15px;
-    margin: 0px 0px 0px 0px;
-    color:      rgba(217, 216, 216, 1);
-        border-radius: 6px;
+	padding: 3px 15px 3px 15px;
+	margin: 0px 0px 0px 0px;
+	color: rgba(217, 216, 216, 1);
+	border-radius: 6px;
 }
 
 #battery.warning {
-   color:       rgba(255, 210, 4, 1);
+	color: rgba(255, 210, 4, 1);
 }
 
 #battery.critical {
-    color:      rgba(238, 46, 36, 1);
+	color: rgba(238, 46, 36, 1);
 }
 
 #battery.charging {
-    color:      rgba(217, 216, 216, 1);
+	color: rgba(217, 216, 216, 1);
 }

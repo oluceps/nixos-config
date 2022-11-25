@@ -28,7 +28,7 @@ local colors = {
 		surface0 = "#ccd0da",
 		crust = "#dce0e8",
 		mantle = "#e6e9ef",
-		base = "#eff1f5",
+		base = "#3c3836",
 	},
 	frappe = {
 		rosewater = "#f2d5cf",
@@ -54,7 +54,7 @@ local colors = {
 		surface2 = "#626880",
 		surface1 = "#51576d",
 		surface0 = "#414559",
-		base = "#303446",
+		base = "#3c3836",
 		mantle = "#292c3c",
 		crust = "#232634",
 	},

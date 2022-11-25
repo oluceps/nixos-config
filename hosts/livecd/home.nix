@@ -53,7 +53,7 @@ let
       #texlive.
       texlive.combined.scheme-full
       vlc
-      firefox-wayland
+      firefox
       bluedevil
       #zathura
       tdesktop

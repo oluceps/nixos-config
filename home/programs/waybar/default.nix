@@ -14,11 +14,11 @@
           layer = "top";
           position = "top";
           height = 22;
-          modules-left = [ "sway/workspaces" "sway/mode" ];
+          modules-left = [ "wlr/workspaces" ];
           #
           # "sway/mode"
           modules-center = [ "clock" ];
-          modules-right = if user == "riro" then [ "network" "temperature" "cpu" "memory" "pulseaudio" ] else [ "network" "temperature" "cpu" "memory" "battery" "pulseaudio" ];
+          modules-right = if user == "riro" then [ "network" "tray" "temperature" "cpu" "memory" "pulseaudio" ] else [ "network" "temperature" "cpu" "memory" "battery" "pulseaudio" ];
           "sway/mode" = {
             format = " {}";
           };
@@ -33,6 +33,14 @@
           "sway/window" = {
             max-length = 80;
             tooltip = false;
+          };
+          "tray" = {
+            "icon-size" = 15;
+            "spacing" = 5;
+          };
+          disk = {
+            interval = 30;
+            format = "{percentage_free}% free on {path}";
           };
           clock = {
             format = "{:%H:%M}";
