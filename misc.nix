@@ -8,6 +8,28 @@
 , ...
 }: {
   nixpkgs.config.allowUnfree = true;
+#  environment.persistence."/persist" = {
+#    directories = [
+#      "/var"
+#    ];
+#    files = [
+#      "/etc/machine-id"
+#    ];
+#    users.${user} = {
+#      directories = [
+#        "Documents"
+#        "Downloads"
+#        "Pictures"
+#        "Projects"
+#        ".cache"
+#        ".local"
+#        ".mozilla"
+#        ".ssh"
+#        ".thunderbird"
+#        ".config/fcitx5"
+#      ];
+#    };
+#  };
   virtualisation = {
     docker.enable = true;
     libvirtd.enable = true;
@@ -101,16 +123,16 @@
       gpg-connect-agent /bye
       export SSH_AUTH_SOCK=$(gpgconf --list-dirs agent-ssh-socket)
     '';
-    loginShellInit =
-      if user == "riro" then
-        ''
-          autossh -M 5678 -fNTR 5002:127.0.0.1:22 oc > /dev/null
-          autossh -M 5678 -fNTR 5002:127.0.0.1:22 az > /dev/null
-        '' else
-        ''
-          autossh -M 5678 -fNTR 5003:127.0.0.1:22 oc > /dev/null
-          autossh -M 5678 -fNTR 5003:127.0.0.1:22 az > /dev/null
-        '';
+    loginShellInit = "";
+    #      if user == "riro" then
+    #        ''
+    #          autossh -M 5678 -fNTR 5002:127.0.0.1:22 oc > /dev/null
+    #          autossh -M 5678 -fNTR 5002:127.0.0.1:22 az > /dev/null
+    #        '' else
+    #        ''
+    #          autossh -M 5678 -fNTR 5003:127.0.0.1:22 oc > /dev/null
+    #          autossh -M 5678 -fNTR 5003:127.0.0.1:22 az > /dev/null
+    #        '';
 
 
   };
