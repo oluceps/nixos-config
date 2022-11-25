@@ -68,123 +68,52 @@ nix build .#nixosConfigurations.livecd.config.system.build.isoImage
 
 ## Directory structure  
 ```console  
-> tree
+> exa --tree --level=2
 .
 ├── boot.nix
 ├── flake.lock
 ├── flake.nix
 ├── home
-│   ├── default.nix
-│   ├── home.nix
-│   └── programs
-│       ├── bspwm
-│       │   ├── bspwmrc
-│       │   ├── default.nix
-│       │   └── sxhkdrc
-│       ├── chrome
-│       │   └── default.nix
-│       ├── default.nix
-│       ├── fish
-│       │   └── default.nix
-│       ├── helix
-│       │   ├── config
-│       │   │   ├── config.toml
-│       │   │   ├── languages.nix
-│       │   │   └── themes
-│       │   │       └── catppuccin_macchiato.toml
-│       │   └── default.nix
-│       ├── kitty.nix
-│       ├── nnn.nix
-│       ├── nushell
-│       │   ├── config.nu
-│       │   ├── default.nix
-│       │   └── env.nu
-│       ├── ranger
-│       │   └── default.nix
-│       ├── starship.nix
-│       ├── sway
-│       │   └── default.nix
-│       ├── waybar
-│       │   ├── default.nix
-│       │   └── waybar.css
-│       └── wezterm
-│           ├── catppuccin.lua
-│           ├── default.nix
-│           └── wezterm.lua
+│  ├── default.nix
+│  ├── home.nix
+│  └── programs
 ├── hosts
-│   ├── default.nix
-│   ├── hastur
-│   │   ├── default.nix
-│   │   ├── hardware.nix
-│   │   └── network.nix
-│   ├── kaambl
-│   │   ├── default.nix
-│   │   ├── hardware.nix
-│   │   └── network.nix
-│   ├── livecd
-│   │   ├── default.nix
-│   │   ├── home.nix
-│   │   └── network.nix
-│   └── shares.nix
+│  ├── default.nix
+│  ├── hastur
+│  ├── kaambl
+│  ├── livecd
+│  └── shares.nix
+├── LICENSE
 ├── misc.nix
 ├── modules
-│   ├── blog
-│   │   └── default.nix
-│   ├── btrbk
-│   │   └── default.nix
-│   ├── clash-m
-│   │   └── default.nix
-│   ├── default.nix
-│   ├── foot
-│   │   └── foot.ini
-│   ├── hyprland
-│   │   ├── config.nix
-│   │   └── default.nix
-│   ├── hysteria
-│   │   ├── config.nix
-│   │   └── default.nix
-│   ├── packs
-│   │   ├── clash-m
-│   │   │   └── default.nix
-│   │   ├── clash-p
-│   │   │   └── default.nix
-│   │   ├── glowsans
-│   │   │   └── default.nix
-│   │   ├── Graphite-cursors
-│   │   │   └── default.nix
-│   │   ├── maple-font
-│   │   │   └── default.nix
-│   │   ├── opensk-udev-rules
-│   │   │   └── default.nix
-│   │   ├── plangothic
-│   │   │   └── default.nix
-│   │   ├── RustPlayer
-│   │   │   └── default.nix
-│   │   ├── san-francisco
-│   │   │   └── default.nix
-│   │   ├── sing-box
-│   │   │   └── default.nix
-│   │   └── v2ray-plugin
-│   │       └── default.nix
-│   ├── polybar
-│   │   ├── config.ini
-│   │   └── default.nix
-│   ├── sing-box
-│   │   └── default.nix
-│   └── ss
-│       └── default.nix
+│  ├── blog
+│  ├── clash-m
+│  ├── default.nix
+│  ├── foot
+│  ├── hysteria
+│  ├── naive
+│  ├── packs
+│  ├── polybar
+│  ├── shadow-tls
+│  ├── sing-box
+│  ├── ss
+│  └── tuic
 ├── overlay.nix
 ├── packages.nix
+├── README.md
+├── screenshot.png
 ├── secrets
-│   ├── secrets.nix
-│   ├── sing.age
-│   └── ssconf.age
+│  ├── hyst.age
+│  ├── naive.age
+│  ├── secrets.nix
+│  ├── sing.age
+│  ├── ssconf.age
+│  └── tuic.age
 ├── services.nix
 ├── shells.nix
 ├── sysvars.nix
 └── users.nix
 
-40 directories, 73 files
 ```  
 
 ## Screenshot  
