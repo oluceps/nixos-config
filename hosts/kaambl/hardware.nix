@@ -15,6 +15,10 @@
     kernelModules = [ "kvm-intel" "wl" ];
     extraModulePackages = [ config.boot.kernelPackages.broadcom_sta ];
     kernelPackages = pkgs.linuxPackages_latest;
+    kernelParams = [
+      "mitigations=off"
+      "nowatchdog"
+    ];
   };
   powerManagement.cpuFreqGovernor = "schedutil";
 
