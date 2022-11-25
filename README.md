@@ -117,8 +117,9 @@ nix build .#nixosConfigurations.livecd.config.system.build.isoImage
 ```  
 
 ## Screenshot  
-![screenshot](./screenshot.png)
+![screenshot](./screenshots/shot_1.png)
 
+![screenshot](./screenshots/shot_2.png)
 
 ## Resources  
 Excellent configurations that I've learned and copied:  
