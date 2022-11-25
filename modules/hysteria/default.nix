@@ -35,7 +35,7 @@ in
       {
         systemd.services.hysteria = {
           wantedBy = [ "multi-user.target" ];
-          after = [ "network.target" ];
+          after = [ "network-online.target" ];
           description = "hysteria daemon";
 
           serviceConfig = {
