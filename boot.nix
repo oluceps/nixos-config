@@ -22,18 +22,18 @@
               hash = "sha256-gw8PT8PSr9Gz0cflx2EOqjTsxHeJIJeCawrz9l7kvFI=";
             };
             img-resized = pkgs.runCommand "background.jpg"
-            {
-              nativeBuildInputs = with pkgs; [imagemagick];
-            }"convert -resize 1920x1080 ${img} $out";
-             in
+              {
+                nativeBuildInputs = with pkgs; [ imagemagick ];
+              } "convert -resize 1920x1080 ${img} $out";
+          in
           "${img-resized}";
-       };
+      };
       grub = {
         enable = true;
         device = "nodev";
         useOSProber = true;
         efiSupport = true;
-     };
+      };
       efi.canTouchEfiVariables = true;
     };
     supportedFilesystems = [ "ntfs" "tcp_bbr" ];
@@ -50,7 +50,7 @@
       # default write buffer
       "net.core.wmem_default" = 65536;
       # max processor input queue
-      "net.core.netdev_max_backlog" = 4096;
+      #"net.core.netdev_max_backlog" = 4096;
       # max backlog
 
       # Ignore ICMP broadcasts to avoid participating in Smurf attacks
@@ -58,8 +58,9 @@
       # Ignore bad ICMP errors
       "net.ipv4.icmp_ignore_bogus_error_responses" = 1;
       # Reverse-path filter for spoof protection
-      "net.ipv4.conf.default.rp_filter" = 1;
-      "net.ipv4.conf.all.rp_filter" = 1;
+      "net.ipv4.conf.default.rp_filter" = 0;
+      "net.ipv4.conf.all.rp_filter" = 0;
+      "net.ipv4.conf.wan.rp_filter" = 0;
       # SYN flood protection
       "net.ipv4.tcp_syncookies" = 0;
       # Do not accept ICMP redirects (prevent MITM attacks)
