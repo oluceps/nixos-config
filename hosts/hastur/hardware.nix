@@ -20,6 +20,10 @@
     binfmt.emulatedSystems = [
       "riscv64-linux"
     ];
+    kernelParams = [
+      "mitigations=off"
+      "nowatchdog"
+    ];
   };
 
 

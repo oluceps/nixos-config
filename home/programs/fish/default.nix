@@ -30,7 +30,7 @@
     loginShellInit =
       ''
         if test (id --user $USER) -ge 1000 && test (tty) = "/dev/tty1"
-          exec sway
+          exec Hyprland
         end
 
       '';
@@ -46,6 +46,7 @@
       roll = "xrandr -o left && feh --bg-scale /home/riro/Pictures/Wallpapers/95448248_p0.png && sleep 0.5; picom --experimental-backend -b";
       rolln = "xrandr -o normal && feh --bg-scale /home/riro/Pictures/Wallpapers/秋の旅.jpg && sleep 0.5;  picom --experimental-backend -b";
       kls = "exa";
+      lks = "exa";
       sl = "exa";
       ls = "exa";
       l = "exa -l";

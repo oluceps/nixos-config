@@ -1,5 +1,7 @@
 { pkgs
 , user
+, system
+, inputs
 , #  nix-colors,
   ...
 }:
@@ -7,7 +9,7 @@ let
 
   emoji = "${pkgs.wofi-emoji}/bin/wofi-emoji";
   launcher = "${pkgs.fuzzel}/bin/fuzzel";
-  term = "${pkgs.kitty}/bin/kitty";
+  term = "${pkgs.wezterm}/bin/wezterm";
   grim = "${pkgs.grim}/bin/grim";
   light = "${pkgs.light}/bin/light";
   playerctl = "${pkgs.playerctl}/bin/playerctl";
@@ -16,6 +18,7 @@ let
   slurp = "${pkgs.slurp}/bin/slurp";
   wl-copy = "${pkgs.wl-clipboard}/bin/wl-copy";
   swaybg = "${pkgs.swaybg}/bin/swaybg";
+  hyprpicker = "${inputs.hyprpicker.packages.${system}.default}/bin//hyprpicker";
 
 
 
@@ -25,13 +28,15 @@ let
     #        monitor=VGA-1,transform,1
             #workspace=VGA-1,1
 
-            exec-once=${swaybg} -i /home/${user}/Pictures/Wallpapers/96668523_p0.png
+            exec-once=${swaybg} -i /home/${user}/Pictures/Wallpapers/99030258_p0.jpg
             exec-once=fcitx5
             exec-once=mako
             exec-once=waybar
+            exec-once=telegram-desktop
+            exec-once=firefox
 
             input {
-                kb_layout=ro
+                kb_layout=us
 
                 follow_mouse=1
                 force_no_accel=1
@@ -39,10 +44,11 @@ let
                 touchpad {
                   natural_scroll=1
                 }
+                
+                sensitivity = 0
             }
 
             general {
-                sensitivity=1.5
                 main_mod=SUPER
                 cursor_inactive_timeout=30
 
@@ -50,52 +56,76 @@ let
                 gaps_out=3
                 border_size=2
 
-                col.active_border=0x4DD7C4BB
-                col.inactive_border=0x4D947A6D
+                col.active_border=rgb(dac9a6)
+                col.inactive_border=rgba(595959aa)
+                layout = dwindle
             }
-
-            decoration {
-                rounding=11
-                blur=1
-                blur_size=3 # minimum 1
-                blur_passes=2 # minimum 1, more passes = more resource intensive.
-                drop_shadow=0
-
-                # Your blur "amount" is blur_size * blur_passes, but high blur_size (over around 5-ish) will produce artifacts.
-                # if you want heavy blur, you need to up the blur_passes.
-                # the more passes, the more you can up the blur_size without noticing artifacts.
+           dwindle {
+             no_gaps_when_only = false
+             force_split = 0 
+             special_scale_factor = 0.8
+             split_width_multiplier = 1.0 
+             use_active_for_splits = true
+             pseudotile = yes 
+             preserve_split = yes 
+           }
+          
+            master {
+              new_is_master = true
+              special_scale_factor = 0.8
+              new_is_master = true
+              no_gaps_when_only = false
             }
-
-#            animations {
-#                enabled=1
-#                animation=windows,1,2,default
-#                animation=borders,1,2,default
-##                animation=fadein,1,2,default
-#                #animation=workspaces,1,2,slide
-#            }
-
-            dwindle {
-                pseudotile=0 # enable pseudotiling on dwindle
-            }
-
-            # example window rules
-            # for windows named/classed as abc and xyz
-            #windowrule=move 69 420,abc
-            #windowrule=size 420 69,abc
-            #windowrule=tile,xyz
-            #windowrule=float,abc
-            #windowrule=pseudo,abc
-            #windowrule=monitor 0,xyz
-
+           decoration {
+             multisample_edges = true
+             fullscreen_opacity = 1.0
+             rounding = 8
+             blur = 1
+             blur_size = 3
+             blur_passes = 2
+             blur_new_optimizations = true
+             drop_shadow = false
+             shadow_range = 4
+             shadow_render_power = 3
+             shadow_ignore_window = true
+           # col.shadow = 
+           # col.shadow_inactive
+           # shadow_offset
+             dim_inactive = false
+           # dim_strength = #0.0 ~ 1.0
+             blur_ignore_opacity = false
+             col.shadow = rgba(1a1a1aee)
+           }
+           # animations {
+           #   enabled = yes
+           #
+           #   bezier = easeOutElastic, 0.05, 0.9, 0.1, 1.05
+           #   # bezier=overshot,0.05,0.9,0.1,1.1
+           #
+           #   animation = windows, 1, 5, easeOutElastic
+           #   animation = windowsOut, 1, 5, default, popin 80%
+           #   animation = border, 1, 8, default
+           #   animation = fade, 1, 5, default
+           #   animation = workspaces, 1, 6, default
+           # }
+           animations {
+             enabled=1
+             bezier = overshot, 0.13, 0.7, 0.29, 1.1
+             animation = windows, 1, 3, overshot, slide
+             animation = windowsOut, 1, 3, default, popin 80%
+             animation = border, 1, 3, default
+             animation = fade, 1, 2, default
+             animation = workspaces, 1, 2, default
+           }
             bind=SUPER,RETURN,exec,${term}
-            bind=SUPER,Space,exec,${launcher} -I
+            bind=SUPER,D,exec,${launcher} -I
+            bind=SUPERSHIFT, P, exec, ${hyprpicker} -a
             bind=SUPER,Q,killactive,
             bind=SUPERSHIFT,E,exec,pkill Hyprland
-            bind=SUPER,E,exec,${emoji}
             bind=SUPER,F,fullscreen,
-            bind=SUPER,T,togglefloating,
+            bind=SUPER,Space,togglefloating,
             bind=SUPER,P,pseudo,
-            bind=SUPERSHIFT,L,exec,swaylock
+            bind=Space CTRL,L,exec,swaylock
             bindm=SUPER,mouse:272,movewindow
             bindm=SUPER,mouse:273,resizewindow
             bindm=SUPERALT,mouse:272,resizewindow
@@ -144,6 +174,97 @@ let
             bind=SUPER,8,workspace,8
             bind=SUPER,9,workspace,9
             bind=SUPER,0,workspace,10
+            
+      bind = SUPER SHIFT,left ,movewindow, l
+      bind = SUPER SHIFT,right ,movewindow, r
+      bind = SUPER SHIFT,up ,movewindow, u
+      bind = SUPER SHIFT,down ,movewindow, d
+
+      bind = SUPER SHIFT,H ,movewindow, l
+      bind = SUPER SHIFT,L ,movewindow, r
+      bind = SUPER SHIFT,K ,movewindow, u
+      bind = SUPER SHIFT,J ,movewindow, d
+      bind = SUPER CTRL, 1, movetoworkspace, 1
+      bind = SUPER CTRL, 2, movetoworkspace, 2
+      bind = SUPER CTRL, 3, movetoworkspace, 3
+      bind = SUPER CTRL, 4, movetoworkspace, 4
+      bind = SUPER CTRL, 5, movetoworkspace, 5
+      bind = SUPER CTRL, 6, movetoworkspace, 6
+      bind = SUPER CTRL, 7, movetoworkspace, 7
+      bind = SUPER CTRL, 8, movetoworkspace, 8
+      bind = SUPER CTRL, 9, movetoworkspace, 9
+      bind = SUPER CTRL, 0, movetoworkspace, 10
+      bind = SUPER CTRL, bracketleft, movetoworkspace, -1
+      bind = SUPER CTRL, bracketright, movetoworkspace, +1
+      # same as above, but doesnt switch to the workspace
+      bind = SUPER SHIFT, 1, movetoworkspacesilent, 1
+      bind = SUPER SHIFT, 2, movetoworkspacesilent, 2
+      bind = SUPER SHIFT, 3, movetoworkspacesilent, 3
+      bind = SUPER SHIFT, 4, movetoworkspacesilent, 4
+      bind = SUPER SHIFT, 5, movetoworkspacesilent, 5
+      bind = SUPER SHIFT, 6, movetoworkspacesilent, 6
+      bind = SUPER SHIFT, 7, movetoworkspacesilent, 7
+      bind = SUPER SHIFT, 8, movetoworkspacesilent, 8
+      bind = SUPER SHIFT, 9, movetoworkspacesilent, 9
+      bind = SUPER SHIFT, 0, movetoworkspacesilent, 10
+      # Scroll through existing workspaces with mainMod + scroll
+      bind = SUPER, mouse_down, workspace, e+1
+      bind = SUPER, mouse_up, workspace, e-1
+      
+      bind=SUPER,R,submap,resize
+      submap=resize
+      binde=,right,resizeactive,15 0
+      binde=,left,resizeactive,-15 0
+      binde=,up,resizeactive,0 -15
+      binde=,down,resizeactive,0 15
+      binde=,l,resizeactive,15 0
+      binde=,h,resizeactive,-15 0
+      binde=,k,resizeactive,0 -15
+      binde=,j,resizeactive,0 15
+      bind=,escape,submap,reset 
+      submap=reset
+      bind=CTRL SHIFT, left, resizeactive,-15 0
+      bind=CTRL SHIFT, right, resizeactive,15 0
+      bind=CTRL SHIFT, up, resizeactive,0 -15
+      bind=CTRL SHIFT, down, resizeactive,0 15
+      bind=CTRL SHIFT, l, resizeactive, 15 0
+      bind=CTRL SHIFT, h, resizeactive,-15 0
+      bind=CTRL SHIFT, k, resizeactive, 0 -15
+      bind=CTRL SHIFT, j, resizeactive, 0 15
+      
+      windowrule=float,title:^(Picture-in-Picture)$
+      windowrule=size 960 540,title:^(Picture-in-Picture)$
+      windowrule=move 25%-,title:^(Picture-in-Picture)$
+      windowrule=float,imv
+      windowrule=move 25%-,imv
+      windowrule=size 960 540,imv
+      windowrule=float,mpv
+      windowrule=move 25%-,mpv
+      windowrule=size 960 540,mpv
+      windowrule=float,danmufloat
+      windowrule=move 25%-,danmufloat
+      windowrule=pin,danmufloat
+      windowrule=rounding 5,danmufloat
+      windowrule=size 960 540,danmufloat
+      windowrule=float,termfloat
+      windowrule=move 25%-,termfloat
+      windowrule=size 960 540,termfloat
+      windowrule=rounding 5,termfloat
+      windowrule=float,pcmanfm
+      windowrule=move 25%-,pcmanfm
+      windowrule=size 960 540,pcmanfm
+      windowrule=animation slide right,kitty
+      windowrule=animation slide right,wezterm
+      windowrule=animation slide right,telegramdesktop
+      windowrule=float,ncmpcpp
+      windowrule=move 25%-,ncmpcpp
+      windowrule=size 960 540,ncmpcpp
+      windowrule=rounding 0,MATLAB R2022b - academic use
+#      windowrulev2=noanim,class:telegramdesktop,title:Telegram
+      windowrulev2=animation fade,class:telegramdesktop,title:Media viewer
+      windowrulev2=float,class:telegramdesktop,title:Media viewer
+      
+      
 
   '';
 in

@@ -21,6 +21,7 @@
     "tg" = [ "telegramdesktop.desktop" ];
     "x-scheme-handler/http" = [ "firefox.desktop" ];
     "x-scheme-handler/https" = [ "firefox.desktop" ];
+    "pdf" = [ "sioyek.desktop" ];
 
   };
 
@@ -28,6 +29,17 @@
 
 
   home.packages = with pkgs; [
+    feeluown
+    feeluown-bilibili
+    feeluown-local
+    feeluown-netease
+    feeluown-qqmusic
+    chntpw
+    gkraken
+    steam
+    libnotify
+    cinnamon.nemo
+    dolphin
     # stress
     stress
     s-tui
@@ -37,7 +49,7 @@
     dolphin
     discord
     krita
-#    davinci-resolve
+    #    davinci-resolve
     nur.repos.linyinfeng.wemeet
     brightnessctl
     alacritty
@@ -103,9 +115,9 @@
 
     btop
 
-    neovim-qt
+    #neovim-qt
     smartmontools
-    wireshark-qt
+    #wireshark-qt
     wezterm
     android-tools
     tor-browser-bundle-bin
@@ -131,7 +143,7 @@
     #texlive.
     texlive.combined.scheme-full
     vlc
-    firefox-wayland
+    firefox
     bluedevil
     #zathura
     jetbrains.clion
