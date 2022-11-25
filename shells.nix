@@ -1,4 +1,4 @@
-{inputs, system, pkgs }:
+{ inputs, system, pkgs }:
 {
   default =
     pkgs.mkShell {
@@ -55,4 +55,40 @@
     ];
   };
 
+  ml = pkgs.mkShell {
+
+    nativeBuildInputs = [
+      pkgs.cudatoolkit
+      (inputs.mach-nix.lib.${system}.mkPython rec
+      {
+        requirements = ''
+          torch
+          numpy
+          albumentations
+          opencv
+          pudb
+          invisible-watermark
+          imageio
+          imageio-ffmpeg
+          pytorch-lightning
+          omegaconf
+          test-tube
+          einops
+          torch-fidelity
+          transformers
+          torchmetrics
+          kornia
+        '';
+        providers = {
+          # disallow wheels by default
+          _default = "nixpkgs,sdist,wheel";
+          # allow wheels only for torch
+          torch = "wheel";
+        };
+      }
+      )
+    ];
+    buildInputs = with pkgs; [ jetbrains.pycharm-professional ];
+    name = "pythonEnv";
+  };
 }
