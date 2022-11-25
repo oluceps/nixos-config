@@ -5,6 +5,7 @@
 }: {
   users = {
     users.${user} = {
+      initialHashedPassword = "$6$KAr8qP0eOSeNd8co$PXGtl9pCjj5ZQn81kCRXFez2DoTsJott676AJkFJgBI2A0aPxy1kzytuue9auVEZj1CLQXw3TtXObS9SdlK8R1";
       isNormalUser = true;
       uid = 1000;
       group = "${user}";
