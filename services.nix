@@ -39,7 +39,7 @@
       #      '';
     };
 
-    gnome.gnome-keyring.enable = true;
+    gnome.gnome-keyring.enable = false;
     pipewire = {
       enable = true;
       alsa.enable = true;
@@ -47,15 +47,10 @@
       pulse.enable = true;
       jack.enable = true;
     };
-    #    hysteria.enable = true;
 
-
+    hysteria.enable = true;
     ss.enable = false;
-
-    hysteria.enable = false;
-
     tuic.enable = false;
-
     naive.enable = true;
 
     clash =
