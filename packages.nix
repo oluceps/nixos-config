@@ -2,6 +2,13 @@
 {
   environment.systemPackages = with pkgs; [
 
+    (callPackage ./modules/packs/clash-m { })
+    fscrypt-experimental
+    f2fs-tools
+    xmrig
+    nali
+    dbus
+
     pkg-config
     compsize
     nur-pkgs.naiveproxy
@@ -20,7 +27,6 @@
     nur-pkgs.sing-box
     # KVM
     virt-manager
-    doas
     # common
     hexyl
     jq
@@ -94,7 +100,6 @@
     w3m
 
     exa
-    clash
 
     bat
 
@@ -192,6 +197,8 @@
           tockloader
           colorama
           six
+          rich
+          lxml
         ])
     )
   ]
