@@ -9,8 +9,13 @@
           system:
           import inputs.nixpkgs {
             inherit system;
-            config.allowUnfree = true;
-            config.allowBroken = false;
+            config = {
+              allowUnfree = true;
+              allowBroken = false;
+              permittedInsecurePackages = [
+                "qtwebkit-5.212.0-alpha4"
+              ];
+            };
             overlays = [
               (final: prev: {
                 nur-pkgs = inputs.nur-pkgs.packages."${system}";
@@ -18,7 +23,11 @@
 
               inputs.nur.overlay
 
-              inputs.fenix.overlay
+              inputs.fenix.overlays.default
+
+              inputs.nix-matlab.overlay
+
+              inputs.berberman.overlay
 
             ] ++ (import ./overlay.nix inputs);
           }
@@ -52,7 +61,7 @@
       url = github:oluceps/nur-pkgs;
       inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
-    
+
     rnix-lsp.url = github:nix-community/rnix-lsp;
 
     fenix = {
@@ -60,9 +69,15 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    hyprpicker = {
+      url = github:hyprwm/hyprpicker;
+    };
+
     surrealdb = {
       url = github:surrealdb/surrealdb;
     };
+
+    impermanence.url = github:nix-community/impermanence;
 
     clash-meta = {
       url = github:MetaCubeX/Clash.Meta/Alpha;
@@ -82,7 +97,7 @@
     };
 
     home-manager = {
-      url = github:nix-community/home-manager/master;
+      url = github:oluceps/home-manager/dbus;
       inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
 
@@ -112,8 +127,13 @@
     grub2-themes.url = github:vinceliuice/grub2-themes;
 
     mach-nix.url = "mach-nix/3.5.0";
-    
+
     colmena.url = github:zhaofengli/colmena;
+
+    berberman = {
+      url = github:berberman/flakes;
+      inputs.nixpkgs.follows = "nixpkgs-unstable";
+    };
   };
 
 }
