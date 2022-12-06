@@ -56,9 +56,10 @@
         space = {
           s = ":w";
           m = ":format";
+          q = ":q!";
         };
 
-        q.q = ":q!";
+       # q.q = ":q!";
         C-j = [
           "move_line_down"
           "move_line_down"
