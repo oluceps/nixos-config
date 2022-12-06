@@ -9,7 +9,7 @@ let
 
   emoji = "${pkgs.wofi-emoji}/bin/wofi-emoji";
   launcher = "${pkgs.fuzzel}/bin/fuzzel";
-  term = "${pkgs.wezterm}/bin/wezterm";
+  term = "${pkgs.alacritty}/bin/alacritty";
   grim = "${pkgs.grim}/bin/grim";
   light = "${pkgs.light}/bin/light";
   playerctl = "${pkgs.playerctl}/bin/playerctl";
@@ -28,7 +28,7 @@ let
     #        monitor=VGA-1,transform,1
             #workspace=VGA-1,1
 
-            exec-once=${swaybg} -i /home/${user}/Pictures/Wallpapers/99030258_p0.jpg
+            exec-once=${swaybg} -i /home/${user}/Pictures/Wallpapers/ramiro-martinez--9z8zN8RT20-unsplash.jpg
             exec-once=fcitx5
             exec-once=mako
             exec-once=waybar
@@ -62,7 +62,7 @@ let
             }
            dwindle {
              no_gaps_when_only = false
-             force_split = 0 
+             force_split = 2 
              special_scale_factor = 0.8
              split_width_multiplier = 1.0 
              use_active_for_splits = true
@@ -125,7 +125,7 @@ let
             bind=SUPER,F,fullscreen,
             bind=SUPER,Space,togglefloating,
             bind=SUPER,P,pseudo,
-            bind=Space CTRL,L,exec,swaylock
+            bind=SUPERCTRL,L,exec,swaylock
             bindm=SUPER,mouse:272,movewindow
             bindm=SUPER,mouse:273,resizewindow
             bindm=SUPERALT,mouse:272,resizewindow
@@ -146,10 +146,9 @@ let
             bind=,Print,exec,$ssselection
             bind=SUPERSHIFT,R,exec,$ssselection
 
-            # monitor
-            $ssmonitor=${grim} -o "$(${slurp} -f %o -or)" - | ${wl-copy} -t image/png
-            bind=CTRL,Print,exec,$ssmonitor
-            bind=SUPERSHIFTCTRL,R,exec,$ssmonitor
+            # screen recorder
+            bind=SUPERCTRL,R,exec,screen-recorder-toggle
+            bind=SUPERCTRL,S,exec,save-clipboard-to
 
             # all-monitors
             $ssall=${grim} - | ${wl-copy} -t image/png
@@ -254,15 +253,15 @@ let
       windowrule=move 25%-,pcmanfm
       windowrule=size 960 540,pcmanfm
       windowrule=animation slide right,kitty
-      windowrule=animation slide right,wezterm
+      windowrule=animation slide right,alacritty
       windowrule=animation slide right,telegramdesktop
       windowrule=float,ncmpcpp
       windowrule=move 25%-,ncmpcpp
       windowrule=size 960 540,ncmpcpp
       windowrule=rounding 0,MATLAB R2022b - academic use
 #      windowrulev2=noanim,class:telegramdesktop,title:Telegram
-      windowrulev2=animation fade,class:telegramdesktop,title:Media viewer
-      windowrulev2=float,class:telegramdesktop,title:Media viewer
+      windowrulev2=animation fade,class:org.telegram.desktop,title:Media viewer
+      windowrulev2=float,class:org.telegram.desktop,title:Media viewer
       
       
 
