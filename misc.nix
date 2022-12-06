@@ -8,28 +8,28 @@
 , ...
 }: {
   nixpkgs.config.allowUnfree = true;
-#  environment.persistence."/persist" = {
-#    directories = [
-#      "/var"
-#    ];
-#    files = [
-#      "/etc/machine-id"
-#    ];
-#    users.${user} = {
-#      directories = [
-#        "Documents"
-#        "Downloads"
-#        "Pictures"
-#        "Projects"
-#        ".cache"
-#        ".local"
-#        ".mozilla"
-#        ".ssh"
-#        ".thunderbird"
-#        ".config/fcitx5"
-#      ];
-#    };
-#  };
+  #  environment.persistence."/persist" = {
+  #    directories = [
+  #      "/var"
+  #    ];
+  #    files = [
+  #      "/etc/machine-id"
+  #    ];
+  #    users.${user} = {
+  #      directories = [
+  #        "Documents"
+  #        "Downloads"
+  #        "Pictures"
+  #        "Projects"
+  #        ".cache"
+  #        ".local"
+  #        ".mozilla"
+  #        ".ssh"
+  #        ".thunderbird"
+  #        ".config/fcitx5"
+  #      ];
+  #    };
+  #  };
   virtualisation = {
     docker.enable = true;
     libvirtd.enable = true;
@@ -53,7 +53,7 @@
       };
     };
   zramSwap = {
-    enable = false;
+    enable = true;
     algorithm = "zstd";
   };
 
@@ -120,8 +120,9 @@
 
   environment = {
     shellInit = ''
+      export GPG_TTY="$(tty)"
       gpg-connect-agent /bye
-      export SSH_AUTH_SOCK=$(gpgconf --list-dirs agent-ssh-socket)
+      export SSH_AUTH_SOCK="/run/user/$UID/gnupg/S.gpg-agent.ssh"
     '';
     loginShellInit = "";
     #      if user == "riro" then
@@ -153,14 +154,30 @@
     dconf.enable = true;
     adb.enable = true;
     mosh.enable = true;
+    steam = {
+      enable = true;
+      remotePlay.openFirewall = true; # Open ports in the firewall for Steam Remote Play
+      dedicatedServer.openFirewall = true; # Open ports in the firewall for Source Dedicated Server
+    };
+
   };
   #  programs.waybar.enable = true;
   #
   #  # Enable the GNOME Desktop Environment.
   #  services.xserver.desktopManager.gnome.enable = false;
-  #  services.xserver.videoDrivers = ["nvidia"];
-  #  hardware.opengl.enable=true;
-  #  hardware.nvidia.package = config.boot.kernelPackages.nvidiaPackages.stable;
+  hardware.nvidia.modesetting.enable = true;
+  services.xserver.videoDrivers = [ "nvidia" ];
+  hardware.opengl = {
+
+    enable = true;
+    extraPackages = with pkgs; [
+      intel-media-driver # LIBVA_DRIVER_NAME=iHD
+      vaapiIntel # LIBVA_DRIVER_NAME=i965 (older but works better for Firefox/Chromium)
+      vaapiVdpau
+      libvdpau-va-gl
+    ];
+  };
+  hardware.nvidia.package = config.boot.kernelPackages.nvidiaPackages.stable;
   fonts = {
     enableDefaultFonts = true;
     fontDir.enable = true;
@@ -175,6 +192,7 @@
           "FantasqueSansMono"
         ];
       })
+      source-han-sans
       fantasque-sans-mono
       noto-fonts
       noto-fonts-cjk-sans
