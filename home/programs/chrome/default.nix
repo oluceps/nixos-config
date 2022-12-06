@@ -4,11 +4,11 @@
   programs = {
     chromium = {
       enable = true;
-      commandLineArgs = [ "--enable-features=UseOzonePlatform" "-ozone-platform=wayland" "--gtk-version=4" ];
+      commandLineArgs = [ "--enable-features=UseOzonePlatform" "-ozone-platform=wayland" ];
     };
     google-chrome = {
-      enable = false;
-      commandLineArgs = [ "--enable-features=UseOzonePlatform" "-ozone-platform=wayland" "--gtk-version=4" ];
+      enable = true;
+      commandLineArgs = [ "--enable-features=UseOzonePlatform" "-ozone-platform=wayland" ];
     };
 
 
