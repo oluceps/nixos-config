@@ -1,7 +1,15 @@
 { pkgs, ... }:
 {
   environment.systemPackages = with pkgs; [
+    (steam.override {
+      withPrimus = true;
+      extraPkgs = pkgs: [ glxinfo ];
+    }).run
 
+    lynx
+    srm
+    killall
+    nethogs
     (callPackage ./modules/packs/clash-m { })
     fscrypt-experimental
     f2fs-tools
@@ -21,9 +29,9 @@
     mtr-gui
     qjournalctl
     editorconfig-checker
-#    (callPackage ./modules/packs/shadow-tls { })
+    #    (callPackage ./modules/packs/shadow-tls { })
 
-#    nur-pkgs.shadow-tls
+    #    nur-pkgs.shadow-tls
     nur-pkgs.sing-box
     # KVM
     virt-manager
@@ -127,7 +135,7 @@
     binutils
     libcap
     gnumake
-    
+
     nodejs-18_x
     yarn
     unzip
@@ -148,7 +156,7 @@
     jdk
     coreutils
     nix-index
-    
+
     dnsutils
     docker
     docker-compose
@@ -163,7 +171,7 @@
           wordcloud
           qrcode
           matplotlib
-          pylsp-mypy
+          # pylsp-mypy
 
           fontforge
 
@@ -199,6 +207,7 @@
           six
           rich
           lxml
+          sympy
         ])
     )
   ]
