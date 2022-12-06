@@ -29,6 +29,22 @@
 
 
   home.packages = with pkgs; [
+#    mathematica
+    libva1
+    pcsctools
+    ccid
+    nur.repos.linyinfeng.canokey-udev-rules
+
+    nrfconnect
+    nrfutil
+    nrf-command-line-tools
+    kate
+    yubico-pam
+    yubikey-manager
+
+    xdeltaUnstable
+    xterm
+
     feeluown
     feeluown-bilibili
     feeluown-local
@@ -36,7 +52,6 @@
     feeluown-qqmusic
     chntpw
     gkraken
-    steam
     libnotify
     cinnamon.nemo
     dolphin
@@ -156,6 +171,40 @@
     julia-bin
     tree
     # polymc   INSECURE
+  ] ++
+  [
+    (
+      writeShellScriptBin "record-status" ''
+        #!/usr/bin/env bash
+        pid=`pgrep wf-recorder`
+        status=$?
+        if [ $status != 0 ]
+        then
+          echo '';
+        else
+          echo '';
+        fi;
+      ''
+    )
+    (
+      writeShellScriptBin "screen-recorder-toggle" ''
+        #!/usr/bin/env bash
+        pid=`${pkgs.procps}/bin/pgrep wf-recorder`
+        status=$?
+        if [ $status != 0 ]
+        then
+          ${pkgs.wf-recorder}/bin/wf-recorder -f $HOME/Videos/record/$(date +'recording_%Y-%m-%d-%H%M%S.mp4');
+        else
+          ${pkgs.procps}/bin/pkill --signal SIGINT wf-recorder
+        fi;
+      ''
+    )
+    (
+      writeShellScriptBin "save-clipboard-to" ''
+      #!/usr/bin/env bash
+      wl-paste > $HOME/Pictures/screenshot/$(date +'shot_%Y-%m-%d-%H%M%S.png')
+      ''
+    )
   ];
   home.pointerCursor = {
     gtk.enable = true;
