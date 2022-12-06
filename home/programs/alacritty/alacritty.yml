@@ -13,12 +13,14 @@ window:
   # - transparent: title bar, transparent background and title bar buttons
   # - buttonless: title bar, transparent background, but no title bar buttons
   decorations: Full
-  opacity: 0.9
+  opacity: 0.6
   # padding top and left
   padding:
-    x: 3
-    y: 3
+    x: 7
+    y: 5
 
+env:
+  TERM: xterm-256color
 font:
   normal:
     family: FiraCode Nerd Font Mono
@@ -36,10 +38,12 @@ font:
     family: FiraCode Nerd Font Mono
     style: Bold Italic
 
+  size: 11.5
+
 colors:
     # Default colors
     primary:
-        background: "#303446" # base
+        background: "#3C3836" # base
         foreground: "#C6D0F5" # text
         # Bright and dim foreground colors
         dim_foreground: "#C6D0F5" # text
