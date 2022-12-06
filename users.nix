@@ -4,8 +4,9 @@
 , ...
 }: {
   users = {
+    mutableUsers = false;
     users.${user} = {
-      initialHashedPassword = "$6$KAr8qP0eOSeNd8co$PXGtl9pCjj5ZQn81kCRXFez2DoTsJott676AJkFJgBI2A0aPxy1kzytuue9auVEZj1CLQXw3TtXObS9SdlK8R1";
+      initialHashedPassword = "$6$Sa0gWbsXht6Uhr1M$ZwC76OJYx6fdLEjmo4xC4R7PEqY7DU1SN1cIYabZpQETV3npJ6cAoMjByPVQRqrOeHBjYre1ROMim4LgyQZ731";
       isNormalUser = true;
       uid = 1000;
       group = "${user}";
