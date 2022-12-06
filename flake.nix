@@ -15,6 +15,14 @@
               permittedInsecurePackages = [
                 "qtwebkit-5.212.0-alpha4"
               ];
+              segger-jlink.acceptLicense = true;
+              packageOverrides = pkgs: {
+                steam = pkgs.steam.override {
+                  extraPkgs = pkgs: with pkgs; [
+                    libgdiplus
+                  ];
+                };
+              };
             };
             overlays = [
               (final: prev: {
@@ -97,7 +105,7 @@
     };
 
     home-manager = {
-      url = github:oluceps/home-manager/dbus;
+      url = github:nix-community/home-manager;
       inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
 
