@@ -121,6 +121,9 @@ nix build .#nixosConfigurations.livecd.config.system.build.isoImage
 
 ![screenshot](./screenshots/shot_2.png)
 
+  
+Background picture from [Ramiro Martinez](https://unsplash.com/@ramiro250)  
+
 ## Resources  
 Excellent configurations that I've learned and copied:  
 + [NickCao/flakes](https://github.com/NickCao/flakes)  
