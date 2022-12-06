@@ -16,7 +16,7 @@ in
     };
     package = mkOption {
       type = types.package;
-      default = pkgs.hysteria;
+      default = pkgs.callPackage ../packs/hysteria { };
       defaultText = literalExpression "pkgs.hysteria";
       description = lib.mdDoc ''
         package
