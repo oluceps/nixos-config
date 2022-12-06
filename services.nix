@@ -14,7 +14,18 @@
 
   # Enable the OpenSSH daemon.
 
-  security.pam.u2f.enable = true;
+  security = {
+    pam = {
+      yubico = {
+        enable = true;
+        debug = true;
+        mode = "challenge-response";
+      };
+      u2f.enable = true;
+    };
+  };
+
+
   xdg.portal.enable = true;
 
   services = {
@@ -23,6 +34,19 @@
       ''
         SystemMaxUse=1G
       '';
+
+    greetd = {
+      enable = true;
+      settings = {
+        default_session = {
+          command =
+            "${pkgs.greetd.tuigreet}/bin/tuigreet --cmd ${pkgs.writeShellScript "Hyprland" ''
+        export $(/run/current-system/systemd/lib/systemd/user-environment-generators/30-systemd-environment-d-generator)
+        exec Hyprland
+      ''}";
+        };
+      };
+    };
     udev = {
 
       packages = with pkgs;[
@@ -39,7 +63,7 @@
       #      '';
     };
 
-    gnome.gnome-keyring.enable = false;
+    gnome.gnome-keyring.enable = true;
     pipewire = {
       enable = true;
       alsa.enable = true;
