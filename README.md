@@ -40,10 +40,10 @@ nixos-rebuild switch --flake github:oluceps/nixos-config#<hostname>
 |Type|Program|
 |---|---|
 |Editor|[helix](https://github.com/oluceps/nixos-config/tree/pub/home/programs/helix)|
-|WM|[sway](https://github.com/oluceps/nixos-config/tree/pub/home/programs/sway)|
+|WM|[Hyprland](https://github.com/oluceps/nixos-config/tree/pub/home/programs/hyprland)|
 |Shell|[fish](https://github.com/oluceps/nixos-config/tree/pub/home/programs/fish)|
 |Bar|[waybar](https://github.com/oluceps/nixos-config/tree/pub/home/programs/waybar)|
-|Terminal|[wezterm](https://github.com/oluceps/nixos-config/tree/pub/home/programs/wezterm)|
+|Terminal|[alacritty](https://github.com/oluceps/nixos-config/tree/pub/home/programs/alacritty)|
 |backup|[btrbk](https://github.com/oluceps/nixos-config/tree/pub/modules/btrbk)|  
 
 _To use devShell:_  
