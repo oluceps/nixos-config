@@ -12,7 +12,6 @@
         agenix.defaultPackage.${system}
         helix.packages.${system}.default
         surrealdb.packages.${system}.default
-
       ]
       ++ (with pkgs;[
         #        (fenix.complete.withComponents [
@@ -30,6 +29,6 @@
   agenix.nixosModule
   grub2-themes.nixosModule
   home-manager.nixosModules.home-manager
-#  impermanence.nixosModules.impermanence
+  impermanence.nixosModules.impermanence
 
 ]) ++ (import ../modules)
