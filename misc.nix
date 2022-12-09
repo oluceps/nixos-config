@@ -8,30 +8,47 @@
 , ...
 }: {
   nixpkgs.config.allowUnfree = true;
-  #  environment.persistence."/persist" = {
-  #    directories = [
-  #      "/var"
-  #    ];
-  #    files = [
-  #      "/etc/machine-id"
-  #    ];
-  #    users.${user} = {
-  #      directories = [
-  #        "Documents"
-  #        "Downloads"
-  #        "Pictures"
-  #        "Projects"
-  #        ".cache"
-  #        ".local"
-  #        ".mozilla"
-  #        ".ssh"
-  #        ".thunderbird"
-  #        ".config/fcitx5"
-  #      ];
-  #    };
-  #  };
+  environment.persistence."/persist" = {
+    directories = [
+      "/etc/nixos"
+      "/etc/ssh"
+      "/var/log"
+      "/var/lib"
+    ];
+    users.${user} = {
+
+      files = [
+        ".npmrc"
+      ];
+      directories = [
+        "Documents"
+        "Downloads"
+        "Pictures"
+        "Projects"
+        "Videos"
+        "google_picture_backups"
+        "Security"
+        "SEL"
+        "softwares"
+        "nixos-config"
+        "Blog"
+        "Games"
+        ".npm-packages"
+        "tools"
+        "Vault"
+        "tmp"
+        ".cache"
+        ".local"
+        ".mozilla"
+        ".config"
+        { directory = ".gnupg"; mode = "0700"; }
+        { directory = ".ssh"; mode = "0700"; }
+        { directory = ".yubico"; mode = "0700"; }
+      ];
+    };
+  };
   virtualisation = {
-    docker.enable = true;
+    docker.enable = false;
     libvirtd.enable = true;
     waydroid.enable = true;
   };
@@ -58,6 +75,7 @@
   };
 
 
+  age.identityPaths = [ "/persist/keys/ssh_host_ed25519_key" ];
   age.secrets = {
 
     ssconf = {
@@ -165,19 +183,19 @@
   #
   #  # Enable the GNOME Desktop Environment.
   #  services.xserver.desktopManager.gnome.enable = false;
-  hardware.nvidia.modesetting.enable = true;
-  services.xserver.videoDrivers = [ "nvidia" ];
-  hardware.opengl = {
-
-    enable = true;
-    extraPackages = with pkgs; [
-      intel-media-driver # LIBVA_DRIVER_NAME=iHD
-      vaapiIntel # LIBVA_DRIVER_NAME=i965 (older but works better for Firefox/Chromium)
-      vaapiVdpau
-      libvdpau-va-gl
-    ];
-  };
-  hardware.nvidia.package = config.boot.kernelPackages.nvidiaPackages.stable;
+  #  hardware.nvidia.modesetting.enable = true;
+  #  services.xserver.videoDrivers = [ "nvidia" ];
+  #  hardware.opengl = {
+  #
+  #    enable = true;
+  #    extraPackages = with pkgs; [
+  #      intel-media-driver # LIBVA_DRIVER_NAME=iHD
+  #      vaapiIntel # LIBVA_DRIVER_NAME=i965 (older but works better for Firefox/Chromium)
+  #      vaapiVdpau
+  #      libvdpau-va-gl
+  #    ];
+  #  };
+  #  hardware.nvidia.package = config.boot.kernelPackages.nvidiaPackages.stable;
   fonts = {
     enableDefaultFonts = true;
     fontDir.enable = true;

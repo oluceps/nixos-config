@@ -28,16 +28,31 @@
 
 
   fileSystems."/" = {
-    device = "/dev/disk/by-uuid/e86a6cfa-39cc-4dd9-b5d3-fee5e2613578";
-    fsType = "btrfs";
-    options = [ "subvol=root" "compress-force=zstd" "noatime" "discard=async" ];
+    device = "none";
+    fsType = "tmpfs";
+    options = [ "defaults" "size=4G" "mode=755" ];
   };
 
-  fileSystems."/home" = {
+  fileSystems."/persist" = {
     device = "/dev/disk/by-uuid/e86a6cfa-39cc-4dd9-b5d3-fee5e2613578";
     fsType = "btrfs";
-    options = [ "subvol=home" "compress-force=zstd" "noatime" "discard=async" ];
+    options = [ "subvol=persist" "compress-force=zstd" "noatime" "discard=async" ];
+    neededForBoot = true;
   };
+
+
+  #  fileSystems."/" = {
+  #    device = "/dev/disk/by-uuid/e86a6cfa-39cc-4dd9-b5d3-fee5e2613578";
+  #    fsType = "btrfs";
+  #    options = [ "subvol=root" "compress-force=zstd" "noatime" "discard=async" ];
+  #  };
+  #
+
+  #  fileSystems."/home" = {
+  #    device = "/dev/disk/by-uuid/e86a6cfa-39cc-4dd9-b5d3-fee5e2613578";
+  #    fsType = "btrfs";
+  #    options = [ "subvol=home" "compress-force=zstd" "noatime" "discard=async" ];
+  #  };
 
   fileSystems."/nix" = {
     device = "/dev/disk/by-uuid/e86a6cfa-39cc-4dd9-b5d3-fee5e2613578";
@@ -56,7 +71,6 @@
   };
 
   swapDevices = [
-    { device = "/swap/swapfile"; }
   ];
 
   hardware.cpu.amd.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;

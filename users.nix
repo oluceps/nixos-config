@@ -3,8 +3,17 @@
 , user
 , ...
 }: {
+  security.doas = {
+    enable = true;
+    extraConfig = ''
+      permit nopass :wheel
+    '';
+  };
+
+
   users = {
     mutableUsers = false;
+    users.root.initialHashedPassword = "$6$Sa0gWbsXht6Uhr1M$ZwC76OJYx6fdLEjmo4xC4R7PEqY7DU1SN1cIYabZpQETV3npJ6cAoMjByPVQRqrOeHBjYre1ROMim4LgyQZ731";
     users.${user} = {
       initialHashedPassword = "$6$Sa0gWbsXht6Uhr1M$ZwC76OJYx6fdLEjmo4xC4R7PEqY7DU1SN1cIYabZpQETV3npJ6cAoMjByPVQRqrOeHBjYre1ROMim4LgyQZ731";
       isNormalUser = true;
@@ -40,15 +49,18 @@
       proxy = { };
     };
   };
-  security.sudo.extraRules = [
-    {
-      users = [ "${user}" ];
-      commands = [
-        {
-          command = "ALL";
-          options = [ "NOPASSWD" ];
-        }
-      ];
-    }
-  ];
+  security.sudo = {
+    enable = false;
+    extraRules = [
+      {
+        users = [ "${user}" ];
+        commands = [
+          {
+            command = "ALL";
+            options = [ "NOPASSWD" ];
+          }
+        ];
+      }
+    ];
+  };
 }
