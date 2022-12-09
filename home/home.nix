@@ -29,7 +29,7 @@
 
 
   home.packages = with pkgs; [
-#    mathematica
+    #    mathematica
     libva1
     pcsctools
     ccid
@@ -193,7 +193,7 @@
         status=$?
         if [ $status != 0 ]
         then
-          ${pkgs.wf-recorder}/bin/wf-recorder -f $HOME/Videos/record/$(date +'recording_%Y-%m-%d-%H%M%S.mp4');
+          ${pkgs.wf-recorder}/bin/wf-recorder -g "$(${pkgs.slurp}/bin/slurp)" -f $HOME/Videos/record/$(date +'recording_%Y-%m-%d-%H%M%S.mp4');
         else
           ${pkgs.procps}/bin/pkill --signal SIGINT wf-recorder
         fi;
@@ -201,8 +201,8 @@
     )
     (
       writeShellScriptBin "save-clipboard-to" ''
-      #!/usr/bin/env bash
-      wl-paste > $HOME/Pictures/screenshot/$(date +'shot_%Y-%m-%d-%H%M%S.png')
+        #!/usr/bin/env bash
+        wl-paste > $HOME/Pictures/screenshot/$(date +'shot_%Y-%m-%d-%H%M%S.png')
       ''
     )
   ];
@@ -249,6 +249,10 @@
       enable = true;
       userName = "oluceps";
       userEmail = "i@oluceps.uk";
+      signing = {
+        key = "ECBE55269336CCCD ";
+        signByDefault = true;
+      };
     };
     swaylock.settings = {
       show-failed-attempts = true;
