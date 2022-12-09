@@ -37,8 +37,8 @@
 
     shellAliases = {
       nd = "cd /etc/nixos";
-      swc = "sudo nixos-rebuild switch";
-      swcv = "sudo nixos-rebuild switch --verbose";
+      swc = "doas nixos-rebuild switch";
+      swcv = "doas nixos-rebuild switch --verbose";
       sduo = "sudo";
       n = "neovide";
       off = "poweroff";

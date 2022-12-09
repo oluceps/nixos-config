@@ -16,6 +16,11 @@
 
   security = {
     pam = {
+
+#      services = {
+#        login.u2fAuth = true;
+#        sudo.u2fAuth = true;
+#      };
       yubico = {
         enable = true;
         debug = true;
@@ -34,6 +39,18 @@
       ''
         SystemMaxUse=1G
       '';
+
+    #    mongodb = {
+    #      enable = true;
+    #      package = pkgs.mongodb-6_0;
+    #      enableAuth = true;
+    #      initialRootPassword = "initial";
+    #    };
+
+    mysql = {
+      enable = true;
+      package = pkgs.mariadb_109;
+    };
 
     greetd = {
       enable = true;
@@ -92,29 +109,27 @@
       enable = true;
     };
 
-    btrbk = {
-      instances = {
-        base = {
-          onCalendar = "*:0/20"; # every quarter hour
-          settings = {
-            timestamp_format = "long";
-            snapshot_preserve_min = "18h";
-            snapshot_preserve = "72h";
-            volume = {
-              "/" = {
-                snapshot_dir = ".snapshots";
-                subvolume = {
-                  "." = { snapshot_create = "always"; };
-                  home = { snapshot_create = "always"; };
-                  nix = { snapshot_create = "always"; };
-                };
-              };
-            };
-
-          };
-        };
-      };
-    };
+#    btrbk = {
+#      instances = {
+#        base = {
+#          onCalendar = "*:0/20"; # every quarter hour
+#          settings = {
+#            timestamp_format = "long";
+#            snapshot_preserve_min = "18h";
+#            snapshot_preserve = "72h";
+#            volume = {
+#              "/persist" = {
+#                snapshot_dir = ".snapshots";
+#                subvolume = {
+#                  nix = { snapshot_create = "always"; };
+#                };
+#              };
+#            };
+#
+#          };
+#        };
+#      };
+#    };
 
     btrfs.autoScrub = {
       enable = true;
