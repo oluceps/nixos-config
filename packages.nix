@@ -1,11 +1,6 @@
 { pkgs, ... }:
 {
   environment.systemPackages = with pkgs; [
-    (steam.override {
-      withPrimus = true;
-      extraPkgs = pkgs: [ glxinfo ];
-    }).run
-
     lynx
     srm
     killall
