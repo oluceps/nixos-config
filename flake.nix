@@ -35,7 +35,7 @@
 
               inputs.nix-matlab.overlay
 
-              inputs.berberman.overlay
+              inputs.berberman.overlays.default
 
             ] ++ (import ./overlay.nix inputs);
           }
