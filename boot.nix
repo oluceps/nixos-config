@@ -41,10 +41,9 @@
     kernel.sysctl = {
       # Disable magic SysRq key
       "kernel.sysrq" = 0;
-      # max open files
-      "fs.file-max" = 51200;
       # max read buffer
       # max write buffer
+      "fs.file-max" =500000;
       # default read buffer
       "net.core.rmem_default" = 65536;
       # default write buffer
