@@ -30,7 +30,6 @@
 
   home.packages = with pkgs; [
     #    mathematica
-    libva1
     pcsctools
     ccid
     nur.repos.linyinfeng.canokey-udev-rules
