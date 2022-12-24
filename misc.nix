@@ -8,45 +8,7 @@
 , ...
 }: {
   nixpkgs.config.allowUnfree = true;
-  environment.persistence."/persist" = {
-    directories = [
-      "/etc/nixos"
-      "/etc/ssh"
-      "/var/log"
-      "/var/lib"
-    ];
-    users.${user} = {
 
-      files = [
-        ".npmrc"
-      ];
-      directories = [
-        "Documents"
-        "Downloads"
-        "Pictures"
-        "Projects"
-        "Videos"
-        "google_picture_backups"
-        "Security"
-        "SEL"
-        "softwares"
-        "nixos-config"
-        "Blog"
-        "Games"
-        ".npm-packages"
-        "tools"
-        "Vault"
-        "tmp"
-        ".cache"
-        ".local"
-        ".mozilla"
-        ".config"
-        { directory = ".gnupg"; mode = "0700"; }
-        { directory = ".ssh"; mode = "0700"; }
-        { directory = ".yubico"; mode = "0700"; }
-      ];
-    };
-  };
   virtualisation = {
     docker.enable = false;
     libvirtd.enable = true;
@@ -78,8 +40,8 @@
   age.identityPaths = [ "/persist/keys/ssh_host_ed25519_key" ];
   age.secrets = {
 
-    ssconf = {
-      file = ./secrets/ssconf.age;
+    ss = {
+      file = ./secrets/ss.age;
       mode = "770";
       owner = user;
       group = user;
