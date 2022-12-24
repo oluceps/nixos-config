@@ -54,8 +54,24 @@
         in
         import ./shells.nix { inherit system pkgs inputs; }
       );
-
     };
+    #  // (
+    #   let
+    #     genPkg = f: name: {
+    #       inherit name;
+    #       value = f name;
+    #     };
+    #     pkgDir = ./modules/packs;
+    #     broken = (import ./modules/packs/broken.nix).broken;
+    #     sources = import ./_sources/generated.nix;
+    #     names = with builtins;
+    #       nixpkgs.lib.subtractLists broken (attrNames (readDir pkgDir));
+    #     withContents = f: with builtins; listToAttrs (map (genPkg f) names);
+    #   in
+    #   {
+    #     packages.x86_64-linux = withContents (name: pkgss.x86_64-linux.${name});
+    #   }
+    # );
 
   inputs = {
     nixpkgs.url = github:NixOS/nixpkgs/nixos-unstable;
