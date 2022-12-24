@@ -56,8 +56,8 @@ let
                 gaps_out=3
                 border_size=2
 
-                col.active_border=rgb(dac9a6)
-                col.inactive_border=rgba(595959aa)
+                col.active_border=rgba(f0c9cfbf)
+                col.inactive_border=rgba(59595940)
                 layout = dwindle
             }
            dwindle {
@@ -118,7 +118,7 @@ let
              animation = workspaces, 1, 2, default
            }
             bind=SUPER,RETURN,exec,${term}
-            bind=SUPER,D,exec,${launcher} -I
+            bind=SUPER,D,exec,${launcher} -I -l 7 -x 8 -y 7 -P 9 -b ede3e7d9 -r 3 -t 8b614db3 -C ede3e7d9 -f 'Maple Mono NF:style=Regular:size=15' -P 10 -B 7
             bind=SUPERSHIFT, P, exec, ${hyprpicker} -a
             bind=SUPER,Q,killactive,
             bind=SUPERSHIFT,E,exec,pkill Hyprland

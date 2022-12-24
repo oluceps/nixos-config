@@ -15,8 +15,6 @@
       set -g renumber-windows on
       set -ga terminal-overrides ",alacritty:Tc"
       new-session -s main
-      set -sg escape-time 0
     '';
-
   };
 }
