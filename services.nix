@@ -17,10 +17,10 @@
   security = {
     pam = {
 
-#      services = {
-#        login.u2fAuth = true;
-#        sudo.u2fAuth = true;
-#      };
+      services = {
+        login.u2fAuth = true;
+        sudo.u2fAuth = true;
+      };
       yubico = {
         enable = true;
         debug = true;
@@ -57,10 +57,11 @@
       settings = {
         default_session = {
           command =
-            "${pkgs.greetd.tuigreet}/bin/tuigreet --cmd ${pkgs.writeShellScript "Hyprland" ''
+            "${pkgs.greetd.tuigreet}/bin/tuigreet --time --remember --cmd ${pkgs.writeShellScript "Hyprland" ''
         export $(/run/current-system/systemd/lib/systemd/user-environment-generators/30-systemd-environment-d-generator)
         exec Hyprland
       ''}";
+          user = "greeter";
         };
       };
     };
@@ -90,7 +91,7 @@
     };
 
     hysteria.enable = true;
-    ss.enable = false;
+    ss.enable = true;
     tuic.enable = false;
     naive.enable = true;
 
