@@ -31,7 +31,7 @@
         "plugdev"
         "adbusers"
       ]; # Enable ‘sudo’ for the user.
-      shell = pkgs.fish;
+      shell = pkgs.zsh;
 
       openssh.authorizedKeys.keys = [
         "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIEv3S53gBU3Hqvr5o5g+yrn1B7eiaE5Y/OIFlTwU+NEG"
