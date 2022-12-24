@@ -1,5 +1,7 @@
 { config
 , pkgs
+, inputs
+, system
 , ...
 }:
 {
@@ -28,183 +30,196 @@
 
 
 
-  home.packages = with pkgs; [
-    #    mathematica
-    pcsctools
-    ccid
-    nur.repos.linyinfeng.canokey-udev-rules
+  home.packages =
+    with pkgs;
+    [
+      koreader
+      realvnc-vnc-viewer
+      #    mathematica
+      pcsctools
+      ccid
 
-    nrfconnect
-    nrfutil
-    nrf-command-line-tools
-    kate
-    yubico-pam
-    yubikey-manager
+      nrfconnect
+      nrfutil
+      nrf-command-line-tools
+      kate
+      yubico-pam
+      yubikey-manager
 
-    xdeltaUnstable
-    xterm
+      xdeltaUnstable
+      xterm
 
-    feeluown
-    feeluown-bilibili
-    feeluown-local
-    feeluown-netease
-    feeluown-qqmusic
-    chntpw
-    gkraken
-    libnotify
-    cinnamon.nemo
-    dolphin
-    # stress
-    stress
-    s-tui
-    mprime
+      feeluown
+      feeluown-bilibili
+      feeluown-local
+      feeluown-netease
+      feeluown-qqmusic
+      chntpw
+      gkraken
+      libnotify
+      cinnamon.nemo
+      dolphin
+      # stress
+      stress
+      s-tui
+      mprime
 
-    calibre
-    dolphin
-    discord
-    krita
-    #    davinci-resolve
-    nur.repos.linyinfeng.wemeet
-    brightnessctl
-    alacritty
-    nur-pkgs.techmino
-    filezilla
-    steam-run
-    appimage-run
-    lutris
-    tofi
-    zoom-us
-    mdbook
-    nur.repos.xddxdd.wechat-uos-bin
-    nur.repos.ocfox.gtk-qq
-    obsidian
-    gnome.nautilus
-    gnome.eog
-    gnomecast
-    sioyek
-    thunderbird
-    nur-pkgs.rustplayer
-    nheko
-    conda
-    gtk4
-    lapce
-    element-desktop-wayland
-    #fluffychat
-    tetrio-desktop
-    ffmpeg_5-full
-    swayidle
-    foot
+      calibre
+      dolphin
+      discord
+      krita
+      #    davinci-resolve
+      brightnessctl
+      alacritty
+      filezilla
+      steam-run
+      appimage-run
+      lutris
+      tofi
+      zoom-us
+      mdbook
+      obsidian
+      gnome.nautilus
+      gnome.eog
+      gnomecast
+      sioyek
+      thunderbird
+      nheko
+      conda
+      gtk4
+      lapce
+      element-desktop-wayland
+      #fluffychat
+      tetrio-desktop
+      ffmpeg_5-full
+      swayidle
+      foot
 
-    fuzzel
-    swaybg
-    wl-clipboard
-    wf-recorder
-    mako
-    grim
-    slurp
+      fuzzel
+      swaybg
+      wl-clipboard
+      wf-recorder
+      mako
+      grim
+      slurp
 
-    mongodb-compass
+      mongodb-compass
 
-    vial
-    discord-canary
+      vial
+      discord-canary
 
-    qemu
-    iwd
+      qemu
+      iwd
 
-    geda
+      geda
 
-    ncdu_2 # disk space info
+      ncdu_2 # disk space info
 
-    # clipboard
-    xsel
+      # clipboard
+      xsel
 
-    thunderbird
+      thunderbird
 
-    spotify
-    nushell
+      spotify
+      nushell
 
-    geekbench5
+      geekbench5
 
-    wayfire
+      wayfire
 
-    btop
+      btop
 
-    #neovim-qt
-    smartmontools
-    #wireshark-qt
-    wezterm
-    android-tools
-    tor-browser-bundle-bin
-    cargo-cross
-    # android-studio
-    zellij
-    netease-cloud-music-gtk
-    cmatrix
-    termius
-    # kotatogram-desktop
-    autojump
-    nmap
-    lm_sensors
-    eww-wayland
-    rofi
-    picom
+      #neovim-qt
+      smartmontools
+      #wireshark-qt
+      wezterm
+      android-tools
+      tor-browser-bundle-bin
+      cargo-cross
+      # android-studio
+      zellij
+      netease-cloud-music-gtk
+      cmatrix
+      termius
+      # kotatogram-desktop
+      autojump
+      nmap
+      lm_sensors
+      eww-wayland
+      rofi
+      picom
 
-    feh
-    pamixer
-    sl
-    ncpamixer
-    starship
-    #texlive.
-    texlive.combined.scheme-full
-    vlc
-    firefox
-    bluedevil
-    #zathura
-    jetbrains.clion
-    jetbrains.goland
-    jetbrains.pycharm-professional
-    jetbrains.datagrip
-    bspwm
-    tdesktop
-    file
-    julia-bin
-    tree
-    # polymc   INSECURE
-  ] ++
-  [
-    (
-      writeShellScriptBin "record-status" ''
-        #!/usr/bin/env bash
-        pid=`pgrep wf-recorder`
-        status=$?
-        if [ $status != 0 ]
-        then
-          echo '';
-        else
-          echo '';
-        fi;
-      ''
-    )
-    (
-      writeShellScriptBin "screen-recorder-toggle" ''
-        #!/usr/bin/env bash
-        pid=`${pkgs.procps}/bin/pgrep wf-recorder`
-        status=$?
-        if [ $status != 0 ]
-        then
-          ${pkgs.wf-recorder}/bin/wf-recorder -g "$(${pkgs.slurp}/bin/slurp)" -f $HOME/Videos/record/$(date +'recording_%Y-%m-%d-%H%M%S.mp4');
-        else
-          ${pkgs.procps}/bin/pkill --signal SIGINT wf-recorder
-        fi;
-      ''
-    )
-    (
-      writeShellScriptBin "save-clipboard-to" ''
-        #!/usr/bin/env bash
-        wl-paste > $HOME/Pictures/screenshot/$(date +'shot_%Y-%m-%d-%H%M%S.png')
-      ''
-    )
-  ];
+      feh
+      pamixer
+      sl
+      ncpamixer
+      starship
+      #texlive.
+#      texlive.combined.scheme-full
+      vlc
+      firefox
+      bluedevil
+      #zathura
+      jetbrains.clion
+      jetbrains.goland
+      jetbrains.pycharm-professional
+      jetbrains.datagrip
+      bspwm
+      tdesktop
+      file
+      julia-bin
+      tree
+    ]
+    ++
+    (with inputs;[
+      polymc.packages.${system}.default
+    ])
+    ++
+    (with nur.repos; [
+      linyinfeng.canokey-udev-rules
+      linyinfeng.wemeet
+      xddxdd.wechat-uos-bin
+      YisuiMilena.hmcl-bin
+      #      ocfox.gtk-qq
+    ]) ++
+    (with nur-pkgs;[
+      rustplayer
+      techmino
+    ]) ++
+    [
+      (
+        writeShellScriptBin "record-status" ''
+          #!/usr/bin/env bash
+          pid=`pgrep wf-recorder`
+          status=$?
+          if [ $status != 0 ]
+          then
+            echo '';
+          else
+            echo '';
+          fi;
+        ''
+      )
+      (
+        writeShellScriptBin "screen-recorder-toggle" ''
+          #!/usr/bin/env bash
+          pid=`${pkgs.procps}/bin/pgrep wf-recorder`
+          status=$?
+          if [ $status != 0 ]
+          then
+            ${pkgs.wf-recorder}/bin/wf-recorder -g "$(${pkgs.slurp}/bin/slurp)" -f $HOME/Videos/record/$(date +'recording_%Y-%m-%d-%H%M%S.mp4');
+          else
+            ${pkgs.procps}/bin/pkill --signal SIGINT wf-recorder
+          fi;
+        ''
+      )
+      (
+        writeShellScriptBin "save-clipboard-to" ''
+          #!/usr/bin/env bash
+          wl-paste > $HOME/Pictures/screenshot/$(date +'shot_%Y-%m-%d-%H%M%S.png')
+        ''
+      )
+    ];
   home.pointerCursor = {
     gtk.enable = true;
     x11.enable = true;
@@ -482,7 +497,14 @@
       package = pkgs.papirus-icon-theme;
       name = "Papirus-Light";
     };
+    gtk2.configLocation = "${config.xdg.configHome}/gtk-2.0/gtkrc";
+
   };
+  qt = {
+    enable = true;
+    platformTheme = "gtk";
+  };
+
 
   services.gpg-agent = {
     enable = true;
