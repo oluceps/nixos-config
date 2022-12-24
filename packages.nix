@@ -1,6 +1,8 @@
 { pkgs, ... }:
 {
   environment.systemPackages = with pkgs; [
+    unrar-wrapper
+    
     lynx
     srm
     killall
@@ -38,7 +40,7 @@
     choose
     duf
     procs
-    httpie
+#    httpie
     dog
 
 
@@ -65,10 +67,8 @@
     nixpkgs-review
 
     shfmt
-    rustup
-    rustfmt
+#    rustup
     broot
-    rust-analyzer
     pyright
     rnix-lsp
     kotlin-language-server
