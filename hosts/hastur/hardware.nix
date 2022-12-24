@@ -30,13 +30,13 @@
   fileSystems."/" = {
     device = "none";
     fsType = "tmpfs";
-    options = [ "defaults" "size=8G" "mode=755" ];
+    options = [ "defaults" "size=12G" "mode=755" ];
   };
 
   fileSystems."/persist" = {
     device = "/dev/disk/by-uuid/e86a6cfa-39cc-4dd9-b5d3-fee5e2613578";
     fsType = "btrfs";
-    options = [ "subvol=persist" "compress-force=zstd" "noatime" "discard=async" ];
+    options = [ "subvolid=256" "compress-force=zstd" "noatime" "discard=async" ];
     neededForBoot = true;
   };
 
@@ -57,12 +57,7 @@
   fileSystems."/nix" = {
     device = "/dev/disk/by-uuid/e86a6cfa-39cc-4dd9-b5d3-fee5e2613578";
     fsType = "btrfs";
-    options = [ "subvol=nix" "compress-force=zstd" "noatime" "discard=async" ];
-  };
-  fileSystems."/home/riro/exchange" = {
-    device = "/dev/disk/by-uuid/B01E136B1E1329BC";
-    fsType = "ntfs";
-    options = [ "rw" "uid=1000" ];
+    options = [ "subvolid=258" "compress-force=zstd" "noatime" "discard=async" ];
   };
 
   fileSystems."/boot" = {
@@ -71,7 +66,7 @@
   };
 
   swapDevices = [
-    { device = "/persist/swap/swapfile"; }
+#    { device = "/persist/swap/swapfile"; }
   ];
 
   hardware.cpu.amd.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
