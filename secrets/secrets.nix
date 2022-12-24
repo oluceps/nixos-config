@@ -9,7 +9,7 @@ let
 
 in
 {
-  "ssconf.age".publicKeys = users ++ systems;
+  "ss.age".publicKeys = users ++ systems;
   "sing.age".publicKeys = users ++ systems;
   "hyst.age".publicKeys = users ++ systems;
   "tuic.age".publicKeys = users ++ systems;
