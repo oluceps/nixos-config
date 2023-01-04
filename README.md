@@ -2,6 +2,7 @@
 
 Home managing with [home-manager](https://github.com/nix-community/home-manager)  
 Secrets managing with [agenix](https://github.com/ryantm/agenix)  
+Secure boot with [lanzaboote](https://github.com/nix-community/lanzaboote)
 
 
 ## Usage
