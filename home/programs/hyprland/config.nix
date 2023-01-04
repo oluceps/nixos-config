@@ -49,7 +49,6 @@ let
             }
 
             general {
-                main_mod=SUPER
                 cursor_inactive_timeout=30
 
                 gaps_in=3
