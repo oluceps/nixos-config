@@ -10,7 +10,6 @@
     '';
   };
 
-
   users = {
     mutableUsers = false;
     users.root.initialHashedPassword = "$6$Sa0gWbsXht6Uhr1M$ZwC76OJYx6fdLEjmo4xC4R7PEqY7DU1SN1cIYabZpQETV3npJ6cAoMjByPVQRqrOeHBjYre1ROMim4LgyQZ731";
@@ -21,15 +20,10 @@
       group = "${user}";
       extraGroups = [
         "wheel"
-        "docker"
-        "networkmanager"
-        "audio"
+        "kvm"
         "libvirtd"
         "qemu-libvirtd"
-        "kvm"
-        "logindev"
-        "plugdev"
-        "adbusers"
+        "docker"
       ]; # Enable ‘sudo’ for the user.
       shell = pkgs.zsh;
 
