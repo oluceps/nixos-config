@@ -40,12 +40,12 @@
         SystemMaxUse=1G
       '';
 
-    #    mongodb = {
-    #      enable = true;
-    #      package = pkgs.mongodb-6_0;
-    #      enableAuth = true;
-    #      initialRootPassword = "initial";
-    #    };
+    # mongodb = {
+    #   enable = true;
+    #   package = pkgs.mongodb-6_0;
+    #   enableAuth = true;
+    #   initialRootPassword = "initial";
+    # };
 
     mysql = {
       enable = true;
@@ -157,13 +157,13 @@
 
     resolved = {
       enable = true;
-      dnssec = "allow-downgrade";
+      dnssec = "false";
+      llmnr = "false";
       extraConfig = ''
         DNS=223.6.6.6 202.141.178.13:5353
                   #223.6.6.6 101.6.6.6:5353 202.141.178.13:5353
         Domains=~.
         MulticastDNS=true
-        DNSSEC=off
         DNSStubListener = false
         DNSOverTLS = false
       '';
@@ -173,8 +173,6 @@
         "8.8.4.4"
         "1.1.1.1"
       ];
-
-      llmnr = "true";
     };
   };
 
