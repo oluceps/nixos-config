@@ -15,5 +15,6 @@
   ./alacritty
   ./tmux
   ./hyprland
+  ./aria2
 
 ]

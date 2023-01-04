@@ -19,8 +19,6 @@ window:
     x: 7
     y: 5
 
-env:
-  TERM: xterm-256color
 font:
   normal:
     family: FiraCode Nerd Font Mono

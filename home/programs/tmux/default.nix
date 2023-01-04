@@ -6,14 +6,15 @@
     escapeTime = 10;
     shell = "${pkgs.fish}/bin/fish";
     keyMode = "vi";
-    terminal = "screen-256color";
+    terminal = "alacritty";
     extraConfig = ''
-      set -g status-position top
+      set -g status off
       set -g set-clipboard on
-      set -g mouse on
       set -g status-right ""
+      set -g mouse on
       set -g renumber-windows on
       set -ga terminal-overrides ",alacritty:Tc"
+      set -g status-style bg=colour246
       new-session -s main
     '';
   };
