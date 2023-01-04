@@ -14,23 +14,28 @@
   boot = {
     initrd.availableKernelModules = [ "nvme" "xhci_pci" "ahci" "usb_storage" "usbhid" "sd_mod" ];
     initrd.kernelModules = [ ];
-    kernelModules = [ "kvm-amd" ];
-    extraModulePackages = [ ];
+    kernelModules = [ "ec_sys" "uhid" "kvm-amd" ];
+    extraModulePackages = with config.boot.kernelPackages; [
+      v4l2loopback
+    ];
     kernelPackages = pkgs.linuxPackages_latest;
     binfmt.emulatedSystems = [
       "riscv64-linux"
+      "aarch64-linux"
     ];
     kernelParams = [
       "mitigations=off"
       "nowatchdog"
+      "resume_offset=81310216"
     ];
+    resumeDevice = "/dev/disk/by-uuid/e86a6cfa-39cc-4dd9-b5d3-fee5e2613578";
   };
 
 
   fileSystems."/" = {
     device = "none";
     fsType = "tmpfs";
-    options = [ "defaults" "size=12G" "mode=755" ];
+    options = [ "defaults" "size=16G" "mode=755" ];
   };
 
   fileSystems."/persist" = {
@@ -66,7 +71,7 @@
   };
 
   swapDevices = [
-#    { device = "/persist/swap/swapfile"; }
+    { device = "/persist/swap/swapfile"; }
   ];
 
   hardware.cpu.amd.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
