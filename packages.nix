@@ -3,6 +3,9 @@
   environment.systemPackages = with pkgs; [
     unrar-wrapper
     
+    bpf-linker
+    ghc
+    pueue
     lynx
     srm
     killall
@@ -93,7 +96,6 @@
     inetutils
     imgcat
 
-    mongodb-tools
     tcpdump
 
     pciutils
@@ -105,8 +107,6 @@
     exa
 
     bat
-
-    mongodb
 
     mtr
     openssl
