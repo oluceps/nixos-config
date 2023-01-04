@@ -10,7 +10,7 @@
   nixpkgs.config.allowUnfree = true;
 
   virtualisation = {
-    docker.enable = false;
+    docker.enable = true;
     libvirtd.enable = true;
     waydroid.enable = true;
   };
@@ -134,6 +134,7 @@
     dconf.enable = true;
     adb.enable = true;
     mosh.enable = true;
+    nix-ld.enable = true;
     steam = {
       enable = true;
       remotePlay.openFirewall = true; # Open ports in the firewall for Steam Remote Play
@@ -145,19 +146,20 @@
   #
   #  # Enable the GNOME Desktop Environment.
   #  services.xserver.desktopManager.gnome.enable = false;
-  #  hardware.nvidia.modesetting.enable = true;
-  #  services.xserver.videoDrivers = [ "nvidia" ];
-  #  hardware.opengl = {
-  #
-  #    enable = true;
-  #    extraPackages = with pkgs; [
-  #      intel-media-driver # LIBVA_DRIVER_NAME=iHD
-  #      vaapiIntel # LIBVA_DRIVER_NAME=i965 (older but works better for Firefox/Chromium)
-  #      vaapiVdpau
-  #      libvdpau-va-gl
-  #    ];
-  #  };
-  #  hardware.nvidia.package = config.boot.kernelPackages.nvidiaPackages.stable;
+  services.xserver.screenSection = ''
+    Option         "metamodes" "nvidia-auto-select +0+0 {ForceFullCompositionPipeline=On}"
+    Option         "AllowIndirectGLXProtocol" "off"
+    Option         "TripleBuffer" "on"
+  '';
+  hardware.nvidia.modesetting.enable = true;
+  hardware.nvidia.powerManagement.enable = true;
+
+  services.xserver.videoDrivers = [ "nvidia" ];
+  hardware.opengl = {
+    enable = true;
+  };
+  hardware.nvidia.package = config.boot.kernelPackages.nvidiaPackages.stable;
+
   fonts = {
     enableDefaultFonts = true;
     fontDir.enable = true;
@@ -208,6 +210,7 @@
       fcitx5-mozc
       fcitx5-gtk
       fcitx5-configtool
+      fcitx5-pinyin-zhwiki
     ];
   };
   #    enabled = "ibus";
