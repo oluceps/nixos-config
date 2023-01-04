@@ -33,6 +33,12 @@
   home.packages =
     with pkgs;
     [
+      sbctl
+      qbittorrent
+      #      (callPackage ../modules/packs/TDesktop-x64 { })
+      qq
+      protonmail-bridge
+
       koreader
       realvnc-vnc-viewer
       #    mathematica
@@ -67,7 +73,7 @@
       calibre
       dolphin
       discord
-      krita
+      # krita
       #    davinci-resolve
       brightnessctl
       alacritty
@@ -155,7 +161,7 @@
       ncpamixer
       starship
       #texlive.
-#      texlive.combined.scheme-full
+      texlive.combined.scheme-full
       vlc
       firefox
       bluedevil
@@ -261,11 +267,31 @@
     };
     git = {
       enable = true;
+      package = pkgs.gitFull;
       userName = "oluceps";
       userEmail = "i@oluceps.uk";
       signing = {
         key = "ECBE55269336CCCD ";
         signByDefault = true;
+      };
+      extraConfig = {
+        merge.conflictStyle = "diff3";
+        merge.tool = "vimdiff";
+        mergetool = {
+          keepBackup = false;
+          keepTemporaries = false;
+          writeToTemp = true;
+        };
+        pull.rebase = true;
+        fetch.prune = true;
+
+        sendemail = {
+          smtpserver = "smtp.gmail.com";
+          smtpencryption = "tls";
+          smtpserverport = 587;
+          smtpuser = "mn1.674927211@gmail.com";
+          from = "mn1.674927211@gmail.com";
+        };
       };
     };
     swaylock.settings = {
