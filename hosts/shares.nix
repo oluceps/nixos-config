@@ -30,5 +30,7 @@
   grub2-themes.nixosModule
   home-manager.nixosModules.home-manager
   impermanence.nixosModules.impermanence
+  lanzaboote.nixosModules.lanzaboote
+
 
 ]) ++ (import ../modules)

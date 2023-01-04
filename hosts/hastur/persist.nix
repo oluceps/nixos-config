@@ -4,14 +4,14 @@
     directories = [
       "/etc/nixos"
       "/etc/ssh"
+      "/etc/secureboot"
       "/var/log"
       "/var/lib"
     ];
     users.${user} = {
-
-      files = [
-        ".npmrc"
-      ];
+      # files = [
+      #   ".npmrc"
+      # ];
       directories = [
         "Documents"
         "Downloads"
