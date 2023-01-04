@@ -6,8 +6,7 @@
 }: {
   boot = {
     # Use the systemd-boot EFI boot loader.
-    loader.systemd-boot.enable = false;
-    resumeDevice = "/";
+    tmpOnTmpfs = true;
 
     loader = {
       grub2-theme = {
@@ -29,15 +28,15 @@
           "${img-resized}";
       };
       grub = {
-        enable = true;
+        enable = false;
         device = "nodev";
         useOSProber = true;
         efiSupport = true;
       };
       efi.canTouchEfiVariables = true;
+      efi.efiSysMountPoint = "/boot";
     };
     supportedFilesystems = [ "ntfs" "tcp_bbr" ];
-    # kernelParams = ["nvidia-drm.modeset=1" "nouveau.blacklist=1"];
     kernel.sysctl = {
       # Disable magic SysRq key
       "kernel.sysrq" = 0;
@@ -90,7 +89,7 @@
       "net.ipv4.tcp_no_metrics_save" = 1;
       "net.ipv4.tcp_sack" = 1;
       "vm.overcommit_memory" = lib.mkDefault 1;
-      "vm.swappiness" = 5;
+      "vm.swappiness" = 95;
       "net.ipv4.tcp_ecn" = 1;
     };
   };
