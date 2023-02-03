@@ -22,6 +22,8 @@
     binfmt.emulatedSystems = [
       "riscv64-linux"
       "aarch64-linux"
+      "mips64el-linux"
+      "mipsel-linux"
     ];
     kernelParams = [
       "mitigations=off"
