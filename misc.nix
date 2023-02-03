@@ -1,7 +1,8 @@
 # Edit this configuration file to define what should be installed on
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
-{ config
+{ inputs
+, config
 , pkgs
 , lib
 , user
@@ -11,10 +12,27 @@
 
   virtualisation = {
     docker.enable = true;
-    libvirtd.enable = true;
+    libvirtd = {
+      enable = true;
+      qemu = {
+        ovmf = {
+          enable = true;
+          packages = let pkgs = import inputs.nixpkgs-22 {
+            system = "x86_64-linux";
+          }; in
+            [
+              pkgs.OVMFFull.fd
+              pkgs.pkgsCross.aarch64-multiplatform.OVMF.fd
+            ];
+        };
+        swtpm.enable = true;
+      };
+    };
+    # efi.firmware = pkgs.OVMFFull.firmware;
+    # useEFIBoot = true;
     waydroid.enable = true;
   };
-  qt5 = {
+  qt = {
     enable = true;
     platformTheme = "gnome";
     style = "adwaita-dark";
@@ -61,6 +79,12 @@
       group = user;
     };
 
+    hyst-do = {
+      file = ./secrets/hyst-do.age;
+      mode = "770";
+      owner = user;
+      group = user;
+    };
     tuic = {
       file = ./secrets/tuic.age;
       mode = "770";
@@ -87,10 +111,12 @@
       trusted-public-keys = [
         "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY="
         "nur-pkgs.cachix.org-1:PAvPHVwmEBklQPwyNZfy4VQqQjzVIaFOkYYnmnKco78="
+        "hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc="
       ];
       substituters = [
         "https://cache.nixos.org"
         "https://nur-pkgs.cachix.org"
+        "https://hyprland.cachix.org"
       ];
       auto-optimise-store = true;
       experimental-features = [ "nix-command" "flakes" ];
@@ -151,14 +177,20 @@
     Option         "AllowIndirectGLXProtocol" "off"
     Option         "TripleBuffer" "on"
   '';
-  hardware.nvidia.modesetting.enable = true;
-  hardware.nvidia.powerManagement.enable = true;
+  hardware = {
+
+    nvidia = {
+      package = config.boot.kernelPackages.nvidiaPackages.stable;
+      modesetting.enable = true;
+      powerManagement.enable = true;
+    };
+
+    opengl = {
+      enable = true;
+    };
+  };
 
   services.xserver.videoDrivers = [ "nvidia" ];
-  hardware.opengl = {
-    enable = true;
-  };
-  hardware.nvidia.package = config.boot.kernelPackages.nvidiaPackages.stable;
 
   fonts = {
     enableDefaultFonts = true;
@@ -179,9 +211,10 @@
       noto-fonts
       noto-fonts-cjk-sans
       noto-fonts-cjk-serif
-      noto-fonts-emoji
+      # noto-fonts-emoji
       sarasa-gothic
       twemoji-color-font
+      dejavu_fonts
       #      font-awesome
       #      fira-code-symbols
       #    cascadia-code
