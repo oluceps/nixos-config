@@ -6,27 +6,28 @@
 }: {
   boot = {
     # Use the systemd-boot EFI boot loader.
-    tmpOnTmpfs = true;
+    tmpOnTmpfs = false;
 
     loader = {
-      grub2-theme = {
-        enable = true;
-        theme = "whitesur";
-        screen = "1080p";
-        splashImage =
-          let
-            img = pkgs.fetchurl {
-              url = "https://pbs.twimg.com/media/Fch6xMNacAM-EJS?format=jpg";
-              name = "background.jpg";
-              hash = "sha256-gw8PT8PSr9Gz0cflx2EOqjTsxHeJIJeCawrz9l7kvFI=";
-            };
-            img-resized = pkgs.runCommand "background.jpg"
-              {
-                nativeBuildInputs = with pkgs; [ imagemagick ];
-              } "convert -resize 1920x1080 ${img} $out";
-          in
-          "${img-resized}";
-      };
+      systemd-boot.enable = false;
+      # grub2-theme = {
+      #   enable = true;
+      #   theme = "whitesur";
+      #   screen = "1080p";
+      #   splashImage =
+      #     let
+      #       img = pkgs.fetchurl {
+      #         url = "https://pbs.twimg.com/media/Fch6xMNacAM-EJS?format=jpg";
+      #         name = "background.jpg";
+      #         hash = "sha256-gw8PT8PSr9Gz0cflx2EOqjTsxHeJIJeCawrz9l7kvFI=";
+      #       };
+      #       img-resized = pkgs.runCommand "background.jpg"
+      #         {
+      #           nativeBuildInputs = with pkgs; [ imagemagick ];
+      #         } "convert -resize 1920x1080 ${img} $out";
+      #     in
+      #     "${img-resized}";
+      # };
       grub = {
         enable = false;
         device = "nodev";
@@ -42,7 +43,7 @@
       "kernel.sysrq" = 0;
       # max read buffer
       # max write buffer
-      "fs.file-max" =500000;
+      "fs.file-max" = 500000;
       # default read buffer
       "net.core.rmem_default" = 65536;
       # default write buffer
@@ -76,7 +77,7 @@
       # Requires >= 4.9 & kernel module
       "net.ipv4.tcp_congestion_control" = "bbr";
       # Requires >= 4.19
-      "net.core.default_qdisc" = "cake";
+      "net.core.default_qdisc" = "fq";
 
       "net.ipv4.tcp_rmem" = "4096 87380 2500000";
       "net.ipv4.tcp_wmem" = "4096 65536 2500000";
