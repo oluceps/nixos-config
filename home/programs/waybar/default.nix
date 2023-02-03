@@ -18,7 +18,13 @@
           #
           # "sway/mode"
           modules-center = [ "clock" ];
-          modules-right = if user == "riro" then [ "network" "temperature" "cpu" "memory" "pulseaudio" ] else [ "network" "temperature" "cpu" "memory" "battery" "pulseaudio" ];
+          modules-right = let base = [ "network" "temperature" "cpu" "memory" "pulseaudio" ]; in
+            if user == "riro" then
+              # [ "tray" ] ++
+              base
+            else if user == "elena"
+            then [ "network" "temperature" "cpu" "memory" "battery" "pulseaudio" ]
+            else base;
           "sway/mode" = {
             format = " {}";
           };

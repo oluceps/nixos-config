@@ -51,6 +51,11 @@ window#waybar.solo {
 	border-radius: 6px;
 }
 
+#tray {
+  padding-right:9px;
+  padding-left: 10px;
+}
+
 #pulseaudio {
 	color: rgba(217, 216, 216, 1);
 	padding: 3px 7px 3px 7px;
