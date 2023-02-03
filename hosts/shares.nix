@@ -9,7 +9,7 @@
     environment.systemPackages = with inputs;
       [
         alejandra.defaultPackage.${system}
-        agenix.defaultPackage.${system}
+        agenix.packages.${system}.default
         helix.packages.${system}.default
         # surrealdb.packages.${system}.default
       ]
@@ -26,8 +26,8 @@
   }
 ] ++ (with inputs;[
 
-  agenix.nixosModule
-  grub2-themes.nixosModule
+  agenix.nixosModules.default
+  grub2-themes.nixosModules.default
   home-manager.nixosModules.home-manager
   impermanence.nixosModules.impermanence
   lanzaboote.nixosModules.lanzaboote

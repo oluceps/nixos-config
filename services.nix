@@ -19,7 +19,6 @@
 
       services = {
         login.u2fAuth = true;
-        sudo.u2fAuth = true;
       };
       yubico = {
         enable = true;
@@ -65,6 +64,7 @@
         };
       };
     };
+
     udev = {
 
       packages = with pkgs;[
@@ -91,6 +91,7 @@
     };
 
     hysteria.enable = true;
+    hysteria-do.enable = true;
     ss.enable = true;
     tuic.enable = false;
     naive.enable = true;
@@ -141,7 +142,7 @@
 
     openssh = {
       enable = true;
-      passwordAuthentication = false;
+      settings.passwordAuthentication = false;
     };
 
     fail2ban = {

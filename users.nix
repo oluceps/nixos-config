@@ -24,6 +24,7 @@
         "libvirtd"
         "qemu-libvirtd"
         "docker"
+        "adbusers"
       ]; # Enable ‘sudo’ for the user.
       shell = pkgs.zsh;
 
