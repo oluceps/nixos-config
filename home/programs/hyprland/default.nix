@@ -6,7 +6,7 @@
     enable = true;
     systemdIntegration = false;
     extraConfig = import ./config.nix { inherit pkgs user system inputs; };
-
+    nvidiaPatches = true;
   };
 
   home = {

@@ -258,6 +258,8 @@ let
       windowrule=move 25%-,ncmpcpp
       windowrule=size 960 540,ncmpcpp
       windowrule=rounding 0,MATLAB R2022b - academic use
+      windowrule=noborder, ^(grim)$
+      windowrule=noborder, ^(slurp)$
 #      windowrulev2=noanim,class:telegramdesktop,title:Telegram
       windowrulev2=animation fade,class:org.telegram.desktop,title:Media viewer
       windowrulev2=float,class:org.telegram.desktop,title:Media viewer
