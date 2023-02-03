@@ -5,13 +5,12 @@ let
   kaambl = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIN1v1/CbbmzLxxlGLb9AQouo+8ID/puQYMfdIQTLgfV+";
   users = [ riro elena ];
   systems = [ hastur kaambl ];
-
-
 in
 {
   "ss.age".publicKeys = users ++ systems;
   "sing.age".publicKeys = users ++ systems;
   "hyst.age".publicKeys = users ++ systems;
+  "hyst-do.age".publicKeys = users ++ systems;
   "tuic.age".publicKeys = users ++ systems;
   "naive.age".publicKeys = users ++ systems;
 }
