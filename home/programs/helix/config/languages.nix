@@ -163,7 +163,7 @@ file-types = ["c"] # TODO: ["h"]
 roots = []
 comment-token = "//"
 language-server = { command = "clangd" }
-indent = { tab-width = 2, unit = "  " }
+indent = { tab-width = 8, unit = "        " }
 
 [language.debugger]
 name = "lldb-vscode"
@@ -200,7 +200,7 @@ file-types = ["cc", "hh", "cpp", "hpp", "h", "ipp", "tpp", "cxx", "hxx", "ixx", 
 roots = []
 comment-token = "//"
 language-server = { command = "clangd" }
-indent = { tab-width = 2, unit = "  " }
+indent = { tab-width = 8, unit = "        " }
 
 [language.debugger]
 name = "lldb-vscode"
@@ -228,6 +228,7 @@ args = { console = "internalConsole", attachCommands = [ "platform select remote
 [[grammar]]
 name = "cpp"
 source = { git = "https://github.com/tree-sitter/tree-sitter-cpp", rev = "e8dcc9d2b404c542fd236ea5f7208f90be8a6e89" }
+indent = { tab-width = 4, unit = "\t" }
 
 [[language]]
 name = "c-sharp"
