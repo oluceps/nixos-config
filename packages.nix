@@ -1,6 +1,12 @@
 { pkgs, ... }:
 {
   environment.systemPackages = with pkgs; [
+
+    tokei
+    bottom
+    
+    virtiofsd
+    edk2
     unrar-wrapper
     
     bpf-linker
@@ -48,7 +54,7 @@
 
 
     arti
-    onefetch
+    # onefetch
     #snapper
     cachix
     android-tools
@@ -166,7 +172,7 @@
           wordcloud
           qrcode
           matplotlib
-          # pylsp-mypy
+          pylsp-mypy
 
           fontforge
 
@@ -203,6 +209,10 @@
           rich
           lxml
           sympy
+
+          cffi
+          # beautifulreport
+          
         ])
     )
   ]
@@ -231,10 +241,11 @@
         syntax on
         
         :let mapleader = " "
+
         :map <leader>s :w<cr>
+        :map <leader>q :q<cr>
         :map <C-j> 5j
         :map <C-k> 5k
-        :map qq    :q!<cr>
 
       '';
     }
