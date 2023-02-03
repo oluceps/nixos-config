@@ -53,5 +53,5 @@ let genHyst = { name }:
 
 
   }; in
-let name = "hysteria"; in genHyst { inherit name; }
+(let name = "hysteria-do"; in genHyst { inherit name; })
 

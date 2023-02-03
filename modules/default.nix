@@ -14,9 +14,9 @@
   #    ./nushell
   #    ./bspwm
   ./hysteria
+  ./hysteria-do
   ./naive
+
   #    ./ranger
   #    ./wezterm
 ]
-
-
