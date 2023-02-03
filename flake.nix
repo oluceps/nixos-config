@@ -13,6 +13,7 @@
               allowUnfree = true;
               allowBroken = false;
               segger-jlink.acceptLicense = true;
+              allowUnsupportedSystem = true;
             };
             overlays = [
               (final: prev: {
@@ -55,19 +56,19 @@
           names = builtins.attrNames dirContents;
         in
         builtins.listToAttrs (map genPackage names);
+
     };
 
   inputs = {
     nixpkgs.url = github:NixOS/nixpkgs/nixos-unstable;
+    nixpkgs-22.url = "github:NixOS/nixpkgs?rev=c91d0713ac476dfb367bbe12a7a048f6162f039c";
     nil.url = github:oxalica/nil;
-    nixpkgs-unstable.url = github:NixOS/nixpkgs/nixos-unstable;
     flake-utils.url = github:numtide/flake-utils;
     nix-colors.url = github:misterio77/nix-colors;
     agenix.url = github:ryantm/agenix;
     nur.url = github:nix-community/NUR;
     nur-pkgs = {
       url = github:oluceps/nur-pkgs;
-      inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
 
     rnix-lsp.url = github:nix-community/rnix-lsp;
@@ -99,44 +100,38 @@
 
     alejandra = {
       url = github:kamadorueda/alejandra;
-      inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
 
     polymc.url = github:PolyMC/PolyMC;
+    prismlauncher.url = github:PrismLauncher/PrismLauncher;
+
     sops-nix.url = github:Mic92/sops-nix;
 
     pywmpkg = {
       url = github:jbuchermn/pywm;
-      inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
 
     home-manager = {
       url = github:nix-community/home-manager;
-      inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
 
 
     nix-matlab = {
       # Recommended if you also override the default nixpkgs flake, common among
       # nixos-unstable users:
-      inputs.nixpkgs.follows = "nixpkgs-unstable";
       url = gitlab:doronbehar/nix-matlab;
     };
 
     helix = {
       url = github:helix-editor/helix;
-      inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
 
     hyprland = {
       url = github:vaxerski/Hyprland;
-      # build with your own instance of nixpkgs
-      inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
     #
     gomod2nix = {
       url = github:tweag/gomod2nix;
-      inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
     grub2-themes.url = github:vinceliuice/grub2-themes;
 
@@ -146,7 +141,6 @@
 
     berberman = {
       url = github:berberman/flakes;
-      inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
   };
 
