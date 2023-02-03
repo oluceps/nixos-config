@@ -47,7 +47,7 @@ let lib = inputs.nixpkgs.lib; in
       cargoDeps = old.cargoDeps.overrideAttrs (prev.lib.const {
         inherit src;
         # otherwise the old "src" will be used.
-        outputHash = "sha256-9agDj1v/mXuWMSAJ6fCrg1ZEojggcB0I2kYXRVBfMGQ=";
+        outputHash = "sha256-i+lGMSp3RqaEiXUzfn0IItCPEagAksVBBZcUQogxizg=";
       });
     });
     #    tdesktop = prev.tdesktop.overrideAttrs
