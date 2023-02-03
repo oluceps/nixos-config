@@ -52,6 +52,7 @@
       l = "exa -l";
       la = "exa -la";
       g = "lazygit";
+      "cd.." = "cd ..";
     };
     shellInit = ''
       ${pkgs.starship}/bin/starship init fish | source
