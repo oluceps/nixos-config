@@ -24,15 +24,30 @@
     "x-scheme-handler/http" = [ "firefox.desktop" ];
     "x-scheme-handler/https" = [ "firefox.desktop" ];
     "pdf" = [ "sioyek.desktop" ];
-
+    "ppt/pptx" = [ "wps-office-wpp.desktop" ];
+    "doc/docx" = [ "wps-office-wps.desktop" ];
+    "xls/xlsx" = [ "wps-office-et.desktop" ];
   };
 
 
 
 
-  home.packages =
-    with pkgs;
+  home.packages = with pkgs;
+
     [
+      i2p
+      pkgsCross.riscv64.ubootQemuRiscv64Smode
+      pkgsCross.riscv64.opensbi
+      ubootTools
+      codeql
+      foliate
+      veracrypt
+
+      # davinci-resolve
+      cava
+
+      # wpsoffice-cn
+
       sbctl
       qbittorrent
       #      (callPackage ../modules/packs/TDesktop-x64 { })
@@ -114,7 +129,6 @@
       vial
       discord-canary
 
-      qemu
       iwd
 
       geda
@@ -178,7 +192,7 @@
     ]
     ++
     (with inputs;[
-      polymc.packages.${system}.default
+      prismlauncher.packages.${system}.default
     ])
     ++
     (with nur.repos; [
