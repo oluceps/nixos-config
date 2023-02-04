@@ -60,6 +60,14 @@
         format = "via [$symbol$state( \($name\))]($style) ";
       };
 
+      time = {
+        disabled = false;
+        format = "$time($style) ";
+        time_format = "%T";
+        style = "bright-white";
+        utc_time_offset = "-5";
+      };
+
       # package.disabled = true;
     };
   };
