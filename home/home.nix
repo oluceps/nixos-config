@@ -62,7 +62,7 @@
 
       nrfconnect
       nrfutil
-      nrf-command-line-tools
+      # nrf-command-line-tools
       kate
       yubico-pam
       yubikey-manager

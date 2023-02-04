@@ -126,8 +126,8 @@
     wireguard-tools
     gnupg
     nftables
-    clang-tools
-    libclang
+    clang-tools_15
+    llvmPackages_latest.libclang
     wget
     nixos-option
     lua
@@ -151,7 +151,7 @@
     lsof
     tree
     llvm
-    clang
+    llvmPackages_latest.clang
     gcc
     curl
     jdk
