@@ -52,6 +52,7 @@
           openssl.dev
           pahole
           fakeroot
+          bear
         ]
         ++ pkgs.linux.nativeBuildInputs);
       runScript = pkgs.writeScript "init.sh" ''
