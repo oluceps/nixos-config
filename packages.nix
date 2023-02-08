@@ -2,6 +2,7 @@
 {
   environment.systemPackages = with pkgs; [
 
+    texlab
     tokei
     bottom
     
@@ -133,7 +134,6 @@
     lua
     proxychains
     go
-    binutils
     libcap
     gnumake
 
