@@ -13,7 +13,7 @@ window:
   # - transparent: title bar, transparent background and title bar buttons
   # - buttonless: title bar, transparent background, but no title bar buttons
   decorations: Full
-  opacity: 0.55
+  opacity: 0.65
   # padding top and left
   padding:
     x: 7
