@@ -28,7 +28,7 @@ window#waybar.solo {
 }
 
 #workspaces button.urgent {
-	color: rgba(238, 46, 36, 1);
+	color: rgba(227, 180, 184, 0.8);
 }
 
 #workspaces button:hover {
