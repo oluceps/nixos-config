@@ -63,10 +63,9 @@
           dirContents = builtins.readDir ./packages;
           names = builtins.attrNames dirContents;
         in
-        builtins.genAttrs names (name: {
-          inherit name;
-          value = final.callPackage (./packages + "/${name}") { };
-        });
+        builtins.genAttrs names (name:
+          final.callPackage (./packages + "/${name}") { }
+        );
 
     };
 
