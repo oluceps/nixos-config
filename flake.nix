@@ -3,7 +3,6 @@
   outputs = inputs:
     let
       genSystems = inputs.nixpkgs.lib.genAttrs [ "aarch64-linux" "x86_64-linux" ];
-      system = inputs.flake-utils.lib.system;
       pkgss = genSystems
         (
           system:
@@ -17,15 +16,7 @@
             };
             overlays =
               let
-                genDefaultPackage = n: inputs.${n}.packages."${system}".default;
                 genOverlay = n: inputs.${n}.overlays.default;
-                apps = [
-                  "helix"
-                  "hyprland"
-                  "hyprpicker"
-                  "clash-meta"
-                  "nil"
-                ];
                 overlays = [
                   "fenix"
                   "berberman"
@@ -35,8 +26,15 @@
                 (final: prev: {
                   nur-pkgs = inputs.nur-pkgs.packages."${system}";
                   rnix-lsp = inputs.rnix-lsp.defaultPackage."${system}";
-                } // builtins.listToAttrs (
-                  map (name: { inherit name; value = genDefaultPackage name; }) apps)
+                } // (import inputs.nixpkgs { inherit system; }).lib.genAttrs
+                  [
+                    "helix"
+                    "hyprland"
+                    "hyprpicker"
+                    "clash-meta"
+                    "nil"
+                  ]
+                  (n: inputs.${n}.packages."${system}".default)
                 )
 
                 inputs.nur.overlay
@@ -62,14 +60,13 @@
 
       overlays.oluceps = final: prev:
         let
-          dirContents = builtins.readDir ./modules/packs;
-          genPackage = name: {
-            inherit name;
-            value = final.callPackage (./packages + "/${name}") { };
-          };
+          dirContents = builtins.readDir ./packages;
           names = builtins.attrNames dirContents;
         in
-        builtins.listToAttrs (map genPackage names);
+        builtins.genAttrs names (name: {
+          inherit name;
+          value = final.callPackage (./packages + "/${name}") { };
+        });
 
     };
 

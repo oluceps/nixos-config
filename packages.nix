@@ -17,7 +17,7 @@
     srm
     killall
     nethogs
-    (callPackage ./modules/packs/clash-m { })
+    (callPackage ./packages/clash-m { })
     fscrypt-experimental
     f2fs-tools
     xmrig
@@ -36,7 +36,6 @@
     mtr-gui
     qjournalctl
     editorconfig-checker
-    #    (callPackage ./modules/packs/shadow-tls { })
 
     #    nur-pkgs.shadow-tls
     nur-pkgs.sing-box

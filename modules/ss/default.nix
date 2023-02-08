@@ -7,7 +7,7 @@
 with lib;
 let
   cfg = config.services.ss;
-  plugin = pkgs.callPackage ./packs/v2ray-plugin/default.nix { };
+  plugin = pkgs.callPackage ../../packages/v2ray-plugin/default.nix { };
 in
 {
   options.services.ss = {

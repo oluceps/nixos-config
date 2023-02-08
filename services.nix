@@ -74,7 +74,7 @@
         libu2f-host
         via
       ] ++
-      [ (pkgs.callPackage ./modules/packs/opensk-udev-rules { }) ];
+      [ (pkgs.callPackage ./packages/opensk-udev-rules { }) ];
 
       #      extraRules = ''
       #        ACTION=="add|remove", SUBSYSTEM=="net", ATTR{idVendor}=="22d9" ENV{ID_USB_DRIVER}=="rndis_host", SYMLINK+="android", RUN+="systemctl restart systemd-networkd.service"

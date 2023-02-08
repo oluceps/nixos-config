@@ -52,7 +52,6 @@
 
       sbctl
       qbittorrent
-      #      (callPackage ../modules/packs/TDesktop-x64 { })
       qq
       protonmail-bridge
 
@@ -265,7 +264,7 @@
   home.pointerCursor = {
     gtk.enable = true;
     x11.enable = true;
-    package = pkgs.nur-pkgs.Graphite-cursors; #callPackage ../modules/packs/Graphite-cursors { };
+    package = pkgs.nur-pkgs.Graphite-cursors;
     name = "Graphite-light-nord";
     size = 22;
   };
