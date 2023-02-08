@@ -37,10 +37,11 @@
 
     shellAliases = {
       nd = "cd /etc/nixos";
-      swc = "doas nixos-rebuild switch";
-      swcv = "doas nixos-rebuild switch --verbose";
+      swc = "doas nixos-rebuild switch --verbose";
+      swcs = "doas nixos-rebuild switch --verbose --max-jobs 1";
       sduo = "sudo";
-      n = "neovide";
+      daso = "doas";
+      daos = "doas";
       off = "poweroff";
       proxy = "proxychains4 -f /home/riro/.config/proxychains/proxychains.conf";
       roll = "xrandr -o left && feh --bg-scale /home/riro/Pictures/Wallpapers/95448248_p0.png && sleep 0.5; picom --experimental-backend -b";
@@ -53,9 +54,11 @@
       la = "exa -la";
       g = "lazygit";
       "cd.." = "cd ..";
+      up = "nix flake update /etc/nixos && doas nixos-rebuild switch --verbose --flake /etc/nixos";
     };
     shellInit = ''
       ${pkgs.starship}/bin/starship init fish | source
+      fish_vi_key_bindings
     '';
     functions = {
       fish_greeting = "";
