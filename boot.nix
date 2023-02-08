@@ -1,12 +1,11 @@
 { config
 , pkgs
 , lib
-, inputs
 , ...
 }: {
   boot = {
     # Use the systemd-boot EFI boot loader.
-    tmpOnTmpfs = false;
+    tmpOnTmpfs = true;
 
     loader = {
       systemd-boot.enable = false;
