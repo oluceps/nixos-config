@@ -44,6 +44,7 @@
         [
           dpkg
           pkgconfig
+          pkg-config
           ncurses
           qt5.qtbase
           pkgsCross.mipsel-linux-gnu.stdenv.cc
@@ -51,7 +52,6 @@
           flex
           openssl.dev
           pahole
-          fakeroot
           bear
         ]
         ++ pkgs.linux.nativeBuildInputs);
@@ -83,6 +83,7 @@
       bc
       elfutils
       libbfd
+      cmake
 
     ];
   };
@@ -317,10 +318,13 @@
       zlib
       pkg-config
       elfutils
-      libbfd
-      llvm_14
+      openssl.dev
+      llvmPackages_latest.llvm
+
+      ninja
+      ccache
     ];
-    LIBCLANG_PATH = "${pkgs.llvmPackages_14.libclang.lib}/lib";
+    LIBCLANG_PATH = "${pkgs.llvmPackages_latest.libclang.lib}/lib";
   };
 
 }
