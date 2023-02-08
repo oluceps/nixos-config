@@ -1,18 +1,12 @@
-# flake + home-manager NixOS configurations
+# flake + home-manager Configurations
 
 Home managing with [home-manager](https://github.com/nix-community/home-manager)  
 Secrets managing with [agenix](https://github.com/ryantm/agenix)  
-Secure boot with [lanzaboote](https://github.com/nix-community/lanzaboote)
+Secure boot with [lanzaboote](https://github.com/nix-community/lanzaboote)  
+Root-On-Tmpfs persistence with [impermanence](https://github.com/nix-community/impermanence)  
 
 
 ## Usage
-__Before deployment, customizing `hardware.nix` and `network.nix`  in `./hosts/`__
-
-You can replace hostname globally with:    
-```console  
-sed -i "s/hastur/YOUR_HOSTNAME/g" `rg -rl "hastur" ./`  
-```
-
 flake outputs:  
 
 ```console
@@ -21,18 +15,42 @@ warning: Git tree '/etc/nixos' is dirty
 git+file:///etc/nixos
 ├───devShells
 │   ├───aarch64-linux
-│   │   ├───default: development environment 'pythonEnv'
-│   │   └───general: development environment 'generalEnv'
+│   │   ├───android: development environment 'android-env-shell'
+│   │   ├───default: development environment 'python-env'
+│   │   ├───eunomia: development environment 'eunomia-dev'
+│   │   ├───general: development environment 'generalEnv'
+│   │   ├───kernel: development environment 'kernel-build-env-shell-env'
+│   │   ├───mips: development environment 'nix-shell-mipsel-unknown-linux-gnu'
+│   │   ├───ml: development environment 'machine-learning'
+│   │   ├───openwrt: development environment 'openwrt-build-env-shell-env'
+│   │   └───rv: development environment 'linux-riscv64-unknown-linux-gnu-5.15.91'
 │   └───x86_64-linux
-│       ├───default: development environment 'pythonEnv'
-│       └───general: development environment 'generalEnv'
-└───nixosConfigurations
-    ├───hastur: NixOS configuration
-    ├───kaambl: NixOS configuration
-    └───livecd: NixOS configuration
+│       ├───android: development environment 'android-env-shell'
+│       ├───default: development environment 'python-env'
+│       ├───eunomia: development environment 'eunomia-dev'
+│       ├───general: development environment 'generalEnv'
+│       ├───kernel: development environment 'kernel-build-env-shell-env'
+│       ├───mips: development environment 'nix-shell-mipsel-unknown-linux-gnu'
+│       ├───ml: development environment 'machine-learning'
+│       ├───openwrt: development environment 'openwrt-build-env-shell-env'
+│       └───rv: development environment 'linux-riscv64-unknown-linux-gnu-5.15.91'
+├───nixosConfigurations
+│   ├───hastur: NixOS configuration
+│   ├───kaambl: NixOS configuration
+│   └───livecd: NixOS configuration
+└───overlays
+    └───oluceps: Nixpkgs overlay
 ```  
 
 ### NixOS Deployment
+
+__Before deployment, adjust configurations manually__
+
+Optionally replace hostname globally with:    
+```console  
+sed -i "s/hastur/YOUR_HOSTNAME/g" `rg -rl "hastur" ./`  
+```
+
 
 ```console
 nixos-rebuild switch --flake github:oluceps/nixos-config#<hostname>
@@ -47,12 +65,12 @@ nixos-rebuild switch --flake github:oluceps/nixos-config#<hostname>
 |Terminal|[alacritty](https://github.com/oluceps/nixos-config/tree/pub/home/programs/alacritty)|
 |backup|[btrbk](https://github.com/oluceps/nixos-config/tree/pub/modules/btrbk)|  
 
-_To use devShell:_  
+_Build devShell:_  
 ```console
-nix develop .#devShells.x86_64-linux.<shell>
+nix develop .#devShells.<Arch>.<Shell>
 ```   
 
-_To build livecd:_
+_Build livecd:_
 
 ```console
 nix build .#nixosConfigurations.livecd.config.system.build.isoImage
@@ -63,11 +81,14 @@ nix build .#nixosConfigurations.livecd.config.system.build.isoImage
 ## Contents
 + hosts: host-specific configuration  
 + home: home-manager config  
-+ modules: as its name  
-+ modules/packs: self-packaged softwares
++ modules: modules  
++ packages: packaged softwares
 
 
 ## Directory structure  
+<details>
+<summary>Full</summary>
+
 ```console  
 > exa --tree --level=2
 .
@@ -84,45 +105,57 @@ nix build .#nixosConfigurations.livecd.config.system.build.isoImage
 │  ├── kaambl
 │  ├── livecd
 │  └── shares.nix
-├── LICENSE
 ├── misc.nix
 ├── modules
+│  ├── aria2
 │  ├── blog
+│  ├── btrbk
 │  ├── clash-m
 │  ├── default.nix
 │  ├── foot
 │  ├── hysteria
+│  ├── hysteria-do
 │  ├── naive
-│  ├── packs
 │  ├── polybar
 │  ├── shadow-tls
 │  ├── sing-box
 │  ├── ss
 │  └── tuic
 ├── overlay.nix
+├── packages
+│  ├── clash-m
+│  ├── clash-p
+│  ├── glowsans
+│  ├── Graphite-cursors
+│  ├── hysteria
+│  ├── maple-font
+│  ├── opensk-udev-rules
+│  ├── plangothic
+│  ├── RustPlayer
+│  ├── san-francisco
+│  ├── shadow-tls
+│  ├── sing-box
+│  ├── TDesktop-x64
+│  └── v2ray-plugin
 ├── packages.nix
-├── README.md
-├── screenshot.png
 ├── secrets
+│  ├── hyst-do.age
 │  ├── hyst.age
 │  ├── naive.age
 │  ├── secrets.nix
 │  ├── sing.age
-│  ├── ssconf.age
+│  ├── ss.age
 │  └── tuic.age
 ├── services.nix
 ├── shells.nix
 ├── sysvars.nix
 └── users.nix
-
 ```  
+</details>
 
 ## Screenshot  
 ![screenshot](./screenshots/shot_1.png)
-
-![screenshot](./screenshots/shot_2.png)
-
-  
+ 
 Background picture from [Ramiro Martinez](https://unsplash.com/@ramiro250)  
 
 ## Resources  
