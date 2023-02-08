@@ -90,66 +90,151 @@ nix build .#nixosConfigurations.livecd.config.system.build.isoImage
 <summary>Full</summary>
 
 ```console  
-> exa --tree --level=2
+> tree
 .
 ├── boot.nix
 ├── flake.lock
 ├── flake.nix
 ├── home
-│  ├── default.nix
-│  ├── home.nix
-│  └── programs
+│   ├── default.nix
+│   ├── home.nix
+│   └── programs
+│       ├── alacritty
+│       │   ├── alacritty.yml
+│       │   └── default.nix
+│       ├── aria2
+│       │   └── default.nix
+│       ├── bspwm
+│       │   ├── bspwmrc
+│       │   ├── default.nix
+│       │   └── sxhkdrc
+│       ├── btop
+│       │   └── default.nix
+│       ├── chrome
+│       │   └── default.nix
+│       ├── default.nix
+│       ├── fish
+│       │   └── default.nix
+│       ├── helix
+│       │   ├── config
+│       │   │   ├── clang-format.nix
+│       │   │   ├── languages.nix
+│       │   │   └── themes
+│       │   │       └── catppuccin_macchiato.toml
+│       │   └── default.nix
+│       ├── hyprland
+│       │   ├── config.nix
+│       │   └── default.nix
+│       ├── kitty.nix
+│       ├── nnn.nix
+│       ├── nushell
+│       │   ├── config.nu
+│       │   ├── default.nix
+│       │   └── env.nu
+│       ├── ranger
+│       │   └── default.nix
+│       ├── starship.nix
+│       ├── sway
+│       │   └── default.nix
+│       ├── tmux
+│       │   └── default.nix
+│       ├── waybar
+│       │   ├── default.nix
+│       │   └── waybar.css
+│       └── wezterm
+│           ├── catppuccin.lua
+│           ├── default.nix
+│           └── wezterm.lua
 ├── hosts
-│  ├── default.nix
-│  ├── hastur
-│  ├── kaambl
-│  ├── livecd
-│  └── shares.nix
+│   ├── default.nix
+│   ├── hastur
+│   │   ├── default.nix
+│   │   ├── hardware.nix
+│   │   ├── network.nix
+│   │   ├── persist.nix
+│   │   └── secureboot.nix
+│   ├── kaambl
+│   │   ├── default.nix
+│   │   ├── hardware.nix
+│   │   └── network.nix
+│   ├── livecd
+│   │   ├── default.nix
+│   │   ├── home.nix
+│   │   └── network.nix
+│   └── shares.nix
 ├── misc.nix
 ├── modules
-│  ├── aria2
-│  ├── blog
-│  ├── btrbk
-│  ├── clash-m
-│  ├── default.nix
-│  ├── foot
-│  ├── hysteria
-│  ├── hysteria-do
-│  ├── naive
-│  ├── polybar
-│  ├── shadow-tls
-│  ├── sing-box
-│  ├── ss
-│  └── tuic
+│   ├── aria2
+│   ├── blog
+│   │   └── default.nix
+│   ├── btrbk
+│   │   └── default.nix
+│   ├── clash-m
+│   │   └── default.nix
+│   ├── default.nix
+│   ├── foot
+│   │   └── foot.ini
+│   ├── hysteria
+│   │   └── default.nix
+│   ├── hysteria-do
+│   │   └── default.nix
+│   ├── naive
+│   │   └── default.nix
+│   ├── polybar
+│   │   ├── config.ini
+│   │   └── default.nix
+│   ├── shadow-tls
+│   ├── sing-box
+│   │   └── default.nix
+│   ├── ss
+│   │   └── default.nix
+│   └── tuic
+│       └── default.nix
 ├── overlay.nix
 ├── packages
-│  ├── clash-m
-│  ├── clash-p
-│  ├── glowsans
-│  ├── Graphite-cursors
-│  ├── hysteria
-│  ├── maple-font
-│  ├── opensk-udev-rules
-│  ├── plangothic
-│  ├── RustPlayer
-│  ├── san-francisco
-│  ├── shadow-tls
-│  ├── sing-box
-│  ├── TDesktop-x64
-│  └── v2ray-plugin
+│   ├── clash-m
+│   │   └── default.nix
+│   ├── clash-p
+│   │   └── default.nix
+│   ├── glowsans
+│   │   └── default.nix
+│   ├── Graphite-cursors
+│   │   └── default.nix
+│   ├── hysteria
+│   │   └── default.nix
+│   ├── maple-font
+│   │   └── default.nix
+│   ├── opensk-udev-rules
+│   │   └── default.nix
+│   ├── plangothic
+│   │   └── default.nix
+│   ├── RustPlayer
+│   │   └── default.nix
+│   ├── san-francisco
+│   │   └── default.nix
+│   ├── shadow-tls
+│   │   └── default.nix
+│   ├── sing-box
+│   │   └── default.nix
+│   ├── TDesktop-x64
+│   │   └── default.nix
+│   └── v2ray-plugin
+│       └── default.nix
 ├── packages.nix
 ├── secrets
-│  ├── hyst-do.age
-│  ├── hyst.age
-│  ├── naive.age
-│  ├── secrets.nix
-│  ├── sing.age
-│  ├── ss.age
-│  └── tuic.age
+│   ├── hyst.age
+│   ├── hyst-do.age
+│   ├── naive.age
+│   ├── secrets.nix
+│   ├── sing.age
+│   ├── ss.age
+│   └── tuic.age
 ├── services.nix
 ├── shells.nix
 ├── sysvars.nix
 └── users.nix
+
+52 directories, 89 files
 ```  
 </details>
 
