@@ -18,11 +18,14 @@
         success_symbol = "[>](white)";
         error_symbol = "[>](red)";
         vicmd_symbol = "[<](green)";
+        vimcmd_replace_one_symbol = "[<](bold purple)";
+        vimcmd_replace_symbol = "[<](bold purple)";
+        vimcmd_visual_symbol = "[<](bold yellow)";
       };
 
       git_branch = {
         format = "[$branch]($style)";
-        style = "bright-black";
+        style = "#f1c4cd";
       };
 
       git_status = {
@@ -64,7 +67,7 @@
         disabled = false;
         format = "$time($style) ";
         time_format = "%T";
-        style = "bright-white";
+        style = "bold yellow";
         utc_time_offset = "-5";
       };
 
