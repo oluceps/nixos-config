@@ -20,7 +20,7 @@
           modules-center = [ "clock" ];
           modules-right = let base = [ "network" "temperature" "cpu" "memory" "pulseaudio" ]; in
             if user == "riro" then
-              # [ "tray" ] ++
+            # [ "tray" ] ++
               base
             else if user == "elena"
             then [ "network" "temperature" "cpu" "memory" "battery" "pulseaudio" ]
@@ -35,6 +35,8 @@
           "wlr/workspaces" = {
             format = "{icon}";
             on-click = "activate";
+            on-scroll-up = "hyprctl dispatch workspace e+1";
+            on-scroll-down = "hyprctl dispatch workspace e-1";
           };
           "sway/window" = {
             max-length = 80;

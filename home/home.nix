@@ -35,6 +35,8 @@
   home.packages = with pkgs;
 
     [
+      libsForQt5.qtbase
+      libsForQt5.qtwayland
       i2p
       pkgsCross.riscv64.ubootQemuRiscv64Smode
       pkgsCross.riscv64.opensbi
@@ -238,6 +240,26 @@
           #!/usr/bin/env bash
           wl-paste > $HOME/Pictures/screenshot/$(date +'shot_%Y-%m-%d-%H%M%S.png')
         ''
+      )
+
+      (
+        writeShellApplication {
+          name = "systemd-run-app";
+          text = ''
+            name=$(${coreutils}/bin/basename "$1")
+            id=$(${openssl}/bin/openssl rand -hex 4)
+            exec systemd-run \
+              --user \
+              --scope \
+              --unit "$name-$id" \
+              --slice=app \
+              --same-dir \
+              --collect \
+              --property PartOf=graphical-session.target \
+              --property After=graphical-session.target \
+              -- "$@"
+          '';
+        }
       )
     ];
   home.pointerCursor = {
