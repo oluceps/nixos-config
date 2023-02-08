@@ -1,12 +1,17 @@
-{ pkgs, user, system, inputs, ... }:
+{ pkgs, user, ... }:
 
 {
 
   wayland.windowManager.hyprland = {
     enable = true;
+    package = pkgs.hyprland;
     systemdIntegration = false;
-    extraConfig = import ./config.nix { inherit pkgs user system inputs; };
+    extraConfig = import ./config.nix { inherit pkgs user; };
     nvidiaPatches = true;
+    xwayland = {
+      enable = true;
+      hidpi = false;
+    };
   };
 
   home = {
@@ -17,7 +22,7 @@
       # GTK_IM_MODULE = "fcitx5";
       # QT_IM_MODULE = "fcitx5";
       # XMODIFIERS = "@im=fcitx5";
-#      QT_QPA_PLATFORMTHEME = "gtk3";
+      #      QT_QPA_PLATFORMTHEME = "gtk3";
       QT_SCALE_FACTOR = "1";
       MOZ_ENABLE_WAYLAND = "1";
       SDL_VIDEODRIVER = "wayland";

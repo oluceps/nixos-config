@@ -1,6 +1,6 @@
 # Language support configuration.
 # See the languages documentation: https://docs.helix-editor.com/master/languages.html
-{ system, pkgs, inputs, ... }:
+{ pkgs, ... }:
 let
   configText = ''
 
@@ -485,7 +485,7 @@ file-types = ["nix"]
 shebangs = []
 roots = ["flake.nix"]
 comment-token = "#"
-language-server = { command = "${inputs.rnix-lsp.defaultPackage.${system}}/bin/rnix-lsp" }
+language-server = { command = "${pkgs.nil}/bin/nil" }
 indent = { tab-width = 2, unit = "  " }
 
 [[grammar]]

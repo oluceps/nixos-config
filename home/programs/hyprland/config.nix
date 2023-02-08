@@ -1,9 +1,6 @@
 { pkgs
 , user
-, system
-, inputs
-, #  nix-colors,
-  ...
+,  ...
 }:
 let
 
@@ -18,7 +15,7 @@ let
   slurp = "${pkgs.slurp}/bin/slurp";
   wl-copy = "${pkgs.wl-clipboard}/bin/wl-copy";
   swaybg = "${pkgs.swaybg}/bin/swaybg";
-  hyprpicker = "${inputs.hyprpicker.packages.${system}.default}/bin//hyprpicker";
+  hyprpicker = "${pkgs.hyprpicker}/bin//hyprpicker";
 
 
 
@@ -32,8 +29,8 @@ let
             exec-once=fcitx5
             exec-once=mako
             exec-once=waybar
-            exec-once=telegram-desktop
-            exec-once=firefox
+            exec-once=systemd-run-app telegram-desktop
+            exec-once=systemd-run-app firefox
 
             input {
                 kb_layout=us
@@ -116,7 +113,7 @@ let
              animation = fade, 1, 2, default
              animation = workspaces, 1, 2, default
            }
-            bind=SUPER,RETURN,exec,${term}
+            bind=SUPER,RETURN,exec,systemd-run-app ${term}
             bind=SUPER,D,exec,${launcher} -I -l 7 -x 8 -y 7 -P 9 -b ede3e7d9 -r 3 -t 8b614db3 -C ede3e7d9 -f 'Maple Mono NF:style=Regular:size=15' -P 10 -B 7
             bind=SUPERSHIFT, P, exec, ${hyprpicker} -a
             bind=SUPER,Q,killactive,

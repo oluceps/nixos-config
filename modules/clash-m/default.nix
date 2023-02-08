@@ -1,8 +1,6 @@
 { pkgs
 , config
 , lib
-, inputs
-, system
 , user
 , ...
 }:
@@ -18,10 +16,7 @@ in
     };
     package = mkOption {
       type = types.package;
-      default = inputs.clash-meta.packages.${system}.default;
-      #inputs.clash-meta.apps.${system};
-      #inputs.clash-meta.defaultPackages.${system};
-      #pkgs.callPackage ../packs/clash-m { };
+      default = pkgs.clash-meta;
       defaultText = literalExpression "pkgs.clash-meta";
       description = lib.mdDoc ''
         package
