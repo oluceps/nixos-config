@@ -17,7 +17,7 @@ let genHyst = { name }:
       };
       package = mkOption {
         type = types.package;
-        default = pkgs.callPackage ../packs/hysteria { };
+        default = pkgs.callPackage ../../packages/hysteria { };
         defaultText = literalExpression "pkgs.hysteria";
         description = lib.mdDoc ''
           package
