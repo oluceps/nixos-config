@@ -28,9 +28,9 @@
     kernelParams = [
       "mitigations=off"
       "nowatchdog"
-      "resume_offset=81310216"
+      # "resume_offset=81310216"
     ];
-    resumeDevice = "/dev/disk/by-uuid/e86a6cfa-39cc-4dd9-b5d3-fee5e2613578";
+    # resumeDevice = "/dev/disk/by-uuid/e86a6cfa-39cc-4dd9-b5d3-fee5e2613578";
   };
 
 
@@ -72,9 +72,9 @@
     fsType = "vfat";
   };
 
-  swapDevices = [
-    { device = "/persist/swap/swapfile"; }
-  ];
+  # swapDevices = [
+  #   { device = "/persist/swap/swapfile"; }
+  # ];
 
   hardware.cpu.amd.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
 }
