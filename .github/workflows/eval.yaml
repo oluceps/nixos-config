@@ -2,7 +2,7 @@ name: eval
 on: 
   push:
     branches: 
-      - main
+      - pub
 jobs:
   eval:
     name: eval nixosConfiguration
