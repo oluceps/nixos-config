@@ -39,7 +39,7 @@ git+file:///etc/nixos
 │   ├───kaambl: NixOS configuration
 │   └───livecd: NixOS configuration
 └───overlays
-    └───oluceps: Nixpkgs overlay
+    └───default: Nixpkgs overlay
 ```  
 
 ### NixOS Deployment

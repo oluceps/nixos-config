@@ -58,7 +58,7 @@
         import ./shells.nix { inherit system pkgs inputs; }
       );
 
-      overlays.oluceps = final: prev:
+      overlays.default = final: prev:
         let
           dirContents = builtins.readDir ./packages;
           names = builtins.attrNames dirContents;
