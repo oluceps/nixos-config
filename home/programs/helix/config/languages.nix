@@ -164,7 +164,7 @@ roots = []
 comment-token = "//"
 language-server = { command = "clangd" }
 indent = { tab-width = 8, unit = "        " }
-formatter = { command = "clang-format" , args = [ "-style=file:${import ./clang-format.nix {inherit pkgs;}}"] }
+formatter = { command = "clang-format" , args = [ "-style=file:${pkgs.writeTextFile "clang-format" builtins.readFile ./clang-format.yaml}"] }
 
 [language.debugger]
 name = "lldb-vscode"
