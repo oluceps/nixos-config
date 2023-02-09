@@ -136,7 +136,7 @@
     btrfs.autoScrub = {
       enable = true;
       interval = "monthly";
-      fileSystems = [ "/persist" "nix" ];
+      fileSystems = [ "/persist" "/nix" ];
     };
     pcscd.enable = true;
 
