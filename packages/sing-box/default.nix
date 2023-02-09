@@ -32,6 +32,6 @@ buildGoModule rec {
     description = "sing-box";
     homepage = "https://github.com/SagerNet/sing-box";
     license = licenses.gpl3Only;
-#    maintainers = with maintainers; [ oluceps ];
+    #    maintainers = with maintainers; [ oluceps ];
   };
 }

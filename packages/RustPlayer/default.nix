@@ -34,6 +34,6 @@ rustPlatform.buildRustPackage rec {
       An local audio player & m3u8 radio player using Rust and completely terminal guimusical_note
     '';
     license = licenses.gpl3Only;
-#    maintainers = with maintainers; [ oluceps ];
+    #    maintainers = with maintainers; [ oluceps ];
   };
 }

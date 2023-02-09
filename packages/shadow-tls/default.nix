@@ -1,16 +1,16 @@
 { lib
 , fetchFromGitHub
 , pkgs
-#, fenix
+  #, fenix
 }:
 
 let
-#  fenix = import
-#    (fetchTarball {
-#      url = "https://github.com/nix-community/fenix/archive/main.tar.gz";
-#      sha256 = "sha256:1l0j43iks97lk70s3zb43vfbbjf1j1x2nrpbfx559xfv0ivn45br";
-#    })
-#    { };
+  #  fenix = import
+  #    (fetchTarball {
+  #      url = "https://github.com/nix-community/fenix/archive/main.tar.gz";
+  #      sha256 = "sha256:1l0j43iks97lk70s3zb43vfbbjf1j1x2nrpbfx559xfv0ivn45br";
+  #    })
+  #    { };
   rustPlatform = pkgs.makeRustPlatform { inherit (pkgs.fenix.minimal) cargo rustc; };
 in
 rustPlatform.buildRustPackage rec{

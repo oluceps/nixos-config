@@ -5,11 +5,11 @@
     texlab
     tokei
     bottom
-    
+
     virtiofsd
     edk2
     unrar-wrapper
-    
+
     bpf-linker
     ghc
     pueue
@@ -49,7 +49,7 @@
     choose
     duf
     procs
-#    httpie
+    #    httpie
     dog
 
 
@@ -76,7 +76,7 @@
     nixpkgs-review
 
     shfmt
-#    rustup
+    #    rustup
     broot
     pyright
     rnix-lsp
@@ -211,7 +211,7 @@
 
           cffi
           # beautifulreport
-          
+
         ])
     )
   ]
