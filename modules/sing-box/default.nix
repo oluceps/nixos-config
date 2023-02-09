@@ -32,11 +32,11 @@ in
   config =
     let
       configFile = config.age.secrets.sing.path;
-#        pkgs.writeTextFile {
-#          name = "config.json";
-#          #          destination = "dataDir/config.json";
-#          text = builtins.toJSON (import ./config.nix );
-#        };
+      #        pkgs.writeTextFile {
+      #          name = "config.json";
+      #          #          destination = "dataDir/config.json";
+      #          text = builtins.toJSON (import ./config.nix );
+      #        };
 
     in
     mkIf cfg.enable {

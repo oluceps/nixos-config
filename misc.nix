@@ -17,9 +17,12 @@
       qemu = {
         ovmf = {
           enable = true;
-          packages = let pkgs = import inputs.nixpkgs-22 {
-            system = "x86_64-linux";
-          }; in
+          packages =
+            let
+              pkgs = import inputs.nixpkgs-22 {
+                system = "x86_64-linux";
+              };
+            in
             [
               pkgs.OVMFFull.fd
               pkgs.pkgsCross.aarch64-multiplatform.OVMF.fd

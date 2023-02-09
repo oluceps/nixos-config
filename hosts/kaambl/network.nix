@@ -22,7 +22,7 @@
     # proxy.noProxy = "127.0.0.1,localhost,internal.domain";
 
     networkmanager.enable = false;
-    networkmanager.dns="systemd-resolved";
+    networkmanager.dns = "systemd-resolved";
   };
 
   #  systemd.network.wait-online = {
@@ -31,7 +31,7 @@
   #  };
 
   systemd.network = {
-    enable =true;
+    enable = true;
 
     links."10-wan" = {
       matchConfig.MACAddress = "20:47:47:0e:c8:66";
@@ -54,7 +54,7 @@
         #          #{routeConfig = {Gateway = "fe80::c609:38ff:fef2:3ecb";};}
         #        ];
         #        #dns = ["192.168.2.2" "fe80::c609:38ff:fef2:3ecb"];
-           dns = [ "127.0.0.1:53" "::1" ];
+        dns = [ "127.0.0.1:53" "::1" ];
       };
       #      enp4s0 = {
       #        name = "enp4s0";

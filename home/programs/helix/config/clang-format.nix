@@ -689,7 +689,7 @@ let
       TabWidth: 8
       UseTab: Always
       ...
-      '';
+    '';
   };
 in
 clang-format

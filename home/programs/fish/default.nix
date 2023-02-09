@@ -27,13 +27,13 @@
       #          src = pkgs.fishPlugins.done.src;
       #        }
     ];
-#    loginShellInit =
-#      ''
-#        if test (id --user $USER) -ge 1000 && test (tty) = "/dev/tty1"
-#          exec Hyprland
-#        end
-#
-#      '';
+    #    loginShellInit =
+    #      ''
+    #        if test (id --user $USER) -ge 1000 && test (tty) = "/dev/tty1"
+    #          exec Hyprland
+    #        end
+    #
+    #      '';
 
     shellAliases = {
       nd = "cd /etc/nixos";

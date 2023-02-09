@@ -1,5 +1,4 @@
 inputs:
-let lib = inputs.nixpkgs.lib; in
 [
   (final: prev: {
 
