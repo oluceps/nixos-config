@@ -41,7 +41,7 @@ in
       inherit system pkgs;
       specialArgs = { inherit inputs system user; };
       modules = (import ./livecd) ++ (import ./shares.nix { inherit system pkgs inputs; }) ++
-        [ (inputs.nixpkgs + "/nixos/modules/installer/cd-dvd/installation-cd-minimal.nix") ]
+        [ (inputs.nixpkgs + "/nixos/modules/installer/cd-dvd/installation-cd-minimal-new-kernel.nix") ]
       ;
     }
     # OMG 7.3G ISO 

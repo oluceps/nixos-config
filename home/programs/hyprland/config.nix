@@ -6,7 +6,7 @@ let
 
   emoji = "${pkgs.wofi-emoji}/bin/wofi-emoji";
   launcher = "${pkgs.fuzzel}/bin/fuzzel";
-  term = "${pkgs.alacritty}/bin/alacritty";
+  term = "${pkgs.foot}/bin/foot";
   grim = "${pkgs.grim}/bin/grim";
   light = "${pkgs.light}/bin/light";
   playerctl = "${pkgs.playerctl}/bin/playerctl";

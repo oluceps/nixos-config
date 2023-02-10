@@ -35,6 +35,7 @@
   home.packages = with pkgs;
 
     [
+      yubioath-flutter
       libsForQt5.qtbase
       libsForQt5.qtwayland
       i2p
