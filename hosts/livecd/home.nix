@@ -9,12 +9,11 @@ let
   homeProfile = {
 
     imports = [
-      ../../home/programs/chrome
       ../../home/programs/fish
       ../../home/programs/helix
-      ../../home/programs/sway
+      ../../home/programs/hyprland
       ../../home/programs/waybar
-      ../../home/programs/wezterm
+      ../../home/programs/alacritty
       ../../home/programs/starship.nix
     ];
     home.stateVersion = "22.11";
@@ -33,11 +32,8 @@ let
       "tg" = [ "telegramdesktop.desktop" ];
       "x-scheme-handler/http" = [ "firefox.desktop" ];
       "x-scheme-handler/https" = [ "firefox.desktop" ];
-
+      "pdf" = [ "sioyek.desktop" ];
     };
-
-
-
 
     home.packages = with pkgs; [
       gnome.nautilus
@@ -45,13 +41,10 @@ let
       sioyek
       thunderbird
       nur-pkgs.rustplayer
+      firefox
       nheko
-      conda
       gtk4
-      lapce
       starship
-      #texlive.
-      texlive.combined.scheme-full
       vlc
       firefox
       bluedevil
@@ -69,37 +62,7 @@ let
       size = 22;
     };
 
-
-    home.file = {
-
-      # ".icons/default".source = "${pkgs.Graphite}/share/icons/Graphite";
-      #".config/clash".source = ./dotfiles/clash;
-      #".config/nvim".source = ../modules/nvim;
-      #".config/waybar".source = ./dotfiles/waybar;
-
-      #    ".config/ranger/rc.conf".source = ./dotfiles/ranger/rc.conf;
-    };
-    services.swayidle = {
-      enable = false;
-      timeouts = [
-        # {
-        #   timeout = 300;
-        #   command = "${pkgs.sway}/bin/swaymsg 'output * dmps off'";
-        #   resumeCommand = "${pkgs.sway}/bin/swaymsg 'output * dmps on'";
-        # }
-        {
-          timeout = 1200;
-          command = "${pkgs.systemd}/bin/systemctl suspend";
-        }
-      ];
-    };
-
-
     programs = {
-      vscode = {
-        enable = true;
-        package = pkgs.vscode.fhsWithPackages (ps: with ps; [ rustup zlib ]);
-      };
       git = {
         enable = true;
         userName = "oluceps";
@@ -115,12 +78,6 @@ let
               name = "img.jpg";
               hash = "sha256-kqvVGHOaD7shJrvYfhLDvDs62r20wi8Sajth16Spsrk=";
             };
-            #img-blurred = pkgs.runCommand "img.jpg"
-            #            {
-            #              nativeBuildInputs = with pkgs;[ imagemagick ];
-            #            } "
-            # convert -blur 14x5 ${img} $out
-            # ";
           in
           "${img}";
         scaling = "fill";
@@ -177,26 +134,7 @@ let
         '';
 
         plugins = [
-          #        {
-          #          # will source zsh-autosuggestions.plugin.zsh
-          #          name = "zsh-autosuggestions";
-          #          src = pkgs.fetchFromGitHub {
-          #            owner = "zsh-users";
-          #            repo = "zsh-autosuggestions";
-          #            rev = "v0.7.0";
-          #            sha256 = "sha256-KLUYpUu4DHRumQZ3w59m9aTW6TBKMCXl2UcKi4uMd7w=";
-          #          };
-          #        }
-          #        {
-          #          name = "enhancd";
-          #          file = "init.sh";
-          #          src = pkgs.fetchFromGitHub {
-          #            owner = "b4b4r07";
-          #            repo = "enhancd";
-          #            rev = "v2.2.4";
-          #            sha256 = "sha256-9/JGJgfAjXLIioCo3gtzCXJdcmECy6s59Oj0uVOfuuo=";
-          #          };
-          #        }
+
           {
             name = "zsh-history-substring-search";
             file = "zsh-history-substring-search.zsh";
@@ -281,6 +219,7 @@ in
     users.${user} = {
       imports = [
         homeProfile
+        inputs.hyprland.homeManagerModules.default
         #        
       ];
     };
