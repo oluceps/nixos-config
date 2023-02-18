@@ -12,8 +12,11 @@
   ];
 
   boot = {
-    initrd.availableKernelModules = [ "nvme" "xhci_pci" "ahci" "usb_storage" "usbhid" "sd_mod" ];
-    initrd.kernelModules = [ ];
+    initrd = {
+      systemd.enable = true;
+      availableKernelModules = [ "nvme" "xhci_pci" "ahci" "usb_storage" "usbhid" "sd_mod" ];
+      kernelModules = [ "tpm" "tpm_tis" "tpm_crb" ];
+    };
     kernelModules = [ "ec_sys" "uhid" "kvm-amd" ];
     extraModulePackages = with config.boot.kernelPackages; [
       v4l2loopback
