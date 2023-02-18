@@ -1,7 +1,15 @@
 { pkgs, ... }:
 {
   environment.systemPackages = with pkgs; [
+    # rustup
+    hyprpicker
 
+    cmake
+    llvmPackages_latest.clang
+    # clang-tools
+    runit
+    onefetch
+    lsd
     texlab
     tokei
     bottom
@@ -126,8 +134,6 @@
     wireguard-tools
     gnupg
     nftables
-    clang-tools_15
-    llvmPackages_latest.libclang
     wget
     nixos-option
     lua
@@ -149,8 +155,6 @@
     htop
     lsof
     tree
-    llvm
-    llvmPackages_latest.clang
     gcc
     curl
     jdk
