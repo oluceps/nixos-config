@@ -7,6 +7,7 @@
       "/etc/secureboot"
       "/var/log"
       "/var/lib"
+      { directory = "/root/.yubico"; mode = "0700"; }
     ];
     users.${user} = {
       # files = [
@@ -29,6 +30,7 @@
         "calibreLib"
         ".cache"
         ".local"
+        ".cargo"
         ".mozilla"
         ".config"
         ".FeelUOwn"
