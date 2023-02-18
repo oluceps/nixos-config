@@ -8,7 +8,7 @@
     tmpOnTmpfs = true;
 
     loader = {
-      systemd-boot.enable = false;
+      systemd-boot.enable = lib.mkForce false;
       # grub2-theme = {
       #   enable = true;
       #   theme = "whitesur";

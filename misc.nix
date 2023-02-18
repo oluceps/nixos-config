@@ -89,6 +89,7 @@
       owner = user;
       group = user;
     };
+
     tuic = {
       file = ./secrets/tuic.age;
       mode = "770";
@@ -124,7 +125,7 @@
       ];
       auto-optimise-store = true;
       experimental-features = [ "nix-command" "flakes" ];
-      trusted-users = [ "root" "riro" "elena" ];
+      trusted-users = [ "root" "${user}" ];
     };
   };
 

@@ -93,7 +93,9 @@
 
     hysteria.enable = true;
     hysteria-do.enable = true;
-    ss.enable = true;
+
+    # ss-tls cnt to router
+    ss.enable = false;
     tuic.enable = false;
     naive.enable = true;
 
