@@ -114,35 +114,6 @@
 
     });
 
-  # mips =
-  #   let
-  #     # more platforms are defined here: https://github.com/NixOS/nixpkgs/blob/master/lib/systems/examples.nix
-  #     pkgs = import inputs.nixpkgs {
-  #       crossSystem = {
-  #         config = "mips-unknown-linux-gnu";
-
-  #       };
-  #       localSystem = "x86_64-linux";
-  #     };
-  #   in
-  #   pkgs.mkShell {
-  #     # the override is optional if you need for example more build dependencies
-  #     nativeBuildInputs = with pkgs; [
-  #       ncurses # tools/kwboot
-  #       bc
-  #       bison
-  #       dtc
-  #       flex
-  #       openssl
-  #       swig
-  #       which
-  #     ];
-  #     shellHook = ''
-  #       export PKG_CONFIG_PATH="${pkgs.ncurses.dev}/lib/pkgconfig:${pkgs.qt5.qtbase.dev}/lib/pkgconfig"
-  #     '';
-  #   };
-
-
 
   mips =
     let
@@ -177,8 +148,7 @@
 
         nativeBuildInputs = [
           pkgs.cudatoolkit
-          (inputs.mach-nix.lib.${system}.mkPython rec
-          {
+          (inputs.mach-nix.lib.${system}.mkPython {
             requirements = ''
               torch
               numpy
@@ -312,7 +282,21 @@
     in
     fhs.env;
 
-  eunomia = pkgs.llvmPackages_latest.libcxxStdenv.mkDerivation {
+  ubt-rv = pkgs.mkShell {
+    name = "riscv ubuntu qemu boot script";
+    shellHook = ''
+      qemu-system-riscv64 \
+        -machine virt -nographic -m 4096 -smp 16 \
+        -bios ${pkgs.pkgsCross.riscv64.opensbi}/share/opensbi/lp64/generic/firmware/fw_jump.elf \
+        -kernel ${pkgs.pkgsCross.riscv64.ubootQemuRiscv64Smode}/u-boot.bin \
+        -device virtio-net-device,netdev=usernet \
+        -netdev user,id=usernet,hostfwd=tcp::12056-:22 \
+        -device qemu-xhci -usb -device usb-kbd -device usb-tablet \
+        -drive file=/var/lib/libvirt/images/ubuntu-22.10-preinstalled-server-riscv64+unmatched.img,format=raw,if=virtio
+    '';
+  };
+
+  eunomia = pkgs.llvmPackages_14.libcxxStdenv.mkDerivation {
     name = "eunomia-dev";
     nativeBuildInputs = with pkgs; [
       cmake
@@ -320,12 +304,12 @@
       pkg-config
       elfutils
       openssl.dev
-      llvmPackages_latest.llvm
+      llvmPackages_14.llvm
 
-      ninja
-      ccache
+      libbfd
+      libcap
     ];
-    LIBCLANG_PATH = "${pkgs.llvmPackages_latest.libclang.lib}/lib";
+    LIBCLANG_PATH = "${pkgs.llvmPackages_14.libclang.lib}/lib";
   };
 
 }
