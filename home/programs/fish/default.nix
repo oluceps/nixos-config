@@ -46,12 +46,12 @@
       proxy = "proxychains4 -f /home/riro/.config/proxychains/proxychains.conf";
       roll = "xrandr -o left && feh --bg-scale /home/riro/Pictures/Wallpapers/95448248_p0.png && sleep 0.5; picom --experimental-backend -b";
       rolln = "xrandr -o normal && feh --bg-scale /home/riro/Pictures/Wallpapers/秋の旅.jpg && sleep 0.5;  picom --experimental-backend -b";
-      kls = "exa";
-      lks = "exa";
-      sl = "exa";
-      ls = "exa";
-      l = "exa -l";
-      la = "exa -la";
+      kls = "lsd --icon never";
+      lks = "lsd --icon never";
+      sl = "lsd --icon never";
+      ls = "lsd --icon never";
+      l = "lsd --icon never -lh";
+      la = "lsd --icon never -la";
       g = "lazygit";
       "cd.." = "cd ..";
       up = "nix flake update /etc/nixos && doas nixos-rebuild switch --verbose --flake /etc/nixos";
@@ -94,6 +94,29 @@
             echo -n "<nix-shell> "
          end
         )
+      '';
+      extract = ''
+          set --local ext (echo $argv[1] | awk -F. '{print $NF}')
+          switch $ext
+            case tar  # non-compressed, just bundled
+              tar -xvf $argv[1]
+            case gz
+              if test (echo $argv[1] | awk -F. '{print $(NF-1)}') = tar  # tar bundle compressed with gzip
+                tar -zxvf $argv[1]
+              else  # single gzip
+                gunzip $argv[1]
+              end
+            case tgz  # same as tar.gz
+              tar -zxvf $argv[1]
+            case bz2  # tar compressed with bzip2
+              tar -jxvf $argv[1]
+            case rar
+              unrar x $argv[1]
+            case zip
+              unzip $argv[1]
+            case '*'
+              echo "unknown extension"
+          end
       '';
     };
   };

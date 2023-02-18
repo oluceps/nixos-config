@@ -9,7 +9,7 @@
 
       command_timeout = 1000;
 
-      format = ''$directory  $git_branch  $git_status $cmd_duration$line_break$python$character'';
+      format = ''$directory  $git_branch $git_commit $git_status $cmd_duration$line_break$python$character'';
       #
 
       directory.style = "blue";
@@ -26,6 +26,13 @@
       git_branch = {
         format = "[$branch]($style)";
         style = "#f1c4cd";
+      };
+
+      git_commit = {
+        format = "[$hash]($style)";
+        style = "#c8adc4";
+        only_detached = false;
+        tag_disabled = true;
       };
 
       git_status = {

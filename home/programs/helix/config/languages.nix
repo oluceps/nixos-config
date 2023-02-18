@@ -12,7 +12,7 @@ file-types = ["rs"]
 roots = ["Cargo.toml", "Cargo.lock"]
 auto-format = true
 comment-token = "//"
-language-server = { command = "rust-analyzer" }
+language-server = { command = "${pkgs.rust-analyzer-nightly}/bin/rust-analyzer" }
 indent = { tab-width = 4, unit = "    " }
 formatter = { command = "${pkgs.rustfmt}/bin/rustfmt" }
 
@@ -162,7 +162,7 @@ injection-regex = "c"
 file-types = ["c"] # TODO: ["h"]
 roots = []
 comment-token = "//"
-language-server = { command = "clangd" }
+language-server = { command = "${pkgs.clang-tools}/bin/clangd" }
 indent = { tab-width = 8, unit = "        " }
 formatter = { command = "clang-format" , args = [ "-style=file:${pkgs.writeText "clang-format" (builtins.readFile ./clang-format.yaml)}"] }
 

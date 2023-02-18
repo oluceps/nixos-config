@@ -20,6 +20,7 @@
         auto-pairs = true;
         true-color = true;
         cursorline = true;
+        color-modes = true;
 
         cursor-shape = {
           insert = "bar";

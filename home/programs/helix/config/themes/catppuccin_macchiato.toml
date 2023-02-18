@@ -59,9 +59,9 @@
 
 # User Interface
 # --------------
-"ui.background" = { fg = "text", bg = "000000" }
+"ui.background" = { fg = "text" }
 
-"ui.linenr" = { fg = "surface1" }
+"ui.linenr" = { fg = "#74759b" }
 "ui.linenr.selected" = { fg = "lavender" }
 
 "ui.statusline" = { fg = "overlay1", bg = "surface0" }

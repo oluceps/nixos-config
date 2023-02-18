@@ -4,7 +4,7 @@
 , ...
 }: {
   programs.kitty = {
-    enable = false;
+    enable = true;
     font = {
       name = "Fira Code Medium";
       size = 11;
