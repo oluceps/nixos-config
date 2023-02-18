@@ -4,7 +4,7 @@
     enable = true;
     settings = {
       main = {
-        font = "FiraCode Nerd Font:size=12.5:style=Medium";
+        font = "SF Mono:size=12.5:style=Medium";
         dpi-aware = "yes";
         term = "xterm-256color";
         pad = "8x8";
@@ -36,6 +36,14 @@
       mouse = {
         alternate-scroll-mode = "yes";
         hide-when-typing = "yes";
+      };
+
+      url = {
+        launch = "xdg-open $\{url}";
+        label-letters = "sadfjklewcmpgh";
+        osc8-underline = "url-mode";
+        protocols = "http, https, ftp, ftps, file, gemini, gopher";
+        uri-characters = ''abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-_.,~:;/?#@!$&%*+="'()[]'';
       };
     };
 

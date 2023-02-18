@@ -21,7 +21,7 @@ let
 
   configText = ''
 
-            monitor=VGA-1,preferred,auto,1
+            monitor=VGA-1,1920x1080@75,auto,1
     #        monitor=VGA-1,transform,1
             #workspace=VGA-1,1
 
@@ -124,7 +124,6 @@ let
             bind=SUPERCTRL,L,exec,swaylock
             bindm=SUPER,mouse:272,movewindow
             bindm=SUPER,mouse:273,resizewindow
-            bindm=SUPERALT,mouse:272,resizewindow
 
             bind=,XF86AudioPlay,exec,${playerctl} play-pause
             bind=,XF86AudioPrev,exec,${playerctl} previous
@@ -203,8 +202,11 @@ let
       bind = SUPER SHIFT, 9, movetoworkspacesilent, 9
       bind = SUPER SHIFT, 0, movetoworkspacesilent, 10
       # Scroll through existing workspaces with mainMod + scroll
-      bind = SUPER, mouse_down, workspace, e+1
-      bind = SUPER, mouse_up, workspace, e-1
+      bind = SUPER, mouse_down, workspace, e-1
+      bind = SUPER, mouse_up, workspace, e+1
+
+      bind = ,mouse_down mouse:275,workspace,e-1
+      bind = ,mouse_up mouse:275,workspace,e+1
       
       bind=SUPER,R,submap,resize
       submap=resize
