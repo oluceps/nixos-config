@@ -22,7 +22,8 @@
           "rustfmt"
         ])
         rust-analyzer-nightly
-      ]);
+      ])
+    ;
   }
 ] ++ (with inputs;[
 
@@ -31,6 +32,4 @@
   home-manager.nixosModules.home-manager
   impermanence.nixosModules.impermanence
   lanzaboote.nixosModules.lanzaboote
-
-
 ]) ++ (import ../modules)

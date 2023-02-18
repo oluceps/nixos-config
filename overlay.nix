@@ -35,20 +35,20 @@ inputs:
 
 
 
-    shadowsocks-rust = prev.shadowsocks-rust.overrideAttrs (old: rec {
-      version = "1.15.0-alpha.9";
-      src = prev.fetchFromGitHub {
-        owner = "shadowsocks";
-        repo = "shadowsocks-rust";
-        rev = "ff3590a830a84b4ee4f4b98623897487eed43196";
-        sha256 = "sha256-mNxnF3xozMCnyVwwIbMjxuH0IRmqXENJePARDmvfNRo=";
-      };
-      cargoDeps = old.cargoDeps.overrideAttrs (prev.lib.const {
-        inherit src;
-        # otherwise the old "src" will be used.
-        outputHash = "sha256-i+lGMSp3RqaEiXUzfn0IItCPEagAksVBBZcUQogxizg=";
-      });
-    });
+    # shadowsocks-rust = prev.shadowsocks-rust.overrideAttrs (old: rec {
+    #   version = "1.15.0-alpha.9";
+    #   src = prev.fetchFromGitHub {
+    #     owner = "shadowsocks";
+    #     repo = "shadowsocks-rust";
+    #     rev = "ff3590a830a84b4ee4f4b98623897487eed43196";
+    #     sha256 = "sha256-mNxnF3xozMCnyVwwIbMjxuH0IRmqXENJePARDmvfNRo=";
+    #   };
+    #   cargoDeps = old.cargoDeps.overrideAttrs (prev.lib.const {
+    #     inherit src;
+    #     # otherwise the old "src" will be used.
+    #     outputHash = "sha256-i+lGMSp3RqaEiXUzfn0IItCPEagAksVBBZcUQogxizg=";
+    #   });
+    # });
     #    tdesktop = prev.tdesktop.overrideAttrs
     #      (old: {
     #        version = "4.3.0";

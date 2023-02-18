@@ -21,7 +21,7 @@ in
     };
     package = mkOption {
       type = types.package;
-      default = pkgs.nur-pkgs.sing-box;
+      default = pkgs.sing-box;
       defaultText = literalExpression "pkgs.sing-box";
       description = lib.mdDoc ''
         package
