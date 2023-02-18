@@ -35,6 +35,9 @@
   home.packages = with pkgs;
 
     [
+      microsoft-edge
+      dosbox-staging
+      meld
       yubioath-flutter
       libsForQt5.qtbase
       libsForQt5.qtwayland
@@ -142,7 +145,7 @@
 
       thunderbird
 
-      spotify
+      # spotify
       nushell
 
       geekbench5
@@ -154,7 +157,7 @@
       #neovim-qt
       smartmontools
       #wireshark-qt
-      wezterm
+      # wezterm
       android-tools
       tor-browser-bundle-bin
       cargo-cross
@@ -199,8 +202,8 @@
     ++
     (with nur.repos; [
       linyinfeng.canokey-udev-rules
-      linyinfeng.wemeet
-      xddxdd.wechat-uos-bin
+      # linyinfeng.wemeet
+      # xddxdd.wechat-uos-bin
       YisuiMilena.hmcl-bin
       #      ocfox.gtk-qq
     ]) ++
