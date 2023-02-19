@@ -48,6 +48,7 @@
           ncurses
           qt5.qtbase
           pkgsCross.mipsel-linux-gnu.stdenv.cc
+          # pkgsCross.ppc64.stdenv.cc
           bison
           flex
           openssl.dev
@@ -56,6 +57,8 @@
         ]
         ++ pkgs.linux.nativeBuildInputs);
       runScript = pkgs.writeScript "init.sh" ''
+        # export ARCH=powerpc
+        # export CROSS_COMPILE=powerpc64-unknown-linux-gnuabielfv2-
         export ARCH=mips
         export CROSS_COMPILE=mipsel-unknown-linux-gnu-
         export PKG_CONFIG_PATH="${pkgs.ncurses.dev}/lib/pkgconfig:${pkgs.qt5.qtbase.dev}/lib/pkgconfig"
