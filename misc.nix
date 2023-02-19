@@ -127,6 +127,10 @@
       experimental-features = [ "nix-command" "flakes" ];
       trusted-users = [ "root" "${user}" ];
     };
+    extraOptions = ''
+      keep-outputs = true
+      keep-derivations = true
+    '';
   };
 
   environment = {
@@ -136,17 +140,6 @@
       export SSH_AUTH_SOCK="/run/user/$UID/gnupg/S.gpg-agent.ssh"
     '';
     loginShellInit = "";
-    #      if user == "riro" then
-    #        ''
-    #          autossh -M 5678 -fNTR 5002:127.0.0.1:22 oc > /dev/null
-    #          autossh -M 5678 -fNTR 5002:127.0.0.1:22 az > /dev/null
-    #        '' else
-    #        ''
-    #          autossh -M 5678 -fNTR 5003:127.0.0.1:22 oc > /dev/null
-    #          autossh -M 5678 -fNTR 5003:127.0.0.1:22 az > /dev/null
-    #        '';
-
-
   };
   # Set your time zone.
   time.timeZone = "Asia/Shanghai";

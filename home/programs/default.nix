@@ -17,5 +17,6 @@
   ./hyprland
   ./aria2
   ./foot
+  ./direnv
 
 ]

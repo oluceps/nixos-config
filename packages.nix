@@ -2,6 +2,7 @@
 {
   environment.systemPackages = with pkgs; [
     # rustup
+    unar
     hyprpicker
 
     cmake

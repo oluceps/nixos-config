@@ -139,7 +139,6 @@ let
             # selection
             $ssselection=${grim} -g "$(${slurp})" - | ${wl-copy} -t image/png
             bind=,Print,exec,$ssselection
-            bind=SUPERSHIFT,R,exec,$ssselection
 
             # screen recorder
             bind=SUPERCTRL,R,exec,screen-recorder-toggle

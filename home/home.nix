@@ -35,6 +35,7 @@
   home.packages = with pkgs;
 
     [
+      qq
       microsoft-edge
       dosbox-staging
       meld
@@ -56,7 +57,7 @@
 
       sbctl
       qbittorrent
-      qq
+      
       protonmail-bridge
 
       koreader
@@ -559,8 +560,8 @@
     };
 
     iconTheme = {
-      package = pkgs.papirus-icon-theme;
-      name = "Papirus-Light";
+      package = pkgs.fluent-icon-theme;
+      name = "Fluent";
     };
     gtk2.configLocation = "${config.xdg.configHome}/gtk-2.0/gtkrc";
 
