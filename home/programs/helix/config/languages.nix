@@ -14,7 +14,7 @@ auto-format = true
 comment-token = "//"
 language-server = { command = "${pkgs.rust-analyzer-nightly}/bin/rust-analyzer" }
 indent = { tab-width = 4, unit = "    " }
-formatter = { command = "${pkgs.rustfmt}/bin/rustfmt" }
+formatter = { command = "${pkgs.rustfmt}/bin/rustfmt", args = [ "--edition", "2021" ] }
 
 [language.auto-pairs]
 '(' = ')'
