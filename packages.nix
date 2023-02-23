@@ -1,7 +1,9 @@
 { pkgs, ... }:
 {
   environment.systemPackages = with pkgs; [
-    # rustup
+    rustup
+    e2fsprogs
+    gparted
     unar
     hyprpicker
 
@@ -26,7 +28,7 @@
     srm
     killall
     nethogs
-    (callPackage ./packages/clash-m { })
+    (callPackage ./pkgs/clash-m { })
     fscrypt-experimental
     f2fs-tools
     xmrig
@@ -35,7 +37,6 @@
 
     pkg-config
     compsize
-    nur-pkgs.naiveproxy
     autossh
     restic
     socat
@@ -66,7 +67,6 @@
     # onefetch
     #snapper
     cachix
-    android-tools
     qrencode
     wakelan
     netcat-gnu
@@ -196,7 +196,7 @@
           intelhex
           colorama
           tqdm
-          cryptography
+          # cryptography
 
           pandas
           requests
