@@ -213,12 +213,13 @@
       sarasa-gothic
       twemoji-color-font
       dejavu_fonts
+      maple-mono-SC-NF
       #      font-awesome
       #      fira-code-symbols
       #    cascadia-code
     ]
-    ++ (with (pkgs.callPackage ./packages/glowsans/default.nix { }); [ glowsansSC glowsansTC glowsansJ ])
-    ++ (with nur-pkgs;[ maple-font.Mono-NF-v5 san-francisco plangothic maoken-tangyuan ]);
+    ++ (with (pkgs.callPackage ./pkgs/glowsans/default.nix { }); [ glowsansSC glowsansTC glowsansJ ])
+    ++ (with nur-pkgs;[ san-francisco plangothic maoken-tangyuan ]);
     #"HarmonyOS Sans SC" "HarmonyOS Sans TC"
     fontconfig = {
       subpixel.rgba = "none";

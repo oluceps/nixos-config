@@ -31,6 +31,7 @@
         ".cache"
         ".local"
         ".cargo"
+        ".rustup"
         ".mozilla"
         ".config"
         ".FeelUOwn"

@@ -20,7 +20,6 @@
               intelhex
               colorama
               tqdm
-              cryptography
               pandas
               requests
               pyrogram
@@ -34,9 +33,10 @@
             '';
           })
       ];
-      buildInputs = with pkgs; [ jetbrains.pycharm-professional ];
+      # buildInputs = with pkgs; [ jetbrains.pycharm-professional ];
       name = "python env";
     };
+
   kernel =
     (pkgs.buildFHSUserEnv {
       name = "kernel-build-env";
@@ -289,7 +289,7 @@
     name = "riscv ubuntu qemu boot script";
     shellHook = ''
       qemu-system-riscv64 \
-        -machine virt -nographic -m 4096 -smp 16 \
+        -machine virt -nographic -m 4096 -smp 22 \
         -bios ${pkgs.pkgsCross.riscv64.opensbi}/share/opensbi/lp64/generic/firmware/fw_jump.elf \
         -kernel ${pkgs.pkgsCross.riscv64.ubootQemuRiscv64Smode}/u-boot.bin \
         -device virtio-net-device,netdev=usernet \
