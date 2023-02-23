@@ -75,7 +75,7 @@
         libu2f-host
         via
       ] ++
-      [ (pkgs.callPackage ./packages/opensk-udev-rules { }) ];
+      [ (pkgs.callPackage ./pkgs/opensk-udev-rules { }) ];
 
       #      extraRules = ''
       #        ACTION=="add|remove", SUBSYSTEM=="net", ATTR{idVendor}=="22d9" ENV{ID_USB_DRIVER}=="rndis_host", SYMLINK+="android", RUN+="systemctl restart systemd-networkd.service"
@@ -165,7 +165,6 @@
       llmnr = "false";
       extraConfig = ''
         DNS=223.6.6.6 202.141.178.13:5353
-                  #223.6.6.6 101.6.6.6:5353 202.141.178.13:5353
         Domains=~.
         MulticastDNS=true
         DNSStubListener = false

@@ -7,7 +7,7 @@
   ./naive
 ]
 ++ # Hysteria configs
-[
-  (import ./hysteria "hysteria")
-  (import ./hysteria "hysteria-do")
-]
+(map (import ./hysteria) [
+  "hysteria"
+  "hysteria-do"
+])
