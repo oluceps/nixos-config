@@ -1,49 +1,46 @@
-{ inputs, pkgss }:
+{ inputs, _pkgs }:
 let
   nixosSystem = inputs.nixpkgs.lib.nixosSystem;
+
+  genSysAttr = { system, user, hostname }:
+    rec {
+      inherit system;
+      pkgs = _pkgs.${system};
+      specialArgs = { inherit inputs system user; };
+      modules = (import ./${hostname})
+        ++ (import ./shares.nix { inherit inputs system pkgs; });
+    };
+
+  genGeneralSys = { ... }@a:
+    nixosSystem (genSysAttr { inherit (a) system user hostname; });
+
 in
 {
-  hastur = nixosSystem (
+  hastur = genGeneralSys {
+    system = "x86_64-linux";
+    user = "riro";
+    hostname = "hastur";
+  };
 
+  kaambl = genGeneralSys {
+    system = "x86_64-linux";
+    user = "elena";
+    hostname = "kaambl";
+  };
+
+  livecd =
     let
-      system = "x86_64-linux";
-      pkgs = pkgss.${system};
-      user = "riro";
+      o = (genSysAttr
+        {
+          system = "x86_64-linux";
+          user = "isho";
+          hostname = "livecd";
+        });
+      modules = o.modules ++
+        [
+          (inputs.nixpkgs
+            + "/nixos/modules/installer/cd-dvd/installation-cd-minimal-new-kernel.nix")
+        ];
     in
-    {
-      inherit system pkgs;
-      specialArgs = { inherit inputs system user; };
-      modules = (import ./hastur) ++ (import ./shares.nix { inherit system pkgs inputs; });
-    }
-  );
-
-  kaambl = nixosSystem (
-
-    let
-      system = "x86_64-linux";
-      pkgs = pkgss.${system};
-      user = "elena";
-    in
-    {
-      inherit system pkgs;
-      specialArgs = { inherit inputs system user; };
-      modules = (import ./kaambl) ++ (import ./shares.nix { inherit system pkgs inputs; });
-    }
-  );
-
-  livecd = nixosSystem (
-    let
-      user = "isho";
-      system = "x86_64-linux";
-      pkgs = pkgss.${system};
-    in
-    {
-      inherit system pkgs;
-      specialArgs = { inherit inputs system user; };
-      modules = (import ./livecd) ++ (import ./shares.nix { inherit system pkgs inputs; }) ++
-        [ (inputs.nixpkgs + "/nixos/modules/installer/cd-dvd/installation-cd-minimal-new-kernel.nix") ]
-      ;
-    }
-    # OMG 7.3G ISO 
-  );
+    nixosSystem (o // { inherit modules; });
 }
