@@ -3,7 +3,7 @@
   outputs = inputs:
     let
       genSystems = inputs.nixpkgs.lib.genAttrs [ "aarch64-linux" "x86_64-linux" ];
-      pkgss = genSystems
+      _pkgs = genSystems
         (
           system:
           import inputs.nixpkgs {
@@ -13,58 +13,61 @@
               allowBroken = false;
               segger-jlink.acceptLicense = true;
               allowUnsupportedSystem = true;
+              permittedInsecurePackages = [
+                "python-2.7.18.6"
+              ];
             };
-            overlays =
-              let
-                genOverlay = n: inputs.${n}.overlays.default;
-                overlays = [
-                  "fenix"
-                  "berberman"
-                ];
-              in
+            overlays = let inherit (import inputs.nixpkgs { inherit system; }) lib; in
               [
-                (final: prev: {
-                  nur-pkgs = inputs.nur-pkgs.packages."${system}";
-                  rnix-lsp = inputs.rnix-lsp.defaultPackage."${system}";
-                } // (import inputs.nixpkgs { inherit system; }).lib.genAttrs
-                  [
-                    "helix"
-                    "hyprland"
-                    "hyprpicker"
-                    "clash-meta"
-                    "nil"
-                  ]
-                  (n: inputs.${n}.packages."${system}".default)
+                (final: prev:
+                  {
+                    nur-pkgs = inputs.nur-pkgs.packages.${system};
+                    rnix-lsp = inputs.rnix-lsp.defaultPackage.${system};
+                  } //
+
+                  lib.genAttrs
+                    [
+                      "helix"
+                      "hyprland"
+                      "hyprpicker"
+                      "clash-meta"
+                      "nil"
+                    ]
+                    (n: inputs.${n}.packages.${system}.default)
                 )
 
                 inputs.nur.overlay
 
               ] ++ (import ./overlay.nix inputs)
-              ++ map (i: genOverlay i) overlays;
+              ++ map (i: (n: inputs.${n}.overlays.default) i)
+                [
+                  "fenix"
+                  "berberman"
+                ];
           }
         );
     in
     {
       nixosConfigurations = (
         import ./hosts {
-          inherit inputs pkgss;
+          inherit inputs _pkgs;
         }
       );
 
       devShells = genSystems (system:
         let
-          pkgs = pkgss.${system};
+          pkgs = _pkgs.${system};
         in
         import ./shells.nix { inherit system pkgs inputs; }
       );
 
       overlays.default = final: prev:
         let
-          dirContents = builtins.readDir ./packages;
+          dirContents = builtins.readDir ./pkgs;
           names = builtins.attrNames dirContents;
         in
         builtins.genAttrs names (name:
-          final.callPackage (./packages + "/${name}") { }
+          final.callPackage (./pkgs + "/${name}") { }
         );
 
     };
@@ -74,7 +77,6 @@
     nixpkgs-22.url = "github:NixOS/nixpkgs?rev=c91d0713ac476dfb367bbe12a7a048f6162f039c";
     nil.url = "github:oxalica/nil";
     nix-direnv.url = "github:nix-community/nix-direnv";
-    flake-utils.url = "github:numtide/flake-utils";
     nix-colors.url = "github:misterio77/nix-colors";
     agenix.url = "github:ryantm/agenix";
     nur.url = "github:nix-community/NUR";
@@ -100,7 +102,6 @@
     lanzaboote = {
       url = "github:nix-community/lanzaboote";
       inputs.nixpkgs.follows = "nixpkgs";
-      inputs.flake-utils.follows = "flake-utils";
     };
 
     impermanence.url = "github:nix-community/impermanence";
@@ -146,6 +147,9 @@
     berberman = {
       url = "github:berberman/flakes";
     };
+
+    # dream2nix.url = "github:nix-community/dream2nix";
+
   };
 
 }
