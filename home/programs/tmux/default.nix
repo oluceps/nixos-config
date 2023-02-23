@@ -8,7 +8,7 @@
     keyMode = "vi";
     terminal = "alacritty";
     extraConfig = ''
-      set -g status off
+      # set -g status off
       set -g set-clipboard on
       set -g status-right ""
       set -g mouse on
