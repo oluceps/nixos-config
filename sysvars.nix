@@ -3,11 +3,11 @@
 , user
 , ...
 }: {
-  environment.sessionVariables = rec {
+  environment.sessionVariables = {
     NEOVIDE_MULTIGRID = "1";
     NEOVIDE_WM_CLASS = "1";
     EDITOR = "hx";
-    NIXOS_OZONE_WL = "1";
+    # NIXOS_OZONE_WL = "1";
     WLR_NO_HARDWARE_CURSORS = "1";
     NODE_PATH = "~/.npm-packages/lib/node_modules";
     PATH = [
@@ -20,5 +20,9 @@
     XDG_DATA_HOME = "\${HOME}/.local/share";
     # Steam needs this to find Proton-GE
     STEAM_EXTRA_COMPAT_TOOLS_PATHS = "\${HOME}/.steam/root/compatibilitytools.d";
+
+    NIX_CFLAGS_COMPILE = "--verbose";
+    NIX_CFLAGS_LINK = "--verbose";
+    NIX_LDFLAGS = "--verbose";
   };
 }
