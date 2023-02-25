@@ -1,6 +1,6 @@
 {
   description = "a nixos flake";
-  outputs = inputs:
+  outputs = { self, ... }@inputs:
     let
       genSystems = inputs.nixpkgs.lib.genAttrs [ "aarch64-linux" "x86_64-linux" ];
       _pkgs = genSystems
@@ -17,8 +17,8 @@
                 "python-2.7.18.6"
               ];
             };
-            overlays = [ inputs.nur.overlay ]
-              ++ (import ./overlay.nix { inherit inputs system; })
+            overlays = [ inputs.nur.overlay self.overlays.default ]
+              ++ (import ./overlays.nix { inherit inputs system; })
 
               # overlays defined by others
               ++ map (i: (n: inputs.${n}.overlays.default) i)
@@ -44,7 +44,7 @@
           dirContents = builtins.readDir ./pkgs;
           names = builtins.attrNames dirContents;
         in
-        builtins.genAttrs names (name:
+        prev.lib.genAttrs names (name:
           final.callPackage (./pkgs + "/${name}") { }
         );
 
