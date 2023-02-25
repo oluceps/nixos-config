@@ -17,48 +17,20 @@
                 "python-2.7.18.6"
               ];
             };
-            overlays = let inherit (import inputs.nixpkgs { inherit system; }) lib; in
-              [
-                (final: prev:
-                  {
-                    nur-pkgs = inputs.nur-pkgs.packages.${system};
-                    rnix-lsp = inputs.rnix-lsp.defaultPackage.${system};
-                    linuxPackages_latest =
-                      (import inputs.nixpkgs-pin-kernel {
-                        inherit system; config = {
-                        allowUnfree = true;
-                      };
-                      }).linuxPackages_latest;
-                  } //
+            overlays = [ inputs.nur.overlay ]
+              ++ (import ./overlay.nix { inherit inputs system; })
 
-                  lib.genAttrs
-                    [
-                      "helix"
-                      "hyprland"
-                      "hyprpicker"
-                      "clash-meta"
-                      "nil"
-                    ]
-                    (n: inputs.${n}.packages.${system}.default)
-                )
-
-                inputs.nur.overlay
-
-              ] ++ (import ./overlay.nix inputs)
+              # overlays defined by others
               ++ map (i: (n: inputs.${n}.overlays.default) i)
-                [
-                  "fenix"
-                  "berberman"
-                ];
+              [
+                "fenix"
+                "berberman"
+              ];
           }
         );
     in
     {
-      nixosConfigurations = (
-        import ./hosts {
-          inherit inputs _pkgs;
-        }
-      );
+      nixosConfigurations = (import ./hosts { inherit inputs _pkgs; });
 
       devShells = genSystems (system:
         let
@@ -90,8 +62,6 @@
     nur-pkgs = {
       url = "github:oluceps/nur-pkgs";
     };
-
-    rnix-lsp.url = "github:nix-community/rnix-lsp";
 
     fenix = {
       url = "github:nix-community/fenix";
