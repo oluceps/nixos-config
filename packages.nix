@@ -1,6 +1,8 @@
 { pkgs, ... }:
 {
   environment.systemPackages = with pkgs; [
+    q
+    clang-tools_15
     rustup
     e2fsprogs
     gparted

@@ -1,6 +1,7 @@
 { pkgs
 , ...
-}: {
+}:
+{
   #  home.file.".config/helix/".source = ./config;
   xdg.configFile = {
     "helix/languages.toml".text =
@@ -30,7 +31,7 @@
 
         indent-guides = {
           render = true;
-          character = "│";
+          character = "┊";
         };
 
         file-picker.hidden = false;

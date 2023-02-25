@@ -36,11 +36,11 @@ in
           user = "isho";
           hostname = "livecd";
         });
-      modules = o.modules ++
-        [
-          (inputs.nixpkgs
-            + "/nixos/modules/installer/cd-dvd/installation-cd-minimal-new-kernel.nix")
-        ];
     in
-    nixosSystem (o // { inherit modules; });
+    nixosSystem (o // {
+      modules = o.modules ++ [
+        (inputs.nixpkgs
+          + "/nixos/modules/installer/cd-dvd/installation-cd-minimal-new-kernel.nix")
+      ];
+    });
 }
