@@ -1,3 +1,5 @@
+![CI state](https://github.com/oluceps/nixos-config/actions/workflows/eval.yaml/badge.svg)
+
 # Nix flake
 
 Home managing with [home-manager](https://github.com/nix-community/home-manager)  
