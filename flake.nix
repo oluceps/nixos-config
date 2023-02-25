@@ -17,7 +17,7 @@
                 "python-2.7.18.6"
               ];
             };
-            overlays = [ inputs.nur.overlay self.overlays.default ]
+            overlays = [ inputs.nur.overlay self.overlay ]
               ++ (import ./overlays.nix { inherit inputs system; })
 
               # overlays defined by others
@@ -39,6 +39,7 @@
         import ./shells.nix { inherit system pkgs inputs; }
       );
 
+      overlay = self.overlays.default;
       overlays.default = final: prev:
         let
           dirContents = builtins.readDir ./pkgs;
@@ -57,76 +58,43 @@
     nil.url = "github:oxalica/nil";
     nix-direnv.url = "github:nix-community/nix-direnv";
     nix-colors.url = "github:misterio77/nix-colors";
-    agenix.url = "github:ryantm/agenix";
+    agenix = {
+      url = "github:ryantm/agenix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     nur.url = "github:nix-community/NUR";
     nur-pkgs = {
       url = "github:oluceps/nur-pkgs";
+      inputs.nixpkgs.follows = "nixpkgs";
     };
-
     fenix = {
       url = "github:nix-community/fenix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-
-    hyprpicker = {
-      url = "github:hyprwm/hyprpicker";
-    };
-
-    surrealdb = {
-      url = "github:surrealdb/surrealdb";
-    };
-
+    hyprpicker.url = "github:hyprwm/hyprpicker";
+    surrealdb.url = "github:surrealdb/surrealdb";
     lanzaboote = {
       url = "github:nix-community/lanzaboote";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-
-    impermanence.url = "github:nix-community/impermanence";
-
-    clash-meta = {
-      url = "github:MetaCubeX/Clash.Meta/Alpha";
+    impermanence = {
+      url = "github:nix-community/impermanence";
+      inputs.nixpkgs.follows = "nixpkgs";
     };
-
-    alejandra = {
-      url = "github:kamadorueda/alejandra";
-    };
-
+    clash-meta.url = "github:MetaCubeX/Clash.Meta/Alpha";
+    alejandra.url = "github:kamadorueda/alejandra";
     polymc.url = "github:PolyMC/PolyMC";
-    prismlauncher.url = "github:PrismLauncher/PrismLauncher";
-
-    sops-nix.url = "github:Mic92/sops-nix";
-
-    pywmpkg = {
-      url = "github:jbuchermn/pywm";
+    prismlauncher = {
+      url = "github:PrismLauncher/PrismLauncher";
+      inputs.nixpkgs.follows = "nixpkgs";
     };
-
-    home-manager = {
-      url = "github:nix-community/home-manager";
-    };
-
-    helix = {
-      url = "github:helix-editor/helix";
-    };
-
-    hyprland = {
-      url = "github:vaxerski/Hyprland";
-    };
-    #
-    gomod2nix = {
-      url = "github:tweag/gomod2nix";
-    };
+    pywmpkg.url = "github:jbuchermn/pywm";
+    home-manager.url = "github:nix-community/home-manager";
+    helix.url = "github:helix-editor/helix";
+    hyprland.url = "github:vaxerski/Hyprland";
     grub2-themes.url = "github:vinceliuice/grub2-themes";
-
     mach-nix.url = "mach-nix/3.5.0";
-
     colmena.url = "github:zhaofengli/colmena";
-
-    berberman = {
-      url = "github:berberman/flakes";
-    };
-
-    # dream2nix.url = "github:nix-community/dream2nix";
-
+    berberman.url = "github:berberman/flakes";
   };
-
 }
