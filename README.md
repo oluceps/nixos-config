@@ -91,15 +91,15 @@ nix build .#nixosConfigurations.livecd.config.system.build.isoImage
 
 __Use Overlay__  
 
-> This flake contains overlay of few packages (check ./pkgs), to apply:  
++ This flake contains overlay of few packages (check ./pkgs), to apply:  
 
 Add to your flake:  
 
-    inputs.oluceps = "github:oluceps/nixos-config";
+    inputs.oluceps.url = "github:oluceps/nixos-config";
 
 Pass overlay while importing nixpkgs:  
 
-    overlays = [ inputs.oluceps.overlay ];
+    overlays = [ inputs.oluceps.overlays.default ];
 
 
 ## Contents

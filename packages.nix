@@ -30,7 +30,7 @@
     srm
     killall
     nethogs
-    (callPackage ./pkgs/clash-m { })
+    # (callPackage ./pkgs/clash-m { })
     fscrypt-experimental
     f2fs-tools
     xmrig
