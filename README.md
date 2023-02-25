@@ -1,13 +1,24 @@
-# flake + home-manager Configurations
+# Nix flake
 
 Home managing with [home-manager](https://github.com/nix-community/home-manager)  
 Secrets managing with [agenix](https://github.com/ryantm/agenix)  
 Secure boot with [lanzaboote](https://github.com/nix-community/lanzaboote)  
 Root-On-Tmpfs persistence with [impermanence](https://github.com/nix-community/impermanence)  
 
+## May be helpful
+[Erase your darlings](https://grahamc.com/blog/erase-your-darlings)  
+[NixOS: tmpfs as root](https://elis.nu/blog/2020/05/nixos-tmpfs-as-root/)  
+[How to Learn Nix](https://ianthehenry.com/posts/how-to-learn-nix/)  
+[Attrset functions](https://ryantm.github.io/nixpkgs/functions/library/attrsets/)  
+[List manipulation functions](https://ryantm.github.io/nixpkgs/functions/library/lists/)  
+[Way to search function](http://noogle.dev)  
 
-## Usage
+## How to use
+> Follow Nix official guide to initialize NixOS first.  
+
 flake outputs:  
+<details>
+<summary>Full</summary>
 
 ```console
 > nix flake show
@@ -41,12 +52,13 @@ git+file:///etc/nixos
 └───overlays
     └───default: Nixpkgs overlay
 ```  
+</details>
 
 ### NixOS Deployment
 
 __Before deployment, adjust configurations manually__
 
-Optionally replace hostname globally with:    
+Optional: replace hostname globally with:    
 ```console  
 sed -i "s/hastur/YOUR_HOSTNAME/g" `rg -rl "hastur" ./`  
 ```
@@ -62,27 +74,36 @@ nixos-rebuild switch --flake github:oluceps/nixos-config#<hostname>
 |WM|[Hyprland](https://github.com/oluceps/nixos-config/tree/pub/home/programs/hyprland)|
 |Shell|[fish](https://github.com/oluceps/nixos-config/tree/pub/home/programs/fish)|
 |Bar|[waybar](https://github.com/oluceps/nixos-config/tree/pub/home/programs/waybar)|
-|Terminal|[alacritty](https://github.com/oluceps/nixos-config/tree/pub/home/programs/alacritty)|
+|Terminal|[foot](https://github.com/oluceps/nixos-config/tree/pub/home/programs/foot)|
 |backup|[btrbk](https://github.com/oluceps/nixos-config/tree/pub/modules/btrbk)|  
 
-_Build devShell:_  
+__Build devShell__  
 ```console
 nix develop .#devShells.<Arch>.<Shell>
 ```   
 
-_Build livecd:_
-
+__Build livecd__  
 ```console
 nix build .#nixosConfigurations.livecd.config.system.build.isoImage
 ```
 
+__Use Overlay__  
+
+> Since this flake contains overlay of few packages (check ./pkgs),to use these packages:  
+
+Add to your flake  
+
+    inputs.oluceps = "github:oluceps/nixos-config";
+
+In pkg config:  
+    overlays = [ inputs.oluceps.overlay ];
 
 
 ## Contents
 + hosts: host-specific configuration  
 + home: home-manager config  
 + modules: modules  
-+ packages: packaged softwares
++ pkgs: packaged softwares
 
 
 ## Directory structure  
