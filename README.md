@@ -91,7 +91,7 @@ nix build .#nixosConfigurations.livecd.config.system.build.isoImage
 
 __Use Overlay__  
 
-> Since this flake contains overlay of few packages (check ./pkgs),to use these packages:  
+> This flake contains overlay of few packages (check ./pkgs), to apply:  
 
 Add to your flake:  
 
