@@ -91,11 +91,12 @@ __Use Overlay__
 
 > Since this flake contains overlay of few packages (check ./pkgs),to use these packages:  
 
-Add to your flake  
+Add to your flake:  
 
     inputs.oluceps = "github:oluceps/nixos-config";
 
-In pkg config:  
+Pass overlay while importing nixpkgs:  
+
     overlays = [ inputs.oluceps.overlay ];
 
 
