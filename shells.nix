@@ -299,7 +299,7 @@
     '';
   };
 
-  eunomia = pkgs.llvmPackages_14.libcxxStdenv.mkDerivation {
+  eunomia = pkgs.stdenv.mkDerivation {
     name = "eunomia-dev";
     nativeBuildInputs = with pkgs; [
       cmake
@@ -308,11 +308,7 @@
       elfutils
       openssl.dev
       llvmPackages_14.llvm
-
-      libbfd
-      libcap
+      rustPlatform.bindgenHook
     ];
-    LIBCLANG_PATH = "${pkgs.llvmPackages_14.libclang.lib}/lib";
   };
-
 }
