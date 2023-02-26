@@ -17,12 +17,12 @@
 
       nur-pkgs = inputs.nur-pkgs.packages.${system};
 
-      linuxPackages_latest =
-        (import inputs.nixpkgs-pin-kernel {
-          inherit system; config = {
-          allowUnfree = true;
-        };
-        }).linuxPackages_latest;
+      # linuxPackages_latest =
+      #   (import inputs.nixpkgs-pin-kernel {
+      #     inherit system; config = {
+      #     allowUnfree = true;
+      #   };
+      #   }).linuxPackages_latest;
 
       picom = prev.picom.overrideAttrs (old: {
         src = prev.fetchFromGitHub {

@@ -17,27 +17,29 @@
                 "python-2.7.18.6"
               ];
             };
-            overlays = [ inputs.nur.overlay self.overlay ]
+            overlays =
+              (with inputs; [
+                nur.overlay
+                clansty.overlays.clansty
+                self.overlay
+              ])
               ++ (import ./overlays.nix { inherit inputs system; })
 
               # overlays defined by others
+              # format to [ inputs.${user}.overlays.default ]
               ++ map (i: (n: inputs.${n}.overlays.default) i)
-              [
-                "fenix"
-                "berberman"
-              ];
+                [
+                  "fenix"
+                  "berberman"
+                ];
           }
         );
     in
     {
       nixosConfigurations = (import ./hosts { inherit inputs _pkgs; });
 
-      devShells = genSystems (system:
-        let
-          pkgs = _pkgs.${system};
-        in
-        import ./shells.nix { inherit system pkgs inputs; }
-      );
+      devShells = genSystems
+        (system: import ./shells.nix { inherit system inputs; pkgs = _pkgs.${system}; });
 
       overlay = self.overlays.default;
       overlays.default = final: prev:
@@ -58,6 +60,7 @@
     nil.url = "github:oxalica/nil";
     nix-direnv.url = "github:nix-community/nix-direnv";
     nix-colors.url = "github:misterio77/nix-colors";
+    clansty.url = "github:clansty/flake";
     agenix = {
       url = "github:ryantm/agenix";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -77,10 +80,7 @@
       url = "github:nix-community/lanzaboote";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    impermanence = {
-      url = "github:nix-community/impermanence";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
+    impermanence.url = "github:nix-community/impermanence";
     clash-meta.url = "github:MetaCubeX/Clash.Meta/Alpha";
     alejandra.url = "github:kamadorueda/alejandra";
     polymc.url = "github:PolyMC/PolyMC";
