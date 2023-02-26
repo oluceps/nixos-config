@@ -14,6 +14,7 @@ Root-On-Tmpfs persistence with [impermanence](https://github.com/nix-community/i
 [Attrset functions](https://ryantm.github.io/nixpkgs/functions/library/attrsets/)  
 [List manipulation functions](https://ryantm.github.io/nixpkgs/functions/library/lists/)  
 [Way to search function](http://noogle.dev)  
+[NixOS CN DOC](https://github.com/OpenTritium/NixOS-CN-DOC)  
 
 ## How to use
 > Follow Nix official guide to initialize NixOS first.  
@@ -91,176 +92,35 @@ nix build .#nixosConfigurations.livecd.config.system.build.isoImage
 
 __Use Overlay__  
 
-+ This flake contains overlay of few packages (check ./pkgs), to apply:  
+This flake contains overlay of few packages (check ./pkgs), to apply:  
 
-Add to your flake:  
-
-    inputs.oluceps.url = "github:oluceps/nixos-config";
-
-Pass overlay while importing nixpkgs:  
-
-    overlays = [ inputs.oluceps.overlays.default ];
-
+Add to your flake, passing overlay while importing nixpkgs:  
+```nix
+# flake.nix
+{
+  inputs.oluceps.url = "github:oluceps/nixos-config";
+  outputs = inputs: {
+    nixosConfigurations.machine-name = {
+    # ...
+    modules = [
+      # ...
+      {
+        nixpkgs.overlays = [ inputs.oluceps.overlay ];
+        # packages in `pkgs` dir of this repo,
+        # with pname consist with dir name
+        environment.systemPackages = [ pkgs.shadow-tls ];
+      }
+    ];
+  };
+};
+}
+```
 
 ## Contents
 + hosts: host-specific configuration  
 + home: home-manager config  
 + modules: modules  
 + pkgs: packaged softwares
-
-
-## Directory structure  
-<details>
-<summary>Full</summary>
-
-```console  
-> tree
-.
-├── boot.nix
-├── flake.lock
-├── flake.nix
-├── home
-│   ├── default.nix
-│   ├── home.nix
-│   └── programs
-│       ├── alacritty
-│       │   ├── alacritty.yml
-│       │   └── default.nix
-│       ├── aria2
-│       │   └── default.nix
-│       ├── bspwm
-│       │   ├── bspwmrc
-│       │   ├── default.nix
-│       │   └── sxhkdrc
-│       ├── btop
-│       │   └── default.nix
-│       ├── chrome
-│       │   └── default.nix
-│       ├── default.nix
-│       ├── fish
-│       │   └── default.nix
-│       ├── helix
-│       │   ├── config
-│       │   │   ├── clang-format.nix
-│       │   │   ├── languages.nix
-│       │   │   └── themes
-│       │   │       └── catppuccin_macchiato.toml
-│       │   └── default.nix
-│       ├── hyprland
-│       │   ├── config.nix
-│       │   └── default.nix
-│       ├── kitty.nix
-│       ├── nnn.nix
-│       ├── nushell
-│       │   ├── config.nu
-│       │   ├── default.nix
-│       │   └── env.nu
-│       ├── ranger
-│       │   └── default.nix
-│       ├── starship.nix
-│       ├── sway
-│       │   └── default.nix
-│       ├── tmux
-│       │   └── default.nix
-│       ├── waybar
-│       │   ├── default.nix
-│       │   └── waybar.css
-│       └── wezterm
-│           ├── catppuccin.lua
-│           ├── default.nix
-│           └── wezterm.lua
-├── hosts
-│   ├── default.nix
-│   ├── hastur
-│   │   ├── default.nix
-│   │   ├── hardware.nix
-│   │   ├── network.nix
-│   │   ├── persist.nix
-│   │   └── secureboot.nix
-│   ├── kaambl
-│   │   ├── default.nix
-│   │   ├── hardware.nix
-│   │   └── network.nix
-│   ├── livecd
-│   │   ├── default.nix
-│   │   ├── home.nix
-│   │   └── network.nix
-│   └── shares.nix
-├── misc.nix
-├── modules
-│   ├── aria2
-│   ├── blog
-│   │   └── default.nix
-│   ├── btrbk
-│   │   └── default.nix
-│   ├── clash-m
-│   │   └── default.nix
-│   ├── default.nix
-│   ├── foot
-│   │   └── foot.ini
-│   ├── hysteria
-│   │   └── default.nix
-│   ├── hysteria-do
-│   │   └── default.nix
-│   ├── naive
-│   │   └── default.nix
-│   ├── polybar
-│   │   ├── config.ini
-│   │   └── default.nix
-│   ├── shadow-tls
-│   ├── sing-box
-│   │   └── default.nix
-│   ├── ss
-│   │   └── default.nix
-│   └── tuic
-│       └── default.nix
-├── overlay.nix
-├── packages
-│   ├── clash-m
-│   │   └── default.nix
-│   ├── clash-p
-│   │   └── default.nix
-│   ├── glowsans
-│   │   └── default.nix
-│   ├── Graphite-cursors
-│   │   └── default.nix
-│   ├── hysteria
-│   │   └── default.nix
-│   ├── maple-font
-│   │   └── default.nix
-│   ├── opensk-udev-rules
-│   │   └── default.nix
-│   ├── plangothic
-│   │   └── default.nix
-│   ├── RustPlayer
-│   │   └── default.nix
-│   ├── san-francisco
-│   │   └── default.nix
-│   ├── shadow-tls
-│   │   └── default.nix
-│   ├── sing-box
-│   │   └── default.nix
-│   ├── TDesktop-x64
-│   │   └── default.nix
-│   └── v2ray-plugin
-│       └── default.nix
-├── packages.nix
-├── secrets
-│   ├── hyst.age
-│   ├── hyst-do.age
-│   ├── naive.age
-│   ├── secrets.nix
-│   ├── sing.age
-│   ├── ss.age
-│   └── tuic.age
-├── services.nix
-├── shells.nix
-├── sysvars.nix
-└── users.nix
-
-52 directories, 89 files
-```  
-</details>
 
 ## Screenshot  
 ![screenshot](./screenshots/shot_1.png)
