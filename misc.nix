@@ -102,10 +102,12 @@
       owner = user;
       group = user;
     };
-
-
-
-
+    ssh = {
+      file = ./secrets/ssh.age;
+      mode = "770";
+      owner = user;
+      group = user;
+    };
   };
   nix = {
     #     settings.substituters = [ "https://mirrors.bfsu.edu.cn/nix-channels/store" ];
