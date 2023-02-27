@@ -16,7 +16,6 @@
 
   security = {
     pam = {
-
       services = {
         login.u2fAuth = true;
         sudo.u2fAuth = true;
@@ -34,6 +33,14 @@
   xdg.portal.enable = true;
 
   services = {
+    autossh.sessions = [
+      {
+        extraArguments = "-NTR 5002:127.0.0.1:22 az";
+        monitoringPort = 20000;
+        name = "az";
+        inherit user;
+      }
+    ];
     flatpak.enable = true;
     journald.extraConfig =
       ''

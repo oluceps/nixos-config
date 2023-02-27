@@ -11,7 +11,7 @@ let
         ++ (import ./shares.nix { inherit inputs system pkgs; });
     };
 
-  genGeneralSys = { ... }@a:
+  genGeneralSys = a:
     nixosSystem (genSysAttr { inherit (a) system user hostname; });
 
 in
