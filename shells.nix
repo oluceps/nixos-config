@@ -303,7 +303,7 @@
     name = "eunomia-dev";
     nativeBuildInputs = with pkgs; [
       cmake
-      zlib
+      zlib.static
       pkg-config
       elfutils
       openssl.dev
