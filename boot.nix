@@ -6,6 +6,7 @@
   boot = {
     # Use the systemd-boot EFI boot loader.
     tmpOnTmpfs = true;
+    tmpOnTmpfsSize = "80%";
 
     loader = {
       systemd-boot.enable = lib.mkForce false;
