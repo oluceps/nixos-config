@@ -309,6 +309,9 @@
       openssl.dev
       llvmPackages_14.llvm
       rustPlatform.bindgenHook
+
+      libbfd.dev
+      libcap.dev
     ];
   };
 }
