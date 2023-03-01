@@ -42,12 +42,8 @@
       yubioath-flutter
       libsForQt5.qtbase
       libsForQt5.qtwayland
-      i2p
-      pkgsCross.riscv64.ubootQemuRiscv64Smode
-      pkgsCross.riscv64.opensbi
-      ubootTools
-      codeql
-      foliate
+
+
       veracrypt
 
       # davinci-resolve
@@ -57,7 +53,7 @@
 
       sbctl
       qbittorrent
-      
+
       protonmail-bridge
 
       koreader
@@ -69,7 +65,6 @@
       nrfconnect
       nrfutil
       # nrf-command-line-tools
-      kate
       yubico-pam
       yubikey-manager
 
@@ -81,46 +76,59 @@
       feeluown-local
       feeluown-netease
       feeluown-qqmusic
+
       chntpw
       gkraken
       libnotify
-      cinnamon.nemo
-      dolphin
-      # stress
+
+      # Perf
       stress
       s-tui
       mprime
+      geekbench5
 
+      # reader
       calibre
       dolphin
-      discord
-      # krita
-      #    davinci-resolve
-      brightnessctl
-      alacritty
+      obsidian
+      mdbook
+      sioyek
+      foliate
+
+      # file
       filezilla
+      file
+      lapce
+      kate
+      cinnamon.nemo
+      dolphin
+      gnome.nautilus
+      gnome.eog
+      #zathura
+
+      # social
+      discord
+      tdesktop
+      nheko
+      element-desktop-wayland
+      thunderbird
+      # fluffychat
+      discord-canary
+
+      alacritty
       steam-run
       appimage-run
       lutris
       tofi
       zoom-us
-      mdbook
-      obsidian
-      gnome.nautilus
-      gnome.eog
       gnomecast
-      sioyek
-      thunderbird
-      nheko
-      conda
-      gtk4
-      lapce
-      element-desktop-wayland
-      #fluffychat
       tetrio-desktop
+
       ffmpeg_5-full
-      swayidle
+
       foot
+
+      brightnessctl
 
       fuzzel
       swaybg
@@ -131,38 +139,19 @@
       slurp
 
       mongodb-compass
+      tor-browser-bundle-bin
 
       vial
-      discord-canary
-
-      iwd
 
       geda
 
       ncdu_2 # disk space info
 
-      # clipboard
-      xsel
-
-      thunderbird
-
-      # spotify
-      nushell
-
-      geekbench5
-
-      wayfire
-
       btop
 
-      #neovim-qt
       smartmontools
-      #wireshark-qt
-      # wezterm
       android-tools
-      tor-browser-bundle-bin
       cargo-cross
-      # android-studio
       zellij
       netease-cloud-music-gtk
       cmatrix
@@ -179,22 +168,15 @@
       pamixer
       sl
       ncpamixer
-      starship
-      #texlive.
       texlive.combined.scheme-full
       vlc
       firefox
       bluedevil
-      #zathura
       jetbrains.clion
       jetbrains.goland
       jetbrains.pycharm-professional
       jetbrains.datagrip
-      bspwm
-      tdesktop
-      file
       julia-bin
-      tree
     ]
     ++
     (with inputs;[
@@ -203,10 +185,7 @@
     ++
     (with nur.repos; [
       linyinfeng.canokey-udev-rules
-      # linyinfeng.wemeet
-      # xddxdd.wechat-uos-bin
       YisuiMilena.hmcl-bin
-      #      ocfox.gtk-qq
     ]) ++
     (with nur-pkgs;[
       rustplayer

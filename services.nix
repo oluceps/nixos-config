@@ -47,6 +47,7 @@
         SystemMaxUse=1G
       '';
 
+    # HORRIBLE
     # mongodb = {
     #   enable = true;
     #   package = pkgs.mongodb-6_0;
@@ -117,9 +118,8 @@
           else false;
       };
 
-    sing-box = {
-      enable = true;
-    };
+    sing-box.enable = true;
+
 
     # btrbk = {
     #   instances = {

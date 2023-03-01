@@ -39,8 +39,8 @@
     };
     supportedFilesystems = [ "ntfs" "tcp_bbr" ];
     kernel.sysctl = {
-      # Disable magic SysRq key
-      "kernel.sysrq" = 0;
+      "kernel.panic" = 10;
+      "kernel.sysrq" = 1;
       # max read buffer
       # max write buffer
       "fs.file-max" = 500000;
@@ -89,7 +89,7 @@
       "net.ipv4.tcp_tw_reuse" = 1;
       "net.ipv4.tcp_no_metrics_save" = 1;
       "net.ipv4.tcp_sack" = 1;
-      "vm.overcommit_memory" = lib.mkDefault 1;
+      # "vm.overcommit_memory" = 1;
       "vm.swappiness" = 95;
       "net.ipv4.tcp_ecn" = 1;
     };
