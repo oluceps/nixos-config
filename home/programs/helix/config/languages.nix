@@ -488,7 +488,7 @@ roots = ["flake.nix"]
 comment-token = "#"
 language-server = { command = "${pkgs.nil}/bin/nil" }
 indent = { tab-width = 2, unit = "  " }
-formatter = { command = "nixpkgs-fmt" }
+formatter = { command = "${pkgs.nixpkgs-fmt}/bin/nixpkgs-fmt" }
 
 
 [[grammar]]
