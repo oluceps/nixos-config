@@ -146,14 +146,13 @@
   # Set your time zone.
   time.timeZone = "Asia/Shanghai";
 
-  # Select internationalisation properties.
-  i18n.defaultLocale = "en_US.UTF-8";
   console = {
     font = "Lat2-Terminus16";
     keyMap = "us";
   };
 
   programs = {
+    git.enable = true;
     fish.enable = true;
     sway.enable = true;
     kdeconnect.enable = true;
@@ -182,7 +181,7 @@
     nvidia = {
       package = config.boot.kernelPackages.nvidiaPackages.stable;
       modesetting.enable = true;
-      powerManagement.enable = true;
+      powerManagement.enable = false;
     };
 
     opengl = {
@@ -237,20 +236,22 @@
   security.rtkit.enable = true;
 
   # $ nix search wget
-  i18n.inputMethod = {
-    enabled = "fcitx5";
-    fcitx5.addons = with pkgs; [
-      fcitx5-chinese-addons
-      fcitx5-mozc
-      fcitx5-gtk
-      fcitx5-configtool
-      fcitx5-pinyin-zhwiki
-    ];
+  i18n = {
+
+    # Select internationalisation properties.
+    defaultLocale = "C.UTF-8";
+
+    inputMethod = {
+      enabled = "fcitx5";
+      fcitx5.addons = with pkgs; [
+        fcitx5-chinese-addons
+        fcitx5-mozc
+        fcitx5-gtk
+        fcitx5-configtool
+        fcitx5-pinyin-zhwiki
+      ];
+    };
   };
-  #    enabled = "ibus";
-  #    ibus.engines = with pkgs.ibus-engines; [
-  #      libpinyin
-  #      rime
-  #    ];
+
   system.stateVersion = "22.11"; # Did you read the comment?
 }
