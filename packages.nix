@@ -2,6 +2,7 @@
 let
   p = with pkgs; {
     dev = [
+      linuxPackages_latest.perf
       lua
       nodejs-18_x
       yarn
@@ -47,18 +48,9 @@ let
       curl
     ];
 
-    virt = [
+    virt = [ virt-manager virtiofsd ];
 
-      virt-manager
-      virtiofsd
-    ];
-    fs = [
-      gparted
-      e2fsprogs
-      fscrypt-experimental
-      f2fs-tools
-      compsize
-    ];
+    fs = [ gparted e2fsprogs fscrypt-experimental f2fs-tools compsize ];
 
     cmd = [
       srm
@@ -126,16 +118,7 @@ let
       shfmt
     ];
 
-    info = [
-      neofetch
-      htop
-      onefetch
-      hardinfo
-      qjournalctl
-      hyprpicker
-      imgcat
-      nix-index
-    ];
+    info = [ neofetch htop onefetch hardinfo qjournalctl hyprpicker imgcat nix-index ];
 
   };
 in
