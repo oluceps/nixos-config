@@ -310,7 +310,7 @@
       llvmPackages_14.llvm
       rustPlatform.bindgenHook
 
-    ] ++ map (n: pkgs.n.dev)
-      [ openssl libbfd libcap ];
+    ] ++ map lib.getDev (with pkgs; [ openssl libbfd libcap ]);
+
   };
 }
