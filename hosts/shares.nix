@@ -11,7 +11,6 @@
         alejandra.defaultPackage.${system}
         agenix.packages.${system}.default
         helix.packages.${system}.default
-        # surrealdb.packages.${system}.default
       ]
       ++ (with pkgs;[
         # (fenix.complete.withComponents [

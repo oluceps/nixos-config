@@ -123,7 +123,7 @@ Add to your flake, passing overlay while importing nixpkgs:
 + pkgs: packaged softwares
 
 ## Screenshot  
-![screenshot](./screenshots/shot_1.png)
+![screenshot](./.attachs/shot_1.png)
  
 Background picture from [Ramiro Martinez](https://unsplash.com/@ramiro250)  
 

@@ -7,7 +7,6 @@
   ./kitty.nix
   ./starship.nix
   ./nnn.nix
-  ./nushell
   ./bspwm
   ./ranger
   ./wezterm

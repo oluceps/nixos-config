@@ -47,18 +47,8 @@ let
       curl
     ];
 
-    virt = [
-
-      virt-manager
-      virtiofsd
-    ];
-    fs = [
-      gparted
-      e2fsprogs
-      fscrypt-experimental
-      f2fs-tools
-      compsize
-    ];
+    virt = [ virt-manager virtiofsd ];
+    fs = [ gparted e2fsprogs fscrypt-experimental f2fs-tools compsize ];
 
     cmd = [
       srm
@@ -126,28 +116,13 @@ let
       shfmt
     ];
 
-    info = [
-      neofetch
-      htop
-      onefetch
-      hardinfo
-      qjournalctl
-      hyprpicker
-      imgcat
-      nix-index
-    ];
+    info = [ neofetch htop onefetch hardinfo qjournalctl hyprpicker imgcat nix-index ];
 
   };
 in
 {
   environment.systemPackages = lib.flatten (lib.attrValues p)
-    ++ (with pkgs; [
-    unar
-    texlab
-    edk2
-    xmrig
-    docker-compose
-  ]) ++
+    ++ (with pkgs; [ unar texlab edk2 xmrig docker-compose ]) ++
     [
       (with pkgs; (
         python3.withPackages
@@ -224,12 +199,10 @@ in
           syntax on
         
           :let mapleader = " "
-
           :map <leader>s :w<cr>
           :map <leader>q :q<cr>
           :map <C-j> 5j
           :map <C-k> 5k
-
         '';
       }
       )
