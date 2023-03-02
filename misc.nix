@@ -8,8 +8,6 @@
 , user
 , ...
 }: {
-  nixpkgs.config.allowUnfree = true;
-
   virtualisation = {
     docker.enable = true;
     libvirtd = {
@@ -42,7 +40,7 @@
   };
   services.xserver =
     {
-      enable = false;
+      enable = lib.mkDefault false;
       layout = "us";
       xkbOptions = "eurosign:e";
       windowManager.bspwm.enable = true;

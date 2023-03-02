@@ -1,6 +1,7 @@
 { inputs, _pkgs }:
 let
-  nixosSystem = inputs.nixpkgs.lib.nixosSystem;
+  lib = inputs.nixpkgs.lib;
+  nixosSystem = lib.nixosSystem;
 
   genSysAttr = { system, user, hostname }:
     rec {
@@ -30,17 +31,17 @@ in
 
   livecd =
     let
-      o = (genSysAttr
-        {
-          system = "x86_64-linux";
-          user = "isho";
-          hostname = "livecd";
-        });
+      system = "x86_64-linux";
+      user = "isho";
+      hostname = "livecd";
+      pkgs = _pkgs.${system};
     in
-    nixosSystem (o // {
-      modules = o.modules ++ [
-        (inputs.nixpkgs
-          + "/nixos/modules/installer/cd-dvd/installation-cd-minimal-new-kernel.nix")
-      ];
-    });
+    nixosSystem
+      ((genSysAttr { inherit system user hostname; })
+        //
+        {
+          modules =
+            (import ./livecd)
+              ++ (import ./livecd/additions.nix { inherit inputs user pkgs; });
+        });
 }
