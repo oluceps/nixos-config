@@ -105,7 +105,7 @@
     # ss-tls cnt to router
     ss.enable = false;
     tuic.enable = false;
-    naive.enable = true;
+    naive.enable = false;
 
     clash =
       {
