@@ -1,4 +1,5 @@
 [
-  ./network.nix
   ./home.nix
+  ../../modules/sing-box
+  ../../packages.nix
 ]
