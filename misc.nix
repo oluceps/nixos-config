@@ -106,9 +106,14 @@
       owner = user;
       group = user;
     };
+    wg = {
+      file = ./secrets/wg.age;
+      mode = "770";
+      owner = user;
+      group = user;
+    };
   };
   nix = {
-    #     settings.substituters = [ "https://mirrors.bfsu.edu.cn/nix-channels/store" ];
     package = pkgs.nixVersions.stable;
 
     settings = {
@@ -117,6 +122,7 @@
         "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY="
         "nur-pkgs.cachix.org-1:PAvPHVwmEBklQPwyNZfy4VQqQjzVIaFOkYYnmnKco78="
         "hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc="
+        "https://mirrors.bfsu.edu.cn/nix-channels/store"
       ];
       substituters = [
         "https://cache.nixos.org"
