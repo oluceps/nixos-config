@@ -11,7 +11,6 @@ let
     imports = [
       ../../home/programs/fish
       ../../home/programs/helix
-      ../../home/programs/alacritty
       ../../home/programs/starship.nix
     ];
     home.stateVersion = "22.11";
@@ -22,7 +21,6 @@ let
     manual = {
       html.enable = false;
       json.enable = false;
-      manpages.enable = false;
     };
 
     xdg.mimeApps.defaultApplications = {
@@ -88,8 +86,6 @@ let
         ];
       };
     };
-    #xdg.configFile."sway/config".text = import ./dotfiles/sway/config.nix {inherit config pkgs;};
-    #xdg.configFile."ss/config".text = import ./programs/ss.nix {inherit config pkgs;};
     gtk = {
       enable = true;
       theme = {
