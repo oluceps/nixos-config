@@ -126,7 +126,17 @@
       auto-optimise-store = true;
       experimental-features = [ "nix-command" "flakes" ];
       trusted-users = [ "root" "${user}" ];
+      # Avoid disk full
+      max-free = lib.mkDefault (1000 * 1000 * 1000);
+      min-free = lib.mkDefault (128 * 1000 * 1000);
+      builders-use-substitutes = true;
     };
+
+    daemonCPUSchedPolicy = lib.mkDefault "batch";
+    daemonIOSchedClass = lib.mkDefault "idle";
+    daemonIOSchedPriority = lib.mkDefault 7;
+
+
     extraOptions = ''
       keep-outputs = true
       keep-derivations = true
