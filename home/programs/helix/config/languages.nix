@@ -519,6 +519,7 @@ shebangs = ["sh", "bash", "dash"]
 roots = []
 comment-token = "#"
 language-server = { command = "bash-language-server", args = ["start"] }
+formatter = { command = "${pkgs.shfmt}/bin/shfmt" }
 indent = { tab-width = 2, unit = "  " }
 
 [[grammar]]
