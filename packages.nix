@@ -2,6 +2,8 @@
 let
   p = with pkgs; {
     dev = [
+      linuxPackages_latest.perf
+      cloud-utils
       lua
       nodejs-18_x
       yarn
