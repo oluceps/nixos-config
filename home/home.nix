@@ -45,6 +45,7 @@
 
 
       veracrypt
+      openpgp-card-tools
 
       # davinci-resolve
       cava
