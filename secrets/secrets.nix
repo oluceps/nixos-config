@@ -16,4 +16,5 @@ in
   "naive.age".publicKeys = users ++ systems;
   "ssh.age".publicKeys = users ++ systems;
   "wg.age".publicKeys = users ++ systems;
+  "gh-eu.age".publicKeys = users ++ systems;
 }
