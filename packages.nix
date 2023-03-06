@@ -2,6 +2,8 @@
 let
   p = with pkgs; {
     dev = [
+      bump2version
+      openssl
       linuxPackages_latest.perf
       cloud-utils
       lua
@@ -133,6 +135,7 @@ in
             qrcode
             matplotlib
             pylsp-mypy
+            pip
 
             fontforge
 

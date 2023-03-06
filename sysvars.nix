@@ -14,6 +14,7 @@
     PATH = [
       "\${XDG_BIN_HOME}"
       "/home/${user}/.npm-packages/bin"
+      "/home/${user}/.pip/bin"
     ];
     XDG_CACHE_HOME = "\${HOME}/.cache";
     XDG_CONFIG_HOME = "\${HOME}/.config";
