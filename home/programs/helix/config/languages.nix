@@ -518,7 +518,7 @@ file-types = ["sh", "bash", "zsh", ".bash_login", ".bash_logout", ".bash_profile
 shebangs = ["sh", "bash", "dash"]
 roots = []
 comment-token = "#"
-language-server = { command = "bash-language-server", args = ["start"] }
+language-server = { command = "${pkgs.nodePackages_latest.bash-language-server}/bin/bash-language-server", args = ["start"] }
 formatter = { command = "${pkgs.shfmt}/bin/shfmt" }
 indent = { tab-width = 2, unit = "  " }
 
@@ -1726,6 +1726,7 @@ language-server = { command = "pasls", args = [] }
 [[grammar]]
 name = "pascal"
 source = { git = "https://github.com/Isopod/tree-sitter-pascal", rev = "2fd40f477d3e2794af152618ccfac8d92eb72a66" }
-'';
+'' ;
 in
 configText
+
