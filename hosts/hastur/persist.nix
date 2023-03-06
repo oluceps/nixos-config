@@ -25,6 +25,8 @@
         "Blog"
         "Games"
         ".npm-packages"
+        ".npm"
+        ".pip"
         "tools"
         "Vault"
         "calibreLib"
