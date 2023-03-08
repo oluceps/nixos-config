@@ -12,7 +12,7 @@
     WLR_NO_HARDWARE_CURSORS = "1";
     NODE_PATH = "~/.npm-packages/lib/node_modules";
     PATH = [
-      "\${XDG_BIN_HOME}"
+      # "\${XDG_BIN_HOME}"
       "/home/${user}/.npm-packages/bin"
       "/home/${user}/.pip/bin"
     ];
