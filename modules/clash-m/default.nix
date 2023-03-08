@@ -34,7 +34,7 @@ in
 
         serviceConfig = {
           Type = "simple";
-          User = "${user}";
+          User = "proxy";
           WorkingDirectory = "/home/${user}/.config/clash";
           ExecStart = "${cfg.package}/bin/clash-meta -d /home/${user}/.config/clash";
           CapabilityBoundingSet = [

@@ -60,16 +60,27 @@
   age = {
     identityPaths = [ "/persist/keys/ssh_host_ed25519_key" ];
     secrets =
-      lib.genAttrs [ "ss" "sing" "hyst" "hyst-do" "tuic" "naive" "ssh" "wg" "gh-eu" ]
+      lib.genAttrs [ "ss" "sing" "hyst" "hyst-do" "tuic" "naive" "wg" ]
+        (n:
+          {
+            file = ./secrets/${n}.age;
+            mode = "770";
+            owner = "proxy";
+            group = "nogroup";
+          }
+        ) //
+
+      lib.genAttrs [ "ssh" "gh-eu" ]
         (n:
           {
             file = ./secrets/${n}.age;
             mode = "770";
             owner = user;
-            group = user;
+            group = "nogroup";
           }
         );
   };
+
   nix =
     {
       package = pkgs.nixVersions.stable;
@@ -89,7 +100,10 @@
           "https://helix.cachix.org"
         ];
         auto-optimise-store = true;
-        experimental-features = [ "nix-command" "flakes" ];
+        experimental-features = [ "nix-command" "flakes" "auto-allocate-uids" "cgroups" ];
+        auto-allocate-uids = true;
+        use-cgroups = true;
+
         trusted-users = [ "root" "${user}" ];
         # Avoid disk full
         max-free = lib.mkDefault (1000 * 1000 * 1000);
@@ -124,6 +138,17 @@
     keyMap = "us";
   };
 
+  security.pam.loginLimits = [
+    {
+      domain = "*";
+      type = "-";
+      item = "memlock";
+      value = "unlimited";
+    }
+  ];
+
+  security.pam.services.swaylock = { };
+
   programs = {
     git.enable = true;
     fish.enable = true;
@@ -133,6 +158,7 @@
     adb.enable = true;
     mosh.enable = true;
     nix-ld.enable = true;
+    command-not-found.enable = false;
     steam = {
       enable = true;
       remotePlay.openFirewall = true; # Open ports in the firewall for Steam Remote Play

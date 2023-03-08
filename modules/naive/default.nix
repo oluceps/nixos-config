@@ -46,7 +46,7 @@ in
 
         serviceConfig = {
           Type = "simple";
-          User = user;
+          User = "proxy";
           ExecStart = "${cfg.package}/bin/naive ${configFile}";
           CapabilityBoundingSet = [
             "CAP_NET_RAW"
