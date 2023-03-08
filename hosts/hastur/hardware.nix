@@ -45,14 +45,14 @@
   fileSystems."/persist" = {
     device = "/dev/disk/by-uuid/e86a6cfa-39cc-4dd9-b5d3-fee5e2613578";
     fsType = "btrfs";
-    options = [ "subvolid=256" "compress-force=zstd" "noatime" "discard=async" ];
+    options = [ "subvolid=256" "compress-force=zstd" "noatime" "discard=async" "space_cache=v2" ];
     neededForBoot = true;
   };
 
   fileSystems."/nix" = {
     device = "/dev/disk/by-uuid/e86a6cfa-39cc-4dd9-b5d3-fee5e2613578";
     fsType = "btrfs";
-    options = [ "subvolid=258" "compress-force=zstd" "noatime" "discard=async" ];
+    options = [ "subvolid=258" "compress-force=zstd" "noatime" "discard=async" "space_cache=v2" ];
   };
 
   fileSystems."/boot" = {
