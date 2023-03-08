@@ -35,6 +35,7 @@
   home.packages = with pkgs;
 
     [
+      hyfetch
       qq
       microsoft-edge
       dosbox-staging
