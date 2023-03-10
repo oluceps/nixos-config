@@ -10,9 +10,9 @@
       { directory = "/root/.yubico"; mode = "0700"; }
     ];
     users.${user} = {
-      # files = [
-      #   ".npmrc"
-      # ];
+      files = [
+        ".npmrc"
+      ];
       directories = [
         "Documents"
         "Downloads"

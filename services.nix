@@ -154,6 +154,7 @@
       };
 
     sing-box.enable = true;
+    rathole.enable = true;
 
 
     # btrbk = {
