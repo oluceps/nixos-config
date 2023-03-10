@@ -8,14 +8,7 @@ let
   users = [ riro elena isho proxy ];
   systems = [ hastur kaambl ];
 in
-{
-  "ss.age".publicKeys = users ++ systems;
-  "sing.age".publicKeys = users ++ systems;
-  "hyst.age".publicKeys = users ++ systems;
-  "hyst-do.age".publicKeys = users ++ systems;
-  "tuic.age".publicKeys = users ++ systems;
-  "naive.age".publicKeys = users ++ systems;
-  "ssh.age".publicKeys = users ++ systems;
-  "wg.age".publicKeys = users ++ systems;
-  "gh-eu.age".publicKeys = users ++ systems;
-}
+builtins.listToAttrs
+  (map
+    (name: { name = "${name}.age"; value = { publicKeys = users ++ systems; }; })
+    ["rat" "ss" "sing" "hyst" "hyst-do" "tuic" "naive" "ssh" "wg" "gh-eu" ])

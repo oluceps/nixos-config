@@ -60,7 +60,7 @@
   age = {
     identityPaths = [ "/persist/keys/ssh_host_ed25519_key" ];
     secrets =
-      lib.genAttrs [ "ss" "sing" "hyst" "hyst-do" "tuic" "naive" "wg" ]
+      lib.genAttrs ["rat" "ss" "sing" "hyst" "hyst-do" "tuic" "naive" "wg" ]
         (n:
           {
             file = ./secrets/${n}.age;
@@ -163,6 +163,11 @@
       enable = true;
       remotePlay.openFirewall = true; # Open ports in the firewall for Steam Remote Play
       dedicatedServer.openFirewall = true; # Open ports in the firewall for Source Dedicated Server
+    };
+
+    gnupg.agent = {
+      enable = true;
+      enableSSHSupport = true;
     };
 
   };

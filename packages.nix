@@ -2,6 +2,8 @@
 let
   p = with pkgs; {
     dev = [
+      pinentry-curses
+      swagger-codegen3
       bump2version
       openssl
       linuxPackages_latest.perf
@@ -93,6 +95,7 @@ let
       inetutils
       pciutils
       usbutils
+      pinentry
     ];
 
     lang = [
