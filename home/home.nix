@@ -88,7 +88,7 @@
       stress
       s-tui
       mprime
-      geekbench5
+      geekbench_5
 
       # reader
       calibre
