@@ -137,7 +137,6 @@
       swaybg
       wl-clipboard
       wf-recorder
-      mako
       grim
       slurp
 
@@ -335,16 +334,6 @@
         in
         "${img}";
       scaling = "fill";
-    };
-    mako = {
-      enable = true;
-      backgroundColor = "#1E1D2F3b";
-      borderSize = 1;
-      borderColor = "#96CDFB3b";
-      maxVisible = 2;
-      borderRadius = 12;
-      defaultTimeout = 5000;
-      font = "JetBrainsMono Nerd Font 12";
     };
     zsh = {
       enable = true;
@@ -554,9 +543,22 @@
   };
 
 
-  services.gpg-agent = {
-    enable = true;
-    defaultCacheTtl = 1800;
-    enableSshSupport = true;
+  services = {
+
+    mako = {
+      enable = true;
+      backgroundColor = "#1E1D2F3b";
+      borderSize = 1;
+      borderColor = "#96CDFB3b";
+      maxVisible = 2;
+      borderRadius = 12;
+      defaultTimeout = 5000;
+      font = "JetBrainsMono Nerd Font 12";
+    };
+    gpg-agent = {
+      enable = true;
+      defaultCacheTtl = 1800;
+      enableSshSupport = true;
+    };
   };
 }

@@ -22,6 +22,7 @@ let
       llvmPackages_latest.clang
     ];
     net = [
+      rathole
       nftables
       tor
       iperf3
