@@ -117,12 +117,8 @@
         yubikey-personalization
         libu2f-host
         via
-      ] ++
-      [ (pkgs.callPackage ./pkgs/opensk-udev-rules { }) ];
-
-      #      extraRules = ''
-      #        ACTION=="add|remove", SUBSYSTEM=="net", ATTR{idVendor}=="22d9" ENV{ID_USB_DRIVER}=="rndis_host", SYMLINK+="android", RUN+="systemctl restart systemd-networkd.service"
-      #      '';
+        opensk-udev-rules
+      ];
     };
 
     gnome.gnome-keyring.enable = true;
@@ -145,12 +141,7 @@
     clash =
       {
         enable =
-          if
-            true
-          #            (lib.lists.last (import ./hosts/hastur/network.nix { inherit config pkgs; }).systemd.network.networks."20-wired".routes).routeConfig.Gateway != "192.168.2.2"
-          # switch depend on the Gateway. Always false now
-          then false
-          else false;
+          false;
       };
 
     sing-box.enable = true;
