@@ -60,13 +60,13 @@
   age = {
     identityPaths = [ "/persist/keys/ssh_host_ed25519_key" ];
     secrets =
-      lib.genAttrs ["rat" "ss" "sing" "hyst" "hyst-do" "tuic" "naive" "wg" ]
+      lib.genAttrs [ "rat" "ss" "sing" "hyst" "hyst-do" "tuic" "naive" "wg" ]
         (n:
           {
             file = ./secrets/${n}.age;
             mode = "770";
             owner = "proxy";
-            group = "nogroup";
+            group = "users";
           }
         ) //
 

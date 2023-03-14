@@ -1,5 +1,6 @@
 [
   ./ss
+  ./rathole
   ./clash-m
   ./sing-box
   ./tuic
