@@ -15,7 +15,7 @@
     initrd = {
       systemd.enable = true;
       availableKernelModules = [ "nvme" "xhci_pci" "ahci" "usb_storage" "usbhid" "sd_mod" ];
-      kernelModules = [ "tpm" "tpm_tis" "tpm_crb" ];
+      kernelModules = [ "tpm" "tpm_tis" "tpm_crb" "kvm-amd" ];
     };
     kernelModules = [ "ec_sys" "uhid" "kvm-amd" ];
     extraModulePackages = with config.boot.kernelPackages; [
@@ -30,7 +30,6 @@
     ];
     kernelParams = [
       "mitigations=off"
-      "nowatchdog"
       # "resume_offset=117616405"
     ];
     resumeDevice = "/dev/disk/by-uuid/5ddc05a2-22a7-4803-8bca-fc64fad0b478";
@@ -46,14 +45,14 @@
   fileSystems."/persist" = {
     device = "/dev/disk/by-uuid/e86a6cfa-39cc-4dd9-b5d3-fee5e2613578";
     fsType = "btrfs";
-    options = [ "subvolid=256" "compress-force=zstd" "noatime" "discard=async" ];
+    options = [ "subvolid=256" "compress-force=zstd" "noatime" "discard=async" "space_cache=v2" ];
     neededForBoot = true;
   };
 
   fileSystems."/nix" = {
     device = "/dev/disk/by-uuid/e86a6cfa-39cc-4dd9-b5d3-fee5e2613578";
     fsType = "btrfs";
-    options = [ "subvolid=258" "compress-force=zstd" "noatime" "discard=async" ];
+    options = [ "subvolid=258" "compress-force=zstd" "noatime" "discard=async" "space_cache=v2" ];
   };
 
   fileSystems."/boot" = {

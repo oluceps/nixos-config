@@ -1,58 +1,5 @@
 {
-  description = "a nixos flake";
-  outputs = { self, ... }@inputs:
-    let
-      genSystems = inputs.nixpkgs.lib.genAttrs [ "aarch64-linux" "x86_64-linux" ];
-      _pkgs = genSystems
-        (
-          system:
-          import inputs.nixpkgs {
-            inherit system;
-            config = {
-              allowUnfree = true;
-              allowBroken = false;
-              segger-jlink.acceptLicense = true;
-              allowUnsupportedSystem = true;
-              permittedInsecurePackages = [
-                "python-2.7.18.6"
-              ];
-            };
-            overlays =
-              (with inputs; [
-                nur.overlay
-                clansty.overlays.clansty
-                self.overlay
-              ])
-              ++ (import ./overlays.nix { inherit inputs system; })
-
-              # overlays defined by others
-              # format to [ inputs.${user}.overlays.default ]
-              ++ map (i: (n: inputs.${n}.overlays.default) i)
-                [
-                  "fenix"
-                  "berberman"
-                ];
-          }
-        );
-    in
-    {
-      nixosConfigurations = (import ./hosts { inherit inputs _pkgs; });
-
-      devShells = genSystems
-        (system: import ./shells.nix { inherit system inputs; pkgs = _pkgs.${system}; });
-
-      overlay = self.overlays.default;
-      overlays.default = final: prev:
-        let
-          dirContents = builtins.readDir ./pkgs;
-          names = builtins.attrNames dirContents;
-        in
-        prev.lib.genAttrs names (name:
-          final.callPackage (./pkgs + "/${name}") { }
-        );
-
-    };
-
+  description = "flake";
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     nixpkgs-22.url = "github:NixOS/nixpkgs?rev=c91d0713ac476dfb367bbe12a7a048f6162f039c";
@@ -97,4 +44,56 @@
     colmena.url = "github:zhaofengli/colmena";
     berberman.url = "github:berberman/flakes";
   };
+
+  outputs = { self, ... }@inputs:
+    let
+      genSystems = inputs.nixpkgs.lib.genAttrs [ "aarch64-linux" "x86_64-linux" ];
+      _pkgs = genSystems
+        (
+          system:
+          import inputs.nixpkgs {
+            inherit system;
+            config = {
+              allowUnfree = true;
+              allowBroken = false;
+              segger-jlink.acceptLicense = true;
+              allowUnsupportedSystem = true;
+              permittedInsecurePackages = [
+                "python-2.7.18.6"
+              ];
+            };
+            overlays =
+              (with inputs; [
+                nur.overlay
+                clansty.overlays.clansty
+                self.overlay
+              ])
+              ++ (import ./overlays.nix { inherit inputs system; })
+
+              # overlays defined by others
+              # format to [ inputs.${user}.overlays.default ]
+              ++ map (i: inputs.${i}.overlays.default)
+                [
+                  "fenix"
+                  "berberman"
+                ];
+          }
+        );
+    in
+    {
+      nixosConfigurations = (import ./hosts { inherit inputs _pkgs; });
+
+      devShells = genSystems
+        (system: import ./shells.nix { inherit system inputs; pkgs = _pkgs.${system}; });
+
+      overlay = self.overlays.default;
+      overlays.default = final: prev:
+        let
+          dirContents = builtins.readDir ./pkgs;
+          names = builtins.attrNames dirContents;
+        in
+        prev.lib.genAttrs names (name: final.callPackage (./pkgs + "/${name}") { });
+
+    };
+
 }

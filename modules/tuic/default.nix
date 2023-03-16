@@ -40,7 +40,7 @@ in
 
           serviceConfig = {
             Type = "simple";
-            User = user;
+            User = "proxy";
             ExecStart = "${cfg.package}/bin/tuic-client -c ${configFile}";
             AmbientCapabilities = [ "CAP_NET_ADMIN" "CAP_NET_BIND_SERVICE" ];
             Restart = "on-failure";

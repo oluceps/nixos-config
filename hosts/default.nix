@@ -41,7 +41,7 @@ in
         //
         {
           modules =
-            (import ./livecd)
-              ++ (import ./livecd/additions.nix { inherit inputs user pkgs; });
+            (import ./${hostname})
+              ++ (import ./${hostname}/additions.nix { inherit inputs user pkgs; });
         });
 }

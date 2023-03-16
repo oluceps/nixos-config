@@ -2,6 +2,12 @@
 let
   p = with pkgs; {
     dev = [
+      pinentry-curses
+      swagger-codegen3
+      bump2version
+      openssl
+      linuxPackages_latest.perf
+      cloud-utils
       lua
       nodejs-18_x
       yarn
@@ -16,6 +22,7 @@ let
       llvmPackages_latest.clang
     ];
     net = [
+      rathole
       nftables
       tor
       iperf3
@@ -89,6 +96,7 @@ let
       inetutils
       pciutils
       usbutils
+      pinentry
     ];
 
     lang = [
@@ -131,6 +139,7 @@ in
             qrcode
             matplotlib
             pylsp-mypy
+            pip
 
             fontforge
 

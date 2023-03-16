@@ -57,81 +57,70 @@
   };
 
 
-  age.identityPaths = [ "/persist/keys/ssh_host_ed25519_key" ];
-  age.secrets = {
+  age = {
+    identityPaths = [ "/persist/keys/ssh_host_ed25519_key" ];
+    secrets =
+      lib.genAttrs [ "rat" "ss" "sing" "hyst" "hyst-do" "tuic" "naive" "wg" ]
+        (n:
+          {
+            file = ./secrets/${n}.age;
+            mode = "770";
+            owner = "proxy";
+            group = "users";
+          }
+        ) //
 
-    ss = {
-      file = ./secrets/ss.age;
-      mode = "770";
-      owner = user;
-      group = user;
-    };
-
-    sing = {
-      file = ./secrets/sing.age;
-      mode = "770";
-      owner = user;
-      group = user;
-    };
-
-    hyst = {
-      file = ./secrets/hyst.age;
-      mode = "770";
-      owner = user;
-      group = user;
-    };
-
-    hyst-do = {
-      file = ./secrets/hyst-do.age;
-      mode = "770";
-      owner = user;
-      group = user;
-    };
-
-    tuic = {
-      file = ./secrets/tuic.age;
-      mode = "770";
-      owner = user;
-      group = user;
-    };
-    naive = {
-      file = ./secrets/naive.age;
-      mode = "770";
-      owner = user;
-      group = user;
-    };
-    ssh = {
-      file = ./secrets/ssh.age;
-      mode = "770";
-      owner = user;
-      group = user;
-    };
+      lib.genAttrs [ "ssh" "gh-eu" ]
+        (n:
+          {
+            file = ./secrets/${n}.age;
+            mode = "770";
+            owner = user;
+            group = "nogroup";
+          }
+        );
   };
-  nix = {
-    #     settings.substituters = [ "https://mirrors.bfsu.edu.cn/nix-channels/store" ];
-    package = pkgs.nixVersions.stable;
 
-    settings = {
+  nix =
+    {
+      package = pkgs.nixVersions.stable;
 
-      trusted-public-keys = [
-        "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY="
-        "nur-pkgs.cachix.org-1:PAvPHVwmEBklQPwyNZfy4VQqQjzVIaFOkYYnmnKco78="
-        "hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc="
-      ];
-      substituters = [
-        "https://cache.nixos.org"
-        "https://nur-pkgs.cachix.org"
-        "https://hyprland.cachix.org"
-      ];
-      auto-optimise-store = true;
-      experimental-features = [ "nix-command" "flakes" ];
-      trusted-users = [ "root" "${user}" ];
+      settings = {
+
+        trusted-public-keys = [
+          "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY="
+          "nur-pkgs.cachix.org-1:PAvPHVwmEBklQPwyNZfy4VQqQjzVIaFOkYYnmnKco78="
+          "hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc="
+          "helix.cachix.org-1:ejp9KQpR1FBI2onstMQ34yogDm4OgU2ru6lIwPvuCVs="
+        ];
+        substituters = [
+          "https://cache.nixos.org"
+          "https://nur-pkgs.cachix.org"
+          "https://hyprland.cachix.org"
+          "https://helix.cachix.org"
+        ];
+        auto-optimise-store = true;
+        experimental-features = [ "nix-command" "flakes" "auto-allocate-uids" "cgroups" ];
+        auto-allocate-uids = true;
+        use-cgroups = true;
+
+        trusted-users = [ "root" "${user}" ];
+        # Avoid disk full
+        max-free = lib.mkDefault (1000 * 1000 * 1000);
+        min-free = lib.mkDefault (128 * 1000 * 1000);
+        builders-use-substitutes = true;
+      };
+
+      daemonCPUSchedPolicy = lib.mkDefault "batch";
+      daemonIOSchedClass = lib.mkDefault "idle";
+      daemonIOSchedPriority = lib.mkDefault 7;
+
+
+      extraOptions = ''
+        keep-outputs = true
+        keep-derivations = true
+      '';
     };
-    extraOptions = ''
-      keep-outputs = true
-      keep-derivations = true
-    '';
-  };
 
   environment = {
     shellInit = ''
@@ -149,6 +138,17 @@
     keyMap = "us";
   };
 
+  security.pam.loginLimits = [
+    {
+      domain = "*";
+      type = "-";
+      item = "memlock";
+      value = "unlimited";
+    }
+  ];
+
+  security.pam.services.swaylock = { };
+
   programs = {
     git.enable = true;
     fish.enable = true;
@@ -158,10 +158,16 @@
     adb.enable = true;
     mosh.enable = true;
     nix-ld.enable = true;
+    command-not-found.enable = false;
     steam = {
       enable = true;
       remotePlay.openFirewall = true; # Open ports in the firewall for Steam Remote Play
       dedicatedServer.openFirewall = true; # Open ports in the firewall for Source Dedicated Server
+    };
+
+    gnupg.agent = {
+      enable = true;
+      enableSSHSupport = true;
     };
 
   };

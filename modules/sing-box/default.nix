@@ -46,10 +46,9 @@ in
         description = "sing-box Daemon";
 
         serviceConfig = {
-          Type = "simple";
-          User = user;
-          WorkingDirectory = dataDir;
-          ExecStart = "${cfg.package}/bin/sing-box run -c ${configFile}";
+          User = "proxy";
+          ExecStart = "${cfg.package}/bin/sing-box run -c ${configFile} -D $STATE_DIRECTORY";
+          StateDirectory = "sing";
           CapabilityBoundingSet = [
             "CAP_NET_RAW"
             "CAP_NET_ADMIN"
