@@ -1,41 +1,6 @@
 { inputs, system, pkgs }:
 {
-  default =
-    pkgs.mkShell {
-
-      nativeBuildInputs = [
-        (inputs.mach-nix.lib.${system}.mkPython
-          {
-            requirements = ''
-              pillow
-              dbus-python
-              numpy
-              redis
-              testresources
-              requests
-              uvloop
-              adafruit-nrfutil
-              fido2
-              tockloader == 1.5.0
-              intelhex
-              colorama
-              tqdm
-              pandas
-              requests
-              pyrogram
-              tgcrypto
-              JPype1
-              toml
-              pyyaml
-              tockloader
-              colorama
-              six
-            '';
-          })
-      ];
-      # buildInputs = with pkgs; [ jetbrains.pycharm-professional ];
-      name = "python env";
-    };
+  default = inputs.nvfetcher.packages.${system}.ghcWithNvfetcher;
 
   kernel =
     (pkgs.buildFHSUserEnv {
