@@ -60,30 +60,18 @@
   age = {
     identityPaths = [ "/persist/keys/ssh_host_ed25519_key" ];
     secrets =
-      lib.genAttrs [ "rat" "ss" "sing" "hyst" "hyst-do" "tuic" "naive" "wg" ]
-        (n:
-          {
-            file = ./secrets/${n}.age;
-            mode = "770";
-            owner = "proxy";
-            group = "users";
-          }
-        ) //
+      let
+        genSec = ns: owner: group: lib.genAttrs ns (n: { file = ./secrets/${n}.age; mode = "770"; inherit owner group; });
+      in
+      (genSec [ "ss" "sing" "hyst" "hyst-do" "tuic" "naive" "wg" ] "proxy" "users") //
+      (genSec [ "rat" ] user "users") //
+      genSec [ "ssh" "gh-eu" ] user "nogroup";
 
-      lib.genAttrs [ "ssh" "gh-eu" ]
-        (n:
-          {
-            file = ./secrets/${n}.age;
-            mode = "770";
-            owner = user;
-            group = "nogroup";
-          }
-        );
   };
 
   nix =
     {
-      package = pkgs.nixVersions.stable;
+      package = pkgs.nixVersions.unstable;
 
       settings = {
 

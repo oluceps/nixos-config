@@ -52,7 +52,7 @@
       # davinci-resolve
       cava
 
-      # wpsoffice-cn
+      wpsoffice-cn
 
       sbctl
       qbittorrent
