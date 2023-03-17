@@ -1,7 +1,6 @@
 { pkgs
 , config
 , lib
-, user
 , ...
 }:
 with lib;
@@ -41,8 +40,8 @@ in
 
         serviceConfig = {
           Type = "simple";
-          User = "riro";
-          ExecStart = "${cfg.package}/bin/rathole -c /home/riro/te/t";
+          User = "proxy";
+          ExecStart = "${cfg.package}/bin/rathole -c ${configFile}";
           LimitNOFILE = 1048576;
           RestartSec = "5s";
           Restart = "on-failure";
