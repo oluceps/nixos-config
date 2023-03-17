@@ -52,7 +52,22 @@
       });
 
 
+      rathole = prev.rathole.overrideAttrs (old: rec {
+        version = "0.4.7-1";
+        src = prev.fetchFromGitHub {
+          owner = "oluceps";
+          repo = "rathole";
+          rev = "572814701adaf742682f0943498df1ee140d55d3";
+          sha256 = "sha256-cPtVrPIut37Zkga9GwDOrkYCbzwhGOqdjcSCJjo8JYk=";
+        };
 
+        cargoDeps = old.cargoDeps.overrideAttrs (prev.lib.const {
+          inherit src;
+          # otherwise the old "src" will be used.
+          outputHash = "sha256-vYIUdGI8ZXOh8YLQVGPJf74nC85sIyZ8UbpbmhsvHjg=";
+        });
+      });
+ 
       # shadowsocks-rust = prev.shadowsocks-rust.overrideAttrs (old: rec {
       #   version = "1.15.0-alpha.9";
       #   src = prev.fetchFromGitHub {

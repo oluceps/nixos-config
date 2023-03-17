@@ -145,7 +145,7 @@
       };
 
     sing-box.enable = true;
-    rathole.enable = false;
+    rathole.enable = true;
 
 
     # btrbk = {
@@ -185,6 +185,10 @@
         X11Forwarding = false;
       };
       authorizedKeysFiles = lib.mkForce [ "/etc/ssh/authorized_keys.d/%u" ];
+      extraConfig = ''
+        ClientAliveInterval 60
+        ClientAliveCountMax 720
+      '';
     };
 
     fail2ban = {

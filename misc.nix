@@ -63,8 +63,7 @@
       let
         genSec = ns: owner: group: lib.genAttrs ns (n: { file = ./secrets/${n}.age; mode = "770"; inherit owner group; });
       in
-      (genSec [ "ss" "sing" "hyst" "hyst-do" "tuic" "naive" "wg" ] "proxy" "users") //
-      (genSec [ "rat" ] user "users") //
+      (genSec [ "rat" "ss" "sing" "hyst" "hyst-do" "tuic" "naive" "wg" ] "proxy" "users") //
       genSec [ "ssh" "gh-eu" ] user "nogroup";
 
   };
