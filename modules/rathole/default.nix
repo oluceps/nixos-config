@@ -1,6 +1,7 @@
 { pkgs
 , config
 , lib
+, user
 , ...
 }:
 with lib;
@@ -35,13 +36,13 @@ in
     mkIf cfg.enable {
       systemd.services.rathole = {
         wantedBy = [ "multi-user.target" ];
-        after = [ "network-online.target" ];
+        after = [ "network.target" ];
         description = "rathole Daemon";
 
         serviceConfig = {
           Type = "simple";
-          User = "proxy";
-          ExecStart = "${cfg.package}/bin/rathole -c /etc/nixos/secrets/t";
+          User = "riro";
+          ExecStart = "${cfg.package}/bin/rathole -c /home/riro/te/t";
           LimitNOFILE = 1048576;
           RestartSec = "5s";
           Restart = "on-failure";
