@@ -135,7 +135,7 @@ in
       (with pkgs; (
         python3.withPackages
           (p: with p;[
-            wordcloud
+            # wordcloud
             qrcode
             matplotlib
             pylsp-mypy
