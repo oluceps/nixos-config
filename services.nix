@@ -81,6 +81,11 @@
       ''
         SystemMaxUse=1G
       '';
+    sundial = {
+      enable = true;
+      calendars = [ "Sun-Thu 23:18:00" "Fri,Sat 23:48:00" ];
+      warnAt = [ "Sun-Thu 23:16:00" "Fri,Sat 23:46:00" ];
+    };
 
     # HORRIBLE
     # mongodb = {

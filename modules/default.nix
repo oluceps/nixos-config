@@ -6,6 +6,7 @@
   ./tuic
   ./btrbk
   ./naive
+  ./sundial
 ]
 ++ # Hysteria configs
 (map (import ./hysteria) [
