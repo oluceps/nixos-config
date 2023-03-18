@@ -2,6 +2,7 @@
 let
   p = with pkgs; {
     dev = [
+      age
       pinentry-curses
       swagger-codegen3
       bump2version
