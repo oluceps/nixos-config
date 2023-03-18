@@ -31,7 +31,7 @@
     };
     # efi.firmware = pkgs.OVMFFull.firmware;
     # useEFIBoot = true;
-    waydroid.enable = true;
+    waydroid.enable = false;
   };
   qt = {
     enable = true;

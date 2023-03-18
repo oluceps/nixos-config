@@ -57,8 +57,8 @@
         src = prev.fetchFromGitHub {
           owner = "oluceps";
           repo = "rathole";
-          rev = "572814701adaf742682f0943498df1ee140d55d3";
-          sha256 = "sha256-cPtVrPIut37Zkga9GwDOrkYCbzwhGOqdjcSCJjo8JYk=";
+          rev = "463eec304dbcd9dedf96980ebc97005ec61cb8ea";
+          sha256 = "sha256-EybdSlE6yovAWExZjoDogAKjCvMNMtHBkaob0qNtJvI=";
         };
 
         cargoDeps = old.cargoDeps.overrideAttrs (prev.lib.const {
