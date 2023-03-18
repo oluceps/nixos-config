@@ -1,7 +1,7 @@
 {
   description = "flake";
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable-small";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     nixpkgs-22.url = "github:NixOS/nixpkgs?rev=c91d0713ac476dfb367bbe12a7a048f6162f039c";
     nixpkgs-pin-kernel.url = "github:NixOS/nixpkgs/master";
     nvfetcher.url = "github:berberman/nvfetcher";
