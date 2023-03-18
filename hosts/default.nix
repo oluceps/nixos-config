@@ -32,7 +32,7 @@ in
   livecd =
     let
       system = "x86_64-linux";
-      user = "isho";
+      user = "nixos";
       hostname = "livecd";
       pkgs = _pkgs.${system};
     in
