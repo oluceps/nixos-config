@@ -17,5 +17,6 @@
   ./aria2
   ./foot
   ./direnv
+  ./firefox
 
 ]

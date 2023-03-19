@@ -18,8 +18,8 @@
   home = {
     sessionVariables = {
       EDITOR = "hx";
-      BROWSER = "firefox";
-      TERMINAL = "alacritty";
+      BROWSER = "google-chrome-stable";
+      TERMINAL = "foot";
       # GTK_IM_MODULE = "fcitx5";
       # QT_IM_MODULE = "fcitx5";
       # XMODIFIERS = "@im=fcitx5";
