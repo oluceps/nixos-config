@@ -19,10 +19,10 @@
   };
 
   xdg.mimeApps.defaultApplications = {
-    "text/html" = [ "firefox.desktop" ];
+    "text/html" = [ "google-chrome.desktop" ];
     "tg" = [ "telegramdesktop.desktop" ];
-    "x-scheme-handler/http" = [ "firefox.desktop" ];
-    "x-scheme-handler/https" = [ "firefox.desktop" ];
+    "x-scheme-handler/http" = [ "google-chrome.desktop" ];
+    "x-scheme-handler/https" = [ "google-chrome.desktop" ];
     "pdf" = [ "sioyek.desktop" ];
     "ppt/pptx" = [ "wps-office-wpp.desktop" ];
     "doc/docx" = [ "wps-office-wps.desktop" ];
@@ -172,7 +172,6 @@
       ncpamixer
       texlive.combined.scheme-full
       vlc
-      firefox
       bluedevil
       jetbrains.clion
       jetbrains.goland
