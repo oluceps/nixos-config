@@ -8,7 +8,7 @@
     NEOVIDE_WM_CLASS = "1";
     AUTOSSH_DEBUG = "1";
     EDITOR = "hx";
-    # NIXOS_OZONE_WL = "1";
+    NIXOS_OZONE_WL = "1";
     WLR_NO_HARDWARE_CURSORS = "1";
     NODE_PATH = "~/.npm-packages/lib/node_modules";
     PATH = [
