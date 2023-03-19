@@ -32,10 +32,9 @@ in
 
         systemd.timers.sundial = {
           description = "intime shutdown";
-          wantedBy = [ "timer.target" ];
+          wantedBy = [ "timers.target" ];
           timerConfig = {
             OnCalendar = cfg.calendars;
-            Unit = "poweroff.target";
           };
         };
 
@@ -47,7 +46,7 @@ in
           };
         };
 
-        systemd.services.sundial-wanner = {
+        systemd.services.sundial-warnner = {
           wantedBy = [ "timer.target" ];
           description = "notify before auto shutdown";
           serviceConfig = {
@@ -58,8 +57,16 @@ in
             Restart = "on-failure";
           };
         };
-      };
-  #   // mkIf cfg.warnAt != [ ] {
 
-  # };
+        systemd.services.sundial = {
+          wantedBy = [ "timer.target" ];
+          description = "shutdown";
+          serviceConfig = {
+            Type = "simple";
+            User = "root";
+            ExecStart = "poweroff";
+            Restart = "on-failure";
+          };
+        };
+      };
 }
