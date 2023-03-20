@@ -11,4 +11,4 @@ in
 builtins.listToAttrs
   (map
     (name: { name = "${name}.age"; value = { publicKeys = users ++ systems; }; })
-    ["rat" "ss" "sing" "hyst" "hyst-do" "tuic" "naive" "ssh" "wg" "gh-eu" ])
+    ["rat" "ss" "sing" "hyst-az" "hyst-do" "hyst-am" "tuic" "naive" "ssh" "wg" "gh-eu" ])

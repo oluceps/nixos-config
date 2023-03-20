@@ -8,6 +8,26 @@
 , user
 , ...
 }: {
+  xdg = {
+    mime = {
+      enable = true;
+      defaultApplications = {
+        "tg" = [ "telegramdesktop.desktop" ];
+
+        "x-scheme-handler/http" = "firefox.desktop";
+        "text/html" = "firefox.desktop";
+        "x-scheme-handler/https" = "firefox.desktop";
+        "x-scheme-handler/about" = "firefox.desktop";
+        "x-scheme-handler/unknown" = "firefox.desktop";
+
+        "pdf" = [ "sioyek.desktop" ];
+        "ppt/pptx" = [ "wps-office-wpp.desktop" ];
+        "doc/docx" = [ "wps-office-wps.desktop" ];
+        "xls/xlsx" = [ "wps-office-et.desktop" ];
+      };
+    };
+  };
+
   virtualisation = {
     docker.enable = true;
     libvirtd = {
@@ -29,8 +49,6 @@
         swtpm.enable = true;
       };
     };
-    # efi.firmware = pkgs.OVMFFull.firmware;
-    # useEFIBoot = true;
     waydroid.enable = false;
   };
   qt = {
@@ -63,7 +81,7 @@
       let
         genSec = ns: owner: group: lib.genAttrs ns (n: { file = ./secrets/${n}.age; mode = "770"; inherit owner group; });
       in
-      (genSec [ "rat" "ss" "sing" "hyst" "hyst-do" "tuic" "naive" "wg" ] "proxy" "users") //
+      (genSec [ "rat" "ss" "sing" "hyst-az" "hyst-am" "hyst-do" "tuic" "naive" "wg" ] "proxy" "users") //
       genSec [ "ssh" "gh-eu" ] user "nogroup";
 
   };
@@ -201,16 +219,13 @@
       noto-fonts
       noto-fonts-cjk-sans
       noto-fonts-cjk-serif
-      # noto-fonts-emoji
       sarasa-gothic
       twemoji-color-font
       dejavu_fonts
       maple-mono-SC-NF
-      #      font-awesome
-      #      fira-code-symbols
-      #    cascadia-code
+      cascadia-code
     ]
-    ++ (with (pkgs.callPackage ./pkgs/glowsans/default.nix { }); [ glowsansSC glowsansTC glowsansJ ])
+    ++ (with (pkgs.glowsans); [ glowsansSC glowsansTC glowsansJ ])
     ++ (with nur-pkgs;[ san-francisco plangothic maoken-tangyuan ]);
     #"HarmonyOS Sans SC" "HarmonyOS Sans TC"
     fontconfig = {
