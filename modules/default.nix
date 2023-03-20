@@ -10,6 +10,7 @@
 ]
 ++ # Hysteria configs
 (map (import ./hysteria) [
-  "hysteria"
-  "hysteria-do"
+  "hyst-az"
+  "hyst-do"
+  "hyst-am"
 ])
