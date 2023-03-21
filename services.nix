@@ -13,6 +13,11 @@
   # services.xserver.libinput.enable = true;
 
   # Enable the OpenSSH daemon.
+  xdg.portal = {
+    enable = true;
+    wlr.enable = true;
+  };
+
 
   security = {
     pam = {
@@ -28,9 +33,6 @@
       u2f.enable = true;
     };
   };
-
-
-  xdg.portal.enable = true;
 
   systemd = {
     # Given that our systems are headless, emergency mode is useless.
@@ -135,8 +137,9 @@
       jack.enable = true;
     };
 
-    hysteria.enable = true;
-    hysteria-do.enable = true;
+    hyst-az.enable = true;
+    hyst-do.enable = true;
+    hyst-am.enable = true;
 
     # ss-tls cnt to router
     ss.enable = false;
@@ -212,18 +215,10 @@
       dnssec = "false";
       llmnr = "false";
       extraConfig = ''
-        DNS=223.6.6.6 202.141.178.13:5353
-        Domains=~.
+        DNS=223.6.6.6#dns.alidns.com
         MulticastDNS=true
-        DNSStubListener = false
-        DNSOverTLS = false
+        DNSOverTLS=false
       '';
-      fallbackDns = [
-        "101.6.6.6:5353"
-        "211.138.151.161"
-        "8.8.4.4"
-        "1.1.1.1"
-      ];
     };
   };
 

@@ -81,7 +81,8 @@
 
       "net.ipv4.tcp_rmem" = "4096 87380 2500000";
       "net.ipv4.tcp_wmem" = "4096 65536 2500000";
-      "net.core.rmem_max" = 2500000;
+      "net.core.rmem_max" = 16777216;
+      "net.core.wmem_max" = 16777216;
       "net.ipv4.tcp_mtu_probing" = 1;
       "net.core.somaxconn" = 4096;
       "net.ipv6.conf.all.forwarding" = 1;

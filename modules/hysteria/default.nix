@@ -30,10 +30,10 @@ let
         config =
           let
             configFile =
-              # hyst-az    -> azure server
+              # hyst-az -> azure server
               # hyst-do -> digital ocean
               # hyst-am -> amazon cloud
-              config.age.secrets.${token}.path;
+              config.age.secrets.${name}.path;
           in
           mkIf
             cfg.enable

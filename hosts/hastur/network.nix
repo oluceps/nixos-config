@@ -1,6 +1,4 @@
 { config
-, pkgs
-, user
 , ...
 }: {
   networking = {
@@ -77,10 +75,9 @@
         # address = [ "192.168.0.255/24" ];
         # routes = [
         # { routeConfig = { Gateway = "192.168.0.1"; }; }
-        #{routeConfig = {Gateway = "fe80::c609:38ff:fef2:3ecb";};}
+        # { routeConfig = { Gateway = "fe80::c609:38ff:fef2:3ecb"; }; }
         # ];
-        #dns = ["192.168.2.2" "fe80::c609:38ff:fef2:3ecb"];
-        # dns = [ "127.0.0.1:53" "::1" ];
+        # "::1"
       };
 
       "30-rndis" = {
