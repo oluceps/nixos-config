@@ -8,7 +8,7 @@
     systemdIntegration = false;
     extraConfig = import ./config.nix { inherit pkgs user; };
     nvidiaPatches = true;
-    recommendedEnvironment = false;
+    recommendedEnvironment = true;
     xwayland = {
       enable = true;
       hidpi = false;
@@ -18,12 +18,7 @@
   home = {
     sessionVariables = {
       EDITOR = "hx";
-      BROWSER = "google-chrome-stable";
       TERMINAL = "foot";
-      # GTK_IM_MODULE = "fcitx5";
-      # QT_IM_MODULE = "fcitx5";
-      # XMODIFIERS = "@im=fcitx5";
-      #      QT_QPA_PLATFORMTHEME = "gtk3";
       QT_SCALE_FACTOR = "1";
       MOZ_ENABLE_WAYLAND = "1";
       SDL_VIDEODRIVER = "wayland";
@@ -38,10 +33,6 @@
       CLUTTER_BACKEND = "wayland";
       __GLX_VENDOR_LIBRARY_NAME = "nvidia";
       LIBVA_DRIVER_NAME = "nvidia";
-      #vulkan
-      #WLR_RENDERER="vulkan";
-      #__NV_PRIME_RENDER_OFFLOAD="1";
-
       XDG_CURRENT_DESKTOP = "Hyprland";
       XDG_SESSION_DESKTOP = "Hyprland";
       XDG_CACHE_HOME = "\${HOME}/.cache";

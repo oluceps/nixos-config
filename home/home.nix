@@ -6,7 +6,7 @@
 }:
 {
 
-  imports = import ./programs;
+  imports = map (d: "programs/" + d) (builtins.attrNames (builtins.readDir ./programs));
   home.stateVersion = "22.11";
   home.sessionVariables = {
     EDITOR = "hx";
@@ -18,16 +18,7 @@
     manpages.enable = false;
   };
 
-  xdg.mimeApps.defaultApplications = {
-    "text/html" = [ "google-chrome.desktop" ];
-    "tg" = [ "telegramdesktop.desktop" ];
-    "x-scheme-handler/http" = [ "google-chrome.desktop" ];
-    "x-scheme-handler/https" = [ "google-chrome.desktop" ];
-    "pdf" = [ "sioyek.desktop" ];
-    "ppt/pptx" = [ "wps-office-wpp.desktop" ];
-    "doc/docx" = [ "wps-office-wps.desktop" ];
-    "xls/xlsx" = [ "wps-office-et.desktop" ];
-  };
+
 
 
 
