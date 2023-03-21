@@ -155,11 +155,11 @@
         "utils": "utils_3"
       },
       "locked": {
-        "lastModified": 1679330725,
-        "narHash": "sha256-REYSgJ5BPLNdOnaKJmFRN3KRJ97FjkmqTER0PW2zhL8=",
+        "lastModified": 1679373636,
+        "narHash": "sha256-9a0oE4EOs/3FPZBL0sAolzD8osdhnCiyNSo01bD5Wbo=",
         "owner": "MetaCubeX",
         "repo": "Clash.Meta",
-        "rev": "154fbb34eace2f1568f034d004f27973f6fa5d0a",
+        "rev": "0336435ebc4346597a2d571999f780dd98418145",
         "type": "github"
       },
       "original": {
