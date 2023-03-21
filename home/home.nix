@@ -6,7 +6,12 @@
 }:
 {
 
-  imports = map (d: "programs/" + d) (builtins.attrNames (builtins.readDir ./programs));
+  imports =
+    map (d: ./programs + d)
+      (map (n: "/" + n)
+        (with builtins;attrNames
+          (readDir ./programs)));
+
   home.stateVersion = "22.11";
   home.sessionVariables = {
     EDITOR = "hx";
@@ -164,10 +169,10 @@
       texlive.combined.scheme-full
       vlc
       bluedevil
-      jetbrains.clion
-      jetbrains.goland
-      jetbrains.pycharm-professional
-      jetbrains.datagrip
+      # jetbrains.clion
+      # jetbrains.goland
+      # jetbrains.pycharm-professional
+      # jetbrains.datagrip
       julia-bin
     ]
     ++
