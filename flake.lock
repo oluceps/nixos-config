@@ -1334,11 +1334,11 @@
         "utils": "utils_4"
       },
       "locked": {
-        "lastModified": 1679385031,
-        "narHash": "sha256-G0/LQ5vzjKNHFHXP/3gNH5GVUKM1t4g+GFjV0lHieLM=",
+        "lastModified": 1679394816,
+        "narHash": "sha256-1V1esJt2YAxsKmRuGuB62RF5vhDAVFDvJXVNhtEO22A=",
         "owner": "nix-community",
         "repo": "home-manager",
-        "rev": "2bf15d3835030906e727abd0e1533b98a4fb916c",
+        "rev": "e386ec640e16dc91120977285cb8c72c77078164",
         "type": "github"
       },
       "original": {
@@ -1436,11 +1436,11 @@
         "rust-overlay": "rust-overlay_3"
       },
       "locked": {
-        "lastModified": 1679304893,
-        "narHash": "sha256-NGQ3YunIGKS4s1AWYSnCBkqZDPdPrZkhQBltoupYhdg=",
+        "lastModified": 1679408810,
+        "narHash": "sha256-66xmjsI/RJlV560G2ZfROSpN8OHjazDkQE1eMx80BPE=",
         "owner": "nix-community",
         "repo": "lanzaboote",
-        "rev": "bdcada4bc2c62ba633e3a9b50746cbba6c9c32a3",
+        "rev": "9c0dfff36ba31ddbb4fdc3ebdde51df82213aa91",
         "type": "github"
       },
       "original": {
@@ -1944,11 +1944,11 @@
     },
     "nixpkgs-pin-kernel": {
       "locked": {
-        "lastModified": 1679389611,
-        "narHash": "sha256-l1oBTq6Cq9dwN0zJT+B+WArg14fVIc4GCxcJuEzFdII=",
+        "lastModified": 1679407499,
+        "narHash": "sha256-vYZdKddbQeLvhSLaD/Drt5+tHSqObdZeYSCAXrAAt3Y=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "f696be7e95edc4c13978a2f84a49fefc698800b5",
+        "rev": "06541976aaac6505bc836156f8cb6269e8183109",
         "type": "github"
       },
       "original": {
@@ -1992,16 +1992,16 @@
     },
     "nixpkgs-test": {
       "locked": {
-        "lastModified": 1671812130,
-        "narHash": "sha256-GALBK+qB9rhnB+lVnxdgtMoXCySXughZZ3+qGO1Ke/k=",
-        "owner": "RaitoBezarius",
+        "lastModified": 1679009563,
+        "narHash": "sha256-jizICiQOqUcYFNHRNNOo69bfyNo36iyuRAHem5z68LQ=",
+        "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "e51bf8cc8e2c75192e930ad83ed272938729e7be",
+        "rev": "371d3778c4f9cee7d5cf014e6ce400d57366570f",
         "type": "github"
       },
       "original": {
-        "owner": "RaitoBezarius",
-        "ref": "simplified-qemu-boot-disks",
+        "owner": "NixOS",
+        "ref": "qemu-boot-disk-using-make-disk-image",
         "repo": "nixpkgs",
         "type": "github"
       }
@@ -2102,11 +2102,11 @@
     },
     "nixpkgs_16": {
       "locked": {
-        "lastModified": 1679389611,
-        "narHash": "sha256-l1oBTq6Cq9dwN0zJT+B+WArg14fVIc4GCxcJuEzFdII=",
+        "lastModified": 1679407499,
+        "narHash": "sha256-vYZdKddbQeLvhSLaD/Drt5+tHSqObdZeYSCAXrAAt3Y=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "f696be7e95edc4c13978a2f84a49fefc698800b5",
+        "rev": "06541976aaac6505bc836156f8cb6269e8183109",
         "type": "github"
       },
       "original": {
@@ -2483,11 +2483,11 @@
     },
     "nur_3": {
       "locked": {
-        "lastModified": 1679390561,
-        "narHash": "sha256-KycgI2skDinbAB7T4Il7g/43nUVqJela9nyqTC7BXHI=",
+        "lastModified": 1679397472,
+        "narHash": "sha256-HJdIJO2gHL6dRAH5YBZMP3qzvmSuLRtQ+3HL5mS9jKg=",
         "owner": "nix-community",
         "repo": "NUR",
-        "rev": "97e5c4b46ff73b51b2a58f8caa58c58dd01b549f",
+        "rev": "89adadf2c092d641d9791cc58baeb6432be5bc8d",
         "type": "github"
       },
       "original": {
