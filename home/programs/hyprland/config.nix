@@ -30,7 +30,7 @@ let
             exec-once=mako
             exec-once=waybar
             exec-once=systemd-run-app telegram-desktop
-            exec-once=systemd-run-app google-chrome-stable
+            exec-once=systemd-run-app firefox
 
             input {
                 kb_layout=us
