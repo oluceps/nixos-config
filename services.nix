@@ -152,7 +152,7 @@
           false;
       };
 
-    sing-box.enable = true;
+    sing-box.enable = false;
     rathole.enable = true;
 
 

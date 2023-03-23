@@ -543,10 +543,10 @@
     mako = {
       enable = true;
       backgroundColor = "#1E1D2F3b";
-      borderSize = 1;
+      borderSize = 0;
       borderColor = "#96CDFB3b";
       maxVisible = 2;
-      borderRadius = 12;
+      borderRadius = 5;
       defaultTimeout = 5000;
       font = "JetBrainsMono Nerd Font 12";
     };
