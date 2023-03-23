@@ -267,7 +267,7 @@
 
   eunomia = pkgs.stdenv.mkDerivation {
     name = "eunomia-dev";
-    nativeBuildInputs = with pkgs; [
+    buildInputs = with pkgs; [
       cmake
       zlib.static
       pkg-config
