@@ -105,7 +105,7 @@
           "https://helix.cachix.org"
         ];
         auto-optimise-store = true;
-        experimental-features = [ "nix-command" "flakes" "auto-allocate-uids" "cgroups" ];
+        experimental-features = [ "nix-command" "flakes" "auto-allocate-uids" "cgroups" "repl-flake" ];
         auto-allocate-uids = true;
         use-cgroups = true;
 
@@ -202,7 +202,7 @@
 
   fonts = {
     enableDefaultFonts = true;
-    fontDir.enable = true;
+    fontDir.enable = false;
     enableGhostscriptFonts = true;
     fonts = with pkgs; [
 
@@ -226,10 +226,12 @@
       cascadia-code
     ]
     ++ (with (pkgs.glowsans); [ glowsansSC glowsansTC glowsansJ ])
-    ++ (with nur-pkgs;[ san-francisco plangothic maoken-tangyuan ]);
+    ++ (with nur-pkgs;[ san-francisco plangothic maoken-tangyuan hk-grotesk ]);
     #"HarmonyOS Sans SC" "HarmonyOS Sans TC"
     fontconfig = {
       subpixel.rgba = "none";
+      antialias = true;
+      hinting.enable = false;
       defaultFonts = {
         serif = [ "Glow Sans SC" "Glow Sans TC" "Glow Sans J" "Noto Serif" "Noto Serif CJK SC" "Noto Serif CJK TC" "Noto Serif CJK JP" ];
         monospace = [ "SF Mono" "Fantasque Sans Mono" ];

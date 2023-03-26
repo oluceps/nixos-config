@@ -12,7 +12,8 @@ let
       lua
       nodejs-18_x
       yarn
-      rustup
+      # rustup
+      # cargo
       bpf-linker
       pkg-config
       gdb
@@ -32,7 +33,7 @@ let
       dnsutils
       autossh
       tcpdump
-      nur-pkgs.sing-box
+      sing-box
       netcat
       dog
       wget

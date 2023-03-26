@@ -265,18 +265,18 @@
     '';
   };
 
-  eunomia = pkgs.stdenv.mkDerivation {
-    name = "eunomia-dev";
-    buildInputs = with pkgs; [
-      cmake
-      zlib.static
+  eunomia = with pkgs;mkShell {
+    nativeBuildInputs = [
       pkg-config
-      elfutils
-      llvmPackages_14.llvm
       rustPlatform.bindgenHook
+    ];
 
-    ] ++ map lib.getDev (with pkgs; [ openssl libbfd libcap ]);
-
-
+    buildInputs = [
+      openssl
+      pkgsStatic.zlib
+      elfutils
+      zlib
+      stdenv
+    ];
   };
 }

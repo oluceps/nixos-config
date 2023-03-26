@@ -13,13 +13,13 @@
         helix.packages.${system}.default
       ]
       ++ (with pkgs;[
-        # (fenix.complete.withComponents [
-        #   "cargo"
-        #   "clippy"
-        #   "rust-src"
-        #   "rustc"
-        #   "rustfmt"
-        # ])
+        (fenix.complete.withComponents [
+          "cargo"
+          "clippy"
+          "rust-src"
+          "rustc"
+          "rustfmt"
+        ])
         rust-analyzer-nightly
       ])
     ;

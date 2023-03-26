@@ -152,7 +152,7 @@
           false;
       };
 
-    sing-box.enable = false;
+    sing-box.enable = true;
     rathole.enable = true;
 
 
@@ -218,6 +218,7 @@
         DNS=223.6.6.6#dns.alidns.com
         MulticastDNS=true
         DNSOverTLS=false
+        DNSStubListener=no
       '';
     };
   };
