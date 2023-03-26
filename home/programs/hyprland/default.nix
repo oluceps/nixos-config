@@ -5,7 +5,7 @@
   wayland.windowManager.hyprland = {
     enable = true;
     package = pkgs.hyprland;
-    systemdIntegration = true;
+    systemdIntegration = false;
     extraConfig = import ./config.nix { inherit pkgs user; };
     nvidiaPatches = true;
     recommendedEnvironment = true;

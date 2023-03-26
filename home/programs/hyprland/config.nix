@@ -52,9 +52,6 @@ builtins.readFile ./mocha + (with deps; ''
     exec-once = wl-paste --type text --watch ${cliphist} store #Stores only text data
     exec-once = wl-paste --type image --watch ${cliphist} store #Stores only image data
 
-    exec-once=fcitx5
-    exec-once=mako
-    exec-once=waybar
     exec-once=systemd-run-app ${tdesktop}
     exec-once=systemd-run-app ${firefox}
   '') + builtins.readFile ./general

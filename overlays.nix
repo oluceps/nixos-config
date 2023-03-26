@@ -16,7 +16,6 @@
       # sha256 = "0000000000000000000000000000000000000000000000000000";
 
       nur-pkgs = inputs.nur-pkgs.packages.${system};
-      frk-nur = inputs.frk-nur.packages.${system};
 
       # linuxPackages_latest =
       #   (import inputs.nixpkgs-pin-kernel {
