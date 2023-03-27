@@ -7,7 +7,7 @@ let
     rec {
       inherit system;
       pkgs = _pkgs.${system};
-      specialArgs = { inherit inputs system user; };
+      specialArgs = { inherit inputs system user lib; };
       modules = (import ./${hostname})
         ++ (import ./shares.nix { inherit inputs system pkgs; });
     };

@@ -1,4 +1,4 @@
-{ pkgs, user, ... }:
+{ pkgs, user, lib, ... }:
 
 {
 
@@ -6,7 +6,7 @@
     enable = true;
     package = pkgs.hyprland;
     systemdIntegration = false;
-    extraConfig = import ./config.nix { inherit pkgs user; };
+    extraConfig = import ./config.nix { inherit pkgs user lib; };
     nvidiaPatches = true;
     recommendedEnvironment = true;
     xwayland = {

@@ -6,12 +6,8 @@
   ../sysvars.nix
   ../services.nix
   {
-    environment.systemPackages = with inputs;
-      [
-        alejandra.defaultPackage.${system}
-        agenix.packages.${system}.default
-      ]
-      ++ (with pkgs;[
+    environment.systemPackages =
+      (with pkgs;[
         (fenix.complete.withComponents [
           "cargo"
           "clippy"
