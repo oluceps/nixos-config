@@ -1,11 +1,12 @@
 { pkgs
 , user
+,lib
 , ...
 }:
 let
 
   wl-copy = "${pkgs.wl-clipboard}/bin/wl-copy";
-  genDeps = n: with pkgs; lib.genAttrs n (name: lib.getExe pkgs.${name});
+  genDeps = n: lib.genAttrs n (name: lib.getExe pkgs.${name});
   deps = genDeps [
     "fuzzel"
     "foot"
@@ -43,7 +44,7 @@ builtins.readFile ./mocha + (with deps; ''
     bind=,XF86MonBrightnessDown,exec,${light} -U 5
 
     # selection
-    $ssselection=${grim} -g "$(${slurp})" - | ${wl-copy} -t image/png    
+    $ssselection=${lib.getExe pkgs.sway-contrib.grimshot} copy area
 
     # all-monitors
     $ssall=${grim} - | ${wl-copy} -t image/png
