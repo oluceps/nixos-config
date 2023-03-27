@@ -7,6 +7,7 @@
   ./btrbk
   ./naive
   ./sundial
+  ./dae
 ]
 ++ # Hysteria configs
 (map (import ./hysteria) [
