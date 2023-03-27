@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ pkgs, lib, ... }:
 {
   programs.alacritty = {
     enable = true;
@@ -6,7 +6,7 @@
       import = [ ./alacritty.yml ];
       font = { size = 12.0; };
       shell = {
-        program = "${pkgs.fish}/bin/fish";
+        program = lib.getExe pkgs.fish;
       };
     };
   };

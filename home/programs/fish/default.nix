@@ -54,7 +54,7 @@
       la = "lsd --icon never -la";
       g = "lazygit";
       "cd.." = "cd ..";
-      up = "nix flake update /etc/nixos && doas nixos-rebuild switch --verbose --flake /etc/nixos";
+      up = "nix flake update --commit-lock-file /etc/nixos && doas nixos-rebuild switch --verbose --flake /etc/nixos";
     };
     shellInit = ''
       ${pkgs.starship}/bin/starship init fish | source

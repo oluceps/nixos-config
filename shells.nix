@@ -1,41 +1,6 @@
 { inputs, system, pkgs }:
 {
-  default =
-    pkgs.mkShell {
-
-      nativeBuildInputs = [
-        (inputs.mach-nix.lib.${system}.mkPython
-          {
-            requirements = ''
-              pillow
-              dbus-python
-              numpy
-              redis
-              testresources
-              requests
-              uvloop
-              adafruit-nrfutil
-              fido2
-              tockloader == 1.5.0
-              intelhex
-              colorama
-              tqdm
-              pandas
-              requests
-              pyrogram
-              tgcrypto
-              JPype1
-              toml
-              pyyaml
-              tockloader
-              colorama
-              six
-            '';
-          })
-      ];
-      # buildInputs = with pkgs; [ jetbrains.pycharm-professional ];
-      name = "python env";
-    };
+  default = inputs.nvfetcher.packages.${system}.ghcWithNvfetcher;
 
   kernel =
     (pkgs.buildFHSUserEnv {
@@ -300,18 +265,30 @@
     '';
   };
 
-  eunomia = pkgs.stdenv.mkDerivation {
-    name = "eunomia-dev";
-    nativeBuildInputs = with pkgs; [
-      cmake
-      zlib.static
+  eunomia = with pkgs;mkShell {
+    nativeBuildInputs = [
       pkg-config
-      elfutils
-      llvmPackages_14.llvm
       rustPlatform.bindgenHook
+    ];
 
-    ] ++ map lib.getDev (with pkgs; [ openssl libbfd libcap ]);
+    buildInputs = [
+      openssl
+      pkgsStatic.zlib
+      elfutils
+      zlib
+      stdenv
+    ];
+  };
+  dae = with pkgs;mkShell {
+    name = "libcxx";
 
+    buildInputs = [
+      go
+      llvm_15
+    ];
+    shellHook = ''
+      unset STRIP
+    '';
 
   };
 }

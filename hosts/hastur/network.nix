@@ -1,6 +1,4 @@
 { config
-, pkgs
-, user
 , ...
 }: {
   networking = {
@@ -11,6 +9,8 @@
     wireless.iwd.enable = true;
     useNetworkd = true;
     useDHCP = false;
+    firewall.enable = true;
+    nftables.enable = true;
     # Configure network proxy if necessary
     # proxy.default = "http://127.0.0.1:7890";
     networkmanager.enable = false;
@@ -44,6 +44,7 @@
     enable = true;
 
     wait-online = {
+      enable = false;
       timeout = 5;
       ignoredInterfaces = [ "wlan" ];
     };
@@ -70,16 +71,15 @@
     networks = {
       "20-wired" = {
         matchConfig.Name = "wan";
-        DHCP = "yes";
+        DHCP = "no";
         dhcpV4Config.RouteMetric = 2046;
         dhcpV6Config.RouteMetric = 2046;
-        # address = [ "192.168.0.255/24" ];
-        # routes = [
-          # { routeConfig = { Gateway = "192.168.0.1"; }; }
-          #{routeConfig = {Gateway = "fe80::c609:38ff:fef2:3ecb";};}
-        # ];
-        #dns = ["192.168.2.2" "fe80::c609:38ff:fef2:3ecb"];
-        # dns = [ "127.0.0.1:53" "::1" ];
+        address = [ "192.168.0.2/24" ];
+        routes = [
+          { routeConfig = { Gateway = "192.168.0.1"; }; }
+          # { routeConfig = { Gateway = "fe80::c609:38ff:fef2:3ecb"; }; }
+        ];
+        # "::1"
       };
 
       "30-rndis" = {

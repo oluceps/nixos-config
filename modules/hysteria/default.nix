@@ -27,16 +27,13 @@ let
 
           };
         };
-
-
-
         config =
           let
             configFile =
-              # hyst    -> azure server
+              # hyst-az -> azure server
               # hyst-do -> digital ocean
-              let token = if name == "hysteria" then "hyst" else "hyst-do";
-              in config.age.secrets.${token}.path;
+              # hyst-am -> amazon cloud
+              config.age.secrets.${name}.path;
           in
           mkIf
             cfg.enable
@@ -49,7 +46,7 @@ let
                 serviceConfig = {
                   Type = "simple";
                   User = "proxy";
-                  ExecStart = "${cfg.package}/bin/hysteria -c ${configFile}";
+                  ExecStart = "${cfg.package}/bin/hysteria client -c ${configFile}";
                   AmbientCapabilities = [ "CAP_NET_ADMIN" "CAP_NET_BIND_SERVICE" ];
                   Restart = "on-failure";
                 };

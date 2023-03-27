@@ -1,13 +1,11 @@
 { pkgs
 , config
 , lib
-, user
 , ...
 }:
 with lib;
 let
   cfg = config.services.sing-box;
-  dataDir = "/home/${user}/.config/sing-box";
 in
 {
   options.services.sing-box = {
@@ -21,7 +19,7 @@ in
     };
     package = mkOption {
       type = types.package;
-      default = pkgs.sing-box;
+      default = pkgs.nur-pkgs.sing-box;
       defaultText = literalExpression "pkgs.sing-box";
       description = lib.mdDoc ''
         package

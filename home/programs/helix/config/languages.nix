@@ -456,6 +456,7 @@ shebangs = ["python"]
 roots = []
 comment-token = "#"
 language-server = { command = "pylsp" }
+formatter = { command = "${pkgs.black}/bin/black", args = ["-"]}
 # TODO: pyls needs utf-8 offsets
 indent = { tab-width = 4, unit = "    " }
 

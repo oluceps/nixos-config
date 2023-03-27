@@ -2,6 +2,7 @@
 let
   p = with pkgs; {
     dev = [
+      age
       pinentry-curses
       swagger-codegen3
       bump2version
@@ -11,7 +12,8 @@ let
       lua
       nodejs-18_x
       yarn
-      rustup
+      # rustup
+      # cargo
       bpf-linker
       pkg-config
       gdb
@@ -22,6 +24,7 @@ let
       llvmPackages_latest.clang
     ];
     net = [
+      nur-pkgs.dae
       rathole
       nftables
       tor
@@ -31,7 +34,7 @@ let
       dnsutils
       autossh
       tcpdump
-      nur-pkgs.sing-box
+      sing-box
       netcat
       dog
       wget
@@ -58,6 +61,7 @@ let
     fs = [ gparted e2fsprogs fscrypt-experimental f2fs-tools compsize ];
 
     cmd = [
+      helix
       srm
 
       killall
@@ -135,7 +139,7 @@ in
       (with pkgs; (
         python3.withPackages
           (p: with p;[
-            wordcloud
+            # wordcloud
             qrcode
             matplotlib
             pylsp-mypy

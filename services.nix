@@ -13,6 +13,11 @@
   # services.xserver.libinput.enable = true;
 
   # Enable the OpenSSH daemon.
+  xdg.portal = {
+    enable = true;
+    wlr.enable = true;
+  };
+
 
   security = {
     pam = {
@@ -28,9 +33,6 @@
       u2f.enable = true;
     };
   };
-
-
-  xdg.portal.enable = true;
 
   systemd = {
     # Given that our systems are headless, emergency mode is useless.
@@ -60,14 +62,15 @@
   };
 
   services = {
-    github-runners = {
-      runner1 = {
-        enable = true;
-        name = "nixos-0";
-        tokenFile = config.age.secrets.gh-eu.path;
-        url = "https://github.com/oluceps/eunomia-bpf";
-      };
-    };
+    dnsmasq = { enable = false; settings.server = [ "127.0.0.1" ]; };
+    # github-runners = {
+    #   runner1 = {
+    #     enable = false;
+    #     name = "nixos-0";
+    #     tokenFile = config.age.secrets.gh-eu.path;
+    #     url = "https://github.com/oluceps/eunomia-bpf";
+    #   };
+    # };
     autossh.sessions = [
       {
         extraArguments = "-NTR 5002:127.0.0.1:22 az";
@@ -81,6 +84,11 @@
       ''
         SystemMaxUse=1G
       '';
+    sundial = {
+      enable = true;
+      calendars = [ "Sun,Mon-Thu 23:18:00" "Fri,Sat 23:48:00" ];
+      warnAt = [ "Sun,Mon-Thu 23:16:00" "Fri,Sat 23:46:00" ];
+    };
 
     # HORRIBLE
     # mongodb = {
@@ -130,8 +138,9 @@
       jack.enable = true;
     };
 
-    hysteria.enable = true;
-    hysteria-do.enable = true;
+    hyst-az.enable = true;
+    hyst-do.enable = true;
+    hyst-am.enable = true;
 
     # ss-tls cnt to router
     ss.enable = false;
@@ -144,8 +153,10 @@
           false;
       };
 
-    sing-box.enable = true;
+    sing-box.enable = false;
     rathole.enable = true;
+
+    dae.enable = true;
 
 
     # btrbk = {
@@ -185,6 +196,10 @@
         X11Forwarding = false;
       };
       authorizedKeysFiles = lib.mkForce [ "/etc/ssh/authorized_keys.d/%u" ];
+      extraConfig = ''
+        ClientAliveInterval 60
+        ClientAliveCountMax 720
+      '';
     };
 
     fail2ban = {
@@ -203,18 +218,11 @@
       dnssec = "false";
       llmnr = "false";
       extraConfig = ''
-        DNS=223.6.6.6 202.141.178.13:5353
-        Domains=~.
+        DNS=223.6.6.6#dns.alidns.com
         MulticastDNS=true
-        DNSStubListener = false
-        DNSOverTLS = false
+        DNSOverTLS=false
+        DNSStubListener=no
       '';
-      fallbackDns = [
-        "101.6.6.6:5353"
-        "211.138.151.161"
-        "8.8.4.4"
-        "1.1.1.1"
-      ];
     };
   };
 

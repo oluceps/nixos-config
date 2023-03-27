@@ -8,6 +8,26 @@
 , user
 , ...
 }: {
+  xdg = {
+    mime = {
+      enable = true;
+      defaultApplications = {
+        "tg" = [ "telegramdesktop.desktop" ];
+
+        "x-scheme-handler/http" = "firefox.desktop";
+        "text/html" = "firefox.desktop";
+        "x-scheme-handler/https" = "firefox.desktop";
+        "x-scheme-handler/about" = "firefox.desktop";
+        "x-scheme-handler/unknown" = "firefox.desktop";
+
+        "pdf" = [ "sioyek.desktop" ];
+        "ppt/pptx" = [ "wps-office-wpp.desktop" ];
+        "doc/docx" = [ "wps-office-wps.desktop" ];
+        "xls/xlsx" = [ "wps-office-et.desktop" ];
+      };
+    };
+  };
+
   virtualisation = {
     docker.enable = true;
     libvirtd = {
@@ -29,9 +49,7 @@
         swtpm.enable = true;
       };
     };
-    # efi.firmware = pkgs.OVMFFull.firmware;
-    # useEFIBoot = true;
-    waydroid.enable = true;
+    waydroid.enable = false;
   };
   qt = {
     enable = true;
@@ -60,30 +78,20 @@
   age = {
     identityPaths = [ "/persist/keys/ssh_host_ed25519_key" ];
     secrets =
-      lib.genAttrs [ "rat" "ss" "sing" "hyst" "hyst-do" "tuic" "naive" "wg" ]
-        (n:
-          {
-            file = ./secrets/${n}.age;
-            mode = "770";
-            owner = "proxy";
-            group = "users";
-          }
-        ) //
+      let
+        genSec = ns: owner: group: lib.genAttrs ns (n: { file = ./secrets/${n}.age; mode = "770"; inherit owner group; });
+      in
+      (genSec [ "rat" "ss" "sing" "hyst-az" "hyst-am" "hyst-do" "tuic" "naive" "wg" ] "proxy" "users") //
+      (genSec [ "ssh" "gh-eu" ] user "nogroup") //
+      {
+        dae = { file = ./secrets/dae.age; mode = "640"; owner = "proxy"; group = "users"; name = "d.dae"; };
+      };
 
-      lib.genAttrs [ "ssh" "gh-eu" ]
-        (n:
-          {
-            file = ./secrets/${n}.age;
-            mode = "770";
-            owner = user;
-            group = "nogroup";
-          }
-        );
   };
 
   nix =
     {
-      package = pkgs.nixVersions.stable;
+      package = pkgs.nixVersions.unstable;
 
       settings = {
 
@@ -100,7 +108,7 @@
           "https://helix.cachix.org"
         ];
         auto-optimise-store = true;
-        experimental-features = [ "nix-command" "flakes" "auto-allocate-uids" "cgroups" ];
+        experimental-features = [ "nix-command" "flakes" "auto-allocate-uids" "cgroups" "repl-flake" ];
         auto-allocate-uids = true;
         use-cgroups = true;
 
@@ -197,7 +205,7 @@
 
   fonts = {
     enableDefaultFonts = true;
-    fontDir.enable = true;
+    fontDir.enable = false;
     enableGhostscriptFonts = true;
     fonts = with pkgs; [
 
@@ -214,20 +222,19 @@
       noto-fonts
       noto-fonts-cjk-sans
       noto-fonts-cjk-serif
-      # noto-fonts-emoji
       sarasa-gothic
       twemoji-color-font
       dejavu_fonts
       maple-mono-SC-NF
-      #      font-awesome
-      #      fira-code-symbols
-      #    cascadia-code
+      cascadia-code
     ]
-    ++ (with (pkgs.callPackage ./pkgs/glowsans/default.nix { }); [ glowsansSC glowsansTC glowsansJ ])
-    ++ (with nur-pkgs;[ san-francisco plangothic maoken-tangyuan ]);
+    ++ (with (pkgs.glowsans); [ glowsansSC glowsansTC glowsansJ ])
+    ++ (with nur-pkgs;[ san-francisco plangothic maoken-tangyuan hk-grotesk ]);
     #"HarmonyOS Sans SC" "HarmonyOS Sans TC"
     fontconfig = {
       subpixel.rgba = "none";
+      antialias = true;
+      hinting.enable = false;
       defaultFonts = {
         serif = [ "Glow Sans SC" "Glow Sans TC" "Glow Sans J" "Noto Serif" "Noto Serif CJK SC" "Noto Serif CJK TC" "Noto Serif CJK JP" ];
         monospace = [ "SF Mono" "Fantasque Sans Mono" ];

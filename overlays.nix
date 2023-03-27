@@ -3,7 +3,6 @@
   (final: prev:
     prev.lib.genAttrs
       [
-        "helix"
         "hyprland"
         "hyprpicker"
         "clash-meta"
@@ -12,6 +11,14 @@
       (n: inputs.${n}.packages.${system}.default)
     //
     {
+
+      helix = inputs.helix.packages.${system}.default.override {
+        includeGrammarIf = grammar:
+          prev.lib.any
+            (name: grammar.name == name)
+            [ "toml" "rust" "nix" "protobuf" "yaml" "json" "markdown" "html" "css" "zig" "c" "cpp" "go" ];
+      };
+
 
       # sha256 = "0000000000000000000000000000000000000000000000000000";
 
@@ -52,6 +59,21 @@
       });
 
 
+      rathole = prev.rathole.overrideAttrs (old: rec {
+        version = "0.4.7-1";
+        src = prev.fetchFromGitHub {
+          owner = "oluceps";
+          repo = "rathole";
+          rev = "463eec304dbcd9dedf96980ebc97005ec61cb8ea";
+          sha256 = "sha256-EybdSlE6yovAWExZjoDogAKjCvMNMtHBkaob0qNtJvI=";
+        };
+
+        cargoDeps = old.cargoDeps.overrideAttrs (prev.lib.const {
+          inherit src;
+          # otherwise the old "src" will be used.
+          outputHash = "sha256-vYIUdGI8ZXOh8YLQVGPJf74nC85sIyZ8UbpbmhsvHjg=";
+        });
+      });
 
       # shadowsocks-rust = prev.shadowsocks-rust.overrideAttrs (old: rec {
       #   version = "1.15.0-alpha.9";

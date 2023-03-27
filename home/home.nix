@@ -6,7 +6,12 @@
 }:
 {
 
-  imports = import ./programs;
+  imports =
+    map (d: ./programs + d)
+      (map (n: "/" + n)
+        (with builtins;attrNames
+          (readDir ./programs)));
+
   home.stateVersion = "22.11";
   home.sessionVariables = {
     EDITOR = "hx";
@@ -18,16 +23,7 @@
     manpages.enable = false;
   };
 
-  xdg.mimeApps.defaultApplications = {
-    "text/html" = [ "firefox.desktop" ];
-    "tg" = [ "telegramdesktop.desktop" ];
-    "x-scheme-handler/http" = [ "firefox.desktop" ];
-    "x-scheme-handler/https" = [ "firefox.desktop" ];
-    "pdf" = [ "sioyek.desktop" ];
-    "ppt/pptx" = [ "wps-office-wpp.desktop" ];
-    "doc/docx" = [ "wps-office-wps.desktop" ];
-    "xls/xlsx" = [ "wps-office-et.desktop" ];
-  };
+
 
 
 
@@ -52,7 +48,7 @@
       # davinci-resolve
       cava
 
-      # wpsoffice-cn
+      wpsoffice-cn
 
       sbctl
       qbittorrent
@@ -172,12 +168,11 @@
       ncpamixer
       texlive.combined.scheme-full
       vlc
-      firefox
       bluedevil
-      jetbrains.clion
-      jetbrains.goland
-      jetbrains.pycharm-professional
-      jetbrains.datagrip
+      # jetbrains.clion
+      # jetbrains.goland
+      # jetbrains.pycharm-professional
+      # jetbrains.datagrip
       julia-bin
     ]
     ++
@@ -250,7 +245,7 @@
   home.pointerCursor = {
     gtk.enable = true;
     x11.enable = true;
-    package = pkgs.nur-pkgs.Graphite-cursors;
+    package = pkgs.Graphite-cursors;
     name = "Graphite-light-nord";
     size = 22;
   };
@@ -548,10 +543,10 @@
     mako = {
       enable = true;
       backgroundColor = "#1E1D2F3b";
-      borderSize = 1;
+      borderSize = 0;
       borderColor = "#96CDFB3b";
       maxVisible = 2;
-      borderRadius = 12;
+      borderRadius = 5;
       defaultTimeout = 5000;
       font = "JetBrainsMono Nerd Font 12";
     };
