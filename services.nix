@@ -62,6 +62,7 @@
   };
 
   services = {
+    dnsmasq = { enable = false; settings.server = [ "127.0.0.1" ]; };
     # github-runners = {
     #   runner1 = {
     #     enable = false;
@@ -152,8 +153,10 @@
           false;
       };
 
-    sing-box.enable = true;
+    sing-box.enable = false;
     rathole.enable = true;
+
+    dae.enable = true;
 
 
     # btrbk = {

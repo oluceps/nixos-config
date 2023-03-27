@@ -9,6 +9,8 @@
     wireless.iwd.enable = true;
     useNetworkd = true;
     useDHCP = false;
+    firewall.enable = true;
+    nftables.enable = true;
     # Configure network proxy if necessary
     # proxy.default = "http://127.0.0.1:7890";
     networkmanager.enable = false;
