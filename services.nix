@@ -62,14 +62,14 @@
   };
 
   services = {
-    github-runners = {
-      runner1 = {
-        enable = true;
-        name = "nixos-0";
-        tokenFile = config.age.secrets.gh-eu.path;
-        url = "https://github.com/oluceps/eunomia-bpf";
-      };
-    };
+    # github-runners = {
+    #   runner1 = {
+    #     enable = false;
+    #     name = "nixos-0";
+    #     tokenFile = config.age.secrets.gh-eu.path;
+    #     url = "https://github.com/oluceps/eunomia-bpf";
+    #   };
+    # };
     autossh.sessions = [
       {
         extraArguments = "-NTR 5002:127.0.0.1:22 az";

@@ -86,6 +86,8 @@
       "net.ipv4.tcp_mtu_probing" = 1;
       "net.core.somaxconn" = 4096;
       "net.ipv6.conf.all.forwarding" = 1;
+      "net.ipv4.conf.all.forwarding" = 1;
+      "net.ipv4.conf.all.send_redirects" = 0;
 
       "net.ipv4.tcp_tw_recycle" = 0;
       "net.ipv4.tcp_tw_reuse" = 1;

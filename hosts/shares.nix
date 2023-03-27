@@ -10,7 +10,6 @@
       [
         alejandra.defaultPackage.${system}
         agenix.packages.${system}.default
-        helix.packages.${system}.default
       ]
       ++ (with pkgs;[
         (fenix.complete.withComponents [

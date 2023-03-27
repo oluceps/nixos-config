@@ -3,7 +3,6 @@
   (final: prev:
     prev.lib.genAttrs
       [
-        "helix"
         "hyprland"
         "hyprpicker"
         "clash-meta"
@@ -12,6 +11,14 @@
       (n: inputs.${n}.packages.${system}.default)
     //
     {
+
+      helix = inputs.helix.packages.${system}.default.override {
+        includeGrammarIf = grammar:
+          prev.lib.any
+            (name: grammar.name == name)
+            [ "toml" "rust" "nix" "protobuf" "yaml" "json" "markdown" "html" "css" "zig" "c" "cpp" ];
+      };
+
 
       # sha256 = "0000000000000000000000000000000000000000000000000000";
 
@@ -67,7 +74,7 @@
           outputHash = "sha256-vYIUdGI8ZXOh8YLQVGPJf74nC85sIyZ8UbpbmhsvHjg=";
         });
       });
- 
+
       # shadowsocks-rust = prev.shadowsocks-rust.overrideAttrs (old: rec {
       #   version = "1.15.0-alpha.9";
       #   src = prev.fetchFromGitHub {

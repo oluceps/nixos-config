@@ -1,13 +1,11 @@
 { pkgs
 , config
 , lib
-, user
 , ...
 }:
 with lib;
 let
   cfg = config.services.sing-box;
-  dataDir = "/home/${user}/.config/sing-box";
 in
 {
   options.services.sing-box = {
