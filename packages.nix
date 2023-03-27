@@ -61,6 +61,7 @@ let
     fs = [ gparted e2fsprogs fscrypt-experimental f2fs-tools compsize ];
 
     cmd = [
+      helix
       srm
 
       killall
