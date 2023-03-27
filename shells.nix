@@ -279,4 +279,16 @@
       stdenv
     ];
   };
+  dae = with pkgs;mkShell {
+    name = "libcxx";
+
+    buildInputs = [
+      go
+      llvm_15
+    ];
+    shellHook = ''
+      unset STRIP
+    '';
+
+  };
 }

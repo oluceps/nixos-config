@@ -42,7 +42,7 @@
         "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIEv3S53gBU3Hqvr5o5g+yrn1B7eiaE5Y/OIFlTwU+NEG"
       ];
     };
-    users.root.shell = pkgs.zsh;
+    users.root.shell = pkgs.bash;
 
     users.proxy = {
       isSystemUser = true;

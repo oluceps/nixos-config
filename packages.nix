@@ -24,6 +24,7 @@ let
       llvmPackages_latest.clang
     ];
     net = [
+      nur-pkgs.dae
       rathole
       nftables
       tor
