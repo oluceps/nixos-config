@@ -22,6 +22,14 @@
         true-color = true;
         cursorline = true;
         color-modes = true;
+        soft-wrap = { enable = false; };
+
+        lsp = {
+          enable = true;
+          display-messages = true;
+          display-inlay-hints = true;
+          snippets = true;
+        };
 
         cursor-shape = {
           insert = "bar";
@@ -48,8 +56,6 @@
             "file-type"
           ];
           separator = "│";
-
-
         };
 
       };
@@ -97,8 +103,6 @@
           "extend_line_up"
         ];
       };
-
-
     };
   };
 }
