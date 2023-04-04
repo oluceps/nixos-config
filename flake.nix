@@ -25,7 +25,6 @@
     surrealdb.url = "github:surrealdb/surrealdb";
     lanzaboote = {
       url = "github:nix-community/lanzaboote";
-      inputs.nixpkgs.follows = "nixpkgs";
     };
     impermanence.url = "github:nix-community/impermanence";
     clash-meta.url = "github:MetaCubeX/Clash.Meta/Alpha";

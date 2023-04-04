@@ -4,6 +4,7 @@ let
     dev = lib.flatten [
       [ pinentry-curses swagger-codegen3 bump2version openssl linuxPackages_latest.perf cloud-utils ]
       [ bpf-linker pkg-config gdb gcc gnumake cmake clang-tools_15 llvmPackages_latest.clang ]
+      [ openocd ]
       lua
       nodejs-18_x
       yarn
@@ -16,7 +17,7 @@ let
       [ iperf3 i2p ethtool dnsutils autossh tcpdump netcat dog wget mtr-gui socat miniserve mtr wakelan netcat-gnu q nali lynx nethogs restic w3m whois dig wireguard-tools curl ]
     ];
 
-    virt = [ virt-manager virtiofsd ];
+    virt = [ virt-manager virtiofsd windows-run ];
     fs = [ gparted e2fsprogs fscrypt-experimental f2fs-tools compsize ];
 
     cmd = lib.flatten [
@@ -35,7 +36,7 @@ let
       [ zig lldb haskell-language-server gopls cmake-language-server zls android-file-transfer nixpkgs-review shfmt ]
     ];
 
-    info = [ neofetch htop onefetch hardinfo qjournalctl hyprpicker imgcat nix-index ];
+    info = [ neofetch htop onefetch hardinfo qjournalctl hyprpicker imgcat nix-index ccze ];
 
   };
 in
