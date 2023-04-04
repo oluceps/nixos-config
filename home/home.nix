@@ -23,11 +23,6 @@
     manpages.enable = false;
   };
 
-
-
-
-
-
   home.packages = with pkgs;
 
     [
@@ -185,7 +180,7 @@
       YisuiMilena.hmcl-bin
     ]) ++
     (with nur-pkgs;[
-      rustplayer
+      # rustplayer
       techmino
     ]) ++
     [
@@ -251,15 +246,6 @@
   };
 
 
-  home.file = {
-
-    # ".icons/default".source = "${pkgs.Graphite}/share/icons/Graphite";
-    #".config/clash".source = ./dotfiles/clash;
-    #".config/nvim".source = ../modules/nvim;
-    #".config/waybar".source = ./dotfiles/waybar;
-
-    #    ".config/ranger/rc.conf".source = ./dotfiles/ranger/rc.conf;
-  };
   services.swayidle = {
     enable = false;
     timeouts = [
@@ -336,9 +322,8 @@
         nd = "cd /etc/nixos";
         n = "neovide";
         off = "poweroff";
-        proxy = "proxychains4 -f /home/riro/.config/proxychains/proxychains.conf";
-        roll = "xrandr -o left && feh --bg-scale /home/riro/Pictures/Wallpapers/95448248_p0.png && sleep 0.5; picom --experimental-backend -b";
-        rolln = "xrandr -o normal && feh --bg-scale /home/riro/Pictures/Wallpapers/秋の旅.jpg && sleep 0.5;  picom --experimental-backend -b";
+        # roll = "xrandr -o left && feh --bg-scale /home/riro/Pictures/Wallpapers/95448248_p0.png && sleep 0.5; picom --experimental-backend -b";
+        # rolln = "xrandr -o normal && feh --bg-scale /home/riro/Pictures/Wallpapers/秋の旅.jpg && sleep 0.5;  picom --experimental-backend -b";
         cat = "bat";
         kls = "exa";
         sl = "exa";
@@ -373,26 +358,6 @@
       '';
 
       plugins = [
-        #        {
-        #          # will source zsh-autosuggestions.plugin.zsh
-        #          name = "zsh-autosuggestions";
-        #          src = pkgs.fetchFromGitHub {
-        #            owner = "zsh-users";
-        #            repo = "zsh-autosuggestions";
-        #            rev = "v0.7.0";
-        #            sha256 = "sha256-KLUYpUu4DHRumQZ3w59m9aTW6TBKMCXl2UcKi4uMd7w=";
-        #          };
-        #        }
-        #        {
-        #          name = "enhancd";
-        #          file = "init.sh";
-        #          src = pkgs.fetchFromGitHub {
-        #            owner = "b4b4r07";
-        #            repo = "enhancd";
-        #            rev = "v2.2.4";
-        #            sha256 = "sha256-9/JGJgfAjXLIioCo3gtzCXJdcmECy6s59Oj0uVOfuuo=";
-        #          };
-        #        }
         {
           name = "zsh-history-substring-search";
           file = "zsh-history-substring-search.zsh";
@@ -424,13 +389,6 @@
           };
         }
       ];
-      #      loginShellInit = ''
-      #        if
-      #          [[ $(id --user $USER) == 1000 ]] && [[ $(tty) == "/dev/tty1" ]]
-      #        then
-      #          exec sway
-      #        fi
-      #      '';
     };
     autojump.enable = true;
 
@@ -444,7 +402,7 @@
       enable = true;
       enableZshIntegration = true;
       defaultOptions = [
-        "--height 40%"
+        "--height 80%"
         "--layout=reverse"
         "--info=inline"
         "--border"

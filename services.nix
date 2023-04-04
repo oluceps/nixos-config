@@ -62,7 +62,6 @@
   };
 
   services = {
-    dnsmasq = { enable = false; settings.server = [ "127.0.0.1" ]; };
     # github-runners = {
     #   runner1 = {
     #     enable = false;

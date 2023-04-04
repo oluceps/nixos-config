@@ -24,6 +24,13 @@ in
       configFile = config.age.secrets.dae.path;
       assets = "${pkgs.geos}/share/v2ray";
       dae = lib.getExe cfg.package;
+      # See https://github.com/daeuniverse/dae/issues/43
+      # NICComp = pkgs.writeShellScriptBin "nicComp" ''
+      #   #!/usr/bin/env bash
+      #   iface=$(${pkgs.iproute2}/bin/ip route | ${pkgs.lib.getExe pkgs.gawk} '/default/ {print $5}')
+      #   ${pkgs.lib.getExe pkgs.ethtool} -K $iface tx-checksum-ip-generic off
+      # '';
+
     in
     mkIf cfg.enable {
       networking.firewall = {
@@ -36,6 +43,7 @@ in
         after = [
           "network-online.target"
           "docker.service"
+          "systemd-resolved.service"
           "systemd-sysctl.service"
         ];
         wants = [ "network-online.target" ];

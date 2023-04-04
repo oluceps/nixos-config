@@ -10,11 +10,8 @@ pkgs.writeShellApplication {
       -vga qxl \
       -display gtk \
       -nic user,model=virtio-net-pci,smb="$HOME/Downloads" \
-      -audiodev pa,id=snd0 \
-      -device ich9-intel-hda \
-      -device hda-duplex,audiodev=snd0 \
       -usb -device usb-tablet \
-      -drive if=virtio,file=/var/lib/libvirt/win10.qcow2,aio=io_uring \
+      -drive if=virtio,file=/var/lib/libvirt/images/win10.qcow2,aio=io_uring \
       "$@"
   '';
 }
