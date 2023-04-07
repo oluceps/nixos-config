@@ -28,7 +28,7 @@ let
 in
 builtins.readFile ./mocha + (with deps; ''
     
-    exec-once=${swaybg} -i /home/${user}/Pictures/Wallpapers/ramiro-martinez--9z8zN8RT20-unsplash.jpg
+    exec-once=${swaybg} -i /etc/nixos/.attachs/wall.jpg
     bind=SUPER,RETURN,exec,systemd-run-app ${foot}
     bind=SUPER,D,exec,${fuzzel} -I -l 7 -x 8 -y 7 -P 9 -b ede3e7d9 -r 3 -t 8b614db3 -C ede3e7d9 -f 'Maple Mono SC NF:style=Regular:size=15' -P 10 -B 7
     bind=SUPERSHIFT, P, exec, ${hyprpicker} -a
