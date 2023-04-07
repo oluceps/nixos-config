@@ -108,6 +108,7 @@
       thunderbird
       # fluffychat
       discord-canary
+      scrcpy
 
       alacritty
       steam-run
