@@ -19,21 +19,6 @@
   };
 
 
-  security = {
-    pam = {
-      services = {
-        login.u2fAuth = true;
-        sudo.u2fAuth = true;
-      };
-      yubico = {
-        enable = true;
-        debug = true;
-        mode = "challenge-response";
-      };
-      u2f.enable = true;
-    };
-  };
-
   systemd = {
     # Given that our systems are headless, emergency mode is useless.
     # We prefer the system to attempt to continue booting so
@@ -125,6 +110,7 @@
         libu2f-host
         via
         opensk-udev-rules
+        nrf-udev-rules
       ];
     };
 
@@ -220,7 +206,7 @@
         DNS=223.6.6.6#dns.alidns.com
         MulticastDNS=true
         DNSOverTLS=false
-        DNSStubListener=no
+        DNSStubListener=yes
       '';
     };
   };

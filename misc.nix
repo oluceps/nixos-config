@@ -27,6 +27,20 @@
       };
     };
   };
+  security.polkit.enable = true;
+  security = {
+    pam = {
+      u2f = {
+        enable = true;
+        authFile = config.age.secrets.u2f.path;
+        control = "sufficient";
+        cue = true;
+      };
+
+    };
+  };
+
+
 
   virtualisation = {
     docker.enable = true;
@@ -71,6 +85,7 @@
   zramSwap = {
     enable = true;
     swapDevices = 1;
+    memoryPercent = 80;
     algorithm = "zstd";
   };
 
@@ -82,7 +97,7 @@
         genSec = ns: owner: group: lib.genAttrs ns (n: { file = ./secrets/${n}.age; mode = "770"; inherit owner group; });
       in
       (genSec [ "rat" "ss" "sing" "hyst-az" "hyst-am" "hyst-do" "tuic" "naive" "wg" ] "proxy" "users") //
-      (genSec [ "ssh" "gh-eu" ] user "nogroup") //
+      (genSec [ "ssh" "gh-eu" "u2f" ] user "nogroup") //
       {
         dae = { file = ./secrets/dae.age; mode = "640"; owner = "proxy"; group = "users"; name = "d.dae"; };
       };
@@ -204,7 +219,7 @@
   services.xserver.videoDrivers = [ "nvidia" ];
 
   fonts = {
-    enableDefaultFonts = true;
+    enableDefaultFonts = false;
     fontDir.enable = false;
     enableGhostscriptFonts = true;
     fonts = with pkgs; [
@@ -235,7 +250,7 @@
       subpixel.rgba = "none";
       antialias = true;
       hinting.enable = false;
-      defaultFonts = {
+      defaultFonts = lib.mkForce {
         serif = [ "Glow Sans SC" "Glow Sans TC" "Glow Sans J" "Noto Serif" "Noto Serif CJK SC" "Noto Serif CJK TC" "Noto Serif CJK JP" ];
         monospace = [ "SF Mono" "Fantasque Sans Mono" ];
         sansSerif = [ "Glow Sans SC" "Glow Sans TC" "Glow Sans J" "SF Pro Text" ];
@@ -265,4 +280,6 @@
   };
 
   system.stateVersion = "22.11"; # Did you read the comment?
+  documentation.nixos.enable = false;
+
 }
