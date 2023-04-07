@@ -7,7 +7,6 @@
       "/etc/secureboot"
       "/var/log"
       "/var/lib"
-      { directory = "/root/.yubico"; mode = "0700"; }
     ];
     users.${user} = {
       files = [
@@ -39,7 +38,6 @@
         ".FeelUOwn"
         { directory = ".gnupg"; mode = "0700"; }
         { directory = ".ssh"; mode = "0700"; }
-        { directory = ".yubico"; mode = "0700"; }
       ];
     };
   };
