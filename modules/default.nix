@@ -8,6 +8,7 @@
   ./naive
   ./sundial
   ./dae
+  ./lastuser
 ]
 ++ # Hysteria configs
 (map (import ./hysteria) [
