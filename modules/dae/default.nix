@@ -43,7 +43,7 @@ in
         after = [
           "network-online.target"
           "docker.service"
-          "systemd-resolved.service"
+          "libvirtd.service"
           "systemd-sysctl.service"
         ];
         wants = [ "network-online.target" ];
