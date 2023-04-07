@@ -8,6 +8,10 @@
 , user
 , ...
 }: {
+
+  systemd.tmpfiles.rules = [
+    "C /var/cache/tuigreet/lastuser - - - - ${pkgs.writeText "lastuser" "${user}"}"
+  ];
   xdg = {
     mime = {
       enable = true;
