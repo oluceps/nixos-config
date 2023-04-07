@@ -92,7 +92,7 @@
       settings = {
         default_session = {
           command =
-            "${pkgs.greetd.tuigreet}/bin/tuigreet --time --cmd ${pkgs.writeShellScript "Hyprland" ''
+            "${pkgs.greetd.tuigreet}/bin/tuigreet --time --remember --cmd ${pkgs.writeShellScript "Hyprland" ''
           export $(/run/current-system/systemd/lib/systemd/user-environment-generators/30-systemd-environment-d-generator)
           exec Hyprland
         ''}";

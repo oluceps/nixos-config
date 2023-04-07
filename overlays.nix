@@ -17,22 +17,7 @@
         includeGrammarIf = grammar:
           prev.lib.any
             (name: grammar.name == name)
-            [
-              "toml"
-              "rust"
-              "nix"
-              "protobuf"
-              "yaml"
-              "json"
-              "markdown"
-              "html"
-              "css"
-              "zig"
-              "c"
-              "cpp"
-              "go"
-              "python"
-            ];
+            [ "toml" "rust" "nix" "protobuf" "yaml" "json" "markdown" "html" "css" "zig" "c" "cpp" "go" "python" ];
       };
 
 
