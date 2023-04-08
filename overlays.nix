@@ -119,6 +119,53 @@
       #
 
 
+
+      record-status = prev.writeShellScriptBin "record-status" ''
+        #!/usr/bin/env bash
+        pid=`pgrep wf-recorder`
+        status=$?
+        if [ $status != 0 ]
+        then
+          echo '';
+        else
+          echo '';
+        fi;
+      '';
+
+      screen-recorder-toggle = prev.writeShellScriptBin "screen-recorder-toggle" ''
+        #!/usr/bin/env bash
+        pid=`${prev.procps}/bin/pgrep wf-recorder`
+        status=$?
+        if [ $status != 0 ]
+        then
+          ${prev.wf-recorder}/bin/wf-recorder -g "$(${prev.slurp}/bin/slurp)" -f $HOME/Videos/record/$(date +'recording_%Y-%m-%d-%H%M%S.mp4');
+        else
+          ${prev.procps}/bin/pkill --signal SIGINT wf-recorder
+        fi;
+      '';
+
+      save-clipboard-to = prev.writeShellScriptBin "save-clipboard-to" ''
+        #!/usr/bin/env bash
+        wl-paste > $HOME/Pictures/screenshot/$(date +'shot_%Y-%m-%d-%H%M%S.png')
+      '';
+
+      systemd-run-app = prev.writeShellApplication {
+        name = "systemd-run-app";
+        text = ''
+          name=$(${prev.coreutils}/bin/basename "$1")
+          id=$(${prev.openssl}/bin/openssl rand -hex 4)
+          exec systemd-run \
+            --user \
+            --scope \
+            --unit "$name-$id" \
+            --slice=app \
+            --same-dir \
+            --collect \
+            --property PartOf=graphical-session.target \
+            --property After=graphical-session.target \
+            -- "$@"
+        '';
+      };
     })
 
 ]
