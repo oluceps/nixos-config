@@ -182,61 +182,7 @@
     (with nur-pkgs;[
       # rustplayer
       techmino
-    ]) ++
-    [
-      (
-        writeShellScriptBin "record-status" ''
-          #!/usr/bin/env bash
-          pid=`pgrep wf-recorder`
-          status=$?
-          if [ $status != 0 ]
-          then
-            echo '';
-          else
-            echo '';
-          fi;
-        ''
-      )
-      (
-        writeShellScriptBin "screen-recorder-toggle" ''
-          #!/usr/bin/env bash
-          pid=`${pkgs.procps}/bin/pgrep wf-recorder`
-          status=$?
-          if [ $status != 0 ]
-          then
-            ${pkgs.wf-recorder}/bin/wf-recorder -g "$(${pkgs.slurp}/bin/slurp)" -f $HOME/Videos/record/$(date +'recording_%Y-%m-%d-%H%M%S.mp4');
-          else
-            ${pkgs.procps}/bin/pkill --signal SIGINT wf-recorder
-          fi;
-        ''
-      )
-      (
-        writeShellScriptBin "save-clipboard-to" ''
-          #!/usr/bin/env bash
-          wl-paste > $HOME/Pictures/screenshot/$(date +'shot_%Y-%m-%d-%H%M%S.png')
-        ''
-      )
-
-      (
-        writeShellApplication {
-          name = "systemd-run-app";
-          text = ''
-            name=$(${coreutils}/bin/basename "$1")
-            id=$(${openssl}/bin/openssl rand -hex 4)
-            exec systemd-run \
-              --user \
-              --scope \
-              --unit "$name-$id" \
-              --slice=app \
-              --same-dir \
-              --collect \
-              --property PartOf=graphical-session.target \
-              --property After=graphical-session.target \
-              -- "$@"
-          '';
-        }
-      )
-    ];
+    ]);
   home.pointerCursor = {
     gtk.enable = true;
     x11.enable = true;
@@ -245,28 +191,14 @@
     size = 22;
   };
 
-
-  services.swayidle = {
-    enable = false;
-    timeouts = [
-      # {
-      #   timeout = 300;
-      #   command = "${pkgs.sway}/bin/swaymsg 'output * dmps off'";
-      #   resumeCommand = "${pkgs.sway}/bin/swaymsg 'output * dmps on'";
-      # }
-      {
-        timeout = 1200;
-        command = "${pkgs.systemd}/bin/systemctl suspend";
-      }
-    ];
-  };
-
-
   programs = {
     vscode = {
       enable = true;
       package = pkgs.vscode.fhsWithPackages (ps: with ps; [ rustup zlib ]);
     };
+    jq.enable = true;
+    lf.enable = true;
+    pandoc.enable = true;
     git = {
       enable = true;
       package = pkgs.gitFull;
@@ -497,7 +429,15 @@
 
 
   services = {
-
+    swayidle = {
+      enable = true;
+      timeouts = [
+        { timeout = 900; command = "${pkgs.swaylock}/bin/swaylock"; }
+      ];
+      events = [
+        { event = "lock"; command = "${pkgs.swaylock}/bin/swaylock"; }
+      ];
+    };
     mako = {
       enable = true;
       backgroundColor = "#1E1D2F3b";
