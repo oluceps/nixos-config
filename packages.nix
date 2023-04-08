@@ -1,134 +1,42 @@
 { pkgs, lib, ... }:
 let
   p = with pkgs; {
-    dev = [
-      age
-      pinentry-curses
-      swagger-codegen3
-      bump2version
-      openssl
-      linuxPackages_latest.perf
-      cloud-utils
+    dev = lib.flatten [
+      [ pinentry-curses swagger-codegen3 bump2version openssl linuxPackages_latest.perf cloud-utils ]
+      [ bpf-linker pkg-config gdb gcc gnumake cmake clang-tools_15 llvmPackages_latest.clang ]
+      [ openocd ]
       lua
       nodejs-18_x
       yarn
-      # rustup
-      # cargo
-      bpf-linker
-      pkg-config
-      gdb
-      gcc
-      gnumake
-      cmake
-      clang-tools_15
-      llvmPackages_latest.clang
+      age
     ];
-    net = [
-      nur-pkgs.dae
-      rathole
-      nftables
-      tor
-      iperf3
-      i2p
-      ethtool
-      dnsutils
-      autossh
-      tcpdump
-      sing-box
-      netcat
-      dog
-      wget
-      mtr-gui
-      socat
-      arti
-      miniserve
-      mtr
-      wakelan
-      netcat-gnu
-      q
-      nali
-      lynx
-      nethogs
-      restic
-      w3m
-      whois
-      dig
-      wireguard-tools
-      curl
+    net = lib.flatten [
+      # anti-censor
+      [ nur-pkgs.dae sing-box rathole tor arti ]
+
+      [ iperf3 i2p ethtool dnsutils autossh tcpdump netcat dog wget mtr-gui socat miniserve mtr wakelan netcat-gnu q nali lynx nethogs restic w3m whois dig wireguard-tools curl ]
     ];
 
-    virt = [ virt-manager virtiofsd ];
+    virt = [ virt-manager virtiofsd windows-run ];
     fs = [ gparted e2fsprogs fscrypt-experimental f2fs-tools compsize ];
 
-    cmd = [
+    cmd = lib.flatten [
+      agenix
       helix
       srm
 
-      killall
       # common
-      hexyl
-      jq
-      fx
-      bottom
-      lsd
-      fd
-      choose
-      duf
-      tokei
-      procs
-
-      exa
-
-      lsof
-      tree
-      bat
-
-      broot
-      powertop
-      ranger
-
-      ripgrep
-
-      qrencode
-      lazygit
-      b3sum
-      unzip
-      zip
-      coreutils
-
-      bpftools
-      inetutils
-      pciutils
-      usbutils
-      pinentry
+      [ killall hexyl jq fx bottom lsd fd choose duf tokei procs exa lsof tree bat ]
+      [ broot powertop ranger ripgrep qrencode lazygit b3sum unzip zip coreutils bpftools inetutils pciutils usbutils pinentry ]
     ];
 
-    lang = [
-
-      editorconfig-checker
-      pyright
-      kotlin-language-server
-      sumneko-lua-language-server
-      taplo-lsp
-      taplo-cli
-      yaml-language-server
-      tree-sitter
-      stylua
-      black
-
+    lang = lib.flatten [
+      [ editorconfig-checker pyright kotlin-language-server sumneko-lua-language-server taplo-lsp taplo-cli yaml-language-server tree-sitter stylua black ]
       # languages related
-      zig
-      lldb
-      haskell-language-server
-      gopls
-      cmake-language-server
-      zls
-      android-file-transfer
-      nixpkgs-review
-      shfmt
+      [ zig lldb haskell-language-server gopls cmake-language-server zls android-file-transfer nixpkgs-review shfmt ]
     ];
 
-    info = [ neofetch htop onefetch hardinfo qjournalctl hyprpicker imgcat nix-index ];
+    info = [ neofetch htop onefetch hardinfo qjournalctl hyprpicker imgcat nix-index ccze ];
 
   };
 in

@@ -10,7 +10,7 @@
     useNetworkd = true;
     useDHCP = false;
     firewall.enable = true;
-    nftables.enable = true;
+    nftables.enable = false;
     # Configure network proxy if necessary
     # proxy.default = "http://127.0.0.1:7890";
     networkmanager.enable = false;
@@ -44,9 +44,9 @@
     enable = true;
 
     wait-online = {
-      enable = false;
-      timeout = 5;
-      ignoredInterfaces = [ "wlan" ];
+      enable = true;
+      anyInterface = true;
+      ignoredInterfaces = [ "wlan" "wg0" ];
     };
 
     links."10-wan" = {

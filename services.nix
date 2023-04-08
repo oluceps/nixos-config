@@ -1,5 +1,4 @@
-{ config
-, pkgs
+{ pkgs
 , lib
 , user
 , ...
@@ -18,21 +17,6 @@
     wlr.enable = true;
   };
 
-
-  security = {
-    pam = {
-      services = {
-        login.u2fAuth = true;
-        sudo.u2fAuth = true;
-      };
-      yubico = {
-        enable = true;
-        debug = true;
-        mode = "challenge-response";
-      };
-      u2f.enable = true;
-    };
-  };
 
   systemd = {
     # Given that our systems are headless, emergency mode is useless.
@@ -62,7 +46,6 @@
   };
 
   services = {
-    dnsmasq = { enable = false; settings.server = [ "127.0.0.1" ]; };
     # github-runners = {
     #   runner1 = {
     #     enable = false;
@@ -109,11 +92,12 @@
         default_session = {
           command =
             "${pkgs.greetd.tuigreet}/bin/tuigreet --time --remember --cmd ${pkgs.writeShellScript "Hyprland" ''
-        export $(/run/current-system/systemd/lib/systemd/user-environment-generators/30-systemd-environment-d-generator)
-        exec Hyprland
-      ''}";
+          export $(/run/current-system/systemd/lib/systemd/user-environment-generators/30-systemd-environment-d-generator)
+          exec Hyprland
+        ''}";
           user = "greeter";
         };
+
       };
     };
 
@@ -126,6 +110,7 @@
         libu2f-host
         via
         opensk-udev-rules
+        nrf-udev-rules
       ];
     };
 
@@ -157,29 +142,6 @@
     rathole.enable = true;
 
     dae.enable = true;
-
-
-    # btrbk = {
-    #   instances = {
-    #     base = {
-    #       onCalendar = "*:0/20"; # every quarter hour
-    #       settings = {
-    #         timestamp_format = "long";
-    #         snapshot_preserve_min = "18h";
-    #         snapshot_preserve = "72h";
-    #         volume = {
-    #           "/persist" = {
-    #             snapshot_dir = ".snapshots";
-    #             subvolume = {
-    #               "./." = { snapshot_create = "always"; };
-    #             };
-    #           };
-    #         };
-
-    #       };
-    #     };
-    #   };
-    # };
 
     btrfs.autoScrub = {
       enable = true;
@@ -221,7 +183,7 @@
         DNS=223.6.6.6#dns.alidns.com
         MulticastDNS=true
         DNSOverTLS=false
-        DNSStubListener=no
+        DNSStubListener=yes
       '';
     };
   };

@@ -77,7 +77,7 @@
       # Requires >= 4.9 & kernel module
       "net.ipv4.tcp_congestion_control" = "bbr";
       # Requires >= 4.19
-      "net.core.default_qdisc" = "fq";
+      "net.core.default_qdisc" = "cake";
 
       "net.ipv4.tcp_rmem" = "4096 87380 2500000";
       "net.ipv4.tcp_wmem" = "4096 65536 2500000";

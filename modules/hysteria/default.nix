@@ -40,7 +40,7 @@ let
             {
               systemd.services.${name} = {
                 wantedBy = [ "multi-user.target" ];
-                after = [ "network-online.target" ];
+                after = [ "network-online.target" "dae.service" ];
                 description = "hysteria daemon";
 
                 serviceConfig = {

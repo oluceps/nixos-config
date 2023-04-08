@@ -1,5 +1,8 @@
 ![CI state](https://github.com/oluceps/nixos-config/actions/workflows/eval.yaml/badge.svg)
 
+![screenshot](./.attachs/shot_1.png)
+
+
 # Nix flake
 
 Home managing with [home-manager](https://github.com/nix-community/home-manager)  
@@ -122,10 +125,6 @@ Add to your flake, passing overlay while importing nixpkgs:
 + modules: modules  
 + pkgs: packaged softwares
 
-## Screenshot  
-![screenshot](./.attachs/shot_1.png)
- 
-Background picture from [Ramiro Martinez](https://unsplash.com/@ramiro250)  
 
 ## Resources  
 Excellent configurations that I've learned and copied:  

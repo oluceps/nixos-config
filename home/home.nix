@@ -23,11 +23,6 @@
     manpages.enable = false;
   };
 
-
-
-
-
-
   home.packages = with pkgs;
 
     [
@@ -64,7 +59,6 @@
       nrfconnect
       nrfutil
       # nrf-command-line-tools
-      yubico-pam
       yubikey-manager
 
       xdeltaUnstable
@@ -113,6 +107,7 @@
       thunderbird
       # fluffychat
       discord-canary
+      scrcpy
 
       alacritty
       steam-run
@@ -185,63 +180,9 @@
       YisuiMilena.hmcl-bin
     ]) ++
     (with nur-pkgs;[
-      rustplayer
+      # rustplayer
       techmino
-    ]) ++
-    [
-      (
-        writeShellScriptBin "record-status" ''
-          #!/usr/bin/env bash
-          pid=`pgrep wf-recorder`
-          status=$?
-          if [ $status != 0 ]
-          then
-            echo '';
-          else
-            echo '';
-          fi;
-        ''
-      )
-      (
-        writeShellScriptBin "screen-recorder-toggle" ''
-          #!/usr/bin/env bash
-          pid=`${pkgs.procps}/bin/pgrep wf-recorder`
-          status=$?
-          if [ $status != 0 ]
-          then
-            ${pkgs.wf-recorder}/bin/wf-recorder -g "$(${pkgs.slurp}/bin/slurp)" -f $HOME/Videos/record/$(date +'recording_%Y-%m-%d-%H%M%S.mp4');
-          else
-            ${pkgs.procps}/bin/pkill --signal SIGINT wf-recorder
-          fi;
-        ''
-      )
-      (
-        writeShellScriptBin "save-clipboard-to" ''
-          #!/usr/bin/env bash
-          wl-paste > $HOME/Pictures/screenshot/$(date +'shot_%Y-%m-%d-%H%M%S.png')
-        ''
-      )
-
-      (
-        writeShellApplication {
-          name = "systemd-run-app";
-          text = ''
-            name=$(${coreutils}/bin/basename "$1")
-            id=$(${openssl}/bin/openssl rand -hex 4)
-            exec systemd-run \
-              --user \
-              --scope \
-              --unit "$name-$id" \
-              --slice=app \
-              --same-dir \
-              --collect \
-              --property PartOf=graphical-session.target \
-              --property After=graphical-session.target \
-              -- "$@"
-          '';
-        }
-      )
-    ];
+    ]);
   home.pointerCursor = {
     gtk.enable = true;
     x11.enable = true;
@@ -250,37 +191,14 @@
     size = 22;
   };
 
-
-  home.file = {
-
-    # ".icons/default".source = "${pkgs.Graphite}/share/icons/Graphite";
-    #".config/clash".source = ./dotfiles/clash;
-    #".config/nvim".source = ../modules/nvim;
-    #".config/waybar".source = ./dotfiles/waybar;
-
-    #    ".config/ranger/rc.conf".source = ./dotfiles/ranger/rc.conf;
-  };
-  services.swayidle = {
-    enable = false;
-    timeouts = [
-      # {
-      #   timeout = 300;
-      #   command = "${pkgs.sway}/bin/swaymsg 'output * dmps off'";
-      #   resumeCommand = "${pkgs.sway}/bin/swaymsg 'output * dmps on'";
-      # }
-      {
-        timeout = 1200;
-        command = "${pkgs.systemd}/bin/systemctl suspend";
-      }
-    ];
-  };
-
-
   programs = {
     vscode = {
       enable = true;
       package = pkgs.vscode.fhsWithPackages (ps: with ps; [ rustup zlib ]);
     };
+    jq.enable = true;
+    lf.enable = true;
+    pandoc.enable = true;
     git = {
       enable = true;
       package = pkgs.gitFull;
@@ -336,9 +254,8 @@
         nd = "cd /etc/nixos";
         n = "neovide";
         off = "poweroff";
-        proxy = "proxychains4 -f /home/riro/.config/proxychains/proxychains.conf";
-        roll = "xrandr -o left && feh --bg-scale /home/riro/Pictures/Wallpapers/95448248_p0.png && sleep 0.5; picom --experimental-backend -b";
-        rolln = "xrandr -o normal && feh --bg-scale /home/riro/Pictures/Wallpapers/秋の旅.jpg && sleep 0.5;  picom --experimental-backend -b";
+        # roll = "xrandr -o left && feh --bg-scale /home/riro/Pictures/Wallpapers/95448248_p0.png && sleep 0.5; picom --experimental-backend -b";
+        # rolln = "xrandr -o normal && feh --bg-scale /home/riro/Pictures/Wallpapers/秋の旅.jpg && sleep 0.5;  picom --experimental-backend -b";
         cat = "bat";
         kls = "exa";
         sl = "exa";
@@ -373,26 +290,6 @@
       '';
 
       plugins = [
-        #        {
-        #          # will source zsh-autosuggestions.plugin.zsh
-        #          name = "zsh-autosuggestions";
-        #          src = pkgs.fetchFromGitHub {
-        #            owner = "zsh-users";
-        #            repo = "zsh-autosuggestions";
-        #            rev = "v0.7.0";
-        #            sha256 = "sha256-KLUYpUu4DHRumQZ3w59m9aTW6TBKMCXl2UcKi4uMd7w=";
-        #          };
-        #        }
-        #        {
-        #          name = "enhancd";
-        #          file = "init.sh";
-        #          src = pkgs.fetchFromGitHub {
-        #            owner = "b4b4r07";
-        #            repo = "enhancd";
-        #            rev = "v2.2.4";
-        #            sha256 = "sha256-9/JGJgfAjXLIioCo3gtzCXJdcmECy6s59Oj0uVOfuuo=";
-        #          };
-        #        }
         {
           name = "zsh-history-substring-search";
           file = "zsh-history-substring-search.zsh";
@@ -424,13 +321,6 @@
           };
         }
       ];
-      #      loginShellInit = ''
-      #        if
-      #          [[ $(id --user $USER) == 1000 ]] && [[ $(tty) == "/dev/tty1" ]]
-      #        then
-      #          exec sway
-      #        fi
-      #      '';
     };
     autojump.enable = true;
 
@@ -444,7 +334,7 @@
       enable = true;
       enableZshIntegration = true;
       defaultOptions = [
-        "--height 40%"
+        "--height 80%"
         "--layout=reverse"
         "--info=inline"
         "--border"
@@ -539,7 +429,15 @@
 
 
   services = {
-
+    swayidle = {
+      enable = true;
+      timeouts = [
+        { timeout = 900; command = "${pkgs.swaylock}/bin/swaylock"; }
+      ];
+      events = [
+        { event = "lock"; command = "${pkgs.swaylock}/bin/swaylock"; }
+      ];
+    };
     mako = {
       enable = true;
       backgroundColor = "#1E1D2F3b";

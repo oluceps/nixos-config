@@ -8,6 +8,10 @@
 , user
 , ...
 }: {
+
+  systemd.tmpfiles.rules = [
+    "C /var/cache/tuigreet/lastuser - - - - ${pkgs.writeText "lastuser" "${user}"}"
+  ];
   xdg = {
     mime = {
       enable = true;
@@ -26,6 +30,28 @@
         "xls/xlsx" = [ "wps-office-et.desktop" ];
       };
     };
+  };
+  security = {
+    pam = {
+      u2f = {
+        enable = true;
+        authFile = config.age.secrets.u2f.path;
+        control = "sufficient";
+        cue = true;
+      };
+
+      loginLimits = [
+        {
+          domain = "*";
+          type = "-";
+          item = "memlock";
+          value = "unlimited";
+        }
+      ];
+      services.swaylock = { };
+    };
+
+    polkit.enable = true;
   };
 
   virtualisation = {
@@ -71,6 +97,7 @@
   zramSwap = {
     enable = true;
     swapDevices = 1;
+    memoryPercent = 80;
     algorithm = "zstd";
   };
 
@@ -82,7 +109,7 @@
         genSec = ns: owner: group: lib.genAttrs ns (n: { file = ./secrets/${n}.age; mode = "770"; inherit owner group; });
       in
       (genSec [ "rat" "ss" "sing" "hyst-az" "hyst-am" "hyst-do" "tuic" "naive" "wg" ] "proxy" "users") //
-      (genSec [ "ssh" "gh-eu" ] user "nogroup") //
+      (genSec [ "ssh" "gh-eu" "u2f" ] user "nogroup") //
       {
         dae = { file = ./secrets/dae.age; mode = "640"; owner = "proxy"; group = "users"; name = "d.dae"; };
       };
@@ -146,17 +173,6 @@
     keyMap = "us";
   };
 
-  security.pam.loginLimits = [
-    {
-      domain = "*";
-      type = "-";
-      item = "memlock";
-      value = "unlimited";
-    }
-  ];
-
-  security.pam.services.swaylock = { };
-
   programs = {
     git.enable = true;
     fish.enable = true;
@@ -183,11 +199,6 @@
   #
   #  # Enable the GNOME Desktop Environment.
   #  services.xserver.desktopManager.gnome.enable = false;
-  services.xserver.screenSection = ''
-    Option         "metamodes" "nvidia-auto-select +0+0 {ForceFullCompositionPipeline=On}"
-    Option         "AllowIndirectGLXProtocol" "off"
-    Option         "TripleBuffer" "on"
-  '';
   hardware = {
 
     nvidia = {
@@ -204,7 +215,7 @@
   services.xserver.videoDrivers = [ "nvidia" ];
 
   fonts = {
-    enableDefaultFonts = true;
+    enableDefaultFonts = false;
     fontDir.enable = false;
     enableGhostscriptFonts = true;
     fonts = with pkgs; [
@@ -235,7 +246,7 @@
       subpixel.rgba = "none";
       antialias = true;
       hinting.enable = false;
-      defaultFonts = {
+      defaultFonts = lib.mkForce {
         serif = [ "Glow Sans SC" "Glow Sans TC" "Glow Sans J" "Noto Serif" "Noto Serif CJK SC" "Noto Serif CJK TC" "Noto Serif CJK JP" ];
         monospace = [ "SF Mono" "Fantasque Sans Mono" ];
         sansSerif = [ "Glow Sans SC" "Glow Sans TC" "Glow Sans J" "SF Pro Text" ];
@@ -265,4 +276,6 @@
   };
 
   system.stateVersion = "22.11"; # Did you read the comment?
+  documentation.nixos.enable = false;
+
 }

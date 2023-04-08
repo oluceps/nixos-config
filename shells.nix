@@ -12,9 +12,9 @@
           pkg-config
           ncurses
           qt5.qtbase
-          pkgsCross.mipsel-linux-gnu.stdenv.cc
+          # pkgsCross.mipsel-linux-gnu.stdenv.cc
           # pkgsCross.ppc64.stdenv.cc
-          # pkgsCross.aarch64-multiplatform.cc-tool
+          pkgsCross.aarch64-android.cc-tool
           bison
           flex
           openssl.dev
@@ -25,8 +25,8 @@
       runScript = pkgs.writeScript "init.sh" ''
         # export ARCH=powerpc
         # export CROSS_COMPILE=powerpc64-unknown-linux-gnuabielfv2-
-        export ARCH=mips
-        export CROSS_COMPILE=mipsel-unknown-linux-gnu-
+        export ARCH=arm
+        export CROSS_COMPILE=aarch64-android-
         export PKG_CONFIG_PATH="${pkgs.ncurses.dev}/lib/pkgconfig:${pkgs.qt5.qtbase.dev}/lib/pkgconfig"
         export QT_QPA_PLATFORM_PLUGIN_PATH="${pkgs.qt5.qtbase.bin}/lib/qt-${pkgs.qt5.qtbase.version}/plugins"
         export QT_QPA_PLATFORMTHEME=qt5ct
@@ -164,8 +164,6 @@
             openssl
             gnumake
             nettools
-            # For nixos < 19.03, use `androidenv.platformTools`
-            androidenv.androidPkgs_9_0.platform-tools
             jdk
             schedtool
             util-linux
