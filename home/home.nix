@@ -59,7 +59,6 @@
       nrfconnect
       nrfutil
       # nrf-command-line-tools
-      yubico-pam
       yubikey-manager
 
       xdeltaUnstable
