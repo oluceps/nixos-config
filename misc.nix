@@ -31,7 +31,6 @@
       };
     };
   };
-  security.polkit.enable = true;
   security = {
     pam = {
       u2f = {
@@ -41,10 +40,19 @@
         cue = true;
       };
 
+      loginLimits = [
+        {
+          domain = "*";
+          type = "-";
+          item = "memlock";
+          value = "unlimited";
+        }
+      ];
+      services.swaylock = { };
     };
+
+    polkit.enable = true;
   };
-
-
 
   virtualisation = {
     docker.enable = true;
@@ -164,17 +172,6 @@
     font = "Lat2-Terminus16";
     keyMap = "us";
   };
-
-  security.pam.loginLimits = [
-    {
-      domain = "*";
-      type = "-";
-      item = "memlock";
-      value = "unlimited";
-    }
-  ];
-
-  security.pam.services.swaylock = { };
 
   programs = {
     git.enable = true;
