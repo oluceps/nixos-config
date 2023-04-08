@@ -1,7 +1,12 @@
 ![CI state](https://github.com/oluceps/nixos-config/actions/workflows/eval.yaml/badge.svg)
 
+![screenshot](./.attachs/shot_2.png)
+
+<details>
+
 ![screenshot](./.attachs/shot_1.png)
 
+</details>
 
 # Nix flake
 
