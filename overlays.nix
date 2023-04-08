@@ -3,7 +3,7 @@
   (final: prev:
     prev.lib.genAttrs
       [
-        "hyprland"
+        # "hyprland"
         "hyprpicker"
         "clash-meta"
         "nil"

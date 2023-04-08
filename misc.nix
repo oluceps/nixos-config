@@ -199,11 +199,6 @@
   #
   #  # Enable the GNOME Desktop Environment.
   #  services.xserver.desktopManager.gnome.enable = false;
-  services.xserver.screenSection = ''
-    Option         "metamodes" "nvidia-auto-select +0+0 {ForceFullCompositionPipeline=On}"
-    Option         "AllowIndirectGLXProtocol" "off"
-    Option         "TripleBuffer" "on"
-  '';
   hardware = {
 
     nvidia = {
