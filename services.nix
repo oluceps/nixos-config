@@ -180,10 +180,10 @@
       dnssec = "false";
       llmnr = "false";
       extraConfig = ''
-        DNS=223.6.6.6#dns.alidns.com
+        DNS=223.6.6.6
         MulticastDNS=true
         DNSOverTLS=false
-        DNSStubListener=yes
+        DNSStubListener=true
       '';
     };
   };
