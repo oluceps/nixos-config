@@ -11,7 +11,7 @@ let
     imports = [
       ../../home/programs/fish
       ../../home/programs/helix
-      ../../home/programs/starship.nix
+      ../../home/programs/starship
     ];
     home.stateVersion = "22.11";
     home.sessionVariables = {
@@ -36,7 +36,6 @@ let
       gnome.eog
       sioyek
       thunderbird
-      nur-pkgs.rustplayer
       firefox
       nheko
       gtk4
@@ -44,7 +43,6 @@ let
       vlc
       firefox
       bluedevil
-      #zathura
       tdesktop
       file
       julia-bin
