@@ -44,6 +44,7 @@ in
           "network-online.target"
           "docker.service"
           "libvirtd.service"
+          "systemd-resolved.service"
           "systemd-sysctl.service"
         ];
         wants = [ "network-online.target" ];
@@ -58,7 +59,7 @@ in
           ExecStartPre = "${dae} validate -c ${configFile}";
           ExecStart = "${dae} run --disable-timestamp -c ${configFile}";
           ExecReload = "${dae} reload $MAINPID";
-          Restart = "on-failure";
+          Restart = "on-abnormal";
         };
       };
     };

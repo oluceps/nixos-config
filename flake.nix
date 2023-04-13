@@ -4,6 +4,7 @@
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     nixpkgs-22.url = "github:NixOS/nixpkgs?rev=c91d0713ac476dfb367bbe12a7a048f6162f039c";
     nvfetcher.url = "github:berberman/nvfetcher";
+    agenix-rekey.url = "github:oddlama/agenix-rekey";
     nil.url = "github:oxalica/nil";
     nix-direnv.url = "github:nix-community/nix-direnv";
     nix-colors.url = "github:misterio77/nix-colors";
@@ -85,6 +86,8 @@
 
       devShells = genSystems
         (system: import ./shells.nix { inherit system inputs; pkgs = _pkgs.${system}; });
+
+      apps = genSystems (system: inputs.agenix-rekey.defineApps self _pkgs.${system} self.nixosConfigurations);
 
       overlay = self.overlays.default;
       overlays.default = final: prev:
