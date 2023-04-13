@@ -109,7 +109,7 @@
         genSec = ns: owner: group: lib.genAttrs ns (n: { file = ./secrets/${n}.age; mode = "770"; inherit owner group; });
       in
       (genSec [ "rat" "ss" "sing" "hyst-az" "hyst-am" "hyst-do" "tuic" "naive" "wg" ] "proxy" "users") //
-      (genSec [ "ssh" "gh-eu" "u2f" ] user "nogroup") //
+      (genSec [ "ssh" "gh-eu" "u2f" "gh-token" ] user "nogroup") //
       {
         dae = { file = ./secrets/dae.age; mode = "640"; owner = "proxy"; group = "users"; name = "d.dae"; };
       };
@@ -154,6 +154,7 @@
       extraOptions = ''
         keep-outputs = true
         keep-derivations = true
+        # access-tokens = github.com=@${config.age.secrets.gh-token.path}
       '';
     };
 

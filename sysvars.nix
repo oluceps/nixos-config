@@ -4,6 +4,7 @@
   environment.sessionVariables = {
     NEOVIDE_MULTIGRID = "1";
     NEOVIDE_WM_CLASS = "1";
+    # SYSTEMD_LOG_LEVEL="debug";
     AUTOSSH_DEBUG = "1";
     EDITOR = "hx";
     # NIXOS_OZONE_WL = "1";
