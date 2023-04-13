@@ -22,6 +22,7 @@
 ] ++ (with inputs;[
 
   agenix.nixosModules.default
+  agenix-rekey.nixosModules.default
   grub2-themes.nixosModules.default
   home-manager.nixosModules.home-manager
   impermanence.nixosModules.impermanence
