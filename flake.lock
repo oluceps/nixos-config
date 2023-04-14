@@ -1938,6 +1938,22 @@
         "type": "github"
       }
     },
+    "nixpkgs-gui": {
+      "locked": {
+        "lastModified": 1680960640,
+        "narHash": "sha256-PzDCrg7/5MW8MUzmMFMY7Tu6jBCfeUqnVZ1ORW2zhLs=",
+        "owner": "NixOS",
+        "repo": "nixpkgs",
+        "rev": "954a801cbe128e24e78230f711df17da01a5d98c",
+        "type": "github"
+      },
+      "original": {
+        "owner": "NixOS",
+        "repo": "nixpkgs",
+        "rev": "954a801cbe128e24e78230f711df17da01a5d98c",
+        "type": "github"
+      }
+    },
     "nixpkgs-lib": {
       "locked": {
         "dir": "lib",
@@ -2910,6 +2926,7 @@
         "nix-direnv": "nix-direnv",
         "nixpkgs": "nixpkgs_26",
         "nixpkgs-22": "nixpkgs-22",
+        "nixpkgs-gui": "nixpkgs-gui",
         "nur": "nur_3",
         "nur-pkgs": "nur-pkgs",
         "nvfetcher": "nvfetcher_3",

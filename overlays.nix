@@ -12,6 +12,11 @@
       (n: inputs.${n}.packages.${system}.default)
     //
     {
+      hyprland = (import inputs.nixpkgs-gui
+        {
+          inherit system;
+        }).hyprland;
+
 
       helix = inputs.helix.packages.${system}.default.override {
         includeGrammarIf = grammar:
