@@ -183,7 +183,7 @@
         DNS=223.6.6.6
         MulticastDNS=true
         DNSOverTLS=false
-        DNSStubListener=true
+        DNSStubListener=false
       '';
     };
   };
