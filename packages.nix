@@ -9,6 +9,7 @@ let
       nodejs-18_x
       yarn
       age
+      go
     ];
     net = lib.flatten [
       # anti-censor
