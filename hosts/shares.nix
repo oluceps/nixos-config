@@ -15,7 +15,7 @@
           "rustc"
           "rustfmt"
         ])
-        rust-analyzer-nightly
+        # rust-analyzer-nightly
       ])
     ;
   }

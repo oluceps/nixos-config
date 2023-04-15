@@ -51,7 +51,8 @@
       protonmail-bridge
 
       koreader
-      realvnc-vnc-viewer
+      cliphist
+      # realvnc-vnc-viewer
       #    mathematica
       pcsctools
       ccid
@@ -78,7 +79,6 @@
       stress
       s-tui
       mprime
-      geekbench_5
 
       # reader
       calibre
