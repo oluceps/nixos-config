@@ -2,7 +2,11 @@
 # See the languages documentation: https://docs.helix-editor.com/master/languages.html
 { pkgs, ... }:
 let
-  configText = ''
+  rust-analyzer = pkgs.rust-analyzer;
+  # rustfmt = pkgs.fenix.complete.withComponents [ "rustfmt" ];
+
+in
+''
 
 [[language]]
 name = "rust"
@@ -12,7 +16,7 @@ file-types = ["rs"]
 roots = ["Cargo.toml", "Cargo.lock"]
 auto-format = true
 comment-token = "//"
-language-server = { command = "${pkgs.rust-analyzer-nightly}/bin/rust-analyzer" }
+language-server = { command = "${rust-analyzer}/bin/rust-analyzer" }
 indent = { tab-width = 4, unit = "    " }
 formatter = { command = "${pkgs.rustfmt}/bin/rustfmt", args = [ "--edition", "2021" ] }
 
@@ -1727,7 +1731,5 @@ language-server = { command = "pasls", args = [] }
 [[grammar]]
 name = "pascal"
 source = { git = "https://github.com/Isopod/tree-sitter-pascal", rev = "2fd40f477d3e2794af152618ccfac8d92eb72a66" }
-'' ;
-in
-configText
+''
 

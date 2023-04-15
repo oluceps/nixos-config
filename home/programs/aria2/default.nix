@@ -1,4 +1,4 @@
-{ config, user, ... }:
+{  user, ... }:
 {
   programs.aria2 = {
     enable = true;
