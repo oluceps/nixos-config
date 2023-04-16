@@ -82,18 +82,6 @@
     platformTheme = "gnome";
     style = "adwaita-dark";
   };
-  services.xserver =
-    {
-      enable = lib.mkDefault false;
-      layout = "us";
-      xkbOptions = "eurosign:e";
-      windowManager.bspwm.enable = true;
-
-      displayManager.gdm = {
-        enable = true;
-        wayland = true;
-      };
-    };
   zramSwap = {
     enable = true;
     swapDevices = 1;
@@ -213,7 +201,22 @@
     };
   };
 
-  services.xserver.videoDrivers = [ "nvidia" ];
+  services = {
+    xserver =
+      {
+        enable = lib.mkDefault false;
+        layout = "us";
+        xkbOptions = "eurosign:e";
+        windowManager.bspwm.enable = true;
+
+        displayManager.gdm = {
+          enable = true;
+          wayland = true;
+        };
+      };
+
+    xserver.videoDrivers = [ "nvidia" ];
+  };
 
   fonts = {
     enableDefaultFonts = false;
@@ -224,19 +227,15 @@
       (nerdfonts.override {
         fonts = [
           "FiraCode"
-          "DroidSansMono"
           "JetBrainsMono"
           "FantasqueSansMono"
         ];
       })
       source-han-sans
-      fantasque-sans-mono
       noto-fonts
       noto-fonts-cjk-sans
       noto-fonts-cjk-serif
-      sarasa-gothic
       twemoji-color-font
-      dejavu_fonts
       maple-mono-SC-NF
       cascadia-code
     ]
@@ -250,7 +249,7 @@
       defaultFonts = lib.mkForce {
         serif = [ "Glow Sans SC" "Glow Sans TC" "Glow Sans J" "Noto Serif" "Noto Serif CJK SC" "Noto Serif CJK TC" "Noto Serif CJK JP" ];
         monospace = [ "SF Mono" "Fantasque Sans Mono" ];
-        sansSerif = [ "Glow Sans SC" "Glow Sans TC" "Glow Sans J" "SF Pro Text" ];
+        sansSerif = [ "Hanken Grotesk" "Glow Sans SC" ];
         emoji = [ "twemoji-color-font" "noto-fonts-emoji" ];
       };
     };
