@@ -14,7 +14,8 @@
           qt5.qtbase
           # pkgsCross.mipsel-linux-gnu.stdenv.cc
           # pkgsCross.ppc64.stdenv.cc
-          pkgsCross.aarch64-android.cc-tool
+          pkgsCross.aarch64-multiplatform.cc-tool
+          python2
           bison
           flex
           openssl.dev
@@ -39,13 +40,15 @@
     # nativeBuildInputs is usually what you want -- tools you need to run
     nativeBuildInputs = with pkgs; [
 
-      llvmPackages_latest.bintools.all
-      openssl_1_1
-      openssl.dev
+      # llvmPackages_latest.bintools.all
+      # openssl_1_1
+      # openssl.dev
       pkg-config
       ncurses
-      cargo-fuzz
-      newlib-nano
+      # cargo-fuzz
+      # newlib-nano
+      pkgs.pkgsCross.aarch64-android.stdenv.cc
+      python2
       zlib
       bison
       flex
@@ -55,6 +58,12 @@
       cmake
 
     ];
+    shellHook = ''
+      export ARCH=arm
+      export CROSS_COMPILE=aarch64-unknown-linux-android-
+      export CC=aarch64-unknown-linux-android-cc
+      export TMPDIR=/home/riro/Documents/tmpdir
+    '';
   };
   rv =
     let

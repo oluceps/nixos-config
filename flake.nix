@@ -61,6 +61,7 @@
               allowUnsupportedSystem = true;
               permittedInsecurePackages = [
                 "python-2.7.18.6"
+                "electron-21.4.0"
               ];
             };
             overlays =

@@ -5,17 +5,10 @@
   security.doas = {
     enable = true;
     wheelNeedsPassword = false;
-    # extraRules =
-    #   [
-    #     {
-    #       users = [ user ];
-    #       noPass = true;
-    #     }
-    #   ];
   };
 
   users = {
-    mutableUsers = false;
+    mutableUsers = pkgs.lib.mkForce false;
     users.root = {
       initialHashedPassword = pkgs.lib.mkForce
         "$6$Sa0gWbsXht6Uhr1M$ZwC76OJYx6fdLEjmo4xC4R7PEqY7DU1SN1cIYabZpQETV3npJ6cAoMjByPVQRqrOeHBjYre1ROMim4LgyQZ731";
