@@ -39,6 +39,7 @@
 
       veracrypt
       openpgp-card-tools
+      tutanota-desktop
 
       # davinci-resolve
       cava
@@ -238,14 +239,14 @@
             name = "img.jpg";
             hash = "sha256-kqvVGHOaD7shJrvYfhLDvDs62r20wi8Sajth16Spsrk=";
           };
-          #img-blurred = pkgs.runCommand "img.jpg"
-          #            {
-          #              nativeBuildInputs = with pkgs;[ imagemagick ];
-          #            } "
-          # convert -blur 14x5 ${img} $out
-          # ";
+          img-blurred = pkgs.runCommand "img.jpg"
+                      {
+                        nativeBuildInputs = with pkgs;[ imagemagick ];
+                      } "
+           convert -blur 14x5 ${img} $out
+           ";
         in
-        "${img}";
+        "${img-blurred}";
       scaling = "fill";
     };
     zsh = {
