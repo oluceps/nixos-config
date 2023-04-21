@@ -1,14 +1,11 @@
-{ pkgs
-, lib
-, config
-, user
+{ user
 , ...
 }: {
   programs = {
     waybar = {
       enable = true;
       style = builtins.readFile ./waybar.css;
-      systemd.enable = true;
+      systemd.enable = false;
       settings = {
         mainBar = {
           layer = "top";

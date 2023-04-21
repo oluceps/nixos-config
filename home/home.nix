@@ -2,6 +2,7 @@
 , pkgs
 , inputs
 , system
+, lib
 , ...
 }:
 {
@@ -15,6 +16,26 @@
   home.stateVersion = "22.11";
   home.sessionVariables = {
     EDITOR = "hx";
+  };
+
+  systemd.user.sessionVariables = {
+    CARGO_REGISTRIES_CRATES_IO_PROTOCOL = "sparse";
+    CARGO_UNSTABLE_SPARSE_REGISTRY = "true";
+    SSH_AUTH_SOCK = "$XDG_RUNTIME_DIR/resign.ssh";
+  };
+  systemd.user = {
+    services.resign = {
+      Install.WantedBy = [ "graphical-session.target" ];
+      Unit.PartOf = [ "graphical-session.target" ];
+      Unit.After = [ "graphical-session.target" ];
+      Service = {
+        Environment = [
+          "PATH=${lib.makeBinPath [ pkgs.pinentry-gtk2 ]}"
+          "GTK2_RC_FILES=${config.home.sessionVariables.GTK2_RC_FILES}"
+        ];
+        ExecStart = "${pkgs.resign}/bin/resign --listen %t/resign.ssh";
+      };
+    };
   };
 
   manual = {
@@ -205,14 +226,14 @@
       package = pkgs.gitFull;
       userName = "oluceps";
       userEmail = "i@oluceps.uk";
-      # signing = {
-      #   key = "ECBE55269336CCCD";
-      #   signByDefault = true;
-      # };
       extraConfig = {
         commit.gpgsign = true;
-        gpg.format = "ssh";
-        user.signingkey = "~/.ssh/id_ed25519.pub";
+        gpg = {
+          format = "ssh";
+          ssh.defaultKeyCommand = "ssh-add -L";
+          ssh.allowedSignersFile = toString (pkgs.writeText "allowed_signers" ''
+          '');
+        };
         merge.conflictStyle = "diff3";
         merge.tool = "vimdiff";
         mergetool = {
@@ -453,9 +474,9 @@
       font = "JetBrainsMono Nerd Font 12";
     };
     gpg-agent = {
-      enable = true;
+      enable = false;
       defaultCacheTtl = 1800;
-      enableSshSupport = true;
+      enableSshSupport = false;
     };
   };
 }
