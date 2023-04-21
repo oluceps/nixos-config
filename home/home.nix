@@ -205,11 +205,14 @@
       package = pkgs.gitFull;
       userName = "oluceps";
       userEmail = "i@oluceps.uk";
-      signing = {
-        key = "ECBE55269336CCCD ";
-        signByDefault = true;
-      };
+      # signing = {
+      #   key = "ECBE55269336CCCD";
+      #   signByDefault = true;
+      # };
       extraConfig = {
+        commit.gpgsign = true;
+        gpg.format = "ssh";
+        user.signingkey = "~/.ssh/id_ed25519.pub";
         merge.conflictStyle = "diff3";
         merge.tool = "vimdiff";
         mergetool = {
