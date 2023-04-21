@@ -7,7 +7,7 @@
         "hyprpicker"
         "clash-meta"
         "nil"
-        "agenix"
+        "ragenix"
       ]
       (n: inputs.${n}.packages.${system}.default)
     //
