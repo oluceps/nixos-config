@@ -6,10 +6,6 @@
 
   (import ../../users.nix { inherit user pkgs; })
   {
-
-    # temp value
-    rekey.hostPubkey = "age1gpxs3mzklerplu7sdhs3lgq33378welttlzy8hm89rkrekmw79hsjvcds7";
-    
     nix = {
       package = pkgs.nixVersions.stable;
 
@@ -26,25 +22,7 @@
         trusted-users = [ "root" "${user}" ];
       };
     };
-    # TODO: add agenix to livecd
     services.sing-box.enable = true;
-    # only avaliable on hastur
-    age.identityPaths = [ "/mnt/persist/keys/ssh_host_ed25519_key" ];
-
-    age.secrets = {
-      sing = {
-        file = ../../secrets/sing.age;
-        mode = "770";
-        owner = user;
-        group = user;
-      };
-      ssh = {
-        file = ../../secrets/ssh.age;
-        mode = "770";
-        owner = user;
-        group = user;
-      };
-    };
 
     environment.systemPackages = with pkgs;[
       (
@@ -60,7 +38,7 @@
           echo "mount finished."
         ''
       )
-      age
+      rage
       nftables
       tor
       iperf3
@@ -132,7 +110,5 @@
     ];
   }
   inputs.home-manager.nixosModules.home-manager
-  inputs.ragenix.nixosModules.default
-  inputs.agenix-rekey.nixosModules.default
 
 ]

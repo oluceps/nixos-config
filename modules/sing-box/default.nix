@@ -1,8 +1,8 @@
-{ pkgs
-, config
-, lib
-, ...
-}:
+{ min ? false }: { pkgs
+                 , config
+                 , lib
+                 , ...
+                 }:
 with lib;
 let
   cfg = config.services.sing-box;
@@ -29,12 +29,12 @@ in
   };
   config =
     let
-      configFile = config.rekey.secrets.sing.path;
-      #        pkgs.writeTextFile {
-      #          name = "config.json";
-      #          #          destination = "dataDir/config.json";
-      #          text = builtins.toJSON (import ./config.nix );
-      #        };
+      configFile = if ! min then config.rekey.secrets.sing.path else
+      pkgs.writeTextFile {
+        name = "config.json";
+        text = builtins.readFile ./min.json;
+      };
+
 
     in
     mkIf cfg.enable {

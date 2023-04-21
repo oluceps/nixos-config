@@ -1,5 +1,5 @@
 {
-  description = "flake";
+  description = "oluceps' flake";
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     nixpkgs-gui.url = "github:NixOS/nixpkgs?rev=954a801cbe128e24e78230f711df17da01a5d98c";
@@ -84,15 +84,21 @@
         );
     in
     {
-      nixosConfigurations = import ./hosts {inherit inputs _pkgs; };
+      nixosConfigurations = import ./hosts { inherit inputs _pkgs; };
 
-      devShells = genSystems
-        (system: import ./shells.nix { inherit system inputs; pkgs = _pkgs.${system}; });
+      devShells =
+        genSystems
+          (system: import ./shells.nix { inherit system inputs; pkgs = _pkgs.${system}; });
 
-      apps = genSystems (system: inputs.agenix-rekey.defineApps self _pkgs.${system} self.nixosConfigurations);
+      apps =
+        genSystems
+          (system: inputs.agenix-rekey.defineApps self _pkgs.${system}
+            { inherit (self.nixosConfigurations) hastur kaambl; });
 
       overlay = self.overlays.default;
-      overlays.default = final: prev:
+
+      overlays.default =
+        final: prev:
         let
           dirContents = builtins.readDir ./pkgs;
           names = builtins.attrNames dirContents;
