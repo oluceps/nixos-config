@@ -19,7 +19,7 @@
       wg0 = {
         ips = [ "172.16.0.2/32" "fd01:5ca1:ab1e:88ba:9158:7ec7:1f13:7535/128" ];
         listenPort = 51820;
-        privateKeyFile = config.age.secrets.wg.path;
+        privateKeyFile = config.rekey.secrets.wg.path;
         peers = [
           {
             #             Public key of the server (not a file path).

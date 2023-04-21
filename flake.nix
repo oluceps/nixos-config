@@ -10,8 +10,8 @@
     nix-direnv.url = "github:nix-community/nix-direnv";
     nix-colors.url = "github:misterio77/nix-colors";
     clansty.url = "github:clansty/flake";
-    agenix = {
-      url = "github:ryantm/agenix";
+    ragenix = {
+      url = "github:yaxitech/ragenix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     nur.url = "github:nix-community/NUR";
@@ -84,7 +84,7 @@
         );
     in
     {
-      nixosConfigurations = (import ./hosts { inherit inputs _pkgs; });
+      nixosConfigurations = import ./hosts {inherit inputs _pkgs; };
 
       devShells = genSystems
         (system: import ./shells.nix { inherit system inputs; pkgs = _pkgs.${system}; });

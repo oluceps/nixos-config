@@ -29,7 +29,7 @@ in
   };
   config =
     let
-      configFile = config.age.secrets.rat.path;
+      configFile = config.rekey.secrets.rat.path;
 
     in
     mkIf cfg.enable {

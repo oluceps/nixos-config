@@ -8,10 +8,28 @@
 , user
 , ...
 }: {
-
   systemd.tmpfiles.rules = [
     "C /var/cache/tuigreet/lastuser - - - - ${pkgs.writeText "lastuser" "${user}"}"
   ];
+
+
+  rekey = {
+    extraEncryptionPubkeys = [ "age1jr2x2m85wtte9p0s7d833e0ug8xf3cf8a33l9kjprc9vlxmvjycq05p2qq" ];
+    masterIdentities = [ ./secrets/age-ybk-7d5d.pub ];
+
+    secrets =
+      let
+        genSec = ns: owner: group: lib.genAttrs ns (n: { file = ./secrets/${n}.age; mode = "770"; inherit owner group; });
+      in
+      (genSec [ "rat" "ss" "sing" "hyst-az" "hyst-am" "hyst-do" "tuic" "naive" "wg" ] "proxy" "users") //
+      (genSec [ "ssh" "gh-eu" "u2f" "gh-token" ] user "nogroup") //
+      {
+        dae = { file = ./secrets/dae.age; mode = "640"; owner = "proxy"; group = "users"; name = "d.dae"; };
+      };
+
+  };
+
+
   xdg = {
     mime = {
       enable = true;
@@ -90,19 +108,6 @@
   };
 
 
-  age = {
-    identityPaths = [ "/persist/keys/ssh_host_ed25519_key" ];
-    secrets =
-      let
-        genSec = ns: owner: group: lib.genAttrs ns (n: { file = ./secrets/${n}.age; mode = "770"; inherit owner group; });
-      in
-      (genSec [ "rat" "ss" "sing" "hyst-az" "hyst-am" "hyst-do" "tuic" "naive" "wg" ] "proxy" "users") //
-      (genSec [ "ssh" "gh-eu" "u2f" "gh-token" ] user "nogroup") //
-      {
-        dae = { file = ./secrets/dae.age; mode = "640"; owner = "proxy"; group = "users"; name = "d.dae"; };
-      };
-
-  };
 
   nix =
     {
@@ -123,7 +128,7 @@
           "https://helix.cachix.org"
         ];
         auto-optimise-store = true;
-        experimental-features = [ "nix-command" "flakes" "auto-allocate-uids" "cgroups" "repl-flake" ];
+        experimental-features = [ "nix-command" "flakes" "auto-allocate-uids" "cgroups" "repl-flake" "recursive-nix" ];
         auto-allocate-uids = true;
         use-cgroups = true;
 
