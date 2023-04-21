@@ -37,36 +37,24 @@ git+file:///etc/nixos
 │       ├───edit-secret: app
 │       ├───rekey: app
 │       └───rekey-save-outputs: app
+├───checks
+│   ├───aarch64-linux
+│   │   └───pre-commit-check omitted (use '--all-systems' to show)
+│   └───x86_64-linux
+│       └───pre-commit-check: derivation 'pre-commit-run'
 ├───devShells
 │   ├───aarch64-linux
-│   │   ├───android omitted (use '--all-systems' to show)
-│   │   ├───dae omitted (use '--all-systems' to show)
-│   │   ├───default omitted (use '--all-systems' to show)
 │   │   ├───eunomia omitted (use '--all-systems' to show)
-│   │   ├───general omitted (use '--all-systems' to show)
 │   │   ├───kernel omitted (use '--all-systems' to show)
-│   │   ├───mips omitted (use '--all-systems' to show)
-│   │   ├───ml omitted (use '--all-systems' to show)
-│   │   ├───openwrt omitted (use '--all-systems' to show)
-│   │   ├───rv omitted (use '--all-systems' to show)
 │   │   └───ubt-rv omitted (use '--all-systems' to show)
 │   └───x86_64-linux
-│       ├───android: development environment 'android-env-shell'
-│       ├───dae: development environment 'libcxx'
-│       ├───default: development environment 'nix-shell'
 │       ├───eunomia: development environment 'nix-shell'
-│       ├───general: development environment 'generalEnv'
 │       ├───kernel: development environment 'kernel-build-env-shell-env'
-│       ├───mips: development environment 'nix-shell-mipsel-unknown-linux-gnu'
-│       ├───ml: development environment 'machine-learning'
-│       ├───openwrt: development environment 'openwrt-build-env-shell-env'
-│       ├───rv: development environment 'linux-riscv64-unknown-linux-gnu-6.1.24'
 │       └───ubt-rv: development environment 'riscv-ubuntu-qemu-boot-script'
 ├───nixosConfigurations
 │   ├───hastur: NixOS configuration
 │   ├───kaambl: NixOS configuration
 │   └───livecd: NixOS configuration
-├───overlay: Nixpkgs overlay
 └───overlays
     └───default: Nixpkgs overlay
 ```  

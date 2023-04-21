@@ -6,6 +6,15 @@ on:
     branches: "*"
 
 jobs:
+
+  check:
+    name: format check
+    runs-on: ubuntu-latest
+    steps: 
+      - name: flake check
+        shell: bash
+        run: |
+          nix flake check
   eval:
     name: eval nixosConfiguration
     runs-on: ubuntu-latest
@@ -23,4 +32,5 @@ jobs:
         shell: bash
         run: |
           nix eval --raw .#nixosConfigurations.${{ matrix.hosts }}.config.system.build.toplevel
+          
 

@@ -10,6 +10,10 @@
     nix-direnv.url = "github:nix-community/nix-direnv";
     nix-colors.url = "github:misterio77/nix-colors";
     clansty.url = "github:clansty/flake";
+    pre-commit-hooks = {
+      url = "github:cachix/pre-commit-hooks.nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     ragenix = {
       url = "github:yaxitech/ragenix";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -68,7 +72,6 @@
               (with inputs; [
                 nur.overlay
                 clansty.overlays.clansty
-                self.overlay
               ])
               ++ (import ./overlays.nix { inherit inputs system; })
 
@@ -76,6 +79,7 @@
               # format to [ inputs.${user}.overlays.default ]
               ++ map (i: inputs.${i}.overlays.default)
                 [
+                  "self"
                   "fenix"
                   "berberman"
                   "nvfetcher"
@@ -86,16 +90,12 @@
     {
       nixosConfigurations = import ./hosts { inherit inputs _pkgs; };
 
-      devShells =
-        genSystems
-          (system: import ./shells.nix { inherit system inputs; pkgs = _pkgs.${system}; });
+      devShells = genSystems (system: import ./shells.nix { inherit inputs system _pkgs; });
 
       apps =
         genSystems
           (system: inputs.agenix-rekey.defineApps self _pkgs.${system}
             { inherit (self.nixosConfigurations) hastur kaambl; });
-
-      overlay = self.overlays.default;
 
       overlays.default =
         final: prev:
@@ -104,6 +104,17 @@
           names = builtins.attrNames dirContents;
         in
         prev.lib.genAttrs names (name: final.callPackage (./pkgs + "/${name}") { });
+
+      checks = genSystems (system: with _pkgs.${system}; {
+        pre-commit-check =
+          inputs.pre-commit-hooks.lib.${system}.run
+            {
+              src = lib.cleanSource ./.;
+              hooks = {
+                nixpkgs-fmt.enable = true;
+              };
+            };
+      });
 
     };
 
