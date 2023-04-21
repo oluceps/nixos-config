@@ -21,7 +21,7 @@ in
   };
   config =
     let
-      configFile = config.age.secrets.dae.path;
+      configFile = config.rekey.secrets.dae.path;
       assets = "${pkgs.geos}/share/v2ray";
       dae = lib.getExe cfg.package;
       # See https://github.com/daeuniverse/dae/issues/43
