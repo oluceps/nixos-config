@@ -2,7 +2,6 @@
   ./ss
   ./rathole
   ./clash-m
-  ./sing-box
   ./tuic
   ./btrbk
   ./naive
@@ -15,3 +14,4 @@
   "hyst-do"
   "hyst-am"
 ])
+++ (import ./sing-box { })
