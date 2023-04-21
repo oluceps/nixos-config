@@ -2,6 +2,7 @@
   description = "flake";
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+    nixpkgs-gui.url = "github:NixOS/nixpkgs?rev=954a801cbe128e24e78230f711df17da01a5d98c";
     nixpkgs-22.url = "github:NixOS/nixpkgs?rev=c91d0713ac476dfb367bbe12a7a048f6162f039c";
     nvfetcher.url = "github:berberman/nvfetcher";
     agenix-rekey.url = "github:oddlama/agenix-rekey";
@@ -9,8 +10,8 @@
     nix-direnv.url = "github:nix-community/nix-direnv";
     nix-colors.url = "github:misterio77/nix-colors";
     clansty.url = "github:clansty/flake";
-    agenix = {
-      url = "github:ryantm/agenix";
+    ragenix = {
+      url = "github:yaxitech/ragenix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     nur.url = "github:nix-community/NUR";
@@ -60,6 +61,7 @@
               allowUnsupportedSystem = true;
               permittedInsecurePackages = [
                 "python-2.7.18.6"
+                "electron-21.4.0"
               ];
             };
             overlays =
@@ -82,7 +84,7 @@
         );
     in
     {
-      nixosConfigurations = (import ./hosts { inherit inputs _pkgs; });
+      nixosConfigurations = import ./hosts {inherit inputs _pkgs; };
 
       devShells = genSystems
         (system: import ./shells.nix { inherit system inputs; pkgs = _pkgs.${system}; });

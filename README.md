@@ -15,15 +15,6 @@ Secrets managing with [agenix](https://github.com/ryantm/agenix)
 Secure boot with [lanzaboote](https://github.com/nix-community/lanzaboote)  
 Root-On-Tmpfs persistence with [impermanence](https://github.com/nix-community/impermanence)  
 
-## May be helpful
-[Erase your darlings](https://grahamc.com/blog/erase-your-darlings)  
-[NixOS: tmpfs as root](https://elis.nu/blog/2020/05/nixos-tmpfs-as-root/)  
-[How to Learn Nix](https://ianthehenry.com/posts/how-to-learn-nix/)  
-[Attrset functions](https://ryantm.github.io/nixpkgs/functions/library/attrsets/)  
-[List manipulation functions](https://ryantm.github.io/nixpkgs/functions/library/lists/)  
-[Way to search function](http://noogle.dev)  
-[NixOS CN DOC](https://github.com/OpenTritium/NixOS-CN-DOC)  
-
 ## How to use
 > Follow Nix official guide to initialize NixOS first.  
 
@@ -141,4 +132,11 @@ Excellent configurations that I've learned and copied:
 
 [NixOS-CN-telegram](https://github.com/nixos-cn/NixOS-CN-telegram)
 
+
+## References
+[Erase your darlings](https://grahamc.com/blog/erase-your-darlings)  
+[NixOS: tmpfs as root](https://elis.nu/blog/2020/05/nixos-tmpfs-as-root/)  
+[How to Learn Nix](https://ianthehenry.com/posts/how-to-learn-nix/)  
+[Attrset functions](https://ryantm.github.io/nixpkgs/functions/library/attrsets/)  
+[Way to search function](http://noogle.dev)  
 

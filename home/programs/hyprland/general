@@ -199,3 +199,4 @@ windowrule=noborder, ^(slurp)$
 windowrulev2=animation fade,class:org.telegram.desktop,title:Media viewer
 windowrulev2=float,class:org.telegram.desktop,title:Media viewer
 # layerrule = blur, notifications
+layerrule = noanim,selection

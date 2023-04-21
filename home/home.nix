@@ -39,6 +39,7 @@
 
       veracrypt
       openpgp-card-tools
+      tutanota-desktop
 
       # davinci-resolve
       cava
@@ -51,7 +52,8 @@
       protonmail-bridge
 
       koreader
-      realvnc-vnc-viewer
+      cliphist
+      # realvnc-vnc-viewer
       #    mathematica
       pcsctools
       ccid
@@ -78,7 +80,6 @@
       stress
       s-tui
       mprime
-      geekbench_5
 
       # reader
       calibre
@@ -238,14 +239,14 @@
             name = "img.jpg";
             hash = "sha256-kqvVGHOaD7shJrvYfhLDvDs62r20wi8Sajth16Spsrk=";
           };
-          #img-blurred = pkgs.runCommand "img.jpg"
-          #            {
-          #              nativeBuildInputs = with pkgs;[ imagemagick ];
-          #            } "
-          # convert -blur 14x5 ${img} $out
-          # ";
+          img-blurred = pkgs.runCommand "img.jpg"
+                      {
+                        nativeBuildInputs = with pkgs;[ imagemagick ];
+                      } "
+           convert -blur 14x5 ${img} $out
+           ";
         in
-        "${img}";
+        "${img-blurred}";
       scaling = "fill";
     };
     zsh = {

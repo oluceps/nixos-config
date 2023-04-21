@@ -8,10 +8,28 @@
 , user
 , ...
 }: {
-
   systemd.tmpfiles.rules = [
     "C /var/cache/tuigreet/lastuser - - - - ${pkgs.writeText "lastuser" "${user}"}"
   ];
+
+
+  rekey = {
+    extraEncryptionPubkeys = [ "age1jr2x2m85wtte9p0s7d833e0ug8xf3cf8a33l9kjprc9vlxmvjycq05p2qq" ];
+    masterIdentities = [ ./secrets/age-ybk-7d5d.pub ];
+
+    secrets =
+      let
+        genSec = ns: owner: group: lib.genAttrs ns (n: { file = ./secrets/${n}.age; mode = "770"; inherit owner group; });
+      in
+      (genSec [ "rat" "ss" "sing" "hyst-az" "hyst-am" "hyst-do" "tuic" "naive" "wg" ] "proxy" "users") //
+      (genSec [ "ssh" "gh-eu" "u2f" "gh-token" ] user "nogroup") //
+      {
+        dae = { file = ./secrets/dae.age; mode = "640"; owner = "proxy"; group = "users"; name = "d.dae"; };
+      };
+
+  };
+
+
   xdg = {
     mime = {
       enable = true;
@@ -82,18 +100,6 @@
     platformTheme = "gnome";
     style = "adwaita-dark";
   };
-  services.xserver =
-    {
-      enable = lib.mkDefault false;
-      layout = "us";
-      xkbOptions = "eurosign:e";
-      windowManager.bspwm.enable = true;
-
-      displayManager.gdm = {
-        enable = true;
-        wayland = true;
-      };
-    };
   zramSwap = {
     enable = true;
     swapDevices = 1;
@@ -102,19 +108,6 @@
   };
 
 
-  age = {
-    identityPaths = [ "/persist/keys/ssh_host_ed25519_key" ];
-    secrets =
-      let
-        genSec = ns: owner: group: lib.genAttrs ns (n: { file = ./secrets/${n}.age; mode = "770"; inherit owner group; });
-      in
-      (genSec [ "rat" "ss" "sing" "hyst-az" "hyst-am" "hyst-do" "tuic" "naive" "wg" ] "proxy" "users") //
-      (genSec [ "ssh" "gh-eu" "u2f" "gh-token" ] user "nogroup") //
-      {
-        dae = { file = ./secrets/dae.age; mode = "640"; owner = "proxy"; group = "users"; name = "d.dae"; };
-      };
-
-  };
 
   nix =
     {
@@ -135,7 +128,7 @@
           "https://helix.cachix.org"
         ];
         auto-optimise-store = true;
-        experimental-features = [ "nix-command" "flakes" "auto-allocate-uids" "cgroups" "repl-flake" ];
+        experimental-features = [ "nix-command" "flakes" "auto-allocate-uids" "cgroups" "repl-flake" "recursive-nix" ];
         auto-allocate-uids = true;
         use-cgroups = true;
 
@@ -213,7 +206,22 @@
     };
   };
 
-  services.xserver.videoDrivers = [ "nvidia" ];
+  services = {
+    xserver =
+      {
+        enable = lib.mkDefault false;
+        layout = "us";
+        xkbOptions = "eurosign:e";
+        windowManager.bspwm.enable = true;
+
+        displayManager.gdm = {
+          enable = true;
+          wayland = true;
+        };
+      };
+
+    xserver.videoDrivers = [ "nvidia" ];
+  };
 
   fonts = {
     enableDefaultFonts = false;
@@ -224,19 +232,15 @@
       (nerdfonts.override {
         fonts = [
           "FiraCode"
-          "DroidSansMono"
           "JetBrainsMono"
           "FantasqueSansMono"
         ];
       })
       source-han-sans
-      fantasque-sans-mono
       noto-fonts
       noto-fonts-cjk-sans
       noto-fonts-cjk-serif
-      sarasa-gothic
       twemoji-color-font
-      dejavu_fonts
       maple-mono-SC-NF
       cascadia-code
     ]
@@ -250,7 +254,7 @@
       defaultFonts = lib.mkForce {
         serif = [ "Glow Sans SC" "Glow Sans TC" "Glow Sans J" "Noto Serif" "Noto Serif CJK SC" "Noto Serif CJK TC" "Noto Serif CJK JP" ];
         monospace = [ "SF Mono" "Fantasque Sans Mono" ];
-        sansSerif = [ "Glow Sans SC" "Glow Sans TC" "Glow Sans J" "SF Pro Text" ];
+        sansSerif = [ "Hanken Grotesk" "Glow Sans SC" ];
         emoji = [ "twemoji-color-font" "noto-fonts-emoji" ];
       };
     };

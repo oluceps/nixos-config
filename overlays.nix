@@ -12,12 +12,19 @@
       (n: inputs.${n}.packages.${system}.default)
     //
     {
+      hyprland =
+        (import inputs.nixpkgs-gui
+          {
+            inherit system;
+          }).hyprland;
+      # inputs.hyprland.packages.${system}.default;
+
 
       helix = inputs.helix.packages.${system}.default.override {
         includeGrammarIf = grammar:
           prev.lib.any
             (name: grammar.name == name)
-            [ "toml" "rust" "nix" "protobuf" "yaml" "json" "markdown" "html" "css" "zig" "c" "cpp" "go" "python" ];
+            [ "toml" "rust" "nix" "protobuf" "yaml" "json" "markdown" "html" "css" "zig" "c" "cpp" "go" "python" "bash" ];
       };
 
 

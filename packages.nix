@@ -8,8 +8,16 @@ let
       lua
       nodejs-18_x
       yarn
-      age
+      go
     ];
+
+    crypt = [
+      rage
+      age-plugin-yubikey
+      yubikey-manager
+      yubikey-manager-qt
+    ];
+
     net = lib.flatten [
       # anti-censor
       [ nur-pkgs.dae sing-box rathole tor arti ]
