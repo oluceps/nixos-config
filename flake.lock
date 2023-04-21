@@ -288,7 +288,7 @@
     "crane_4": {
       "inputs": {
         "flake-compat": "flake-compat_17",
-        "flake-utils": "flake-utils_21",
+        "flake-utils": "flake-utils_22",
         "nixpkgs": [
           "surrealdb",
           "nixpkgs"
@@ -1167,6 +1167,21 @@
     },
     "flake-utils_21": {
       "locked": {
+        "lastModified": 1678901627,
+        "narHash": "sha256-U02riOqrKKzwjsxc/400XnElV+UtPUQWpANPlyazjH0=",
+        "owner": "numtide",
+        "repo": "flake-utils",
+        "rev": "93a2b84fc4b70d9e089d029deacc3583435c2ed6",
+        "type": "github"
+      },
+      "original": {
+        "owner": "numtide",
+        "repo": "flake-utils",
+        "type": "github"
+      }
+    },
+    "flake-utils_22": {
+      "locked": {
         "lastModified": 1676283394,
         "narHash": "sha256-XX2f9c3iySLCw54rJ/CZs+ZK6IQy7GXNY4nSOyu2QG4=",
         "owner": "numtide",
@@ -1180,7 +1195,7 @@
         "type": "github"
       }
     },
-    "flake-utils_22": {
+    "flake-utils_23": {
       "locked": {
         "lastModified": 1652776076,
         "narHash": "sha256-gzTw/v1vj4dOVbpBSJX4J0DwUR6LIyXo7/SuuTJp1kM=",
@@ -2573,6 +2588,22 @@
     },
     "nixpkgs_30": {
       "locked": {
+        "lastModified": 1679192108,
+        "narHash": "sha256-jeXdlVMMUKxfqCgRV/Y1FhMkRYdj267ysMgxLWXp8rE=",
+        "owner": "NixOS",
+        "repo": "nixpkgs",
+        "rev": "4755236d245bbe25b0b65b49b441b18481a09f57",
+        "type": "github"
+      },
+      "original": {
+        "owner": "NixOS",
+        "ref": "nixos-unstable-small",
+        "repo": "nixpkgs",
+        "type": "github"
+      }
+    },
+    "nixpkgs_31": {
+      "locked": {
         "lastModified": 1680665430,
         "narHash": "sha256-MTVhTukwza1Jlq2gECITZPFnhROmylP2uv3O3cSqQCE=",
         "owner": "NixOS",
@@ -3089,6 +3120,25 @@
         "type": "github"
       }
     },
+    "resign": {
+      "inputs": {
+        "flake-utils": "flake-utils_21",
+        "nixpkgs": "nixpkgs_30"
+      },
+      "locked": {
+        "lastModified": 1679214374,
+        "narHash": "sha256-YjFvCWX7zw2uy/mizGROw/AmEyGnCfO+enm0pC8jTQo=",
+        "owner": "oluceps",
+        "repo": "resign",
+        "rev": "1d5c8df3c3bcb7c50bf4bf0971bb170f897dd7fb",
+        "type": "github"
+      },
+      "original": {
+        "owner": "oluceps",
+        "repo": "resign",
+        "type": "github"
+      }
+    },
     "root": {
       "inputs": {
         "agenix-rekey": "agenix-rekey",
@@ -3120,6 +3170,7 @@
         "prismlauncher": "prismlauncher",
         "pywmpkg": "pywmpkg",
         "ragenix": "ragenix",
+        "resign": "resign",
         "surrealdb": "surrealdb"
       }
     },
@@ -3417,8 +3468,8 @@
         "crane": "crane_4",
         "fenix": "fenix_4",
         "flake-compat": "flake-compat_18",
-        "flake-utils": "flake-utils_22",
-        "nixpkgs": "nixpkgs_30"
+        "flake-utils": "flake-utils_23",
+        "nixpkgs": "nixpkgs_31"
       },
       "locked": {
         "lastModified": 1682014993,

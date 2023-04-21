@@ -13,6 +13,7 @@
   ];
 
 
+  age.identityPaths = [ "/persist/keys/ssh_host_ed25519_key" ];
   rekey = {
     extraEncryptionPubkeys = [ "age1jr2x2m85wtte9p0s7d833e0ug8xf3cf8a33l9kjprc9vlxmvjycq05p2qq" ];
     masterIdentities = [ ./secrets/age-ybk-7d5d.pub ];

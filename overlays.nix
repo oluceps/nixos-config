@@ -8,6 +8,7 @@
         "clash-meta"
         "nil"
         "ragenix"
+        "resign"
       ]
       (n: inputs.${n}.packages.${system}.default)
     //
