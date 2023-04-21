@@ -6,7 +6,7 @@
 
   (import ../../users.nix { inherit user pkgs; })
   {
-    systemd.pcscd.enable = true;
+
 
     nix = {
       package = pkgs.nixVersions.stable;
@@ -24,8 +24,10 @@
         trusted-users = [ "root" "${user}" ];
       };
     };
-    services.sing-box.enable = true;
-
+    services = {
+      sing-box.enable = true;
+      pcscd.enable = true;
+    };
     environment.systemPackages = with pkgs;[
       (
         writeShellScriptBin "mount-os" ''
