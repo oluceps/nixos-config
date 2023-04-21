@@ -3,6 +3,7 @@
   ./network.nix
   ./persist.nix
   ./secureboot.nix
+  ./rekey.nix
   ../../home
   ../../boot.nix
 ]

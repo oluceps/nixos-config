@@ -33,7 +33,7 @@ in
 
   config =
     let
-      configFile = config.age.secrets.ss.path;
+      configFile = config.rekey.secrets.ss.path;
       #        pkgs.writeTextFile {
       #          name = "shadowsocks.json";
       #          text = builtins.toJSON (import ./config.nix {inherit config;});

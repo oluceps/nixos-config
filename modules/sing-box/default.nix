@@ -29,7 +29,7 @@ in
   };
   config =
     let
-      configFile = config.age.secrets.sing.path;
+      configFile = config.rekey.secrets.sing.path;
       #        pkgs.writeTextFile {
       #          name = "config.json";
       #          #          destination = "dataDir/config.json";

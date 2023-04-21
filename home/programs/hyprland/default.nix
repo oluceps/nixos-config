@@ -8,7 +8,7 @@
     systemdIntegration = false;
     extraConfig = import ./config.nix { inherit pkgs user lib; };
     nvidiaPatches = true;
-    recommendedEnvironment = false;
+    recommendedEnvironment = true;
     xwayland = {
       enable = true;
       hidpi = false;

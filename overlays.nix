@@ -12,10 +12,12 @@
       (n: inputs.${n}.packages.${system}.default)
     //
     {
-      hyprland = (import inputs.nixpkgs-gui
-        {
-          inherit system;
-        }).hyprland;
+      hyprland =
+        (import inputs.nixpkgs-gui
+          {
+            inherit system;
+          }).hyprland;
+      # inputs.hyprland.packages.${system}.default;
 
 
       helix = inputs.helix.packages.${system}.default.override {
