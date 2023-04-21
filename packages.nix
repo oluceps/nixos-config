@@ -29,7 +29,7 @@ let
     fs = [ gparted e2fsprogs fscrypt-experimental f2fs-tools compsize ];
 
     cmd = lib.flatten [
-      agenix
+      ragenix
       helix
       srm
 
