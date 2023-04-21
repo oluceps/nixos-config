@@ -14,4 +14,4 @@
   "hyst-do"
   "hyst-am"
 ])
-++ (import ./sing-box { })
+++ [ (import ./sing-box { }) ]
