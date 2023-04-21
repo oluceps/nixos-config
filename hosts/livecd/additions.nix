@@ -6,6 +6,8 @@
 
   (import ../../users.nix { inherit user pkgs; })
   {
+    systemd.pcscd.enable = true;
+
     nix = {
       package = pkgs.nixVersions.stable;
 
