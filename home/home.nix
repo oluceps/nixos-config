@@ -18,21 +18,18 @@
     EDITOR = "hx";
   };
 
-  systemd.user.sessionVariables = {
-    CARGO_REGISTRIES_CRATES_IO_PROTOCOL = "sparse";
-    CARGO_UNSTABLE_SPARSE_REGISTRY = "true";
-    SSH_AUTH_SOCK = "$XDG_RUNTIME_DIR/resign.ssh";
-  };
   systemd.user = {
+    sessionVariables = {
+      CARGO_REGISTRIES_CRATES_IO_PROTOCOL = "sparse";
+      CARGO_UNSTABLE_SPARSE_REGISTRY = "true";
+      SSH_AUTH_SOCK = "$XDG_RUNTIME_DIR/resign.ssh";
+    };
     services.resign = {
       Install.WantedBy = [ "graphical-session.target" ];
       Unit.PartOf = [ "graphical-session.target" ];
       Unit.After = [ "graphical-session.target" ];
       Service = {
-        Environment = [
-          "PATH=${lib.makeBinPath [ pkgs.pinentry-gtk2 ]}"
-          "GTK2_RC_FILES=${config.home.sessionVariables.GTK2_RC_FILES}"
-        ];
+        Environment = [ "PATH=${lib.makeBinPath [ pkgs.pinentry-gnome ]}" ];
         ExecStart = "${pkgs.resign}/bin/resign --listen %t/resign.ssh";
       };
     };
