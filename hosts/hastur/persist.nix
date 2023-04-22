@@ -23,7 +23,6 @@
         "Videos"
         "Music"
         "Security"
-        "softwares"
         "Blog"
         "Games"
         ".npm-packages"
