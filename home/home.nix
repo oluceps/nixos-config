@@ -23,6 +23,9 @@
       CARGO_REGISTRIES_CRATES_IO_PROTOCOL = "sparse";
       CARGO_UNSTABLE_SPARSE_REGISTRY = "true";
       SSH_AUTH_SOCK = "$XDG_RUNTIME_DIR/resign.ssh";
+      NEOVIDE_MULTIGRID = "1";
+      NEOVIDE_WM_CLASS = "1";
+      NODE_PATH = "~/.npm-packages/lib/node_modules";
     };
     services.resign = {
       Install.WantedBy = [ "graphical-session.target" ];
@@ -276,8 +279,6 @@
         nd = "cd /etc/nixos";
         n = "neovide";
         off = "poweroff";
-        # roll = "xrandr -o left && feh --bg-scale /home/riro/Pictures/Wallpapers/95448248_p0.png && sleep 0.5; picom --experimental-backend -b";
-        # rolln = "xrandr -o normal && feh --bg-scale /home/riro/Pictures/Wallpapers/秋の旅.jpg && sleep 0.5;  picom --experimental-backend -b";
         cat = "bat";
         kls = "exa";
         sl = "exa";

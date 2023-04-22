@@ -34,7 +34,7 @@ builtins.readFile ./mocha + (with deps; ''
   env = GBM_BACKEND,nvidia-drm
   env = __GLX_VENDOR_LIBRARY_NAME,nvidia
   env = WLR_NO_HARDWARE_CURSORS,1
-    
+  env = PATH,"/home/${user}/.npm-packages/bin"    
   exec-once=${swaybg} -i /etc/nixos/.attachs/wall.jpg
   bind=SUPER,RETURN,exec,${systemd-run-app} ${foot}
   bind=SUPER,D,exec,${fuzzel} -I -l 7 -x 8 -y 7 -P 9 -b ede3e7d9 -r 3 -t 8b614db3 -C ede3e7d9 -f 'Maple Mono SC NF:style=Regular:size=15' -P 10 -B 7
