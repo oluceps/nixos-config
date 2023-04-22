@@ -1,9 +1,17 @@
-{ config
-, pkgs
-, lib
-, ...
-}:
+{ pkgs, ... }:
 
+let
+  cfg = pkgs.writeText "btrbk.conf" ''
+    ssh_identity /persist/keys/ssh_host_ed25519_key
+    timestamp_format        long
+    snapshot_preserve_min   18h
+    snapshot_preserve       48h 
+    volume /persist
+      snapshot_dir .snapshots
+      subvolume .
+      snapshot_create onchange
+  '';
+in
 {
   environment.systemPackages = [ pkgs.btrbk ];
 
@@ -11,7 +19,7 @@
     description = "btrbk backup";
     serviceConfig = {
       Type = "oneshot";
-      ExecStart = "${pkgs.btrbk}/bin/btrbk run";
+      ExecStart = "${pkgs.btrbk}/bin/btrbk run -c ${cfg}";
     };
   };
 
@@ -23,16 +31,5 @@
       OnBootSec = "3s";
     };
   };
-
-  environment.etc."btrbk/btrbk.conf".text = ''
-    ssh_identity /persist/keys/ssh_host_ed25519_key
-    timestamp_format        long
-    snapshot_preserve_min   18h
-    snapshot_preserve       48h 
-    volume /persist
-      snapshot_dir .snapshots
-      subvolume .
-      snapshot_create onchange
-  '';
 
 }
