@@ -11,12 +11,9 @@ let
       go
     ];
 
-    crypt = [
-      rage
-      age-plugin-yubikey
-      yubikey-manager
-      yubikey-manager-qt
-    ];
+    web = [ hugo ];
+
+    crypt = [ rage age-plugin-yubikey yubikey-manager yubikey-manager-qt ];
 
     net = lib.flatten [
       # anti-censor
