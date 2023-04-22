@@ -54,7 +54,7 @@
     pam = {
       u2f = {
         enable = true;
-        authFile = config.age.secrets.u2f.path;
+        authFile = config.rekey.secrets.u2f.path;
         control = "sufficient";
         cue = true;
       };
@@ -148,7 +148,7 @@
       extraOptions = ''
         keep-outputs = true
         keep-derivations = true
-        # access-tokens = github.com=@${config.age.secrets.gh-token.path}
+        # access-tokens = github.com=@${config.rekey.secrets.gh-token.path}
       '';
     };
 
