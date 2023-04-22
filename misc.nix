@@ -185,7 +185,7 @@
     };
 
     gnupg.agent = {
-      enable = true;
+      enable = false;
       enableSSHSupport = true;
     };
 

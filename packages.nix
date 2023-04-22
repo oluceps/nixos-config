@@ -19,7 +19,7 @@ let
       # anti-censor
       [ nur-pkgs.dae sing-box rathole tor arti ]
 
-      [ iperf3 i2p ethtool dnsutils autossh tcpdump netcat dog wget mtr-gui socat miniserve mtr wakelan netcat-gnu q nali lynx nethogs restic w3m whois dig wireguard-tools curl ngrep ]
+      [ iperf3 i2p ethtool dnsutils autossh tcpdump netcat dog wget mtr-gui socat miniserve mtr wakelan netcat-gnu q nali lynx nethogs restic w3m whois dig wireguard-tools curl ngrep gping ]
     ];
 
     virt = [ virt-manager virtiofsd windows-run ];
