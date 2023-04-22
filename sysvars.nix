@@ -11,5 +11,6 @@
     NIX_CFLAGS_COMPILE = "--verbose";
     NIX_CFLAGS_LINK = "--verbose";
     NIX_LDFLAGS = "--verbose";
+    PATH = [ "/home/${user}/.npm-packages/bin" ];
   };
 }
