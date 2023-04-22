@@ -108,8 +108,6 @@
     algorithm = "zstd";
   };
 
-
-
   nix =
     {
       package = pkgs.nixVersions.unstable;
