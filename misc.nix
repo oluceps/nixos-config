@@ -73,6 +73,7 @@
     polkit.enable = true;
   };
 
+  networking.firewall.trustedInterfaces = [ "virbr0" ];
   virtualisation = {
     docker.enable = true;
     libvirtd = {
