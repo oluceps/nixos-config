@@ -8,6 +8,7 @@
         "clash-meta"
         "nil"
         "ragenix"
+        "prismlauncher"
         "resign"
       ]
       (n: inputs.${n}.packages.${system}.default)

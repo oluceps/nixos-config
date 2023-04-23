@@ -1,8 +1,5 @@
 { config
 , pkgs
-, inputs
-, system
-, lib
 , ...
 }:
 {
@@ -22,19 +19,9 @@
     sessionVariables = {
       CARGO_REGISTRIES_CRATES_IO_PROTOCOL = "sparse";
       CARGO_UNSTABLE_SPARSE_REGISTRY = "true";
-      SSH_AUTH_SOCK = "$XDG_RUNTIME_DIR/resign.ssh";
       NEOVIDE_MULTIGRID = "1";
       NEOVIDE_WM_CLASS = "1";
       NODE_PATH = "~/.npm-packages/lib/node_modules";
-    };
-    services.resign = {
-      Install.WantedBy = [ "graphical-session.target" ];
-      Unit.PartOf = [ "graphical-session.target" ];
-      Unit.After = [ "graphical-session.target" ];
-      Service = {
-        Environment = [ "PATH=${lib.makeBinPath [ pkgs.pinentry-gnome ]}" ];
-        ExecStart = "${pkgs.resign}/bin/resign --listen %t/resign.ssh";
-      };
     };
   };
 
@@ -191,18 +178,14 @@
       # jetbrains.pycharm-professional
       # jetbrains.datagrip
       julia-bin
+      prismlauncher
     ]
-    ++
-    (with inputs;[
-      prismlauncher.packages.${system}.default
-    ])
     ++
     (with nur.repos; [
       linyinfeng.canokey-udev-rules
       YisuiMilena.hmcl-bin
     ]) ++
     (with nur-pkgs;[
-      # rustplayer
       techmino
     ]);
   home.pointerCursor = {
