@@ -163,7 +163,7 @@
   time.timeZone = "Asia/Shanghai";
 
   console = {
-    font = "Lat2-Terminus16";
+    font = "LatArCyrHeb-16";
     keyMap = "us";
   };
 
