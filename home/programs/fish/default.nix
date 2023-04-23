@@ -43,7 +43,6 @@
       daso = "doas";
       daos = "doas";
       off = "poweroff";
-      proxy = "proxychains4 -f /home/riro/.config/proxychains/proxychains.conf";
       roll = "xrandr -o left && feh --bg-scale /home/riro/Pictures/Wallpapers/95448248_p0.png && sleep 0.5; picom --experimental-backend -b";
       rolln = "xrandr -o normal && feh --bg-scale /home/riro/Pictures/Wallpapers/秋の旅.jpg && sleep 0.5;  picom --experimental-backend -b";
       kls = "lsd --icon never";

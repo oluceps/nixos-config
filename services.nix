@@ -197,10 +197,11 @@
         type = "strict";
       };
       proxies = {
-        clash = {
+        socks-hyst-az = {
+          enable = true;
           type = "socks5";
           host = "127.0.0.1";
-          port = 7890;
+          port = 1083;
         };
       };
     };
