@@ -4,8 +4,9 @@ let
   nixosSystem = lib.nixosSystem;
 
   # I don't like this
-  genModule = e: map (i: inputs.${i}.nixosModules.${e});
-  genModuleGen = map (i: inputs.${i}.nixosModules.${i});
+  m = i: inputs.${i}.nixosModules;
+  genModules = map (i: (m i).default or (m i).${i});
+
   sharedModules = pkgs:
     [
       ../misc.nix
@@ -18,9 +19,7 @@ let
           (with pkgs;[ (fenix.complete.withComponents [ "cargo" "clippy" "rust-src" "rustc" "rustfmt" ]) ]);
       }
     ] ++
-    (genModule "default" [ "agenix-rekey" "ragenix" ])
-    ++
-    (genModuleGen [ "home-manager" "impermanence" "lanzaboote" ])
+    (genModules [ "agenix-rekey" "ragenix" "home-manager" "impermanence" "lanzaboote" ])
     ++ (import ../modules);
 
   genSysAttr = { system, user, hostname }:
