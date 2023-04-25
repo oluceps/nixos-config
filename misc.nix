@@ -47,6 +47,10 @@
         "ppt/pptx" = [ "wps-office-wpp.desktop" ];
         "doc/docx" = [ "wps-office-wps.desktop" ];
         "xls/xlsx" = [ "wps-office-et.desktop" ];
+        "image/png" = [ "org.gnome.eog.desktop" ];
+        "image/jpeg" = [ "org.gnome.eog.desktop" ];
+        "image/webp" = [ "org.gnome.eog.desktop" ];
+        "image/gif" = [ "org.gnome.eog.desktop" ];
       };
     };
   };

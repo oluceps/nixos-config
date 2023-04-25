@@ -91,7 +91,6 @@
 
       # reader
       calibre
-      dolphin
       obsidian
       mdbook
       sioyek
@@ -102,8 +101,7 @@
       file
       lapce
       kate
-      cinnamon.nemo
-      dolphin
+      # cinnamon.nemo
       gnome.nautilus
       gnome.eog
       #zathura
