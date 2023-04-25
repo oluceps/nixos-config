@@ -3,13 +3,33 @@ let
   lib = inputs.nixpkgs.lib;
   nixosSystem = lib.nixosSystem;
 
+  # I don't like this
+  genModule = e: map (i: inputs.${i}.nixosModules.${e});
+  genModuleGen = map (i: inputs.${i}.nixosModules.${i});
+  sharedModules = pkgs:
+    [
+      ../misc.nix
+      ../users.nix
+      ../packages.nix
+      ../sysvars.nix
+      ../services.nix
+      {
+        environment.systemPackages =
+          (with pkgs;[ (fenix.complete.withComponents [ "cargo" "clippy" "rust-src" "rustc" "rustfmt" ]) ]);
+      }
+    ] ++
+    (genModule "default" [ "agenix-rekey" "ragenix" "grub2-themes" ])
+    ++
+    (genModuleGen [ "home-manager" "impermanence" "lanzaboote" ])
+    ++ (import ../modules);
+
   genSysAttr = { system, user, hostname }:
     rec {
       inherit system;
       pkgs = _pkgs.${system};
       specialArgs = { inherit inputs system user lib; };
       modules = (import ./${hostname})
-        ++ (import ./shares.nix { inherit inputs system pkgs; });
+        ++ sharedModules pkgs;
     };
 
   genGeneralSys = a:
