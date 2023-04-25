@@ -70,12 +70,12 @@ nixos-rebuild switch --flake github:oluceps/nixos-config#HOSTNAME
 ```
 |Type|Program|
 |---|---|
-|Editor|[helix](https://github.com/oluceps/nixos-config/tree/pub/home/programs/helix)|
-|WM|[Hyprland](https://github.com/oluceps/nixos-config/tree/pub/home/programs/hyprland)|
-|Shell|[fish](https://github.com/oluceps/nixos-config/tree/pub/home/programs/fish)|
-|Bar|[waybar](https://github.com/oluceps/nixos-config/tree/pub/home/programs/waybar)|
-|Terminal|[foot](https://github.com/oluceps/nixos-config/tree/pub/home/programs/foot)|
-|backup|[btrbk](https://github.com/oluceps/nixos-config/tree/pub/modules/btrbk)|  
+|Editor|[helix](https://github.com/oluceps/nixos-config/tree/main/home/programs/helix)|
+|WM|[Hyprland](https://github.com/oluceps/nixos-config/tree/main/home/programs/hyprland)|
+|Shell|[fish](https://github.com/oluceps/nixos-config/tree/main/home/programs/fish)|
+|Bar|[waybar](https://github.com/oluceps/nixos-config/tree/main/home/programs/waybar)|
+|Terminal|[foot](https://github.com/oluceps/nixos-config/tree/main/home/programs/foot)|
+|backup|[btrbk](https://github.com/oluceps/nixos-config/tree/main/modules/btrbk)|  
 
 __Build devShell__  
 ```console
