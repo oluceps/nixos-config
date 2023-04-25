@@ -1,4 +1,4 @@
-{ inputs, system, _pkgs }:
+{ inputs, _pkgs }:
 let pkgs = _pkgs.x86_64-linux; in {
 
   kernel =

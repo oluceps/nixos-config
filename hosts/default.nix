@@ -18,7 +18,7 @@ let
           (with pkgs;[ (fenix.complete.withComponents [ "cargo" "clippy" "rust-src" "rustc" "rustfmt" ]) ]);
       }
     ] ++
-    (genModule "default" [ "agenix-rekey" "ragenix" "grub2-themes" ])
+    (genModule "default" [ "agenix-rekey" "ragenix" ])
     ++
     (genModuleGen [ "home-manager" "impermanence" "lanzaboote" ])
     ++ (import ../modules);
