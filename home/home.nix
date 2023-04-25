@@ -171,10 +171,6 @@
       texlive.combined.scheme-full
       vlc
       bluedevil
-      # jetbrains.clion
-      # jetbrains.goland
-      # jetbrains.pycharm-professional
-      # jetbrains.datagrip
       julia-bin
       prismlauncher
     ]

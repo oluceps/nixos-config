@@ -149,8 +149,8 @@
 
 
       extraOptions = ''
-        keep-outputs = true
-        keep-derivations = true
+        # keep-outputs = true
+        # keep-derivations = true
         # access-tokens = github.com=@${config.rekey.secrets.gh-token.path}
       '';
     };
