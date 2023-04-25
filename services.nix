@@ -46,6 +46,7 @@
   };
 
   services = {
+    gvfs.enable = true;
     # github-runners = {
     #   runner1 = {
     #     enable = false;

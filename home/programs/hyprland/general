@@ -191,6 +191,7 @@ windowrule=animation slide right,kitty
 windowrule=animation slide right,alacritty
 windowrule=animation slide right,telegramdesktop
 windowrule=float,ncmpcpp
+windowrule=float,eog
 windowrule=move 25%-,ncmpcpp
 windowrule=size 960 540,ncmpcpp
 windowrule=rounding 0,MATLAB R2022b - academic use
