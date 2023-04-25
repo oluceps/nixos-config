@@ -4,7 +4,6 @@
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     nixpkgs-gui.url = "github:NixOS/nixpkgs?rev=954a801cbe128e24e78230f711df17da01a5d98c";
     nixpkgs-22.url = "github:NixOS/nixpkgs?rev=c91d0713ac476dfb367bbe12a7a048f6162f039c";
-    nixpkgs-1809.url = "github:NixOS/nixpkgs?rev=022caabb5f2265ad4006c1fa5b1ebe69fb0c3faf";
     nvfetcher.url = "github:berberman/nvfetcher";
     agenix-rekey.url = "github:oddlama/agenix-rekey";
     resign.url = "github:oluceps/resign";
@@ -46,9 +45,6 @@
     home-manager.url = "github:nix-community/home-manager";
     helix.url = "github:helix-editor/helix";
     hyprland.url = "github:vaxerski/Hyprland";
-    grub2-themes.url = "github:vinceliuice/grub2-themes";
-    mach-nix.url = "mach-nix/3.5.0";
-    colmena.url = "github:zhaofengli/colmena";
     berberman.url = "github:berberman/flakes";
   };
 
@@ -88,16 +84,19 @@
                 ];
           }
         );
+      generalImport = p: import p { inherit inputs _pkgs; };
     in
     {
-      nixosConfigurations = import ./hosts { inherit inputs _pkgs; };
+      nixosConfigurations = generalImport ./hosts;
 
-      devShells = genSystems (system: import ./shells.nix { inherit inputs system _pkgs; });
+      devShells = genSystems (system: generalImport ./shells.nix);
 
       apps =
         genSystems
           (system: inputs.agenix-rekey.defineApps self _pkgs.${system}
-            { inherit (self.nixosConfigurations) hastur kaambl; });
+            {
+              inherit (self.nixosConfigurations) hastur kaambl;
+            });
 
       overlays.default =
         final: prev:
