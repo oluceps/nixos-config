@@ -14,30 +14,18 @@ in
     enable = mkOption {
       type = types.bool;
       default = false;
-      description = lib.mdDoc ''
-        enable?
-      '';
     };
 
     package = mkOption {
       type = types.package;
       default = pkgs.shadowsocks-rust;
-      defaultText = literalExpression "pkgs.shadowsocks-rust";
-      description = lib.mdDoc ''
-        package
-      '';
     };
 
   };
 
-
   config =
     let
       configFile = config.rekey.secrets.ss.path;
-      #        pkgs.writeTextFile {
-      #          name = "shadowsocks.json";
-      #          text = builtins.toJSON (import ./config.nix {inherit config;});
-      #        };
     in
     mkIf cfg.enable {
       systemd.services.ss = {
@@ -46,9 +34,7 @@ in
         description = "shadowsocks-rust";
         serviceConfig = {
           Type = "simple";
-          User = user;
-          Group = user;
-          #/home/riro/.config/ss/config.json
+          User = "proxy";
           ExecStart = "${cfg.package}/bin/sslocal -c ${configFile}";
           AmbientCapabilities = [ "CAP_NET_ADMIN" "CAP_NET_BIND_SERVICE" ];
           Restart = "on-failure";

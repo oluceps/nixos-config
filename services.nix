@@ -142,7 +142,10 @@
     sing-box.enable = false;
     rathole.enable = true;
 
-    dae.enable = true;
+    dae = {
+      enable = true;
+      txChecksumIpGeneric = false;
+    };
 
     btrfs.autoScrub = {
       enable = true;

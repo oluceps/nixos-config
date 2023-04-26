@@ -18,6 +18,11 @@ in
       default = pkgs.nur-pkgs.dae;
     };
 
+    txChecksumIpGeneric = mkOption {
+      type = types.bool;
+      default = false;
+    };
+
   };
   config =
     let
@@ -25,11 +30,13 @@ in
       assets = "${pkgs.geos}/share/v2ray";
       dae = lib.getExe cfg.package;
       # See https://github.com/daeuniverse/dae/issues/43
-      # NICComp = pkgs.writeShellScriptBin "nicComp" ''
-      #   #!/usr/bin/env bash
-      #   iface=$(${pkgs.iproute2}/bin/ip route | ${pkgs.lib.getExe pkgs.gawk} '/default/ {print $5}')
-      #   ${pkgs.lib.getExe pkgs.ethtool} -K $iface tx-checksum-ip-generic off
-      # '';
+      NICComp = pkgs.writeShellApplication {
+        name = "nicComp";
+        text = ''
+          iface=$(${pkgs.iproute2}/bin/ip route | ${pkgs.lib.getExe pkgs.gawk} '/default/ {print $5}')
+          ${pkgs.lib.getExe pkgs.ethtool} -K "$iface" tx-checksum-ip-generic off
+        '';
+      };
 
     in
     mkIf cfg.enable {
@@ -58,7 +65,8 @@ in
           LimitNPROC = 512;
           LimitNOFILE = 1048576;
           Environment = "DAE_LOCATION_ASSET=${assets}";
-          ExecStartPre = "${dae} validate -c ${configFile}";
+          ExecStartPre = [ "${dae} validate -c ${configFile}" ]
+            ++ (with lib; optional cfg.txChecksumIpGeneric (getExe NICComp));
           ExecStart = "${dae} run --disable-timestamp -c ${configFile}";
           ExecReload = "${dae} reload $MAINPID";
           Restart = "on-abnormal";

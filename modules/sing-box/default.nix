@@ -12,18 +12,10 @@ in
     enable = mkOption {
       type = types.bool;
       default = false;
-      description = lib.mdDoc ''
-        enable?
-      '';
-
     };
     package = mkOption {
       type = types.package;
       default = pkgs.nur-pkgs.sing-box;
-      defaultText = literalExpression "pkgs.sing-box";
-      description = lib.mdDoc ''
-        package
-      '';
     };
 
   };
@@ -45,7 +37,7 @@ in
 
         serviceConfig = {
           User = "proxy";
-          ExecStart = "${cfg.package}/bin/sing-box run -c ${configFile} -D $STATE_DIRECTORY";
+          ExecStart = "${lib.getExe cfg.package} run -c ${configFile} -D $STATE_DIRECTORY";
           StateDirectory = "sing";
           CapabilityBoundingSet = [
             "CAP_NET_RAW"

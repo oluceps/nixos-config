@@ -130,7 +130,6 @@
 
 
       record-status = prev.writeShellScriptBin "record-status" ''
-        #!/usr/bin/env bash
         pid=`pgrep wf-recorder`
         status=$?
         if [ $status != 0 ]
@@ -142,7 +141,6 @@
       '';
 
       screen-recorder-toggle = prev.writeShellScriptBin "screen-recorder-toggle" ''
-        #!/usr/bin/env bash
         pid=`${prev.procps}/bin/pgrep wf-recorder`
         status=$?
         if [ $status != 0 ]
@@ -154,7 +152,6 @@
       '';
 
       save-clipboard-to = prev.writeShellScriptBin "save-clipboard-to" ''
-        #!/usr/bin/env bash
         wl-paste > $HOME/Pictures/screenshot/$(date +'shot_%Y-%m-%d-%H%M%S.png')
       '';
 

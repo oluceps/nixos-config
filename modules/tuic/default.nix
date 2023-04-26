@@ -17,15 +17,8 @@ in
     package = mkOption {
       type = types.package;
       default = pkgs.nur-pkgs.tuic;
-      defaultText = literalExpression "pkgs.hysteria";
-      description = lib.mdDoc ''
-        package
-      '';
-
     };
   };
-
-
 
   config =
     let configFile = config.rekey.secrets.tuic.path;
