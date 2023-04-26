@@ -12,18 +12,10 @@ in
     enable = mkOption {
       type = types.bool;
       default = false;
-      description = lib.mdDoc ''
-        enable?
-      '';
-
     };
     package = mkOption {
       type = types.package;
       default = pkgs.rathole;
-      defaultText = literalExpression "pkgs.ratholeproxy";
-      description = lib.mdDoc ''
-        package
-      '';
     };
 
   };
@@ -41,7 +33,7 @@ in
         serviceConfig = {
           Type = "simple";
           User = "proxy";
-          ExecStart = "${cfg.package}/bin/rathole -c ${configFile}";
+          ExecStart = "${lib.getExe cfg.package} -c ${configFile}";
           LimitNOFILE = 1048576;
           RestartSec = "5s";
           Restart = "on-failure";

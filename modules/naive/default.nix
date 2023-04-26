@@ -1,7 +1,6 @@
 { pkgs
 , config
 , lib
-, user
 , ...
 }:
 with lib;
@@ -21,22 +20,12 @@ in
     package = mkOption {
       type = types.package;
       default = pkgs.nur-pkgs.naiveproxy;
-      defaultText = literalExpression "pkgs.naiveproxy";
-      description = lib.mdDoc ''
-        package
-      '';
     };
 
   };
   config =
     let
       configFile = config.rekey.secrets.naive.path;
-      #        pkgs.writeTextFile {
-      #          name = "config.json";
-      #          #          destination = "dataDir/config.json";
-      #          text = builtins.toJSON (import ./config.nix );
-      #        };
-
     in
     mkIf cfg.enable {
       systemd.services.naive = {
@@ -47,7 +36,7 @@ in
         serviceConfig = {
           Type = "simple";
           User = "proxy";
-          ExecStart = "${cfg.package}/bin/naive ${configFile}";
+          ExecStart = "${lib.getExe cfg.package} ${configFile}";
           CapabilityBoundingSet = [
             "CAP_NET_RAW"
             "CAP_NET_ADMIN"

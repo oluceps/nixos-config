@@ -17,10 +17,6 @@ in
     package = mkOption {
       type = types.package;
       default = pkgs.clash-meta;
-      defaultText = literalExpression "pkgs.clash-meta";
-      description = lib.mdDoc ''
-        package
-      '';
     };
 
   };
@@ -36,7 +32,7 @@ in
           Type = "simple";
           User = "proxy";
           WorkingDirectory = "/home/${user}/.config/clash";
-          ExecStart = "${cfg.package}/bin/clash-meta -d /home/${user}/.config/clash";
+          ExecStart = "${lib.getExe cfg.package} -d /home/${user}/.config/clash";
           CapabilityBoundingSet = [
             "CAP_NET_RAW"
             "CAP_NET_ADMIN"
@@ -49,10 +45,6 @@ in
           ];
           Restart = "on-failure";
         };
-
       };
-
     };
-
-
 }
