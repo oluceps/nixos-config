@@ -95,6 +95,7 @@
       "net.ipv4.tcp_sack" = 1;
       # "vm.overcommit_memory" = 1;
       "vm.swappiness" = 95;
+      "vm.max_map_count" = 2147483642;
       "net.ipv4.tcp_ecn" = 1;
     };
   };
