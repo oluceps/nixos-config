@@ -9,6 +9,7 @@ let
       nodejs-18_x
       yarn
       go
+      nix-tree
     ];
 
     web = [ hugo ];
