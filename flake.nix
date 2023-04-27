@@ -84,12 +84,12 @@
                 ];
           }
         );
-      generalImport = p: import p { inherit inputs _pkgs; };
+      genericImport = p: import p { inherit inputs _pkgs; };
     in
     {
-      nixosConfigurations = generalImport ./hosts;
+      nixosConfigurations = genericImport ./hosts;
 
-      devShells = genSystems (system: generalImport ./shells.nix);
+      devShells = genSystems (system: genericImport ./shells.nix);
 
       apps =
         genSystems

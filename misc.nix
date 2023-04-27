@@ -37,21 +37,29 @@
       defaultApplications = {
         "tg" = [ "telegramdesktop.desktop" ];
 
-        "x-scheme-handler/http" = "firefox.desktop";
-        "text/html" = "firefox.desktop";
-        "x-scheme-handler/https" = "firefox.desktop";
-        "x-scheme-handler/about" = "firefox.desktop";
-        "x-scheme-handler/unknown" = "firefox.desktop";
-
         "pdf" = [ "sioyek.desktop" ];
         "ppt/pptx" = [ "wps-office-wpp.desktop" ];
         "doc/docx" = [ "wps-office-wps.desktop" ];
         "xls/xlsx" = [ "wps-office-et.desktop" ];
-        "image/png" = [ "org.gnome.eog.desktop" ];
-        "image/jpeg" = [ "org.gnome.eog.desktop" ];
-        "image/webp" = [ "org.gnome.eog.desktop" ];
-        "image/gif" = [ "org.gnome.eog.desktop" ];
-      };
+      }
+      //
+      lib.genAttrs [
+        "x-scheme-handler/unknown"
+        "x-scheme-handler/about"
+        "x-scheme-handler/http"
+        "x-scheme-handler/https"
+        "text/html"
+      ]
+        (_: "firefox.desktop")
+      //
+      lib.genAttrs [
+        "image/gif"
+        "image/webp"
+        "image/png"
+        "image/jpeg"
+      ]
+        (_: "org.gnome.eog.desktop")
+      ;
     };
   };
   security = {
@@ -155,14 +163,6 @@
       '';
     };
 
-  environment = {
-    # shellInit = ''
-    #   export GPG_TTY="$(tty)"
-    #   gpg-connect-agent /bye
-    #   export SSH_AUTH_SOCK="/run/user/$UID/gnupg/S.gpg-agent.ssh"
-    # '';
-    loginShellInit = "";
-  };
   # Set your time zone.
   time.timeZone = "Asia/Shanghai";
 
@@ -172,6 +172,12 @@
   };
 
   programs = {
+    neovim = {
+      enable = true;
+      configure = {
+        customRC = ''set number'';
+      };
+    };
     git.enable = true;
     fish.enable = true;
     sway.enable = true;
@@ -193,12 +199,7 @@
     };
 
   };
-  #  programs.waybar.enable = true;
-  #
-  #  # Enable the GNOME Desktop Environment.
-  #  services.xserver.desktopManager.gnome.enable = false;
   hardware = {
-
     nvidia = {
       package = config.boot.kernelPackages.nvidiaPackages.stable;
       modesetting.enable = true;
