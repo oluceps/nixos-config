@@ -9,11 +9,13 @@
     wireless.iwd.enable = true;
     useNetworkd = true;
     useDHCP = false;
-    firewall.enable = true;
+    firewall = {
+      enable = true;
+      trustedInterfaces = [ "virbr0" ];
+    };
     nftables.enable = false;
-    # Configure network proxy if necessary
-    # proxy.default = "http://127.0.0.1:7890";
     networkmanager.enable = false;
+
 
     wireguard.interfaces = {
       wg0 = {
@@ -22,18 +24,18 @@
         privateKeyFile = config.rekey.secrets.wg.path;
         peers = [
           {
-            #             Public key of the server (not a file path).
+            # Public key of the server (not a file path).
             publicKey = "bmXOC+F1FxEMF9dyiK2H5/1SUtzH0JuVo51h2wPfgyo=";
 
-            #          Forward all the traffic via VPN.
+            # Forward all the traffic via VPN.
             allowedIPs = [ "172.16.0.0/24" ];
-            #           Or forward only particular subnets
-            #           allowedIPs = [ "10.100.0.1" "91.108.12.0/22" ];
+            # Or forward only particular subnets
+            # allowedIPs = [ "10.100.0.1" "91.108.12.0/22" ];
 
-            #            Set this to the server IP and port.
+            # Set this to the server IP and port.
             endpoint = "162.159.192.8:2408"; # ToDo: route to endpoint not automatically configured https://wiki.archlinux.org/index.php/WireGuardLoop_routing https://discourse.nixos.org/t/solved-minimal-firewall-setup-for-wireguard-client/7577
 
-            #             Send keepalives every 25 seconds. Important to keep NAT tables alive.
+            # Send keepalives every 25 seconds. Important to keep NAT tables alive.
             persistentKeepalive = 25;
           }
         ];

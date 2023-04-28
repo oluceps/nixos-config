@@ -440,7 +440,7 @@
     };
     mako = {
       enable = true;
-      backgroundColor = "#1E1D2F3b";
+      backgroundColor = "#1E1D2Fa6";
       borderSize = 0;
       borderColor = "#96CDFB3b";
       maxVisible = 2;
