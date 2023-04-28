@@ -27,7 +27,7 @@ let
     fs = [ gparted e2fsprogs fscrypt-experimental f2fs-tools compsize ];
 
     cmd = lib.flatten [
-      (ragenix.override { plugins = [ age-plugin-yubikey ]; })
+      # (ragenix.override { plugins = [ age-plugin-yubikey ]; })
       helix
       srm
 
