@@ -69,7 +69,7 @@
         SystemMaxUse=1G
       '';
     sundial = {
-      enable = true;
+      enable = false;
       calendars = [ "Sun,Mon-Thu 23:18:00" "Fri,Sat 23:48:00" ];
       warnAt = [ "Sun,Mon-Thu 23:16:00" "Fri,Sat 23:46:00" ];
     };
