@@ -44,6 +44,8 @@
       libsForQt5.qtwayland
       openapi-generator-cli
 
+      gimp
+
 
       veracrypt
       openpgp-card-tools
@@ -431,6 +433,7 @@
   services = {
     swayidle = {
       enable = true;
+      systemdTarget = "hyprland-session.target";
       timeouts = [
         { timeout = 900; command = "${pkgs.swaylock}/bin/swaylock"; }
       ];
