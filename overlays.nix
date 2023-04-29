@@ -150,7 +150,7 @@
         status=$?
         if [ $status != 0 ]
         then
-          ${prev.wf-recorder}/bin/wf-recorder -g "$(${prev.slurp}/bin/slurp)" -f $HOME/Videos/record/$(date +'recording_%Y-%m-%d-%H%M%S.mp4');
+          ${prev.wf-recorder}/bin/wf-recorder -g "$(${prev.slurp}/bin/slurp)" -f $HOME/Videos/record/$(date +'recording_%Y-%m-%d-%H%M%S.mp4') --pixel-format yuv420p;
         else
           ${prev.procps}/bin/pkill --signal SIGINT wf-recorder
         fi;
