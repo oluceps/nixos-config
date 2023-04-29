@@ -187,8 +187,8 @@
   home.pointerCursor = {
     gtk.enable = true;
     x11.enable = true;
-    package = pkgs.Graphite-cursors;
-    name = "Graphite-light-nord";
+    package = pkgs.graphite-cursors;
+    name = "graphite-light-nord";
     size = 22;
   };
 
