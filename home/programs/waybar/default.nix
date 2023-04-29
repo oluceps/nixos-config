@@ -85,7 +85,7 @@
           };
           network = {
             interval = 1;
-            interface = "lo";
+            interface = "wan";
             format = "{bandwidthDownOctets}";
             max-length = 10;
             min-length = 8;

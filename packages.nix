@@ -30,6 +30,7 @@ let
       # (ragenix.override { plugins = [ age-plugin-yubikey ]; })
       helix
       srm
+      onagre
 
       # common
       [ killall hexyl jq fx bottom lsd fd choose duf tokei procs exa lsof tree bat ]
