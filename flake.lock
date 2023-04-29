@@ -2011,6 +2011,22 @@
         "type": "github"
       }
     },
+    "nixpkgs-master_2": {
+      "locked": {
+        "lastModified": 1682699453,
+        "narHash": "sha256-omehp/vHKKHtV1n3fz/MEz7WkOxZELOIFIU7KZXUApE=",
+        "owner": "NixOS",
+        "repo": "nixpkgs",
+        "rev": "a9a78172682c0c991c73d88e6f77771731f7086d",
+        "type": "github"
+      },
+      "original": {
+        "owner": "NixOS",
+        "ref": "master",
+        "repo": "nixpkgs",
+        "type": "github"
+      }
+    },
     "nixpkgs-stable": {
       "locked": {
         "lastModified": 1678872516,
@@ -2936,6 +2952,7 @@
         "nixpkgs": "nixpkgs_23",
         "nixpkgs-22": "nixpkgs-22",
         "nixpkgs-gui": "nixpkgs-gui",
+        "nixpkgs-master": "nixpkgs-master_2",
         "nur": "nur_3",
         "nur-pkgs": "nur-pkgs",
         "nvfetcher": "nvfetcher_3",
