@@ -129,7 +129,17 @@
               deactivated = "";
             };
             tooltip = false;
-            on-click = "swaylock";
+            on-click = ''
+              swaylock \
+              --clock \
+              --indicator \
+              --indicator-radius 100 \
+              --ring-color FEDFE1 \
+              --line-color 00000000 \
+              --inside-color 563F2E3b \
+              --separator-color 00000000 \
+              --text-color FEDFE1
+            '';
           };
 
         };
