@@ -19,6 +19,11 @@
           {
             inherit system;
           }).hyprland;
+      tdesktop =
+        (import inputs.nixpkgs-master
+          {
+            inherit system;
+          }).tdesktop;
       # inputs.hyprland.packages.${system}.default;
 
 
