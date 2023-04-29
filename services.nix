@@ -139,7 +139,7 @@
           false;
       };
 
-    sing-box.enable = false;
+    sing-box.enable = true;
     rathole.enable = true;
 
     dae = {
@@ -185,9 +185,9 @@
       llmnr = "false";
       extraConfig = ''
         DNS=223.6.6.6
-        MulticastDNS=true
-        DNSOverTLS=false
-        DNSStubListener=false
+        MulticastDNS=yes
+        DNSOverTLS=no
+        DNSStubListener=no
       '';
     };
   };
