@@ -1,5 +1,6 @@
 { pkgs
 , user
+, data
 , ...
 }: {
   security.doas = {
@@ -10,15 +11,11 @@
   users = {
     mutableUsers = pkgs.lib.mkForce false;
     users.root = {
-      initialHashedPassword = pkgs.lib.mkForce
-        "$6$Sa0gWbsXht6Uhr1M$ZwC76OJYx6fdLEjmo4xC4R7PEqY7DU1SN1cIYabZpQETV3npJ6cAoMjByPVQRqrOeHBjYre1ROMim4LgyQZ731";
-      openssh.authorizedKeys.keys = [
-        "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIEv3S53gBU3Hqvr5o5g+yrn1B7eiaE5Y/OIFlTwU+NEG"
-      ];
+      initialHashedPassword = pkgs.lib.mkForce data.keys.hashedPasswd;
+      openssh.authorizedKeys.keys = [ data.keys.sshPubKey ];
     };
     users.${user} = {
-      initialHashedPassword = pkgs.lib.mkDefault
-        "$6$Sa0gWbsXht6Uhr1M$ZwC76OJYx6fdLEjmo4xC4R7PEqY7DU1SN1cIYabZpQETV3npJ6cAoMjByPVQRqrOeHBjYre1ROMim4LgyQZ731";
+      initialHashedPassword = pkgs.lib.mkDefault data.keys.hashedPasswd;
       isNormalUser = true;
       uid = 1000;
       extraGroups = [
@@ -31,9 +28,7 @@
       ];
       shell = pkgs.bash;
 
-      openssh.authorizedKeys.keys = [
-        "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIEv3S53gBU3Hqvr5o5g+yrn1B7eiaE5Y/OIFlTwU+NEG"
-      ];
+      openssh.authorizedKeys.keys = [ data.keys.sshPubKey ];
     };
     users.root.shell = pkgs.bash;
 
