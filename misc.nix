@@ -6,6 +6,7 @@
 , pkgs
 , lib
 , user
+, data
 , ...
 }: {
   systemd.tmpfiles.rules = [
@@ -14,7 +15,7 @@
 
 
   rekey = {
-    extraEncryptionPubkeys = [ "age1jr2x2m85wtte9p0s7d833e0ug8xf3cf8a33l9kjprc9vlxmvjycq05p2qq" ];
+    extraEncryptionPubkeys = [ data.keys.ageKey ];
     masterIdentities = [ ./secrets/age-ybk-7d5d.pub ];
 
     secrets =
