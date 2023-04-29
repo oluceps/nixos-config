@@ -41,7 +41,6 @@
       isSystemUser = true;
       group = "nogroup";
     };
-    # groups."riro" = { };
   };
   security.sudo = {
     enable = false;

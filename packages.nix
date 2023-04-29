@@ -10,6 +10,8 @@ let
       yarn
       go
       nix-tree
+      kotlin
+      jre17_minimal
     ];
 
     web = [ hugo ];
