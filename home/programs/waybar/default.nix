@@ -18,7 +18,7 @@
           modules-left = [ "wlr/workspaces" ];
           #
           # "sway/mode"
-          modules-center = [ "clock" ];
+          modules-center = [ "idle_inhibitor" "clock" ];
           modules-right = let base = [ "network" "temperature" "cpu" "memory" "pulseaudio" ]; in
             if user == "riro" then
             # [ "tray" ] ++
@@ -124,10 +124,12 @@
           idle_inhibitor = {
             format = "{icon}";
             format-icons = {
-              activated = "";
-              deactivated = "";
+              #
+              activated = "";
+              deactivated = "";
             };
             tooltip = false;
+            on-click = "swaylock";
           };
 
         };
