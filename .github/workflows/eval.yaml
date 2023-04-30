@@ -1,12 +1,4 @@
-name: eval
-on: 
-  push:
-    branches: "*"
-  pull_request:
-    branches: "*"
-
 jobs:
-
   check:
     name: format check
     runs-on: ubuntu-latest
@@ -18,15 +10,12 @@ jobs:
         uses: cachix/install-nix-action@v19
 
       - name: flake check
-        shell: bash
         run: |
           nix flake check
+        shell: bash
   eval:
     name: eval nixosConfiguration
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        hosts: [ hastur, kaambl, livecd ]
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -35,8 +24,17 @@ jobs:
         uses: cachix/install-nix-action@v19
 
       - name: eval
-        shell: bash
         run: |
           nix eval --raw .#nixosConfigurations.${{ matrix.hosts }}.config.system.build.toplevel
+        shell: bash
+    strategy:
+      matrix:
+        hosts: [ hastur, kaambl, livecd ]
+name: eval
+on: 
+  pull_request:
+    branches: ["*"]
+  push:
+    branches: ["main"]
           
 
