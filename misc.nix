@@ -16,7 +16,7 @@
 
   rekey = {
     extraEncryptionPubkeys = [ data.keys.ageKey ];
-    masterIdentities = [ ./secrets/age-yubikey-identity-7d5d5540.txt ];
+    masterIdentities = [ ./secrets/age-yubikey-identity-7d5d5540.txt.pub ];
 
     secrets =
       let
