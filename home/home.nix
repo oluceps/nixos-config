@@ -232,26 +232,7 @@
         };
       };
     };
-    swaylock.settings = {
-      show-failed-attempts = true;
-      daemonize = true;
-      image =
-        let
-          img = pkgs.fetchurl {
-            url = "https://maxwell.ydns.eu/git/rnhmjoj/nix-slim/raw/branch/master/background.png";
-            name = "img.jpg";
-            hash = "sha256-kqvVGHOaD7shJrvYfhLDvDs62r20wi8Sajth16Spsrk=";
-          };
-          img-blurred = pkgs.runCommand "img.jpg"
-            {
-              nativeBuildInputs = with pkgs;[ imagemagick ];
-            } "
-           convert -blur 14x5 ${img} $out
-           ";
-        in
-        "${img-blurred}";
-      scaling = "fill";
-    };
+
     zsh = {
       enable = true;
       shellAliases = {

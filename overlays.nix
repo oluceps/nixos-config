@@ -45,14 +45,16 @@
       #     allowUnfree = true;
       #   };
       #   }).linuxPackages_latest;
-      swaylock = prev.swaylock.overrideAttrs (old: {
-        src = prev.fetchFromGitHub {
-          owner = "mortie";
-          repo = "swaylock-effects";
-          rev = "v1.6-4";
-          sha256 = "sha256-nYA8W7iabaepiIsxDrCkG/WIFNrVdubk/AtFhIvYJB8=";
-        };
-      });
+
+      # BUGGY
+      # swaylock = prev.swaylock.overrideAttrs (old: {
+      #   src = prev.fetchFromGitHub {
+      #     owner = "mortie";
+      #     repo = "swaylock-effects";
+      #     rev = "v1.6-4";
+      #     sha256 = "sha256-nYA8W7iabaepiIsxDrCkG/WIFNrVdubk/AtFhIvYJB8=";
+      #   };
+      # });
 
       picom = prev.picom.overrideAttrs (old: {
         src = prev.fetchFromGitHub {
