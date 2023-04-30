@@ -14,11 +14,11 @@
         mainBar = {
           layer = "top";
           position = "top";
-          height = 22;
+          height = 27;
           modules-left = [ "wlr/workspaces" ];
           #
           # "sway/mode"
-          modules-center = [ "idle_inhibitor" "clock" ];
+          modules-center = [ "clock" ];
           modules-right = let base = [ "network" "temperature" "cpu" "memory" "pulseaudio" ]; in
             if user == "riro" then
             # [ "tray" ] ++
@@ -56,6 +56,7 @@
             timezone = "Asia/Shanghai";
             format-alt = "{:%a %d %b}";
             format-alt-click = "click-right";
+            on-click = "swaylock";
             tooltip = false;
           };
           battery = {
@@ -121,27 +122,6 @@
             on-scroll-down = "light -A 1";
             on-scroll-up = "light -U 1";
           };
-          idle_inhibitor = {
-            format = "{icon}";
-            format-icons = {
-              #
-              activated = "";
-              deactivated = "";
-            };
-            tooltip = false;
-            on-click = ''
-              swaylock \
-              --clock \
-              --indicator \
-              --indicator-radius 100 \
-              --ring-color FEDFE1 \
-              --line-color 00000000 \
-              --inside-color 563F2E3b \
-              --separator-color 00000000 \
-              --text-color FEDFE1
-            '';
-          };
-
         };
       };
     };

@@ -1,5 +1,5 @@
 { pkgs, ... }: {
-  swaylock.settings = {
+  programs.swaylock.settings = {
     show-failed-attempts = true;
     daemonize = true;
     image =
