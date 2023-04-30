@@ -16,7 +16,7 @@
 
   rekey = {
     extraEncryptionPubkeys = [ data.keys.ageKey ];
-    masterIdentities = [ ./secrets/age-ybk-7d5d.pub ];
+    masterIdentities = [ ./secrets/age-yubikey-identity-7d5d5540.txt ];
 
     secrets =
       let
@@ -196,6 +196,7 @@
     gnupg = {
       agent = {
         enable = true;
+        pinentryFlavor = "curses";
         enableSSHSupport = true;
       };
     };
