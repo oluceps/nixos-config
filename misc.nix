@@ -193,9 +193,11 @@
       dedicatedServer.openFirewall = true; # Open ports in the firewall for Source Dedicated Server
     };
 
-    gnupg.agent = {
-      enable = false;
-      enableSSHSupport = true;
+    gnupg = {
+      agent = {
+        enable = true;
+        enableSSHSupport = true;
+      };
     };
 
   };
