@@ -72,6 +72,6 @@ in
           modules =
             (import ./${hostname})
               ++ (import ./${hostname}/additions.nix
-              { inherit inputs user pkgs data; });
+              { inherit inputs user pkgs data lib; });
         });
 }
