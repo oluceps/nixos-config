@@ -91,7 +91,6 @@ bind=,Print,exec,$ssselection
 bind=SUPERCTRL,R,exec,screen-recorder-toggle
 bind=SUPERCTRL,S,exec,save-clipboard-to
 bind=ALT,Print,exec,$ssall
-bind=SUPERSHIFTALT,R,exec,$ssall
 # move focus
 bind=SUPER,H,movefocus,l
 bind=SUPER,L,movefocus,r
