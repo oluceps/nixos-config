@@ -41,12 +41,6 @@
     };
 
     shellInit = ''
-
-      # need to declare here, since something buggy.
-      # for foot `jump between prompt` service
-      function mark_prompt_start --on-event fish_prompt
-          echo -en "\e]133;A\e\\"
-      end
       set -g direnv_fish_mode eval_on_arrow
       set fish_color_normal normal
       set fish_color_command blue
@@ -76,15 +70,15 @@
       set fish_pager_color_selected_background --reverse
       update_cwd_osc
     '';
+    interactiveShellInit = ''
+      # Need to declare here, since something buggy.
+      # For foot `jump between prompt` function
+      function mark_prompt_start --on-event fish_prompt
+          echo -en "\e]133;A\e\\"
+      end
+    '';
     functions = {
       fish_greeting = "";
-      # mark_prompt_start =
-      #   {
-      #     body = ''
-      #       echo -en "\e]133;A\e\\"
-      #     '';
-      #     onEvent = "fish_prompt";
-      #   };
       update_cwd_osc = {
         body = ''
           if status --is-command-substitution || set -q INSIDE_EMACS
