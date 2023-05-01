@@ -1,6 +1,7 @@
 { pkgs
 , user
 , data
+, lib
 , ...
 }: {
   security.doas = {
@@ -9,13 +10,13 @@
   };
 
   users = {
-    mutableUsers = pkgs.lib.mkForce false;
+    mutableUsers = lib.mkForce false;
     users.root = {
-      initialHashedPassword = pkgs.lib.mkForce data.keys.hashedPasswd;
+      initialHashedPassword = lib.mkForce data.keys.hashedPasswd;
       openssh.authorizedKeys.keys = [ data.keys.sshPubKey ];
     };
     users.${user} = {
-      initialHashedPassword = pkgs.lib.mkDefault data.keys.hashedPasswd;
+      initialHashedPassword = lib.mkDefault data.keys.hashedPasswd;
       isNormalUser = true;
       uid = 1000;
       extraGroups = [
@@ -38,7 +39,7 @@
     };
   };
   security.sudo = {
-    enable = false;
+    enable = lib.mkForce false;
     extraRules = [
       {
         users = [ "${user}" ];
