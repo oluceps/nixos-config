@@ -34,6 +34,7 @@
   home.packages = with pkgs;
 
     [
+      mpv
       hyfetch
       qq
       microsoft-edge
