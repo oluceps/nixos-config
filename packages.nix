@@ -33,6 +33,7 @@ let
       helix
       srm
       onagre
+      libsixel
 
       # common
       [ killall hexyl jq fx bottom lsd fd choose duf tokei procs exa lsof tree bat ]
