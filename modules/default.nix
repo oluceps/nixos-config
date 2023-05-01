@@ -12,6 +12,6 @@
 (map (import ./hysteria) [
   "hyst-az"
   "hyst-do"
-  "hyst-am"
+  # "hyst-am"
 ])
 ++ [ (import ./sing-box { }) ]

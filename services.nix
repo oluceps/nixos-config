@@ -126,7 +126,6 @@
 
     hyst-az.enable = true;
     hyst-do.enable = true;
-    hyst-am.enable = true;
 
     # ss-tls cnt to router
     ss.enable = false;
