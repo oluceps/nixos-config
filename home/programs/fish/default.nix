@@ -16,24 +16,8 @@
           sha256 = "4cbR7pqbLc8RRwlP+bUDt53C6J7KtMEJtfxzSpO0Myw=";
         };
       }
-
-
-      #        {
-      #          name = "grc";
-      #          src = pkgs.fishPlugins.grc.src;
-      #        }
-      #        {
-      #          name = "done";
-      #          src = pkgs.fishPlugins.done.src;
-      #        }
     ];
-    #    loginShellInit =
-    #      ''
-    #        if test (id --user $USER) -ge 1000 && test (tty) = "/dev/tty1"
-    #          exec Hyprland
-    #        end
-    #
-    #      '';
+
 
     shellAliases = {
       nd = "cd /etc/nixos";
@@ -43,8 +27,8 @@
       daso = "doas";
       daos = "doas";
       off = "poweroff";
-      roll = "xrandr -o left && feh --bg-scale /home/riro/Pictures/Wallpapers/95448248_p0.png && sleep 0.5; picom --experimental-backend -b";
-      rolln = "xrandr -o normal && feh --bg-scale /home/riro/Pictures/Wallpapers/秋の旅.jpg && sleep 0.5;  picom --experimental-backend -b";
+      roll = "xrandr -o left && feh --bg-scale /home/${user}/Pictures/Wallpapers/95448248_p0.png && sleep 0.5; picom --experimental-backend -b";
+      rolln = "xrandr -o normal && feh --bg-scale /home/${user}/Pictures/Wallpapers/秋の旅.jpg && sleep 0.5;  picom --experimental-backend -b";
       kls = "lsd --icon never";
       lks = "lsd --icon never";
       sl = "lsd --icon never";
@@ -55,10 +39,14 @@
       "cd.." = "cd ..";
       up = "nix flake update --commit-lock-file /etc/nixos && doas nixos-rebuild switch --verbose --flake /etc/nixos";
     };
+
     shellInit = ''
-      ${pkgs.starship}/bin/starship init fish | source
-      direnv hook fish | source
-      fish_vi_key_bindings
+
+      # need to declare here, since something buggy.
+      # for foot `jump between prompt` service
+      function mark_prompt_start --on-event fish_prompt
+          echo -en "\e]133;A\e\\"
+      end
       set -g direnv_fish_mode eval_on_arrow
       set fish_color_normal normal
       set fish_color_command blue
@@ -86,16 +74,28 @@
       set fish_pager_color_completion normal
       set fish_pager_color_description B3A06D --italics
       set fish_pager_color_selected_background --reverse
+      update_cwd_osc
     '';
     functions = {
       fish_greeting = "";
-      fish_prompt = ''
-         set -l nix_shell_info (
-          if test -n "$IN_NIX_SHELL"
-            echo -n "<nix-shell> "
-         end
-        )
-      '';
+      # mark_prompt_start =
+      #   {
+      #     body = ''
+      #       echo -en "\e]133;A\e\\"
+      #     '';
+      #     onEvent = "fish_prompt";
+      #   };
+      update_cwd_osc = {
+        body = ''
+          if status --is-command-substitution || set -q INSIDE_EMACS
+              return
+          end
+          printf \e\]7\;file://%s%s\e\\ $hostname (string escape --style=url $PWD)
+        '';
+        onVariable = "PWD";
+        description = "Notify terminals when $PWD changes";
+      };
+
       extract = ''
         set --local ext (echo $argv[1] | awk -F. '{print $NF}')
         switch $ext
