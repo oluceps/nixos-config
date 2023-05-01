@@ -1,26 +1,17 @@
 { inputs, _pkgs }:
 let
   lib = inputs.nixpkgs.lib;
-  nixosSystem = lib.nixosSystem;
 
   # I don't like this
-  m = i: inputs.${i}.nixosModules;
-  genModules = map (i: (m i).default or (m i).${i});
+  genModules = map (let m = i: inputs.${i}.nixosModules; in (i: (m i).default or (m i).${i}));
 
-  sharedModules = pkgs:
-    [
-      ../misc.nix
-      ../users.nix
-      ../packages.nix
-      ../sysvars.nix
-      ../services.nix
-      {
-        environment.systemPackages =
-          (with pkgs;[ (fenix.complete.withComponents [ "cargo" "clippy" "rust-src" "rustc" "rustfmt" ]) ]);
-      }
-    ] ++
-    (genModules [ "agenix-rekey" "ragenix" "home-manager" "impermanence" "lanzaboote" ])
-    ++ (import ../modules);
+  sharedModules = [
+    ../misc.nix
+    ../users.nix
+    ../packages.nix
+    ../sysvars.nix
+    ../services.nix
+  ] ++ (genModules [ "agenix-rekey" "ragenix" "home-manager" "impermanence" "lanzaboote" ]) ++ (import ../modules);
 
   data = {
     keys = {
@@ -32,13 +23,16 @@ let
     };
   };
 
+  fund = { inherit inputs lib data; };
+
+  nixosSystem = lib.nixosSystem;
+
   genSysAttr = { system, user, hostname }:
     rec {
       inherit system;
       pkgs = _pkgs.${system};
-      specialArgs = { inherit inputs system user lib data; };
-      modules = (import ./${hostname})
-        ++ sharedModules pkgs;
+      specialArgs = fund // { inherit system user; };
+      modules = (import ./${hostname}) ++ sharedModules;
     };
 
   genGeneralSys = a:
@@ -72,6 +66,6 @@ in
           modules =
             (import ./${hostname})
               ++ (import ./${hostname}/additions.nix
-              { inherit inputs user pkgs data lib; });
+              (fund // { inherit user pkgs; }));
         });
 }

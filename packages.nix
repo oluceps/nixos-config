@@ -12,7 +12,7 @@ let
       nix-tree
       kotlin
       jre17_minimal
-    ];
+    ] ++ [ (fenix.complete.withComponents [ "cargo" "clippy" "rust-src" "rustc" "rustfmt" ]) ];
 
     web = [ hugo ];
 
