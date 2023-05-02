@@ -93,6 +93,8 @@
       "net.ipv4.tcp_tw_reuse" = 1;
       "net.ipv4.tcp_no_metrics_save" = 1;
       "net.ipv4.tcp_sack" = 1;
+
+      "net.ipv4.tcp_slow_start_after_idle" = 0;
       # "vm.overcommit_memory" = 1;
       "vm.swappiness" = 95;
       "vm.max_map_count" = 2147483642;
