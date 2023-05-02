@@ -89,7 +89,7 @@
   virtualisation = {
     docker.enable = true;
     libvirtd = {
-      enable = true;
+      enable = false;
       qemu = {
         ovmf = {
           enable = true;
@@ -195,7 +195,7 @@
 
     gnupg = {
       agent = {
-        enable = true;
+        enable = false;
         pinentryFlavor = "curses";
         enableSSHSupport = true;
       };

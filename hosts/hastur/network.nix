@@ -13,7 +13,7 @@
       enable = true;
       trustedInterfaces = [ "virbr0" ];
     };
-    nftables.enable = false;
+    nftables.enable = true;
     networkmanager.enable = false;
 
 
