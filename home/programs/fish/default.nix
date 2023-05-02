@@ -78,7 +78,7 @@
       end
     '';
     functions = {
-      fish_greeting = "";
+      fish_greeting = "set_color yellow; date +%T; set_color normal";
       update_cwd_osc = {
         body = ''
           if status --is-command-substitution || set -q INSIDE_EMACS
