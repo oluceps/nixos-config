@@ -195,6 +195,7 @@
     ssh.startAgent = false;
     proxychains = {
       enable = true;
+      package = pkgs.proxychains-ng;
 
       chain = {
         type = "strict";

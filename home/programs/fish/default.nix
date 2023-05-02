@@ -1,22 +1,10 @@
-{ config
-, lib
-, pkgs
+{ pkgs
 , user
 , ...
 }: {
   programs.fish = {
     enable = true;
-    plugins = [
-      {
-        name = "babelfish";
-        src = pkgs.fetchFromGitHub {
-          owner = "bouk";
-          repo = "babelfish";
-          rev = "348cc55ff299bcdce307c4edc4a17e5747c07ff4";
-          sha256 = "4cbR7pqbLc8RRwlP+bUDt53C6J7KtMEJtfxzSpO0Myw=";
-        };
-      }
-    ];
+    plugins = [ ];
 
 
     shellAliases = {
@@ -41,6 +29,7 @@
     };
 
     shellInit = ''
+      fish_vi_key_bindings
       set -g direnv_fish_mode eval_on_arrow
       set fish_color_normal normal
       set fish_color_command blue
