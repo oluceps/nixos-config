@@ -1,5 +1,25 @@
 { pkgs, ... }:
 {
+  systemd.user.services = {
+    foot = {
+      Unit = {
+        Description =
+          "Fast, lightweight and minimalistic Wayland terminal emulator.";
+        Documentation = "man:foot(1)";
+        PartOf = [ "graphical-session.target" ];
+        After = [ "graphical-session.target" ];
+      };
+
+      Service = {
+        ExecStart = "${pkgs.foot}/bin/foot --server";
+        Environment = "PATH=/run/current-system/sw/bin/";
+        Restart = "on-failure";
+        OOMPolicy = "continue";
+      };
+
+      Install = { WantedBy = [ "hyprland-session.target" ]; };
+    };
+  };
   programs.foot = {
     enable = true;
     server.enable = false;
