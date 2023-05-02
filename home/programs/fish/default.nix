@@ -1,5 +1,4 @@
-{ pkgs
-, user
+{ user
 , ...
 }: {
   programs.fish = {
@@ -67,7 +66,7 @@
       end
     '';
     functions = {
-      fish_greeting = "set_color yellow; date +%T; set_color normal";
+      fish_greeting = "set_color -o EEA9A9; date +%T; set_color normal";
       update_cwd_osc = {
         body = ''
           if status --is-command-substitution || set -q INSIDE_EMACS
