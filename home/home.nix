@@ -38,10 +38,10 @@
       mpv
       hyfetch
       qq
-      microsoft-edge
+      # microsoft-edge
       dosbox-staging
       meld
-      yubioath-flutter
+      # yubioath-flutter
       libsForQt5.qtbase
       libsForQt5.qtwayland
       openapi-generator-cli
@@ -56,7 +56,7 @@
       # davinci-resolve
       cava
 
-      wpsoffice-cn
+      # wpsoffice-cn
 
       sbctl
       qbittorrent
@@ -176,7 +176,7 @@
       vlc
       bluedevil
       julia-bin
-      prismlauncher
+      # prismlauncher
     ]
     ++
     (with nur.repos; [
