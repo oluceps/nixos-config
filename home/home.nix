@@ -34,6 +34,7 @@
   home.packages = with pkgs;
 
     [
+      fluffychat
       mpv
       hyfetch
       qq
@@ -211,8 +212,7 @@
         gpg = {
           format = "ssh";
           ssh.defaultKeyCommand = "ssh-add -L";
-          ssh.allowedSignersFile = toString (pkgs.writeText "allowed_signers" ''
-          '');
+          ssh.allowedSignersFile = toString (pkgs.writeText "allowed_signers" "");
         };
         merge.conflictStyle = "diff3";
         merge.tool = "vimdiff";

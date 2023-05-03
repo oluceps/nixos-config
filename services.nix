@@ -184,9 +184,7 @@
       llmnr = "false";
       extraConfig = ''
         DNS=223.6.6.6
-        MulticastDNS=yes
         DNSOverTLS=no
-        DNSStubListener=no
       '';
     };
   };

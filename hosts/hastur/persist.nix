@@ -37,6 +37,7 @@
         ".FeelUOwn"
         ".config/fcitx5"
         ".config/lazygit"
+        ".config/btop"
         { directory = ".gnupg"; mode = "0700"; }
         { directory = ".ssh"; mode = "0700"; }
       ];
