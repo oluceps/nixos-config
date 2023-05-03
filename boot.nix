@@ -43,7 +43,7 @@
       "kernel.sysrq" = 1;
       # max read buffer
       # max write buffer
-      "fs.file-max" = 500000;
+      "fs.file-max" = 6553560;
       # default read buffer
       "net.core.rmem_default" = 65536;
       # default write buffer
