@@ -25,6 +25,7 @@
       g = "lazygit";
       "cd.." = "cd ..";
       up = "nix flake update --commit-lock-file /etc/nixos && doas nixos-rebuild switch --verbose --flake /etc/nixos";
+      rekey = "nix run .#rekey";
     };
 
     shellInit = ''
@@ -78,6 +79,12 @@
         description = "Notify terminals when $PWD changes";
       };
 
+      ekey = {
+        body = ''
+          nix run .#edit-secret $argv[1]
+        '';
+        description = "edit agenix-rekey secret";
+      };
       extract = ''
         set --local ext (echo $argv[1] | awk -F. '{print $NF}')
         switch $ext
