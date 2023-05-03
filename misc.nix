@@ -226,6 +226,7 @@
   };
 
   services = {
+    dbus.packages = [ pkgs.gcr ];
     xserver =
       {
         enable = lib.mkDefault false;
