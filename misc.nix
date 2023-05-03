@@ -129,18 +129,29 @@
 
         trusted-public-keys = [
           "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY="
+          "cache.ngi0.nixos.org-1:KqH5CBLNSyX184S9BKZJo1LxrxJ9ltnY2uAs5c/f1MA="
           "nur-pkgs.cachix.org-1:PAvPHVwmEBklQPwyNZfy4VQqQjzVIaFOkYYnmnKco78="
           "hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc="
           "helix.cachix.org-1:ejp9KQpR1FBI2onstMQ34yogDm4OgU2ru6lIwPvuCVs="
         ];
         substituters = [
           "https://cache.nixos.org"
+          # "https://cache.ngi0.nixos.org"
+          "https://app.cachix.org/cache/nix-community"
           "https://nur-pkgs.cachix.org"
           "https://hyprland.cachix.org"
           "https://helix.cachix.org"
         ];
         auto-optimise-store = true;
-        experimental-features = [ "nix-command" "flakes" "auto-allocate-uids" "cgroups" "repl-flake" "recursive-nix" ];
+        experimental-features = [
+          "nix-command"
+          "flakes"
+          "auto-allocate-uids"
+          "cgroups"
+          "repl-flake"
+          "recursive-nix"
+          # "ca-derivations"
+        ];
         auto-allocate-uids = true;
         use-cgroups = true;
 
