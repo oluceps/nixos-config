@@ -28,7 +28,7 @@
         font = "SF Mono:size=13:style=Medium";
         dpi-aware = "yes";
         term = "foot";
-        pad = "8x8";
+        pad = "8x12";
         shell = "${pkgs.fish}/bin/fish";
         login-shell = "no";
       };
