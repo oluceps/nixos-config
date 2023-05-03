@@ -40,7 +40,7 @@
     polymc.url = "github:PolyMC/PolyMC";
     prismlauncher = {
       url = "github:PrismLauncher/PrismLauncher";
-      inputs.nixpkgs.follows = "nixpkgs";
+      # inputs.nixpkgs.follows = "nixpkgs";
     };
     pywmpkg.url = "github:jbuchermn/pywm";
     home-manager.url = "github:nix-community/home-manager";
