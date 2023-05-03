@@ -58,7 +58,7 @@
           import inputs.nixpkgs {
             inherit system;
             config = {
-              # contentAddressedByDefault = true;
+              contentAddressedByDefault = true;
               allowUnfree = true;
               allowBroken = false;
               segger-jlink.acceptLicense = true;
