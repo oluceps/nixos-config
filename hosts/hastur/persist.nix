@@ -35,9 +35,7 @@
         ".rustup"
         ".mozilla"
         ".FeelUOwn"
-        ".config/fcitx5"
-        ".config/lazygit"
-        ".config/btop"
+        ".config"
         { directory = ".gnupg"; mode = "0700"; }
         { directory = ".ssh"; mode = "0700"; }
       ];
