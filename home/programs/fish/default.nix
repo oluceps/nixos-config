@@ -1,21 +1,14 @@
-{ user
-, ...
-}: {
+{ ... }: {
   programs.fish = {
     enable = true;
     plugins = [ ];
-
-
     shellAliases = {
       nd = "cd /etc/nixos";
-      swc = "doas nixos-rebuild switch --verbose";
-      swcs = "doas nixos-rebuild switch --verbose --max-jobs 1";
-      sduo = "sudo";
+      swc = "doas nixos-rebuild switch --flake /etc/nixos --verbose";
+      swcs = "doas nixos-rebuild switch --flake /etc/nixos --verbose --max-jobs 1";
       daso = "doas";
       daos = "doas";
       off = "poweroff";
-      roll = "xrandr -o left && feh --bg-scale /home/${user}/Pictures/Wallpapers/95448248_p0.png && sleep 0.5; picom --experimental-backend -b";
-      rolln = "xrandr -o normal && feh --bg-scale /home/${user}/Pictures/Wallpapers/秋の旅.jpg && sleep 0.5;  picom --experimental-backend -b";
       kls = "lsd --icon never";
       lks = "lsd --icon never";
       sl = "lsd --icon never";
@@ -24,7 +17,7 @@
       la = "lsd --icon never -la";
       g = "lazygit";
       "cd.." = "cd ..";
-      up = "nix flake update --commit-lock-file /etc/nixos && doas nixos-rebuild switch --verbose --flake /etc/nixos";
+      up = "nix flake update --commit-lock-file /etc/nixos && swc";
       rekey = "nix run .#rekey";
     };
 
