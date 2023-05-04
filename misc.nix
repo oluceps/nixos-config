@@ -162,7 +162,7 @@
 
   programs = {
     neovim = {
-      enable = true;
+      enable = false;
       configure = {
         customRC = ''set number'';
       };

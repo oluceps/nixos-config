@@ -121,7 +121,6 @@
       scrcpy
 
       alacritty
-      steam-run
       appimage-run
       lutris
       tofi
