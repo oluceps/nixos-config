@@ -62,28 +62,6 @@
       ;
     };
   };
-  security = {
-    pam = {
-      u2f = {
-        enable = true;
-        authFile = config.rekey.secrets.u2f.path;
-        control = "sufficient";
-        cue = true;
-      };
-
-      loginLimits = [
-        {
-          domain = "*";
-          type = "-";
-          item = "memlock";
-          value = "unlimited";
-        }
-      ];
-      services.swaylock = { };
-    };
-
-    polkit.enable = true;
-  };
 
   networking.firewall.trustedInterfaces = [ "virbr0" ];
   virtualisation = {
@@ -279,8 +257,33 @@
       };
     };
   };
-  # Enable sound.
-  security.rtkit.enable = true;
+
+  security = {
+
+    pam = {
+      u2f = {
+        enable = true;
+        authFile = config.rekey.secrets.u2f.path;
+        control = "sufficient";
+        cue = true;
+      };
+
+      loginLimits = [
+        {
+          domain = "*";
+          type = "-";
+          item = "memlock";
+          value = "unlimited";
+        }
+      ];
+      services.swaylock = { };
+    };
+
+    polkit.enable = true;
+
+    # Enable sound.
+    rtkit.enable = true;
+  };
 
   # $ nix search wget
   i18n = {
