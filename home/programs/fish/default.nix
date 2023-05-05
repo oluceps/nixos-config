@@ -78,6 +78,7 @@
         '';
         description = "edit agenix-rekey secret";
       };
+      dec = "rage -d -i ~/.ssh/age/priv.age $argv[1]";
       extract = ''
         set --local ext (echo $argv[1] | awk -F. '{print $NF}')
         switch $ext
