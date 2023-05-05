@@ -47,6 +47,7 @@
       openapi-generator-cli
 
       gimp
+      imv
 
 
       veracrypt

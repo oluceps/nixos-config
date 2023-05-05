@@ -25,7 +25,7 @@
         "Music"
         "tools"
         "Vault"
-        { directory = "Priv"; mode = "0700"; }
+        { directory = "Sec"; mode = "0700"; }
         ".npm-packages"
         ".npm"
         ".pip"
