@@ -182,6 +182,7 @@
     (with nur.repos; [
       linyinfeng.canokey-udev-rules
       YisuiMilena.hmcl-bin
+      xddxdd.dingtalk
     ]) ++
     (with nur-pkgs;[
       techmino
