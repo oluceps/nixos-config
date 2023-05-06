@@ -75,6 +75,13 @@
       #   };
       # });
 
+      fishPlugins.foreign-env = prev.fishPlugins.foreign-env.overrideAttrs
+        (old: {
+          preInstall = old.preInstall + (with prev; ''
+            sed -e "s|'env'|${coreutils}/bin/env|" -i functions/*
+          '');
+        });
+
       picom = prev.picom.overrideAttrs (old: {
         src = prev.fetchFromGitHub {
           owner = "yshui";
