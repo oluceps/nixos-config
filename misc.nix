@@ -6,6 +6,7 @@
 , pkgs
 , lib
 , user
+, data
 , ...
 }: {
   systemd.tmpfiles.rules = [
@@ -13,10 +14,9 @@
   ];
 
 
-  age.identityPaths = [ "/persist/keys/ssh_host_ed25519_key" ];
   rekey = {
-    extraEncryptionPubkeys = [ "age1jr2x2m85wtte9p0s7d833e0ug8xf3cf8a33l9kjprc9vlxmvjycq05p2qq" ];
-    masterIdentities = [ ./secrets/age-ybk-7d5d.pub ];
+    extraEncryptionPubkeys = [ data.keys.ageKey ];
+    masterIdentities = [ ./secrets/age-yubikey-identity-7d5d5540.txt.pub ];
 
     secrets =
       let
@@ -37,51 +37,37 @@
       defaultApplications = {
         "tg" = [ "telegramdesktop.desktop" ];
 
-        "x-scheme-handler/http" = "firefox.desktop";
-        "text/html" = "firefox.desktop";
-        "x-scheme-handler/https" = "firefox.desktop";
-        "x-scheme-handler/about" = "firefox.desktop";
-        "x-scheme-handler/unknown" = "firefox.desktop";
-
-        "pdf" = [ "sioyek.desktop" ];
+        "application/pdf" = [ "sioyek.desktop" ];
         "ppt/pptx" = [ "wps-office-wpp.desktop" ];
         "doc/docx" = [ "wps-office-wps.desktop" ];
         "xls/xlsx" = [ "wps-office-et.desktop" ];
-        "image/png" = [ "org.gnome.eog.desktop" ];
-        "image/jpeg" = [ "org.gnome.eog.desktop" ];
-        "image/webp" = [ "org.gnome.eog.desktop" ];
-        "image/gif" = [ "org.gnome.eog.desktop" ];
-      };
+      }
+      //
+      lib.genAttrs [
+        "x-scheme-handler/unknown"
+        "x-scheme-handler/about"
+        "x-scheme-handler/http"
+        "x-scheme-handler/https"
+        "text/html"
+      ]
+        (_: "firefox.desktop")
+      //
+      lib.genAttrs [
+        "image/gif"
+        "image/webp"
+        "image/png"
+        "image/jpeg"
+      ]
+        (_: "org.gnome.eog.desktop")
+      ;
     };
-  };
-  security = {
-    pam = {
-      u2f = {
-        enable = true;
-        authFile = config.rekey.secrets.u2f.path;
-        control = "sufficient";
-        cue = true;
-      };
-
-      loginLimits = [
-        {
-          domain = "*";
-          type = "-";
-          item = "memlock";
-          value = "unlimited";
-        }
-      ];
-      services.swaylock = { };
-    };
-
-    polkit.enable = true;
   };
 
   networking.firewall.trustedInterfaces = [ "virbr0" ];
   virtualisation = {
     docker.enable = true;
     libvirtd = {
-      enable = true;
+      enable = false;
       qemu = {
         ovmf = {
           enable = true;
@@ -121,18 +107,30 @@
 
         trusted-public-keys = [
           "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY="
+          "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
+          "cache.ngi0.nixos.org-1:KqH5CBLNSyX184S9BKZJo1LxrxJ9ltnY2uAs5c/f1MA="
           "nur-pkgs.cachix.org-1:PAvPHVwmEBklQPwyNZfy4VQqQjzVIaFOkYYnmnKco78="
           "hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc="
           "helix.cachix.org-1:ejp9KQpR1FBI2onstMQ34yogDm4OgU2ru6lIwPvuCVs="
         ];
         substituters = [
           "https://cache.nixos.org"
+          "https://nix-community.cachix.org"
+          "https://cache.ngi0.nixos.org"
           "https://nur-pkgs.cachix.org"
           "https://hyprland.cachix.org"
           "https://helix.cachix.org"
         ];
         auto-optimise-store = true;
-        experimental-features = [ "nix-command" "flakes" "auto-allocate-uids" "cgroups" "repl-flake" "recursive-nix" ];
+        experimental-features = [
+          "nix-command"
+          "flakes"
+          "auto-allocate-uids"
+          "cgroups"
+          "repl-flake"
+          "recursive-nix"
+          "ca-derivations"
+        ];
         auto-allocate-uids = true;
         use-cgroups = true;
 
@@ -155,14 +153,6 @@
       '';
     };
 
-  environment = {
-    # shellInit = ''
-    #   export GPG_TTY="$(tty)"
-    #   gpg-connect-agent /bye
-    #   export SSH_AUTH_SOCK="/run/user/$UID/gnupg/S.gpg-agent.ssh"
-    # '';
-    loginShellInit = "";
-  };
   # Set your time zone.
   time.timeZone = "Asia/Shanghai";
 
@@ -172,6 +162,12 @@
   };
 
   programs = {
+    neovim = {
+      enable = false;
+      configure = {
+        customRC = ''set number'';
+      };
+    };
     git.enable = true;
     fish.enable = true;
     sway.enable = true;
@@ -187,18 +183,16 @@
       dedicatedServer.openFirewall = true; # Open ports in the firewall for Source Dedicated Server
     };
 
-    gnupg.agent = {
-      enable = false;
-      enableSSHSupport = true;
+    gnupg = {
+      agent = {
+        enable = false;
+        pinentryFlavor = "curses";
+        enableSSHSupport = true;
+      };
     };
 
   };
-  #  programs.waybar.enable = true;
-  #
-  #  # Enable the GNOME Desktop Environment.
-  #  services.xserver.desktopManager.gnome.enable = false;
   hardware = {
-
     nvidia = {
       package = config.boot.kernelPackages.nvidiaPackages.stable;
       modesetting.enable = true;
@@ -211,6 +205,7 @@
   };
 
   services = {
+    dbus.packages = [ pkgs.gcr ];
     xserver =
       {
         enable = lib.mkDefault false;
@@ -263,8 +258,33 @@
       };
     };
   };
-  # Enable sound.
-  security.rtkit.enable = true;
+
+  security = {
+
+    pam = {
+      u2f = {
+        enable = true;
+        authFile = config.rekey.secrets.u2f.path;
+        control = "sufficient";
+        cue = true;
+      };
+
+      loginLimits = [
+        {
+          domain = "*";
+          type = "-";
+          item = "memlock";
+          value = "unlimited";
+        }
+      ];
+      services.swaylock = { };
+    };
+
+    polkit.enable = true;
+
+    # Enable sound.
+    rtkit.enable = true;
+  };
 
   # $ nix search wget
   i18n = {

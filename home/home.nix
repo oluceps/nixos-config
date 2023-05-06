@@ -34,15 +34,20 @@
   home.packages = with pkgs;
 
     [
+      fluffychat
+      mpv
       hyfetch
       qq
-      microsoft-edge
+      # microsoft-edge
       dosbox-staging
       meld
-      yubioath-flutter
+      # yubioath-flutter
       libsForQt5.qtbase
       libsForQt5.qtwayland
       openapi-generator-cli
+
+      gimp
+      imv
 
 
       veracrypt
@@ -52,7 +57,7 @@
       # davinci-resolve
       cava
 
-      wpsoffice-cn
+      # wpsoffice-cn
 
       sbctl
       qbittorrent
@@ -117,7 +122,6 @@
       scrcpy
 
       alacritty
-      steam-run
       appimage-run
       lutris
       tofi
@@ -172,12 +176,13 @@
       vlc
       bluedevil
       julia-bin
-      prismlauncher
+      # prismlauncher
     ]
     ++
     (with nur.repos; [
       linyinfeng.canokey-udev-rules
       YisuiMilena.hmcl-bin
+      xddxdd.dingtalk
     ]) ++
     (with nur-pkgs;[
       techmino
@@ -185,8 +190,8 @@
   home.pointerCursor = {
     gtk.enable = true;
     x11.enable = true;
-    package = pkgs.Graphite-cursors;
-    name = "Graphite-light-nord";
+    package = pkgs.graphite-cursors;
+    name = "graphite-light-nord";
     size = 22;
   };
 
@@ -208,8 +213,7 @@
         gpg = {
           format = "ssh";
           ssh.defaultKeyCommand = "ssh-add -L";
-          ssh.allowedSignersFile = toString (pkgs.writeText "allowed_signers" ''
-          '');
+          ssh.allowedSignersFile = toString (pkgs.writeText "allowed_signers" "");
         };
         merge.conflictStyle = "diff3";
         merge.tool = "vimdiff";
@@ -230,26 +234,7 @@
         };
       };
     };
-    swaylock.settings = {
-      show-failed-attempts = true;
-      daemonize = true;
-      image =
-        let
-          img = pkgs.fetchurl {
-            url = "https://maxwell.ydns.eu/git/rnhmjoj/nix-slim/raw/branch/master/background.png";
-            name = "img.jpg";
-            hash = "sha256-kqvVGHOaD7shJrvYfhLDvDs62r20wi8Sajth16Spsrk=";
-          };
-          img-blurred = pkgs.runCommand "img.jpg"
-            {
-              nativeBuildInputs = with pkgs;[ imagemagick ];
-            } "
-           convert -blur 14x5 ${img} $out
-           ";
-        in
-        "${img-blurred}";
-      scaling = "fill";
-    };
+
     zsh = {
       enable = true;
       shellAliases = {
@@ -431,6 +416,7 @@
   services = {
     swayidle = {
       enable = true;
+      systemdTarget = "hyprland-session.target";
       timeouts = [
         { timeout = 900; command = "${pkgs.swaylock}/bin/swaylock"; }
       ];
@@ -440,7 +426,7 @@
     };
     mako = {
       enable = true;
-      backgroundColor = "#1E1D2F3b";
+      backgroundColor = "#1E1D2Fa6";
       borderSize = 0;
       borderColor = "#96CDFB3b";
       maxVisible = 2;

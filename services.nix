@@ -69,7 +69,7 @@
         SystemMaxUse=1G
       '';
     sundial = {
-      enable = true;
+      enable = false;
       calendars = [ "Sun,Mon-Thu 23:18:00" "Fri,Sat 23:48:00" ];
       warnAt = [ "Sun,Mon-Thu 23:16:00" "Fri,Sat 23:46:00" ];
     };
@@ -126,7 +126,6 @@
 
     hyst-az.enable = true;
     hyst-do.enable = true;
-    hyst-am.enable = true;
 
     # ss-tls cnt to router
     ss.enable = false;
@@ -139,7 +138,7 @@
           false;
       };
 
-    sing-box.enable = false;
+    sing-box.enable = true;
     rathole.enable = true;
 
     dae = {
@@ -149,7 +148,7 @@
 
     btrfs.autoScrub = {
       enable = true;
-      interval = "monthly";
+      interval = "weekly";
       fileSystems = [ "/persist" "/nix" ];
     };
     pcscd.enable = true;
@@ -185,9 +184,7 @@
       llmnr = "false";
       extraConfig = ''
         DNS=223.6.6.6
-        MulticastDNS=true
-        DNSOverTLS=false
-        DNSStubListener=false
+        DNSOverTLS=no
       '';
     };
   };
@@ -196,6 +193,7 @@
     ssh.startAgent = false;
     proxychains = {
       enable = true;
+      package = pkgs.proxychains-ng;
 
       chain = {
         type = "strict";

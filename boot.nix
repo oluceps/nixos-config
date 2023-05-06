@@ -43,7 +43,7 @@
       "kernel.sysrq" = 1;
       # max read buffer
       # max write buffer
-      "fs.file-max" = 500000;
+      "fs.file-max" = 6553560;
       # default read buffer
       "net.core.rmem_default" = 65536;
       # default write buffer
@@ -93,6 +93,8 @@
       "net.ipv4.tcp_tw_reuse" = 1;
       "net.ipv4.tcp_no_metrics_save" = 1;
       "net.ipv4.tcp_sack" = 1;
+
+      "net.ipv4.tcp_slow_start_after_idle" = 0;
       # "vm.overcommit_memory" = 1;
       "vm.swappiness" = 95;
       "vm.max_map_count" = 2147483642;

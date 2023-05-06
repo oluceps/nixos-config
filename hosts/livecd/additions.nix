@@ -1,10 +1,10 @@
-{ inputs, user, pkgs }:
+{ inputs, user, pkgs, data, lib }:
 [
   (inputs.nixpkgs
   + "/nixos/modules/installer/cd-dvd/installation-cd-graphical-gnome.nix")
 ] ++ [
 
-  (import ../../users.nix { inherit user pkgs; })
+  (import ../../users.nix { inherit user pkgs data lib; })
   {
 
 

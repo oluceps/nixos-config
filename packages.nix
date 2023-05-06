@@ -10,11 +10,13 @@ let
       yarn
       go
       nix-tree
-    ];
+      kotlin
+      jre17_minimal
+    ] ++ [ (fenix.complete.withComponents [ "cargo" "clippy" "rust-src" "rustc" "rustfmt" ]) ];
 
     web = [ hugo ];
 
-    crypt = [ rage age-plugin-yubikey yubikey-manager yubikey-manager-qt ];
+    crypt = [ rage age-plugin-yubikey yubikey-manager yubikey-manager-qt gnupg ];
 
     net = lib.flatten [
       # anti-censor
@@ -23,13 +25,19 @@ let
       [ iperf3 i2p ethtool dnsutils autossh tcpdump netcat dog wget mtr-gui socat miniserve mtr wakelan netcat-gnu q nali lynx nethogs restic w3m whois dig wireguard-tools curl ngrep gping ]
     ];
 
-    virt = [ virt-manager virtiofsd windows-run ];
+    virt = [
+      # virt-manager
+      virtiofsd
+      windows-run
+    ];
     fs = [ gparted e2fsprogs fscrypt-experimental f2fs-tools compsize ];
 
     cmd = lib.flatten [
-      (ragenix.override { plugins = [ age-plugin-yubikey ]; })
+      # (ragenix.override { plugins = [ age-plugin-yubikey ]; })
       helix
       srm
+      onagre
+      libsixel
 
       # common
       [ killall hexyl jq fx bottom lsd fd choose duf tokei procs exa lsof tree bat ]

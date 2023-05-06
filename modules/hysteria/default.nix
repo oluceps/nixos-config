@@ -20,11 +20,6 @@ let
           package = mkOption {
             type = types.package;
             default = pkgs.hysteria;
-            defaultText = literalExpression "pkgs.hysteria";
-            description = lib.mdDoc ''
-              package
-            '';
-
           };
         };
         config =

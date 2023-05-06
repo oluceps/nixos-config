@@ -1,16 +1,20 @@
 { user
+, pkgs
 , ...
 }: {
   programs = {
     waybar = {
       enable = true;
       style = builtins.readFile ./waybar.css;
-      systemd.enable = false;
+      systemd = {
+        enable = false;
+        target = "hyprland-session.target";
+      };
       settings = {
         mainBar = {
           layer = "top";
           position = "top";
-          height = 22;
+          height = 27;
           modules-left = [ "wlr/workspaces" ];
           #
           # "sway/mode"
@@ -32,8 +36,8 @@
           "wlr/workspaces" = {
             format = "{icon}";
             on-click = "activate";
-            on-scroll-up = "hyprctl dispatch workspace e-1";
-            on-scroll-down = "hyprctl dispatch workspace e+1";
+            on-scroll-up = "${pkgs.hyprland}/bin/hyprctl dispatch workspace e-1";
+            on-scroll-down = "${pkgs.hyprland}/bin/hyprctl dispatch workspace e+1";
           };
           "sway/window" = {
             max-length = 80;
@@ -52,6 +56,7 @@
             timezone = "Asia/Shanghai";
             format-alt = "{:%a %d %b}";
             format-alt-click = "click-right";
+            on-click = "swaylock";
             tooltip = false;
           };
           battery = {
@@ -81,7 +86,7 @@
           };
           network = {
             interval = 1;
-            interface = "lo";
+            interface = "wan";
             format = "{bandwidthDownOctets}";
             max-length = 10;
             min-length = 8;
@@ -117,15 +122,6 @@
             on-scroll-down = "light -A 1";
             on-scroll-up = "light -U 1";
           };
-          idle_inhibitor = {
-            format = "{icon}";
-            format-icons = {
-              activated = "";
-              deactivated = "";
-            };
-            tooltip = false;
-          };
-
         };
       };
     };
