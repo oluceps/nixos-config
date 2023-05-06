@@ -12,10 +12,6 @@ in
     enable = mkOption {
       type = types.bool;
       default = false;
-      description = lib.mdDoc ''
-        enable?
-      '';
-
     };
     package = mkOption {
       type = types.package;

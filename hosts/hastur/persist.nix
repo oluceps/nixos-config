@@ -16,28 +16,26 @@
         ".npmrc"
       ];
       directories = [
+        "Src"
+        "Calib"
         "Documents"
         "Downloads"
         "Pictures"
-        "Projects"
         "Videos"
         "Music"
-        "Security"
-        "Blog"
-        "Games"
+        "tools"
+        "Vault"
+        { directory = "Sec"; mode = "0700"; }
         ".npm-packages"
         ".npm"
         ".pip"
-        "tools"
-        "Vault"
-        "calibreLib"
         ".cache"
         ".local"
         ".cargo"
         ".rustup"
         ".mozilla"
-        ".config"
         ".FeelUOwn"
+        ".config"
         { directory = ".gnupg"; mode = "0700"; }
         { directory = ".ssh"; mode = "0700"; }
       ];

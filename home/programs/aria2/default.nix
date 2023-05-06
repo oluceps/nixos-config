@@ -14,7 +14,4 @@
       dir = "/home/${user}/Downloads/aria2";
     };
   };
-
-
-
 }

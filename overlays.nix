@@ -13,12 +13,16 @@
       ]
       (n: inputs.${n}.packages.${system}.default)
     //
+    # GUI applications overlay. for stability
+    prev.lib.genAttrs [ "hyprland" ] (n: (import inputs.nixpkgs-gui { inherit system; }).${n})
+
+    //
     {
-      hyprland =
-        (import inputs.nixpkgs-gui
-          {
-            inherit system;
-          }).hyprland;
+      # lazygit =
+      #   (import inputs.nixpkgs-gui
+      #     {
+      #       inherit system;
+      #     }).lazygit;
       # inputs.hyprland.packages.${system}.default;
 
 
@@ -26,7 +30,27 @@
         includeGrammarIf = grammar:
           prev.lib.any
             (name: grammar.name == name)
-            [ "toml" "rust" "nix" "protobuf" "yaml" "json" "markdown" "html" "css" "zig" "c" "cpp" "go" "python" "bash" "kotlin" ];
+            [
+              "toml"
+              "rust"
+              "nix"
+              "protobuf"
+              "yaml"
+              "json"
+              "markdown"
+              "html"
+              "css"
+              "zig"
+              "c"
+              "cpp"
+              "go"
+              "python"
+              "bash"
+              "kotlin"
+              "fish"
+              "javascript"
+              "typescript"
+            ];
       };
 
 
@@ -40,6 +64,23 @@
       #     allowUnfree = true;
       #   };
       #   }).linuxPackages_latest;
+
+      # BUGGY
+      # swaylock = prev.swaylock.overrideAttrs (old: {
+      #   src = prev.fetchFromGitHub {
+      #     owner = "mortie";
+      #     repo = "swaylock-effects";
+      #     rev = "v1.6-4";
+      #     sha256 = "sha256-nYA8W7iabaepiIsxDrCkG/WIFNrVdubk/AtFhIvYJB8=";
+      #   };
+      # });
+
+      fishPlugins.foreign-env = prev.fishPlugins.foreign-env.overrideAttrs
+        (old: {
+          preInstall = old.preInstall + (with prev; ''
+            sed -e "s|'env'|${coreutils}/bin/env|" -i functions/*
+          '');
+        });
 
       picom = prev.picom.overrideAttrs (old: {
         src = prev.fetchFromGitHub {
@@ -145,7 +186,7 @@
         status=$?
         if [ $status != 0 ]
         then
-          ${prev.wf-recorder}/bin/wf-recorder -g "$(${prev.slurp}/bin/slurp)" -f $HOME/Videos/record/$(date +'recording_%Y-%m-%d-%H%M%S.mp4');
+          ${prev.wf-recorder}/bin/wf-recorder -g "$(${prev.slurp}/bin/slurp)" -f $HOME/Videos/record/$(date +'recording_%Y-%m-%d-%H%M%S.mp4') --pixel-format yuv420p;
         else
           ${prev.procps}/bin/pkill --signal SIGINT wf-recorder
         fi;

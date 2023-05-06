@@ -1,8 +1,10 @@
-{ config, user, ... }: {
-  boot.lanzaboote = {
-    enable = true;
-    privateKeyFile = "/persist/etc/secureboot/keys/db/db.key";
-    publicKeyFile = "/persist/etc/secureboot/keys/db/db.pem";
+{ ... }: {
+  boot = {
+    bootspec.enable = true;
+    lanzaboote = {
+      enable = true;
+      pkiBundle = "/persist/etc/secureboot";
+    };
   };
 }
 

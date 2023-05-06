@@ -3,6 +3,7 @@ monitor=VGA-1,1920x1080@75,auto,1
 exec-once=fcitx5
 exec-once=mako
 exec-once=waybar
+
 # Log errors
 env = HYPRLAND_LOG_WLR, 1
 input {
@@ -90,7 +91,6 @@ bind=,Print,exec,$ssselection
 bind=SUPERCTRL,R,exec,screen-recorder-toggle
 bind=SUPERCTRL,S,exec,save-clipboard-to
 bind=ALT,Print,exec,$ssall
-bind=SUPERSHIFTALT,R,exec,$ssall
 # move focus
 bind=SUPER,H,movefocus,l
 bind=SUPER,L,movefocus,r
@@ -192,6 +192,7 @@ windowrule=animation slide right,alacritty
 windowrule=animation slide right,telegramdesktop
 windowrule=float,ncmpcpp
 windowrule=float,eog
+windowrule=noanim,eog
 windowrule=move 25%-,ncmpcpp
 windowrule=size 960 540,ncmpcpp
 windowrule=rounding 0,MATLAB R2022b - academic use

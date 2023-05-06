@@ -44,7 +44,7 @@ window#waybar.solo {
 /*
 */
 
-#tray, #mode, #battery, #cpu, #memory, #network, #idle_inhibitor, #backlight, #custom-storage, #custom-spotify, #custom-weather, #custom-mail, #temperature {
+#tray, #mode, #battery, #cpu, #memory, #network,  #backlight, #custom-storage, #custom-spotify, #custom-weather, #custom-mail, #temperature {
 	color: rgba(217, 216, 216, 1);
 	padding: 3px 3px 3px 3px;
 	margin: 0px 4px 0px 4px;
@@ -63,8 +63,14 @@ window#waybar.solo {
 	border-radius: 6px;
 }
 
+#custom-lock {
+	padding: 3px 5px 3px 15px;
+	margin: 0px 0px 0px 0px;
+	color: rgba(217, 216, 216, 1);
+}
+
 #clock {
-	padding: 3px 15px 3px 15px;
+	padding: 5px 18px 3px 0px;
 	margin: 0px 0px 0px 0px;
 	color: rgba(217, 216, 216, 1);
 	border-radius: 6px;

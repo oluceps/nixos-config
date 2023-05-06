@@ -2,13 +2,15 @@
 {
   programs.foot = {
     enable = true;
+    server.enable = true;
     settings = {
       main = {
         font = "SF Mono:size=13:style=Medium";
         dpi-aware = "yes";
-        term = "xterm-256color";
-        pad = "8x8";
+        term = "foot";
+        pad = "8x12";
         shell = "${pkgs.fish}/bin/fish";
+        login-shell = "no";
       };
 
       colors = {
@@ -31,6 +33,10 @@
         regular5 = "f5c2e7";
         regular6 = "94e2d5";
         regular7 = "bac2de";
+      };
+      key-bindings = {
+        prompt-prev = "Control+Shift+z";
+        prompt-next = "Control+Shift+x";
       };
       cursor = { blink = "yes"; };
       mouse = {

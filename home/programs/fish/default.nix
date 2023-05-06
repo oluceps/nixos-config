@@ -1,50 +1,14 @@
-{ config
-, lib
-, pkgs
-, user
-, ...
-}: {
+{ ... }: {
   programs.fish = {
     enable = true;
-    plugins = [
-      {
-        name = "babelfish";
-        src = pkgs.fetchFromGitHub {
-          owner = "bouk";
-          repo = "babelfish";
-          rev = "348cc55ff299bcdce307c4edc4a17e5747c07ff4";
-          sha256 = "4cbR7pqbLc8RRwlP+bUDt53C6J7KtMEJtfxzSpO0Myw=";
-        };
-      }
-
-
-      #        {
-      #          name = "grc";
-      #          src = pkgs.fishPlugins.grc.src;
-      #        }
-      #        {
-      #          name = "done";
-      #          src = pkgs.fishPlugins.done.src;
-      #        }
-    ];
-    #    loginShellInit =
-    #      ''
-    #        if test (id --user $USER) -ge 1000 && test (tty) = "/dev/tty1"
-    #          exec Hyprland
-    #        end
-    #
-    #      '';
-
+    plugins = [ ];
     shellAliases = {
       nd = "cd /etc/nixos";
-      swc = "doas nixos-rebuild switch --verbose";
-      swcs = "doas nixos-rebuild switch --verbose --max-jobs 1";
-      sduo = "sudo";
+      swc = "doas nixos-rebuild switch --flake /etc/nixos --verbose";
+      swcs = "doas nixos-rebuild switch --flake /etc/nixos --verbose --max-jobs 1";
       daso = "doas";
       daos = "doas";
       off = "poweroff";
-      roll = "xrandr -o left && feh --bg-scale /home/riro/Pictures/Wallpapers/95448248_p0.png && sleep 0.5; picom --experimental-backend -b";
-      rolln = "xrandr -o normal && feh --bg-scale /home/riro/Pictures/Wallpapers/秋の旅.jpg && sleep 0.5;  picom --experimental-backend -b";
       kls = "lsd --icon never";
       lks = "lsd --icon never";
       sl = "lsd --icon never";
@@ -53,11 +17,11 @@
       la = "lsd --icon never -la";
       g = "lazygit";
       "cd.." = "cd ..";
-      up = "nix flake update --commit-lock-file /etc/nixos && doas nixos-rebuild switch --verbose --flake /etc/nixos";
+      up = "nix flake update --commit-lock-file /etc/nixos && swc";
+      rekey = "nix run .#rekey";
     };
+
     shellInit = ''
-      ${pkgs.starship}/bin/starship init fish | source
-      direnv hook fish | source
       fish_vi_key_bindings
       set -g direnv_fish_mode eval_on_arrow
       set fish_color_normal normal
@@ -86,16 +50,35 @@
       set fish_pager_color_completion normal
       set fish_pager_color_description B3A06D --italics
       set fish_pager_color_selected_background --reverse
+      update_cwd_osc
+    '';
+    interactiveShellInit = ''
+      # Need to declare here, since something buggy.
+      # For foot `jump between prompt` function
+      function mark_prompt_start --on-event fish_prompt
+          echo -en "\e]133;A\e\\"
+      end
     '';
     functions = {
-      fish_greeting = "";
-      fish_prompt = ''
-         set -l nix_shell_info (
-          if test -n "$IN_NIX_SHELL"
-            echo -n "<nix-shell> "
-         end
-        )
-      '';
+      fish_greeting = "set_color -o EEA9A9; date +%T; set_color normal";
+      update_cwd_osc = {
+        body = ''
+          if status --is-command-substitution || set -q INSIDE_EMACS
+              return
+          end
+          printf \e\]7\;file://%s%s\e\\ $hostname (string escape --style=url $PWD)
+        '';
+        onVariable = "PWD";
+        description = "Notify terminals when $PWD changes";
+      };
+
+      ekey = {
+        body = ''
+          nix run .#edit-secret $argv[1]
+        '';
+        description = "edit agenix-rekey secret";
+      };
+      dec = "rage -d -i ~/.ssh/age/priv.age $argv[1]";
       extract = ''
         set --local ext (echo $argv[1] | awk -F. '{print $NF}')
         switch $ext

@@ -27,7 +27,7 @@ in
     description = "btrbk backup periodic";
     wantedBy = [ "multi-user.target" ];
     timerConfig = {
-      OnUnitInactiveSec = "15min";
+      OnUnitInactiveSec = "5min";
       OnBootSec = "3s";
     };
   };
