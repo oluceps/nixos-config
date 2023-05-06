@@ -12,7 +12,7 @@
 
       Service = {
         ExecStart = "${pkgs.foot}/bin/foot --server";
-        Environment = "PATH=/run/current-system/sw/bin/";
+        Environment = with pkgs;"PATH=${lib.makeBinPath [coreutils]}";
         Restart = "on-failure";
         OOMPolicy = "continue";
       };

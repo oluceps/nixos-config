@@ -13,17 +13,16 @@
       ]
       (n: inputs.${n}.packages.${system}.default)
     //
+    # GUI applications overlay. for stability
+    prev.lib.genAttrs [ "hyprland" ] (n: (import inputs.nixpkgs-gui { inherit system; }).${n})
+
+    //
     {
-      hyprland =
-        (import inputs.nixpkgs-gui
-          {
-            inherit system;
-          }).hyprland;
-      # tdesktop =
-      #   (import inputs.nixpkgs-master
+      # lazygit =
+      #   (import inputs.nixpkgs-gui
       #     {
       #       inherit system;
-      #     }).tdesktop;
+      #     }).lazygit;
       # inputs.hyprland.packages.${system}.default;
 
 
