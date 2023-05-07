@@ -421,6 +421,11 @@
       systemdTarget = "hyprland-session.target";
       timeouts = [
         { timeout = 900; command = "${pkgs.swaylock}/bin/swaylock"; }
+        {
+          timeout = 905;
+          command = ''${pkgs.sway}/bin/swaymsg "output * dpms off"'';
+          resumeCommand = ''${pkgs.sway}/bin/swaymsg "output * dpms on"'';
+        }
       ];
       events = [
         { event = "lock"; command = "${pkgs.swaylock}/bin/swaylock"; }

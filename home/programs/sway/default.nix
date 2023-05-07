@@ -119,9 +119,9 @@
               "${modifier}+k" = "focus up";
               "${modifier}+l" = "focus right";
               "${modifier}+i" = "move scratchpad";
-              "${modifier}+Shift+i" = "scratchpad show";
               "${modifier}+q" = "kill";
               "${modifier}+Shift+q" = null;
+              "${modifier}+Ctrl+i" = "scratchpad show";
 
               "${modifier}+Ctrl+h" = "move left";
               "${modifier}+Ctrl+j" = "move down";
