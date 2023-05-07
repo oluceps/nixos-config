@@ -7,15 +7,15 @@
       enable = true;
       style = builtins.readFile ./waybar.css;
       systemd = {
-        enable = false;
-        target = "hyprland-session.target";
+        enable = true;
+        # target = "hyprland-session.target";
       };
       settings = {
         mainBar = {
           layer = "top";
           position = "top";
           height = 27;
-          modules-left = [ "wlr/workspaces" ];
+          modules-left = [ "sway/workspaces" ];
           #
           # "sway/mode"
           modules-center = [ "clock" ];
