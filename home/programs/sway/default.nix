@@ -8,10 +8,6 @@
 
     package = null;
     enable = true;
-    #    extraConfig = ''
-    #      exec dbus-sway-environment
-    #      exec configure-gtk
-    #    '';
     extraSessionCommands = ''
       export SDL_VIDEODRIVER=wayland
       # needs qt5.qtwayland in systemPackages
@@ -80,14 +76,6 @@
             scale = "1";
           };
         };
-
-      #        HDMI-A-1 = {
-      #          bg = "~/Pictures/Wallpapers/rurudo-purple.jpg fill";
-      #          mode = "1920x1080";
-      #          scale = "1.5";
-      #          position = "0 0";
-      #          # transform = "180";
-      #        };
 
       window.hideEdgeBorders = "smart";
       keybindings =
