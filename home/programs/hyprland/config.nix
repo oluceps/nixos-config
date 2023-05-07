@@ -7,7 +7,7 @@ let
 
   wl-copy = "${pkgs.wl-clipboard}/bin/wl-copy";
   wl-paste = "${pkgs.wl-clipboard}/bin/wl-paste";
-  term = "${pkgs.foot}/bin/footclient";
+  term = "${pkgs.alacritty}/bin/alacritty";
   genDeps = n: lib.genAttrs n (name: lib.getExe pkgs.${name});
   deps = genDeps [
     "fuzzel"

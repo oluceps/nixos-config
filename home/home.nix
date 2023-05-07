@@ -34,6 +34,7 @@
   home.packages = with pkgs;
 
     [
+      xdg-utils
       fluffychat
       mpv
       hyfetch
@@ -209,6 +210,7 @@
       userName = "oluceps";
       userEmail = "i@oluceps.uk";
       extraConfig = {
+        core.editor = with pkgs; (lib.getExe helix);
         commit.gpgsign = true;
         gpg = {
           format = "ssh";
