@@ -1,5 +1,6 @@
 { user
 , pkgs
+, lib
 , ...
 }: {
   programs = {
@@ -57,7 +58,7 @@
             timezone = "Asia/Shanghai";
             format-alt = "{:%a %d %b}";
             format-alt-click = "click-right";
-            on-click = "swaylock";
+            # on-click = "${lib.getExe pkgs.swaylock}";
             tooltip = false;
           };
           battery = {
