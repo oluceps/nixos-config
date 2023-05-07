@@ -50,7 +50,7 @@
         "x-scheme-handler/https"
         "text/html"
       ]
-        (_: "firefox.desktop")
+        (_: "google-chrome.desktop")
       //
       lib.genAttrs [
         "image/gif"
