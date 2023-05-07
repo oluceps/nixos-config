@@ -127,6 +127,8 @@
               "${modifier}+Ctrl+j" = "move down";
               "${modifier}+Ctrl+k" = "move up";
               "${modifier}+Ctrl+l" = "move right";
+              "${modifier}+Ctrl+s" = "exec ${deps.save-clipboard-to}";
+
 
               "XF86AudioMute" = "exec pamixer --toggle-mute";
               "XF86AudioRaiseVolume" = "exec pamixer -i 5";
@@ -138,6 +140,7 @@
               "${modifier}+space" = "floating toggle";
               "${modifier}+Shift+space" = null;
               "Print" = "exec ${lib.getExe sway-contrib.grimshot} copy area";
+              "Alt+Print" = "exec ${deps.grim} - | ${wl-copy} -t image/png";
               "Ctrl+Shift+l" = "exec ${lib.getExe swaylock}";
               "${modifier}+Ctrl+p" = "exec ${lib.getExe cliphist} list | ${lib.getExe fuzzel} -d ${lib.getExe fuzzelArgs} | ${lib.getExe cliphist} decode | ${wl-copy}";
               "${modifier}+shift+r" = "exec ${lib.getExe screen-recorder-toggle}";

@@ -30,8 +30,9 @@
             format = " {}";
           };
           "sway/workspaces" = {
+            all-outputs = true;
             format = "{name}";
-            disable-scroll = true;
+            disable-scroll = false;
           };
           "wlr/workspaces" = {
             format = "{icon}";
