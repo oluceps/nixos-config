@@ -2,7 +2,7 @@
 {
   programs.foot = {
     enable = true;
-    server.enable = true;
+    server.enable = false;
     settings = {
       main = {
         font = "SF Mono:size=13:style=Medium";

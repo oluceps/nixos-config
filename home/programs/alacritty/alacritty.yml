@@ -1,9 +1,122 @@
+colors:
+    bright:
+        black: "#585B70" # surface2
+        blue: "#89B4FA" # blue
+        cyan: "#94E2D5" # teal
+        green: "#A6E3A1" # green
+        magenta: "#F5C2E7" # pink
+        red: "#F38BA8" # red
+        white: "#A6ADC8" # subtext0
+        yellow: "#F9E2AF" # yellow
+
+    # Cursor colors
+    cursor:
+        cursor: "#F5E0DC" # rosewater
+        text: "#1E1E2E" # base
+
+    dim:
+        black: "#45475A" # surface1
+        blue: "#89B4FA" # blue
+        cyan: "#94E2D5" # teal
+        green: "#A6E3A1" # green
+        magenta: "#F5C2E7" # pink
+        red: "#F38BA8" # red
+        white: "#BAC2DE" # subtext1
+        yellow: "#F9E2AF" # yellow
+
+    # Search colors
+    hints:
+        end:
+            background: "#A6ADC8" # subtext0
+            foreground: "#1E1E2E" # base
+
+        start:
+            background: "#F9E2AF" # yellow
+            foreground: "#1E1E2E" # base
+
+
+
+    # Keyboard regex hints
+    indexed_colors:
+        - { color: "#FAB387" , index: 16}
+
+        - { color: "#F5E0DC" , index: 17}
+
+    # Selection colors
+    normal:
+        black: "#45475A" # surface1
+        blue: "#89B4FA" # blue
+        cyan: "#94E2D5" # teal
+        green: "#A6E3A1" # green
+        magenta: "#F5C2E7" # pink
+        red: "#F38BA8" # red
+        white: "#BAC2DE" # subtext1
+        yellow: "#F9E2AF" # yellow
+
+    # Normal colors
+    primary:
+        background: "#1E1E2E" # base
+        bright_foreground: "#CDD6F4" # text
+        # Bright and dim foreground colors
+        dim_foreground: "#CDD6F4" # text
+        foreground: "#CDD6F4" # text
+
+
+
+    # Bright colors
+    search:
+        focused_match:
+            background: "#A6E3A1" # green
+            foreground: "#1E1E2E" # base
+
+        footer_bar:
+            background: "#A6ADC8" # subtext0
+            foreground: "#1E1E2E" # base
+
+        matches:
+            background: "#A6ADC8" # subtext0
+            foreground: "#1E1E2E" # base
+
+
+
+
+    # Dim colors
+    selection:
+        background: "#F5E0DC" # rosewater
+        text: "#1E1E2E" # base
+
+
+
+    vi_mode_cursor:
+        cursor: "#B4BEFE" # lavender
+        text: "#1E1E2E" # base
+
+
+
+
+font:
+  bold:
+    family: SF Mono
+    style: Bold
+
+  bold_italic:
+    family: SF Mono
+    style: Bold Italic
+
+  italic:
+    family: SF Mono
+    style: Italic
+
+  normal:
+    family: SF Mono
+    style: Medium
+
 window:
   # Spread additional padding evenly around the terminal content.
-  dynamic_padding: false
+  decorations: none
 
   # Startup Mode (changes require restart)
-  startup_mode: Maximized
+  dynamic_padding: false
 
   # Window decorations
   #
@@ -12,108 +125,9 @@ window:
   # - none: neither borders nor title bar
   # - transparent: title bar, transparent background and title bar buttons
   # - buttonless: title bar, transparent background, but no title bar buttons
-  decorations: Full
   opacity: 0.65
-  # padding top and left
   padding:
-    x: 7
-    y: 5
-
-font:
-  normal:
-    family: FiraCode Nerd Font Mono
-    style: Retina
-
-  bold:
-    family: FiraCode Nerd Font Mono
-    style: Bold
-
-  italic:
-    family: FiraCode Nerd Font Mono
-    style: Italic
-
-  bold_italic:
-    family: FiraCode Nerd Font Mono
-    style: Bold Italic
-
-  size: 11.5
-
-colors:
-    # Default colors
-    primary:
-        background: "#3C3836" # base
-        foreground: "#C6D0F5" # text
-        # Bright and dim foreground colors
-        dim_foreground: "#C6D0F5" # text
-        bright_foreground: "#C6D0F5" # text
-
-    # Cursor colors
-    cursor:
-        text: "#303446" # base
-        cursor: "#F2D5CF" # rosewater
-    vi_mode_cursor:
-        text: "#303446" # base
-        cursor: "#BABBF1" # lavender
-
-    # Search colors
-    search:
-        matches:
-            foreground: "#303446" # base
-            background: "#A5ADCE" # subtext0
-        focused_match:
-            foreground: "#303446" # base
-            background: "#A6D189" # green
-        footer_bar:
-            foreground: "#303446" # base
-            background: "#A5ADCE" # subtext0
-
-    # Keyboard regex hints
-    hints:
-        start:
-            foreground: "#303446" # base
-            background: "#E5C890" # yellow
-        end:
-            foreground: "#303446" # base
-            background: "#A5ADCE" # subtext0
-
-    # Selection colors
-    selection:
-        text: "#303446" # base
-        background: "#F2D5CF" # rosewater
-
-    # Normal colors
-    normal:
-        black: "#51576D" # surface1
-        red: "#E78284" # red
-        green: "#A6D189" # green
-        yellow: "#E5C890" # yellow
-        blue: "#8CAAEE" # blue
-        magenta: "#F4B8E4" # pink
-        cyan: "#81C8BE" # teal
-        white: "#B5BFE2" # subtext1
-
-    # Bright colors
-    bright:
-        black: "#626880" # surface2
-        red: "#E78284" # red
-        green: "#A6D189" # green
-        yellow: "#E5C890" # yellow
-        blue: "#8CAAEE" # blue
-        magenta: "#F4B8E4" # pink
-        cyan: "#81C8BE" # teal
-        white: "#A5ADCE" # subtext0
-
-    # Dim colors
-    dim:
-        black: "#51576D" # surface1
-        red: "#E78284" # red
-        green: "#A6D189" # green
-        yellow: "#E5C890" # yellow
-        blue: "#8CAAEE" # blue
-        magenta: "#F4B8E4" # pink
-        cyan: "#81C8BE" # teal
-        white: "#B5BFE2" # subtext1
-
-    indexed_colors:
-        - { index: 16, color: "#EF9F76" }
-        - { index: 17, color: "#F2D5CF" }
+    x: 8
+    y: 10
+  # padding top and left
+  startup_mode: Maximized
