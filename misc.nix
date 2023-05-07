@@ -192,17 +192,17 @@
     };
 
   };
-  hardware = {
-    nvidia = {
-      package = config.boot.kernelPackages.nvidiaPackages.stable;
-      modesetting.enable = true;
-      powerManagement.enable = false;
-    };
+  # hardware = {
+  # nvidia = {
+  #   package = config.boot.kernelPackages.nvidiaPackages.stable;
+  #   modesetting.enable = true;
+  #   powerManagement.enable = false;
+  # };
 
-    opengl = {
-      enable = true;
-    };
-  };
+  # opengl = {
+  #   enable = true;
+  # };
+  # };
 
   services = {
     dbus.packages = [ pkgs.gcr ];
@@ -219,7 +219,7 @@
         };
       };
 
-    xserver.videoDrivers = [ "nvidia" ];
+    # xserver.videoDrivers = [ "nvidia" ];
   };
 
   fonts = {
