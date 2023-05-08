@@ -73,11 +73,11 @@
       #     sha256 = "sha256-nYA8W7iabaepiIsxDrCkG/WIFNrVdubk/AtFhIvYJB8=";
       #   };
       # });
-      sway = prev.sway.overrideAttrs
-        (old: {
-          patches = (old.patches or [ ])
-          ++ [ ./attachs/0001-text_input-Implement-input-method-popups.patch ];
-        });
+      # sway = prev.sway.overrideAttrs
+      #   (old: {
+      #     patches = (old.patches or [ ])
+      #     ++ [ ./.attachs/0001-text_input-Implement-input-method-popups.patch ];
+      #   });
 
       fishPlugins.foreign-env = prev.fishPlugins.foreign-env.overrideAttrs
         (old: {
