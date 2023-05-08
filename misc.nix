@@ -113,13 +113,12 @@
           "hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc="
           "helix.cachix.org-1:ejp9KQpR1FBI2onstMQ34yogDm4OgU2ru6lIwPvuCVs="
         ];
-        substituters = [
+        substituters = (map (n: "https://${n}.cachix.org")
+          [ "nix-community" "nur-pkgs" "hyprland" "helix" ])
+        ++
+        [
           "https://cache.nixos.org"
-          "https://nix-community.cachix.org"
           "https://cache.ngi0.nixos.org"
-          "https://nur-pkgs.cachix.org"
-          "https://hyprland.cachix.org"
-          "https://helix.cachix.org"
         ];
         auto-optimise-store = true;
         experimental-features = [
@@ -165,7 +164,7 @@
     starship = {
       enable = true;
       settings = (import ./home/programs/starship { }).programs.starship.settings // {
-        format = "$username$directory$git_branch$git_commit$git_status$cmd_duration$line_break$python$character";
+        format = "$username$directory$git_branch$git_commit$git_status$nix_shell$cmd_duration$line_break$python$character";
       };
     };
     neovim = {
