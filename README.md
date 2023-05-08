@@ -1,4 +1,4 @@
-![CI state](https://github.com/oluceps/nixos-config/actions/workflows/eval.yaml/badge.svg)
+![built with nix](https://img.shields.io/static/v1?logo=nixos&logoColor=white&label=&message=Built%20with%20Nix&color=41439a)![CI state](https://github.com/oluceps/nixos-config/actions/workflows/eval.yaml/badge.svg)
 
 # Nix flake
 
