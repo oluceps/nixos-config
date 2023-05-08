@@ -35,7 +35,7 @@
       };
 
       git_status = {
-        format = "[[(*$conflicted$untracked$modified$staged$renamed$deleted)](218) ($ahead_behind$stashed)]($style) ";
+        format = "[[(*$conflicted$untracked$modified$staged$renamed$deleted)](218) ($ahead_behind$stashed)]($style)";
         style = "cyan";
         conflicted = "​";
         untracked = "​";
@@ -71,6 +71,10 @@
         time_format = "%T";
         style = "bold yellow";
         utc_time_offset = "-5";
+      };
+
+      nix_shell = {
+        format = "[$symbol$state( \($name\))]($style) ";
       };
 
     };

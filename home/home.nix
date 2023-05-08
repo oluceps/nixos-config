@@ -210,6 +210,7 @@
       userName = "oluceps";
       userEmail = "i@oluceps.uk";
       extraConfig = {
+        safe.directory = "/etc/nixos";
         core.editor = with pkgs; (lib.getExe helix);
         commit.gpgsign = true;
         gpg = {
