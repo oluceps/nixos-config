@@ -3,7 +3,7 @@
   (final: prev:
     prev.lib.genAttrs
       [
-        # "hyprland"
+        "hyprland"
         "hyprpicker"
         "clash-meta"
         "nil"
@@ -12,9 +12,9 @@
         "resign"
       ]
       (n: inputs.${n}.packages.${system}.default)
-    //
+    # //
     # GUI applications overlay. for stability
-    prev.lib.genAttrs [ "hyprland" ] (n: (import inputs.nixpkgs-gui { inherit system; }).${n})
+    # prev.lib.genAttrs [ "hyprland" ] (n: (import inputs.nixpkgs-gui { inherit system; }).${n})
 
     //
     {
