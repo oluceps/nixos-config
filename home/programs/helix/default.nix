@@ -1,14 +1,18 @@
 { pkgs
+, lib
 , ...
 }:
 {
-  #  home.file.".config/helix/".source = ./config;
-  xdg.configFile = {
-    "helix/languages.toml".text =
-      import ./config/languages.nix { inherit pkgs; };
-    "helix/themes/catppuccin_macchiato.toml".text =
-      builtins.readFile ./config/themes/catppuccin_macchiato.toml;
-  };
+  xdg.configFile =
+    let
+      settingsFormat = pkgs.formats.toml { };
+    in
+    {
+      "helix/languages.toml".text =
+        builtins.readFile (settingsFormat.generate "config.toml" (import ./languages.nix { inherit pkgs lib; }));
+      "helix/themes/catppuccin_macchiato.toml".text =
+        builtins.readFile (settingsFormat.generate "catppuccin_macchiato.toml" (import ./catppuccin_macchiato.nix));
+    };
 
   programs.helix = {
     enable = true;
