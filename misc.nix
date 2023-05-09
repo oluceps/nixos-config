@@ -67,7 +67,7 @@
   virtualisation = {
     docker.enable = true;
     libvirtd = {
-      enable = false;
+      enable = true;
       qemu = {
         ovmf = {
           enable = true;
