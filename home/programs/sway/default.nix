@@ -46,7 +46,7 @@
         modifier = if user == "riro" then "Mod4" else "Mod1";
         startup = [
           { command = "fcitx5 -d"; }
-          { command = with pkgs; "${lib.getExe systemd-run-app} ${lib.getExe google-chrome}"; }
+          { command = with pkgs; "${lib.getExe systemd-run-app} ${lib.getExe firefox}"; }
           { command = with pkgs; "${lib.getExe systemd-run-app} ${lib.getExe tdesktop}"; }
           { command = with deps; "${wl-paste} --type text --watch ${cliphist} store"; } #Stores only text data
           { command = with deps; "${wl-paste} --type image --watch ${cliphist} store"; } #Stores image data
