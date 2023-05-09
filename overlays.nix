@@ -49,6 +49,7 @@
               "fish"
               "javascript"
               "typescript"
+              "sway"
             ];
       };
 
