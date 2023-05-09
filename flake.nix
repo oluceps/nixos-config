@@ -10,8 +10,6 @@
     resign.url = "github:oluceps/resign";
     nil.url = "github:oxalica/nil";
     nix-direnv.url = "github:nix-community/nix-direnv";
-    nix-colors.url = "github:misterio77/nix-colors";
-    clansty.url = "github:clansty/flake";
     pre-commit-hooks = {
       url = "github:cachix/pre-commit-hooks.nix";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -30,7 +28,6 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     hyprpicker.url = "github:hyprwm/hyprpicker";
-    surrealdb.url = "github:surrealdb/surrealdb";
     lanzaboote = {
       url = "github:nix-community/lanzaboote";
     };
@@ -42,11 +39,11 @@
       url = "github:PrismLauncher/PrismLauncher";
       # inputs.nixpkgs.follows = "nixpkgs";
     };
-    pywmpkg.url = "github:jbuchermn/pywm";
     home-manager.url = "github:nix-community/home-manager";
     helix.url = "github:helix-editor/helix";
     hyprland.url = "github:vaxerski/Hyprland";
     berberman.url = "github:berberman/flakes";
+    clansty.url = "github:clansty/flake";
   };
 
   outputs = { self, ... }@inputs:
