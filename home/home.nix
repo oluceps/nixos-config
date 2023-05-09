@@ -34,6 +34,7 @@
   home.packages = with pkgs;
 
     [
+      virt-manager
       xdg-utils
       fluffychat
       mpv
