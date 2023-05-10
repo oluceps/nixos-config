@@ -6,6 +6,7 @@
     nixpkgs-gui.url = "github:NixOS/nixpkgs?rev=954a801cbe128e24e78230f711df17da01a5d98c";
     nixpkgs-22.url = "github:NixOS/nixpkgs?rev=c91d0713ac476dfb367bbe12a7a048f6162f039c";
     nvfetcher.url = "github:berberman/nvfetcher";
+    eunomia-bpf.url = "github:eunomia-bpf/eunomia-bpf/flake-devenv";
     agenix-rekey.url = "github:oddlama/agenix-rekey";
     resign.url = "github:oluceps/resign";
     nil.url = "github:oxalica/nil";
@@ -60,7 +61,7 @@
     {
       nixosConfigurations = genericImport ./hosts;
 
-      devShells = genSystems (system: genericImport ./shells.nix);
+      devShells.x86_64-linux = genericImport ./shells.nix;
 
       apps = genSystems (system: inputs.agenix-rekey.defineApps self _pkgs.${system} { inherit (self.nixosConfigurations) hastur kaambl; });
 
