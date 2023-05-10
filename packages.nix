@@ -30,6 +30,7 @@ let
       # virt-manager
       virtiofsd
       windows-run
+      ubt-rv-run
     ];
     fs = [ gparted e2fsprogs fscrypt-experimental f2fs-tools compsize ];
 
