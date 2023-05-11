@@ -295,7 +295,7 @@
   i18n = {
 
     # Select internationalisation properties.
-    defaultLocale = "C.UTF-8";
+    defaultLocale = "en_GB.UTF-8";
 
     inputMethod = {
       enabled = "fcitx5";
