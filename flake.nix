@@ -53,10 +53,10 @@
 
       genOverlays = map (let m = i: inputs.${i}.overlays; in (i: (m i).default or (m i).${i})); # ugly
 
-      # contentAddressedByDefault = true;
       _pkgs = genSystems (system: import inputs.nixpkgs {
         inherit system;
         config = {
+          contentAddressedByDefault = true;
           allowUnfree = true;
           allowBroken = false;
           segger-jlink.acceptLicense = true;
