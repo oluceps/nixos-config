@@ -310,6 +310,6 @@
   };
 
   system.stateVersion = "22.11"; # Did you read the comment?
-  documentation.nixos.enable = false;
+  documentation.enable = false;
 
 }
