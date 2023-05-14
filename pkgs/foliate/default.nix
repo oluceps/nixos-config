@@ -6,7 +6,6 @@
 , glib
 , gjs
 , ninja
-, python3
 , gtk4
 , webkitgtk
 , gsettings-desktop-schemas
@@ -33,7 +32,7 @@ stdenv.mkDerivation {
     fetchSubmodules = true;
   };
 
-  nativeBuildInputs = [ meson ninja python3 wrapGAppsHook pkg-config ];
+  nativeBuildInputs = [ meson ninja wrapGAppsHook pkg-config ];
 
   buildInputs = [
     gettext

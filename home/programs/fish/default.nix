@@ -5,7 +5,6 @@
     shellAliases = {
       nd = "cd /etc/nixos";
       swc = "doas nixos-rebuild switch --flake /etc/nixos --verbose";
-      swcs = "doas nixos-rebuild switch --flake /etc/nixos --verbose --max-jobs 1";
       daso = "doas";
       daos = "doas";
       off = "poweroff";
@@ -71,6 +70,10 @@
       #   description = "Notify terminals when $PWD changes";
       # };
 
+      swcs = {
+        body = "doas nixos-rebuild switch --flake /etc/nixos --verbose --max-jobs $argv[1]";
+        description = "specific job max for rebuild";
+      };
       ekey = {
         body = ''
           nix run .#edit-secret $argv[1]

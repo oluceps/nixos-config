@@ -420,7 +420,7 @@
   services = {
     swayidle = {
       enable = true;
-      systemdTarget = "hyprland-session.target";
+      systemdTarget = "sway-session.target";
       timeouts = [
         { timeout = 900; command = "${pkgs.swaylock}/bin/swaylock"; }
         {

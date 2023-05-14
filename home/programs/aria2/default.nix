@@ -5,6 +5,8 @@
     settings = {
       enable-rpc = true;
       rpc-listen-port = 6800;
+      rpc-allow-origin-all = true;
+      rpc-listen-all = true;
       rpc-secret = "HmSu9kuMU9M=";
       disk-cache = "64M";
       continue = true;
