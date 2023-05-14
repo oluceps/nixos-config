@@ -1,4 +1,4 @@
-{ pkgs, ... }: {
+{ ... }: {
   programs.starship = {
     enable = true;
 
@@ -9,8 +9,7 @@
 
       command_timeout = 1000;
 
-      format = ''$directory  $git_branch $git_commit $git_status $cmd_duration$line_break$python$character'';
-      #
+      format = "$directory$git_branch$git_commit$git_status$cmd_duration$line_break$python$character";
 
       directory.style = "blue";
 
@@ -24,12 +23,12 @@
       };
 
       git_branch = {
-        format = "[$branch]($style)";
+        format = "[$branch]($style) ";
         style = "#f1c4cd";
       };
 
       git_commit = {
-        format = "[$hash]($style)";
+        format = "[$hash]($style) ";
         style = "#c8adc4";
         only_detached = false;
         tag_disabled = true;
@@ -48,13 +47,13 @@
       };
 
       git_state = {
-        format = "\([$state( $progress_current/$progress_total)]($style)\)";
+        format = "\([$state( $progress_current/$progress_total)]($style)\) ";
         style = "bright-black";
       };
 
       directory = {
         truncation_length = 5;
-        format = "[$path]($style)";
+        format = "[$path]($style) ";
       };
 
       cmd_duration = {
@@ -66,10 +65,6 @@
         style = "bright-black";
       };
 
-      nix_shell = {
-        format = "via [$symbol$state( \($name\))]($style) ";
-      };
-
       time = {
         disabled = false;
         format = "$time($style) ";
@@ -78,7 +73,10 @@
         utc_time_offset = "-5";
       };
 
-      # package.disabled = true;
+      nix_shell = {
+        format = "[$symbol$state( \($name\))]($style) ";
+      };
+
     };
   };
 }

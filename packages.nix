@@ -12,6 +12,7 @@ let
       nix-tree
       kotlin
       jre17_minimal
+      inotify-tools
     ] ++ [ (fenix.complete.withComponents [ "cargo" "clippy" "rust-src" "rustc" "rustfmt" ]) ];
 
     web = [ hugo ];
@@ -29,6 +30,7 @@ let
       # virt-manager
       virtiofsd
       windows-run
+      ubt-rv-run
     ];
     fs = [ gparted e2fsprogs fscrypt-experimental f2fs-tools compsize ];
 
@@ -45,7 +47,7 @@ let
     ];
 
     lang = lib.flatten [
-      [ editorconfig-checker pyright kotlin-language-server sumneko-lua-language-server taplo-lsp taplo-cli yaml-language-server tree-sitter stylua black ]
+      [ editorconfig-checker pyright kotlin-language-server sumneko-lua-language-server yaml-language-server tree-sitter stylua black ]
       # languages related
       [ zig lldb haskell-language-server gopls cmake-language-server zls android-file-transfer nixpkgs-review shfmt ]
     ];

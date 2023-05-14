@@ -34,6 +34,8 @@
   home.packages = with pkgs;
 
     [
+      virt-manager
+      xdg-utils
       fluffychat
       mpv
       hyfetch
@@ -181,7 +183,6 @@
     ++
     (with nur.repos; [
       linyinfeng.canokey-udev-rules
-      YisuiMilena.hmcl-bin
       xddxdd.dingtalk
     ]) ++
     (with nur-pkgs;[
@@ -196,6 +197,7 @@
   };
 
   programs = {
+    bash.enable = true;
     vscode = {
       enable = true;
       package = pkgs.vscode.fhsWithPackages (ps: with ps; [ rustup zlib ]);
@@ -209,6 +211,8 @@
       userName = "oluceps";
       userEmail = "i@oluceps.uk";
       extraConfig = {
+        safe.directory = "/etc/nixos";
+        core.editor = with pkgs; (lib.getExe helix);
         commit.gpgsign = true;
         gpg = {
           format = "ssh";
@@ -419,6 +423,11 @@
       systemdTarget = "hyprland-session.target";
       timeouts = [
         { timeout = 900; command = "${pkgs.swaylock}/bin/swaylock"; }
+        {
+          timeout = 905;
+          command = ''${pkgs.sway}/bin/swaymsg "output * dpms off"'';
+          resumeCommand = ''${pkgs.sway}/bin/swaymsg "output * dpms on"'';
+        }
       ];
       events = [
         { event = "lock"; command = "${pkgs.swaylock}/bin/swaylock"; }

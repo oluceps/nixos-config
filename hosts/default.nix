@@ -35,8 +35,7 @@ let
       modules = (import ./${hostname}) ++ sharedModules;
     };
 
-  genGeneralSys = a:
-    nixosSystem (genSysAttr { inherit (a) system user hostname; });
+  genGeneralSys = i: nixosSystem (genSysAttr i);
 
 in
 {

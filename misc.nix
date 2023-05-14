@@ -67,7 +67,7 @@
   virtualisation = {
     docker.enable = true;
     libvirtd = {
-      enable = false;
+      enable = true;
       qemu = {
         ovmf = {
           enable = true;
@@ -113,13 +113,12 @@
           "hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc="
           "helix.cachix.org-1:ejp9KQpR1FBI2onstMQ34yogDm4OgU2ru6lIwPvuCVs="
         ];
-        substituters = [
+        substituters = (map (n: "https://${n}.cachix.org")
+          [ "nix-community" "nur-pkgs" "hyprland" "helix" ])
+        ++
+        [
           "https://cache.nixos.org"
-          "https://nix-community.cachix.org"
           "https://cache.ngi0.nixos.org"
-          "https://nur-pkgs.cachix.org"
-          "https://hyprland.cachix.org"
-          "https://helix.cachix.org"
         ];
         auto-optimise-store = true;
         experimental-features = [
@@ -162,6 +161,12 @@
   };
 
   programs = {
+    starship = {
+      enable = true;
+      settings = (import ./home/programs/starship { }).programs.starship.settings // {
+        format = "$username$directory$git_branch$git_commit$git_status$nix_shell$cmd_duration$line_break$python$character";
+      };
+    };
     neovim = {
       enable = false;
       configure = {
@@ -192,17 +197,17 @@
     };
 
   };
-  hardware = {
-    nvidia = {
-      package = config.boot.kernelPackages.nvidiaPackages.stable;
-      modesetting.enable = true;
-      powerManagement.enable = false;
-    };
+  # hardware = {
+  # nvidia = {
+  #   package = config.boot.kernelPackages.nvidiaPackages.stable;
+  #   modesetting.enable = true;
+  #   powerManagement.enable = false;
+  # };
 
-    opengl = {
-      enable = true;
-    };
-  };
+  # opengl = {
+  #   enable = true;
+  # };
+  # };
 
   services = {
     dbus.packages = [ pkgs.gcr ];
@@ -219,7 +224,7 @@
         };
       };
 
-    xserver.videoDrivers = [ "nvidia" ];
+    # xserver.videoDrivers = [ "nvidia" ];
   };
 
   fonts = {

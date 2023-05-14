@@ -1,5 +1,6 @@
 { user
 , pkgs
+, lib
 , ...
 }: {
   programs = {
@@ -7,15 +8,15 @@
       enable = true;
       style = builtins.readFile ./waybar.css;
       systemd = {
-        enable = false;
-        target = "hyprland-session.target";
+        enable = true;
+        # target = "hyprland-session.target";
       };
       settings = {
         mainBar = {
           layer = "top";
           position = "top";
           height = 27;
-          modules-left = [ "wlr/workspaces" ];
+          modules-left = [ "sway/workspaces" ];
           #
           # "sway/mode"
           modules-center = [ "clock" ];
@@ -30,8 +31,9 @@
             format = " {}";
           };
           "sway/workspaces" = {
+            all-outputs = true;
             format = "{name}";
-            disable-scroll = true;
+            disable-scroll = false;
           };
           "wlr/workspaces" = {
             format = "{icon}";
@@ -56,7 +58,7 @@
             timezone = "Asia/Shanghai";
             format-alt = "{:%a %d %b}";
             format-alt-click = "click-right";
-            on-click = "swaylock";
+            # on-click = "${lib.getExe pkgs.swaylock}";
             tooltip = false;
           };
           battery = {

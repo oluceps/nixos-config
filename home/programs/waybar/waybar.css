@@ -23,8 +23,8 @@ window#waybar.solo {
 #workspaces button {
 	padding: 0px 4px 0px 4px;
 	color: rgba(217, 216, 216, 0.6);
-	padding-left: 19px;
-	padding-right: 19px;
+	padding-left: 10px;
+	padding-right: 10px;
 }
 
 #workspaces button.urgent {
@@ -36,7 +36,7 @@ window#waybar.solo {
 	color: rgba(217, 216, 216, 0.8);
 }
 
-#workspaces button.active {
+#workspaces button.focused {
 	background-color: rgba(233, 215, 223, 0.2);
 	color: rgba(230, 210, 213, 0.6);
 }
