@@ -6,7 +6,7 @@ let
       [ bpf-linker pkg-config gdb gcc gnumake cmake clang-tools_15 llvmPackages_latest.clang ]
       [ openocd ]
       lua
-      nodejs-18_x
+      # nodejs-18_x
       yarn
       go
       nix-tree
@@ -59,59 +59,59 @@ in
 {
   environment.systemPackages = lib.flatten (lib.attrValues p)
     ++ (with pkgs; [ unar texlab edk2 xmrig docker-compose ]) ++
-    [
-      (with pkgs; (
-        python3.withPackages
-          (p: with p;[
-            # wordcloud
-            qrcode
-            matplotlib
-            pylsp-mypy
-            pip
+    # [
+    #   (with pkgs; (
+    #     python3.withPackages
+    #       (p: with p;[
+    #         # wordcloud
+    #         qrcode
+    #         matplotlib
+    #         pylsp-mypy
+    #         pip
 
-            fontforge
+    #         fontforge
 
-            pyzbar
-            pymongo
+    #         pyzbar
+    #         pymongo
 
-            aiohttp
-            loguru
-            pillow
-            dbus-python
-            numpy
-            redis
-            requests
-            uvloop
+    #         # aiohttp
+    #         loguru
+    #         pillow
+    #         dbus-python
+    #         numpy
+    #         redis
+    #         requests
+    #         uvloop
 
-            fido2
-            nrfutil
-            tockloader
-            intelhex
-            colorama
-            tqdm
-            # cryptography
+    #         fido2
+    #         nrfutil
+    #         tockloader
+    #         intelhex
+    #         colorama
+    #         tqdm
+    #         # cryptography
 
-            pandas
-            requests
-            pyrogram
-            tgcrypto
-            JPype1
-            toml
-            pyyaml
-            tockloader
-            colorama
-            six
-            rich
-            lxml
-            sympy
+    #         pandas
+    #         requests
+    #         pyrogram
+    #         tgcrypto
+    #         JPype1
+    #         toml
+    #         pyyaml
+    #         tockloader
+    #         colorama
+    #         six
+    #         rich
+    #         lxml
+    #         sympy
 
-            cffi
-            # beautifulreport
+    #         cffi
+    #         # beautifulreport
 
-          ])
-      ))
-    ]
-    ++
+    #       ])
+    #   ))
+    # ]
+    # ++
     (with pkgs.nodePackages; [
       vscode-json-languageserver
       typescript-language-server
