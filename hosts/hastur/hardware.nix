@@ -30,7 +30,6 @@
     ];
     kernelParams = [
       "mitigations=off"
-      # "resume_offset=117616405"
     ];
     resumeDevice = "/dev/disk/by-uuid/5ddc05a2-22a7-4803-8bca-fc64fad0b478";
   };

@@ -2,7 +2,10 @@
 , pkgs
 , lib
 , ...
-}: {
+}:
+# let mkSpan = abbr: content: "<span color='#8aadf4'>${abbr}</span> ${content}";
+# in
+{
   programs = {
     waybar = {
       enable = true;
@@ -20,7 +23,17 @@
           #
           # "sway/mode"
           modules-center = [ "clock" ];
-          modules-right = let base = [ "network" "temperature" "cpu" "memory" "pulseaudio" ]; in
+          modules-right =
+            let
+              base = [
+                "idle_inhibitor"
+                "network"
+                "temperature"
+                "cpu"
+                "memory"
+                "pulseaudio"
+              ];
+            in
             if user == "riro" then
             # [ "tray" ] ++
               base
@@ -35,6 +48,14 @@
             format = "{name}";
             disable-scroll = false;
           };
+          idle_inhibitor = {
+            format =  "{icon}";
+            format-icons = {
+              activated = "|";
+              deactivated = "-";
+            };
+          };
+
           "wlr/workspaces" = {
             format = "{icon}";
             on-click = "activate";

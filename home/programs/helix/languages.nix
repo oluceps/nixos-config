@@ -7,14 +7,14 @@ let
     "nil"
     "shfmt"
     "nixpkgs-fmt"
-    "bash-language-server"
+    # "bash-language-server"
     "taplo"
     "rustfmt"
   ]
     (name: lib.getExe pkgs.${name});
 
   clangd = "${pkgs.clang-tools}/bin/clangd";
-  bash-language-server = "${pkgs.nodePackages_latest.bash-language-server}/bin/bash-language-server";
+  # bash-language-server = "${pkgs.nodePackages_latest.bash-language-server}/bin/bash-language-server";
 
 in
 with apps;{
@@ -620,7 +620,7 @@ with apps;{
       injection-regex = "(shell|bash|zsh|sh)";
       language-server = {
         args = [ "start" ];
-        command = bash-language-server;
+        command = "";
       };
       name = "bash";
       roots = [ ];
