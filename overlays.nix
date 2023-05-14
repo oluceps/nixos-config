@@ -3,7 +3,7 @@
   (final: prev:
     prev.lib.genAttrs
       [
-        # "hyprland"
+        "hyprland"
         "hyprpicker"
         "clash-meta"
         "nil"
@@ -12,9 +12,9 @@
         "resign"
       ]
       (n: inputs.${n}.packages.${system}.default)
-    //
+    # //
     # GUI applications overlay. for stability
-    prev.lib.genAttrs [ "hyprland" ] (n: (import inputs.nixpkgs-gui { inherit system; }).${n})
+    # prev.lib.genAttrs [ "hyprland" ] (n: (import inputs.nixpkgs-gui { inherit system; }).${n})
 
     //
     {
@@ -24,7 +24,6 @@
       #       inherit system;
       #     }).lazygit;
       # inputs.hyprland.packages.${system}.default;
-
 
       helix = inputs.helix.packages.${system}.default.override {
         includeGrammarIf = grammar:
@@ -50,6 +49,7 @@
               "fish"
               "javascript"
               "typescript"
+              "sway"
             ];
       };
 
@@ -74,11 +74,16 @@
       #     sha256 = "sha256-nYA8W7iabaepiIsxDrCkG/WIFNrVdubk/AtFhIvYJB8=";
       #   };
       # });
+      # sway = prev.sway.overrideAttrs
+      #   (old: {
+      #     patches = (old.patches or [ ])
+      #     ++ [ ./.attachs/0001-text_input-Implement-input-method-popups.patch ];
+      #   });
 
       fishPlugins.foreign-env = prev.fishPlugins.foreign-env.overrideAttrs
         (old: {
           preInstall = old.preInstall + (with prev; ''
-            sed -e "s|'env'|${coreutils}/bin/env|" -i functions/*
+            sed -e "s|'env'|'${coreutils}/bin/env'|" -i functions/*
           '');
         });
 
@@ -102,12 +107,12 @@
       }
       );
 
-      waybar = prev.waybar.overrideAttrs (old: {
-        patchPhase = ''
-          sed -i 's/zext_workspace_handle_v1_activate(workspace_handle_);/const std::string command = "hyprctl dispatch workspace " + name_;\n\tsystem(command.c_str());/g' src/modules/wlr/workspace_manager.cpp
-        '';
-        mesonFlags = old.mesonFlags ++ [ "-Dexperimental=true" ];
-      });
+      # waybar = prev.waybar.overrideAttrs (old: {
+      #   patchPhase = ''
+      #     sed -i 's/zext_workspace_handle_v1_activate(workspace_handle_);/const std::string command = "hyprctl dispatch workspace " + name_;\n\tsystem(command.c_str());/g' src/modules/wlr/workspace_manager.cpp
+      #   '';
+      #   mesonFlags = old.mesonFlags ++ [ "-Dexperimental=true" ];
+      # });
 
 
       rathole = prev.rathole.overrideAttrs (old: rec {

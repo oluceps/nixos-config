@@ -50,7 +50,6 @@
       set fish_pager_color_completion normal
       set fish_pager_color_description B3A06D --italics
       set fish_pager_color_selected_background --reverse
-      update_cwd_osc
     '';
     interactiveShellInit = ''
       # Need to declare here, since something buggy.
@@ -61,16 +60,16 @@
     '';
     functions = {
       fish_greeting = "set_color -o EEA9A9; date +%T; set_color normal";
-      update_cwd_osc = {
-        body = ''
-          if status --is-command-substitution || set -q INSIDE_EMACS
-              return
-          end
-          printf \e\]7\;file://%s%s\e\\ $hostname (string escape --style=url $PWD)
-        '';
-        onVariable = "PWD";
-        description = "Notify terminals when $PWD changes";
-      };
+      # update_cwd_osc = {
+      #   body = ''
+      #     if status --is-command-substitution || set -q INSIDE_EMACS
+      #         return
+      #     end
+      #     printf \e\]7\;file://%s%s\e\\ $hostname (string escape --style=url $PWD)
+      #   '';
+      #   onVariable = "PWD";
+      #   description = "Notify terminals when $PWD changes";
+      # };
 
       ekey = {
         body = ''

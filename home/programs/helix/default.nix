@@ -1,14 +1,18 @@
 { pkgs
+, lib
 , ...
 }:
 {
-  #  home.file.".config/helix/".source = ./config;
-  xdg.configFile = {
-    "helix/languages.toml".text =
-      import ./config/languages.nix { inherit pkgs; };
-    "helix/themes/catppuccin_macchiato.toml".text =
-      builtins.readFile ./config/themes/catppuccin_macchiato.toml;
-  };
+  xdg.configFile =
+    let
+      settingsFormat = pkgs.formats.toml { };
+    in
+    {
+      "helix/languages.toml".text =
+        builtins.readFile (settingsFormat.generate "config.toml" (import ./languages.nix { inherit pkgs lib; }));
+      "helix/themes/catppuccin_macchiato.toml".text =
+        builtins.readFile (settingsFormat.generate "catppuccin_macchiato.toml" (import ./catppuccin_macchiato.nix));
+    };
 
   programs.helix = {
     enable = true;
@@ -67,41 +71,15 @@
           q = ":q!";
         };
 
-        # q.q = ":q!";
-        C-j = [
-          "move_line_down"
-          "move_line_down"
-          "move_line_down"
-          "move_line_down"
-          "move_line_down"
-
-        ];
-        C-k = [
-          "move_line_up"
-          "move_line_up"
-          "move_line_up"
-          "move_line_up"
-          "move_line_up"
-        ];
+        C-j = map (_: "move_line_down") (lib.range 0 4);
+        C-k = map (_: "move_line_up") (lib.range 0 4);
         C-e = "scroll_down";
         C-y = "scroll_up";
 
       };
       keys.select = {
-        C-j = [
-          "extend_line_down"
-          "extend_line_down"
-          "extend_line_down"
-          "extend_line_down"
-          "extend_line_down"
-        ];
-        C-k = [
-          "extend_line_up"
-          "extend_line_up"
-          "extend_line_up"
-          "extend_line_up"
-          "extend_line_up"
-        ];
+        C-j = map (_: "extend_line_down") (lib.range 0 4);
+        C-k = map (_: "extend_line_up") (lib.range 0 4);
       };
     };
   };
