@@ -20,10 +20,12 @@
 
     secrets =
       let
-        genSec = ns: owner: group: lib.genAttrs ns (n: { file = ./secrets/${n}.age; mode = "770"; inherit owner group; });
+        genSec = ns: owner: group: mode: lib.genAttrs ns (n: { file = ./secrets/${n}.age;  inherit owner group mode; });
+        genProxys = i: genSec i "proxy" "users" "740";
+        genMaterial = i: genSec i user "nogroup" "400";
       in
-      (genSec [ "rat" "ss" "sing" "hyst-az" "hyst-am" "hyst-do" "tuic" "naive" "wg" ] "proxy" "users") //
-      (genSec [ "ssh" "gh-eu" "u2f" "gh-token" ] user "nogroup") //
+      (genProxys [ "rat" "ss" "sing" "hyst-az" "hyst-am" "hyst-do" "tuic" "naive" "wg" ]) //
+      (genMaterial [ "ssh" "gh-eu" "u2f" "gh-token" "age" "pub" "id" ]) //
       {
         dae = { file = ./secrets/dae.age; mode = "640"; owner = "proxy"; group = "users"; name = "d.dae"; };
       };
@@ -65,7 +67,8 @@
 
   networking.firewall.trustedInterfaces = [ "virbr0" ];
   virtualisation = {
-    docker.enable = true;
+    docker.enable = false;
+    podman.enable = true;
     libvirtd = {
       enable = true;
       qemu = {

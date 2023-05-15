@@ -114,7 +114,7 @@
       #zathura
 
       # social
-      discord
+      # discord
       tdesktop
       nheko
       element-desktop-wayland
@@ -128,7 +128,7 @@
       lutris
       tofi
       zoom-us
-      gnomecast
+      # gnomecast
       tetrio-desktop
 
       ffmpeg_5-full
@@ -207,6 +207,7 @@
     pandoc.enable = true;
     git = {
       enable = true;
+      lfs.enable = true;
       package = pkgs.gitFull;
       userName = "oluceps";
       userEmail = "i@oluceps.uk";
