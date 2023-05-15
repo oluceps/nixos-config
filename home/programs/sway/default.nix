@@ -26,7 +26,6 @@
         "save-clipboard-to"
         "screen-recorder-toggle"
         "systemd-run-app"
-        "swww"
       ];
     in
     {
@@ -49,7 +48,6 @@
           { command = "fcitx5 -d"; }
           { command = with pkgs; "${lib.getExe systemd-run-app} ${lib.getExe firefox}"; }
           { command = with pkgs; "${lib.getExe systemd-run-app} ${lib.getExe tdesktop}"; }
-          { command = "${deps.swww} init"; }
           { command = with deps; "${wl-paste} --type text --watch ${cliphist} store"; } #Stores only text data
           { command = with deps; "${wl-paste} --type image --watch ${cliphist} store"; } #Stores image data
         ];
@@ -95,7 +93,7 @@
         output =
           if user == "riro" then {
             VGA-1 = {
-              # bg = "/etc/nixos/.attachs/wall.jpg fill";
+              bg = "/etc/nixos/.attachs/wall.jpg fill";
               mode = "1920x1080";
               scale = "1";
             };
