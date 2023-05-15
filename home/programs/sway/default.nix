@@ -93,7 +93,7 @@
         output =
           if user == "riro" then {
             VGA-1 = {
-              bg = "/etc/nixos/.attachs/wall.jpg fill";
+              # bg = "/etc/nixos/.attachs/wall.jpg fill";
               mode = "1920x1080";
               scale = "1";
             };
