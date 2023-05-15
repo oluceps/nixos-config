@@ -77,7 +77,10 @@
 
       apps =
         genSystems (system: inputs.agenix-rekey.defineApps self _pkgs.${system}
-          { inherit (self.nixosConfigurations) hastur kaambl; });
+          {
+            inherit (self.nixosConfigurations)
+              hastur kaambl;
+          });
 
       overlays.default =
         final: prev: prev.lib.genAttrs (with builtins;(attrNames (readDir ./pkgs)))
@@ -86,7 +89,10 @@
       checks = genSystems (system: with _pkgs.${system};
         {
           pre-commit-check = inputs.pre-commit-hooks.lib.${system}.run
-            { src = lib.cleanSource ./.; hooks = { nixpkgs-fmt.enable = true; }; };
+            {
+              src = lib.cleanSource ./.;
+              hooks = { nixpkgs-fmt.enable = true; };
+            };
         });
 
     };
