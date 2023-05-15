@@ -47,13 +47,13 @@
     clansty.url = "github:clansty/flake";
   };
 
-  outputs = { self, ... }@inputs:
+  outputs = { self, nixpkgs, ... }@inputs:
     let
-      genSystems = inputs.nixpkgs.lib.genAttrs [ "aarch64-linux" "x86_64-linux" ];
+      genSystems = nixpkgs.lib.genAttrs [ "aarch64-linux" "x86_64-linux" ];
 
       genOverlays = map (let m = i: inputs.${i}.overlays; in (i: (m i).default or (m i).${i})); # ugly
 
-      _pkgs = genSystems (system: import inputs.nixpkgs {
+      _pkgs = genSystems (system: import nixpkgs {
         inherit system;
         config = {
           # contentAddressedByDefault = true;
@@ -61,10 +61,7 @@
           allowBroken = false;
           segger-jlink.acceptLicense = true;
           allowUnsupportedSystem = true;
-          permittedInsecurePackages = [
-            # "python-2.7.18.6"
-            "electron-21.4.0"
-          ];
+          permittedInsecurePackages = nixpkgs.lib.mkForce [ ];
         };
         overlays = (import ./overlays.nix { inherit inputs system; })
           ++ genOverlays [ "self" "clansty" "fenix" "berberman" "nvfetcher" ]

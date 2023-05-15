@@ -40,6 +40,7 @@ let
       srm
       onagre
       libsixel
+      ouch
 
       # common
       [ killall hexyl jq fx bottom lsd fd choose duf tokei procs exa lsof tree bat ]

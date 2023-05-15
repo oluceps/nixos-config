@@ -197,6 +197,7 @@
   };
 
   programs = {
+    swww.enable = false;
     bash.enable = true;
     vscode = {
       enable = true;
