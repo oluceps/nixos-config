@@ -125,7 +125,7 @@ window:
   # - none: neither borders nor title bar
   # - transparent: title bar, transparent background and title bar buttons
   # - buttonless: title bar, transparent background, but no title bar buttons
-  opacity: 0.65
+  opacity: 0.8
   padding:
     x: 8
     y: 10

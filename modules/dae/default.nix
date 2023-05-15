@@ -49,8 +49,6 @@ in
         wantedBy = [ "multi-user.target" ];
         after = [
           "network-online.target"
-          "docker.service"
-          "libvirtd.service"
           "systemd-sysctl.service"
         ];
         wants = [

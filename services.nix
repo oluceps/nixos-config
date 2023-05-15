@@ -185,6 +185,7 @@
       extraConfig = ''
         DNS=223.6.6.6
         DNSOverTLS=no
+        Cache=no
       '';
     };
   };

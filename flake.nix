@@ -61,7 +61,10 @@
           allowBroken = false;
           segger-jlink.acceptLicense = true;
           allowUnsupportedSystem = true;
-          permittedInsecurePackages = [ "python-2.7.18.6" "electron-21.4.0" ];
+          permittedInsecurePackages = [
+            # "python-2.7.18.6"
+            "electron-21.4.0"
+          ];
         };
         overlays = (import ./overlays.nix { inherit inputs system; })
           ++ genOverlays [ "self" "clansty" "fenix" "berberman" "nvfetcher" ]
