@@ -26,7 +26,7 @@ function dec_age_file
     for file in (find . -maxdepth 1 -type f -name '*age')
         echo "
 ============================$file============================"
-        rage -d -i /run/agenix/priv $file
+        rage -d -i /run/agenix/age $file
     end
 end
 
