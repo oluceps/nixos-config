@@ -16,18 +16,18 @@
 
   rekey = {
     extraEncryptionPubkeys = [ data.keys.ageKey ];
-    masterIdentities = [ ./secrets/age-yubikey-identity-7d5d5540.txt.pub ];
+    masterIdentities = [ ./sec/age-yubikey-identity-7d5d5540.txt.pub ];
 
     secrets =
       let
-        genSec = ns: owner: group: mode: lib.genAttrs ns (n: { file = ./secrets/${n}.age;  inherit owner group mode; });
+        genSec = ns: owner: group: mode: lib.genAttrs ns (n: { file = ./sec/${n}.age;  inherit owner group mode; });
         genProxys = i: genSec i "proxy" "users" "740";
         genMaterial = i: genSec i user "nogroup" "400";
       in
       (genProxys [ "rat" "ss" "sing" "hyst-az" "hyst-am" "hyst-do" "tuic" "naive" "wg" ]) //
       (genMaterial [ "ssh" "gh-eu" "u2f" "gh-token" "age" "pub" "id" ]) //
       {
-        dae = { file = ./secrets/dae.age; mode = "640"; owner = "proxy"; group = "users"; name = "d.dae"; };
+        dae = { file = ./sec/dae.age; mode = "640"; owner = "proxy"; group = "users"; name = "d.dae"; };
       };
 
   };
