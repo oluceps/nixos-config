@@ -124,8 +124,8 @@
       jack.enable = true;
     };
 
-    hyst-az.enable = true;
-    hyst-do.enable = true;
+    hyst-az.enable = false;
+    hyst-do.enable = false;
 
     # ss-tls cnt to router
     ss.enable = false;
