@@ -81,7 +81,6 @@
           { routeConfig = { Gateway = "192.168.0.1"; }; }
           # { routeConfig = { Gateway = "fe80::c609:38ff:fef2:3ecb"; }; }
         ];
-        dns = [ "223.6.6.6" ];
         # "::1"
       };
 

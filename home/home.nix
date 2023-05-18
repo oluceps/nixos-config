@@ -34,6 +34,9 @@
   home.packages = with pkgs;
 
     [
+      # jetbrains.pycharm-professional
+      yuzu-mainline
+
       virt-manager
       xdg-utils
       fluffychat
