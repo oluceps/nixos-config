@@ -48,7 +48,15 @@ let
     ];
 
     lang = lib.flatten [
-      [ editorconfig-checker pyright kotlin-language-server sumneko-lua-language-server yaml-language-server tree-sitter stylua black ]
+      [
+        editorconfig-checker
+        kotlin-language-server
+        sumneko-lua-language-server
+        yaml-language-server
+        tree-sitter
+        stylua
+        # black
+      ]
       # languages related
       [ zig lldb haskell-language-server gopls cmake-language-server zls android-file-transfer nixpkgs-review shfmt ]
     ];
@@ -60,59 +68,69 @@ in
 {
   environment.systemPackages = lib.flatten (lib.attrValues p)
     ++ (with pkgs; [ unar texlab edk2 xmrig docker-compose ]) ++
-    # [
-    #   (with pkgs; (
-    #     python3.withPackages
-    #       (p: with p;[
-    #         # wordcloud
-    #         qrcode
-    #         matplotlib
-    #         pylsp-mypy
-    #         pip
+    [
+      (with pkgs; (
+        python3.withPackages
+          (p: with p;[
+            torch
+            fire
+            sentencepiece
+            gensim
+            numpy
+            tqdm
 
-    #         fontforge
+            python-lsp-server
 
-    #         pyzbar
-    #         pymongo
 
-    #         # aiohttp
-    #         loguru
-    #         pillow
-    #         dbus-python
-    #         numpy
-    #         redis
-    #         requests
-    #         uvloop
+            # wordcloud
+            # qrcode
+            # matplotlib
+            # pylsp-mypy
+            # pip
 
-    #         fido2
-    #         nrfutil
-    #         tockloader
-    #         intelhex
-    #         colorama
-    #         tqdm
-    #         # cryptography
+            # fontforge
 
-    #         pandas
-    #         requests
-    #         pyrogram
-    #         tgcrypto
-    #         JPype1
-    #         toml
-    #         pyyaml
-    #         tockloader
-    #         colorama
-    #         six
-    #         rich
-    #         lxml
-    #         sympy
+            # pyzbar
+            # pymongo
 
-    #         cffi
-    #         # beautifulreport
+            # # aiohttp
+            # loguru
+            # pillow
+            # dbus-python
+            # numpy
+            # redis
+            # requests
+            # uvloop
 
-    #       ])
-    #   ))
-    # ]
-    # ++
+            # fido2
+            # nrfutil
+            # tockloader
+            # intelhex
+            # colorama
+            # tqdm
+            # # cryptography
+
+            # pandas
+            # requests
+            # pyrogram
+            # tgcrypto
+            # JPype1
+            # toml
+            # pyyaml
+            # tockloader
+            # colorama
+            # six
+            # rich
+            # lxml
+            # sympy
+
+            # cffi
+            # beautifulreport
+
+          ])
+      ))
+    ]
+    ++
     (with pkgs.nodePackages; [
       vscode-json-languageserver
       typescript-language-server
