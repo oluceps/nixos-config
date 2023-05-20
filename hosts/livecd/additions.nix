@@ -6,6 +6,11 @@
 
   (import ../../users.nix { inherit user pkgs data lib; })
   {
+    isoImage = {
+      compressImage = true;
+      squashfsCompression = "zstd -Xcompression-level 6";
+    };
+
 
 
     nix = {
