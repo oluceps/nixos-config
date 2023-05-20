@@ -1,6 +1,7 @@
 { pkgs
 , lib
 , user
+, config
 , ...
 }:
 
@@ -46,6 +47,12 @@
   };
 
   services = {
+    minio = {
+      enable = true;
+      region = "ap-east-1";
+      rootCredentialsFile = config.rekey.secrets.minio.path;
+    };
+
     gvfs.enable = true;
     # github-runners = {
     #   runner1 = {
