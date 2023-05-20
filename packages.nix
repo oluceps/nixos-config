@@ -13,7 +13,15 @@ let
       kotlin
       jre17_minimal
       inotify-tools
-    ] ++ [ (fenix.complete.withComponents [ "cargo" "clippy" "rust-src" "rustc" "rustfmt" ]) ];
+      rustup
+      
+    ];
+    # ++ [
+    #   (fenix.complete.withComponents [ "cargo" "clippy" "rust-src" "rustc" "rustfmt" ])
+    #   fenix.targets.wasm32-unknown-unknown.latest.rust-std
+
+    #   #"targets.wasm32-unknown-unknown.latest.rust-std"
+    # ];
 
     web = [ hugo ];
 
