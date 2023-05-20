@@ -1,6 +1,8 @@
-{ config
-, ...
-}: {
+{ ... }: {
+  environment.etc."resolv.conf".text = ''
+    nameserver 223.6.6.6
+    nameserver 8.8.8.8
+  '';
   networking = {
     hostName = "hastur"; # Define your hostname.
     # replicates the default behaviour.
@@ -15,6 +17,7 @@
     };
     nftables.enable = true;
     networkmanager.enable = false;
+
 
 
     # wireguard.interfaces = {
