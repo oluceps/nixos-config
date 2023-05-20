@@ -25,7 +25,7 @@
         genMaterial = i: genSec i user "nogroup" "400";
       in
       (genProxys [ "rat" "ss" "sing" "hyst-az" "hyst-am" "hyst-do" "tuic" "naive" "wg" ]) //
-      (genMaterial [ "ssh" "gh-eu" "u2f" "gh-token" "age" "pub" "id" "minio" ]) //
+      (genMaterial [ "ssh" "gh-eu" "u2f" "gh-token" "age" "pub" "id" "minio" "webdav" ]) //
       {
         dae = { file = ./sec/dae.age; mode = "640"; owner = "proxy"; group = "users"; name = "d.dae"; };
       };
