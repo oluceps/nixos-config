@@ -1,13 +1,18 @@
 ![built with nix](https://img.shields.io/static/v1?logo=nixos&logoColor=white&label=&message=Built%20with%20Nix&color=41439a)![CI state](https://github.com/oluceps/nixos-config/actions/workflows/eval.yaml/badge.svg)
 
-[zh_CN](./README_zh_CN.md)
+[en_GB](./README.md)  
+> v.zh_CN README translated with ChatGPT
+
 
 # Nix flake
 
-Home managing with [home-manager](https://github.com/nix-community/home-manager)  
-Secrets managing with [agenix](https://github.com/ryantm/agenix) [rekey](https://github.com/oddlama/agenix-rekey)  
-Secure boot with [lanzaboote](https://github.com/nix-community/lanzaboote)  
-Root-On-Tmpfs persistence with [impermanence](https://github.com/nix-community/impermanence)  
+家目录管理：[home-manager](https://github.com/nix-community/home-manager)
+
+秘密管理：[agenix](https://github.com/ryantm/agenix) [rekey](https://github.com/oddlama/agenix-rekey)
+
+安全引导：[lanzaboote](https://github.com/nix-community/lanzaboote)
+
+Root-On-Tmpfs 持久化：[impermanence](https://github.com/nix-community/impermanence)
 
 ---
 
@@ -20,12 +25,13 @@ Root-On-Tmpfs persistence with [impermanence](https://github.com/nix-community/i
 </details>
 
 
-## How to use
-> Follow Nix official guide to initialize NixOS first.  
+## 如何使用
 
-flake outputs:  
+> 首先，请按照 Nix 官方指南初始化 NixOS。
+
+flake 输出:
 <details>
-<summary>Full</summary>
+<summary>完整输出</summary>
 
 ```console
 > nix flake show
@@ -62,38 +68,41 @@ git+file:///etc/nixos
 ```  
 </details>
 
-### NixOS Deployment
+### NixOS 部署
 
-__Before deployment, adjust configurations manually__
+__在部署之前，请手动调整配置__
 
 ```console
 nixos-rebuild switch --flake github:oluceps/nixos-config#HOSTNAME
   
 ```
-|Type|Program|
+| 类型 | 程序 |
 |---|---|
-|Editor|[helix](https://github.com/oluceps/nixos-config/tree/main/home/programs/helix)|
-|WM|[Hyprland](https://github.com/oluceps/nixos-config/tree/main/home/programs/hyprland)|
-|Shell|[fish](https://github.com/oluceps/nixos-config/tree/main/home/programs/fish)|
-|Bar|[waybar](https://github.com/oluceps/nixos-config/tree/main/home/programs/waybar)|
-|Terminal|[foot](https://github.com/oluceps/nixos-config/tree/main/home/programs/foot)|
-|backup|[btrbk](https://github.com/oluceps/nixos-config/tree/main/modules/btrbk)|  
+| 编辑器 | [helix](https://github.com/oluceps/nixos-config/tree/main/home/programs/helix) |
+| 窗口管理器 | [Hyprland](https://github.com/oluceps/nixos-config/tree/main/home/programs/hyprland) |
+| Shell | [fish](https://github.com/oluceps/nixos-config/tree/main/home/programs/fish) |
+| 状态栏 | [waybar](https://github.com/oluceps/nixos-config/tree/main/home/programs/waybar) |
+| 终端 | [foot](https://github.com/oluceps/nixos-config/tree/main/home/programs/foot) |
+| 备份 | [btrbk](https://github.com/oluceps/nixos-config/tree/main/modules/btrbk) |
 
-__Build devShell__  
+__构建 devShell__  
 ```console
 nix develop .#devShells.ARCH.SHELL
-```   
+```
 
-__Build livecd__  
+__构建 livecd__  
 ```console
 nix build .#nixosConfigurations.livecd.config.system.build.isoImage
 ```
 
-__Use Overlay__  
+__使用 Overlay__
 
-This flake contains overlay of few packages (check ./pkgs), to apply:  
+该 flake 包含了一些软件包的 Overlay（请
 
-Add to your flake, passing overlay while importing nixpkgs:  
+检查 ./pkgs 文件夹），要应用这些 Overlay：
+
+在你的 flake 文件中添加，同时导入 nixpkgs 时传递 overlay：
+
 ```nix
 # flake.nix
 {
