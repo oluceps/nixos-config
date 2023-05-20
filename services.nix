@@ -125,7 +125,7 @@
     };
 
     hyst-az.enable = false;
-    hyst-do.enable = false;
+    hyst-do.enable = true;
 
     # ss-tls cnt to router
     ss.enable = false;
@@ -179,7 +179,7 @@
     };
 
     resolved = {
-      enable = true;
+      enable = false;
       dnssec = "false";
       llmnr = "false";
       extraConfig = ''
