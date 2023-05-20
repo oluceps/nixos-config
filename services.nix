@@ -53,6 +53,26 @@
       rootCredentialsFile = config.rekey.secrets.minio.path;
     };
 
+    webdav = {
+      enable = true;
+      environmentFile = config.rekey.secrets.webdav.path;
+      settings =
+        {
+          address = "::1";
+          port = 8080;
+          scope = "/home/${user}/Documents/webdav";
+          modify = true;
+          auth = true;
+          users = [
+            {
+              username = "{env}ENV_USERNAME";
+              password = "{env}ENV_PASSWORD";
+            }
+          ];
+        };
+
+    };
+
     gvfs.enable = true;
     # github-runners = {
     #   runner1 = {
