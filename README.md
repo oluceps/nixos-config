@@ -13,7 +13,7 @@ Root-On-Tmpfs persistence with [impermanence](https://github.com/nix-community/i
 
 <details>
 
-![screenshot](./.attachs/shot_1.png)
+![screenshot](./.attachs/050101344059_0050101333921_0image_2023-05-01_01-18-05.png)
 
 </details>
 
