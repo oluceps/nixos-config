@@ -14,7 +14,7 @@ let
       jre17_minimal
       inotify-tools
       rustup
-      
+
     ];
     # ++ [
     #   (fenix.complete.withComponents [ "cargo" "clippy" "rust-src" "rustc" "rustfmt" ])
