@@ -6,14 +6,23 @@ let
       [ bpf-linker pkg-config gdb gcc gnumake cmake clang-tools_15 llvmPackages_latest.clang ]
       [ openocd ]
       lua
-      nodejs-18_x
+      # nodejs-18_x
       yarn
       go
       nix-tree
       kotlin
       jre17_minimal
       inotify-tools
-    ] ++ [ (fenix.complete.withComponents [ "cargo" "clippy" "rust-src" "rustc" "rustfmt" ]) ];
+      rustup
+      minio-client
+      awscli2
+    ];
+    # ++ [
+    #   (fenix.complete.withComponents [ "cargo" "clippy" "rust-src" "rustc" "rustfmt" ])
+    #   fenix.targets.wasm32-unknown-unknown.latest.rust-std
+
+    #   #"targets.wasm32-unknown-unknown.latest.rust-std"
+    # ];
 
     web = [ hugo ];
 
@@ -40,6 +49,7 @@ let
       srm
       onagre
       libsixel
+      ouch
 
       # common
       [ killall hexyl jq fx bottom lsd fd choose duf tokei procs exa lsof tree bat ]
@@ -47,7 +57,15 @@ let
     ];
 
     lang = lib.flatten [
-      [ editorconfig-checker pyright kotlin-language-server sumneko-lua-language-server yaml-language-server tree-sitter stylua black ]
+      [
+        editorconfig-checker
+        kotlin-language-server
+        sumneko-lua-language-server
+        yaml-language-server
+        tree-sitter
+        stylua
+        # black
+      ]
       # languages related
       [ zig lldb haskell-language-server gopls cmake-language-server zls android-file-transfer nixpkgs-review shfmt ]
     ];
@@ -63,49 +81,59 @@ in
       (with pkgs; (
         python3.withPackages
           (p: with p;[
-            # wordcloud
-            qrcode
-            matplotlib
-            pylsp-mypy
-            pip
-
-            fontforge
-
-            pyzbar
-            pymongo
-
-            aiohttp
-            loguru
-            pillow
-            dbus-python
+            torch
+            fire
+            sentencepiece
+            gensim
             numpy
-            redis
-            requests
-            uvloop
-
-            fido2
-            nrfutil
-            tockloader
-            intelhex
-            colorama
             tqdm
-            # cryptography
 
-            pandas
-            requests
-            pyrogram
-            tgcrypto
-            JPype1
-            toml
-            pyyaml
-            tockloader
-            colorama
-            six
-            rich
-            lxml
-            sympy
+            python-lsp-server
 
-            cffi
+
+            # wordcloud
+            # qrcode
+            # matplotlib
+            # pylsp-mypy
+            # pip
+
+            # fontforge
+
+            # pyzbar
+            # pymongo
+
+            # # aiohttp
+            # loguru
+            # pillow
+            # dbus-python
+            # numpy
+            # redis
+            # requests
+            # uvloop
+
+            # fido2
+            # nrfutil
+            # tockloader
+            # intelhex
+            # colorama
+            # tqdm
+            # # cryptography
+
+            # pandas
+            # requests
+            # pyrogram
+            # tgcrypto
+            # JPype1
+            # toml
+            # pyyaml
+            # tockloader
+            # colorama
+            # six
+            # rich
+            # lxml
+            # sympy
+
+            # cffi
             # beautifulreport
 
           ])

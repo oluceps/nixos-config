@@ -5,7 +5,6 @@
     shellAliases = {
       nd = "cd /etc/nixos";
       swc = "doas nixos-rebuild switch --flake /etc/nixos --verbose";
-      swcs = "doas nixos-rebuild switch --flake /etc/nixos --verbose --max-jobs 1";
       daso = "doas";
       daos = "doas";
       off = "poweroff";
@@ -19,6 +18,8 @@
       "cd.." = "cd ..";
       up = "nix flake update --commit-lock-file /etc/nixos && swc";
       rekey = "nix run .#rekey";
+      fp = "fish --private";
+      e = "exit";
     };
 
     shellInit = ''
@@ -71,13 +72,17 @@
       #   description = "Notify terminals when $PWD changes";
       # };
 
+      swcs = {
+        body = "doas nixos-rebuild switch --flake /etc/nixos --verbose --max-jobs $argv[1]";
+        description = "specific job max for rebuild";
+      };
       ekey = {
         body = ''
           nix run .#edit-secret $argv[1]
         '';
         description = "edit agenix-rekey secret";
       };
-      dec = "rage -d -i ~/.ssh/age/priv.age $argv[1]";
+      dec = "rage -d -i /run/agenix/age $argv[1]";
       extract = ''
         set --local ext (echo $argv[1] | awk -F. '{print $NF}')
         switch $ext

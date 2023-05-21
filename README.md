@@ -1,5 +1,9 @@
 ![built with nix](https://img.shields.io/static/v1?logo=nixos&logoColor=white&label=&message=Built%20with%20Nix&color=41439a)![CI state](https://github.com/oluceps/nixos-config/actions/workflows/eval.yaml/badge.svg)
 
+[简体中文](./README_zh_CN.md)
+
+---
+
 # Nix flake
 
 Home managing with [home-manager](https://github.com/nix-community/home-manager)  
@@ -13,7 +17,7 @@ Root-On-Tmpfs persistence with [impermanence](https://github.com/nix-community/i
 
 <details>
 
-![screenshot](./.attachs/shot_1.png)
+![screenshot](./.attachs/050101344059_0050101333921_0image_2023-05-01_01-18-05.png)
 
 </details>
 

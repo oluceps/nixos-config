@@ -35,7 +35,7 @@
         efiSupport = true;
       };
       efi.canTouchEfiVariables = true;
-      efi.efiSysMountPoint = "/boot";
+      efi.efiSysMountPoint = "/efi";
     };
     supportedFilesystems = [ "ntfs" "tcp_bbr" ];
     kernel.sysctl = {

@@ -1,6 +1,7 @@
 { pkgs
 , lib
 , user
+, config
 , ...
 }:
 
@@ -46,6 +47,13 @@
   };
 
   services = {
+    # vault = { enable = true; extraConfig = "ui = true"; package = pkgs.vault-bin; };
+    minio = {
+      enable = true;
+      region = "ap-east-1";
+      rootCredentialsFile = config.rekey.secrets.minio.path;
+    };
+
     gvfs.enable = true;
     # github-runners = {
     #   runner1 = {
@@ -124,7 +132,7 @@
       jack.enable = true;
     };
 
-    hyst-az.enable = true;
+    hyst-az.enable = false;
     hyst-do.enable = true;
 
     # ss-tls cnt to router
@@ -179,12 +187,13 @@
     };
 
     resolved = {
-      enable = true;
+      enable = false;
       dnssec = "false";
       llmnr = "false";
       extraConfig = ''
         DNS=223.6.6.6
         DNSOverTLS=no
+        Cache=no
       '';
     };
   };

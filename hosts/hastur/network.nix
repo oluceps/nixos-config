@@ -1,6 +1,8 @@
-{ config
-, ...
-}: {
+{ ... }: {
+  environment.etc."resolv.conf".text = ''
+    nameserver 223.6.6.6
+    nameserver 8.8.8.8
+  '';
   networking = {
     hostName = "hastur"; # Define your hostname.
     # replicates the default behaviour.
@@ -12,9 +14,12 @@
     firewall = {
       enable = true;
       trustedInterfaces = [ "virbr0" ];
+      allowedUDPPorts = [ 8080 9000 9001 ];
+      allowedTCPPorts = [ 8080 9000 ];
     };
     nftables.enable = true;
     networkmanager.enable = false;
+
 
 
     # wireguard.interfaces = {
@@ -81,7 +86,6 @@
           { routeConfig = { Gateway = "192.168.0.1"; }; }
           # { routeConfig = { Gateway = "fe80::c609:38ff:fef2:3ecb"; }; }
         ];
-        dns = [ "127.0.0.1" ];
         # "::1"
       };
 
