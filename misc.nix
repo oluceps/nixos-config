@@ -131,7 +131,7 @@
           "cgroups"
           "repl-flake"
           "recursive-nix"
-          "ca-derivations"
+          # "ca-derivations"
         ];
         auto-allocate-uids = true;
         use-cgroups = true;
