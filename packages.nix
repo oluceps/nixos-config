@@ -15,6 +15,7 @@ let
       inotify-tools
       rustup
       minio-client
+      awscli2
     ];
     # ++ [
     #   (fenix.complete.withComponents [ "cargo" "clippy" "rust-src" "rustc" "rustfmt" ])
