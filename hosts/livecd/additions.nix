@@ -6,6 +6,11 @@
 
   (import ../../users.nix { inherit user pkgs data lib; })
   {
+    isoImage = {
+      compressImage = true;
+      squashfsCompression = "zstd -Xcompression-level 6";
+    };
+
 
 
     nix = {
@@ -33,10 +38,10 @@
         writeShellScriptBin "mount-os" ''
           #!/usr/bin/env bash
           echo "start mounting ..."
-          doas mkdir /mnt/{persist,etc,var,boot,nix}
+          doas mkdir /mnt/{persist,etc,var,efi,nix}
           doas mount -o compress=zstd,discard=async,noatime,subvol=nix /dev/$1 /mnt/nix
           doas mount -o compress=zstd,discard=async,noatime,subvol=persist /dev/$1 /mnt/persist
-          doas mount /dev/nvme0n1p1 /mnt/boot
+          doas mount /dev/nvme0n1p1 /mnt/efi
           doas mount -o bind /mnt/persist/etc /mnt/etc
           doas mount -o bind /mnt/persist/var /mnt/var
           echo "mount finished."

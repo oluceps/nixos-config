@@ -16,16 +16,18 @@
 
   rekey = {
     extraEncryptionPubkeys = [ data.keys.ageKey ];
-    masterIdentities = [ ./secrets/age-yubikey-identity-7d5d5540.txt.pub ];
+    masterIdentities = [ ./sec/age-yubikey-identity-7d5d5540.txt.pub ];
 
     secrets =
       let
-        genSec = ns: owner: group: lib.genAttrs ns (n: { file = ./secrets/${n}.age; mode = "770"; inherit owner group; });
+        genSec = ns: owner: group: mode: lib.genAttrs ns (n: { file = ./sec/${n}.age;  inherit owner group mode; });
+        genProxys = i: genSec i "proxy" "users" "740";
+        genMaterial = i: genSec i user "nogroup" "400";
       in
-      (genSec [ "rat" "ss" "sing" "hyst-az" "hyst-am" "hyst-do" "tuic" "naive" "wg" ] "proxy" "users") //
-      (genSec [ "ssh" "gh-eu" "u2f" "gh-token" ] user "nogroup") //
+      (genProxys [ "rat" "ss" "sing" "hyst-az" "hyst-am" "hyst-do" "tuic" "naive" "wg" ]) //
+      (genMaterial [ "ssh" "gh-eu" "u2f" "gh-token" "age" "pub" "id" "minio" ]) //
       {
-        dae = { file = ./secrets/dae.age; mode = "640"; owner = "proxy"; group = "users"; name = "d.dae"; };
+        dae = { file = ./sec/dae.age; mode = "640"; owner = "proxy"; group = "users"; name = "d.dae"; };
       };
 
   };
@@ -65,9 +67,10 @@
 
   networking.firewall.trustedInterfaces = [ "virbr0" ];
   virtualisation = {
-    docker.enable = true;
+    docker.enable = false;
+    podman.enable = true;
     libvirtd = {
-      enable = true;
+      enable = false;
       qemu = {
         ovmf = {
           enable = true;
@@ -148,7 +151,7 @@
       extraOptions = ''
         keep-outputs = true
         keep-derivations = true
-        # access-tokens = github.com=@${config.rekey.secrets.gh-token.path}
+        !include ${config.rekey.secrets.gh-token.path}
       '';
     };
 
@@ -295,7 +298,7 @@
   i18n = {
 
     # Select internationalisation properties.
-    defaultLocale = "C.UTF-8";
+    defaultLocale = "en_GB.UTF-8";
 
     inputMethod = {
       enabled = "fcitx5";
@@ -310,6 +313,6 @@
   };
 
   system.stateVersion = "22.11"; # Did you read the comment?
-  documentation.nixos.enable = false;
+  documentation = { enable = false; nixos.enable = false; man.enable = false; };
 
 }

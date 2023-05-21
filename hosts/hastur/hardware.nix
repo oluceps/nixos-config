@@ -30,7 +30,6 @@
     ];
     kernelParams = [
       "mitigations=off"
-      # "resume_offset=117616405"
     ];
     resumeDevice = "/dev/disk/by-uuid/5ddc05a2-22a7-4803-8bca-fc64fad0b478";
   };
@@ -55,7 +54,7 @@
     options = [ "subvolid=258" "compress-force=zstd" "noatime" "discard=async" "space_cache=v2" ];
   };
 
-  fileSystems."/boot" = {
+  fileSystems."/efi" = {
     device = "/dev/disk/by-uuid/F680-4A3F";
     fsType = "vfat";
   };

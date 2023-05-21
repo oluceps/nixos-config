@@ -34,6 +34,9 @@
   home.packages = with pkgs;
 
     [
+      # jetbrains.pycharm-professional
+      yuzu-mainline
+
       virt-manager
       xdg-utils
       fluffychat
@@ -114,7 +117,7 @@
       #zathura
 
       # social
-      discord
+      # discord
       tdesktop
       nheko
       element-desktop-wayland
@@ -128,7 +131,7 @@
       lutris
       tofi
       zoom-us
-      gnomecast
+      # gnomecast
       tetrio-desktop
 
       ffmpeg_5-full
@@ -197,6 +200,7 @@
   };
 
   programs = {
+    swww.enable = false;
     bash.enable = true;
     vscode = {
       enable = true;
@@ -207,6 +211,7 @@
     pandoc.enable = true;
     git = {
       enable = true;
+      lfs.enable = true;
       package = pkgs.gitFull;
       userName = "oluceps";
       userEmail = "i@oluceps.uk";
@@ -420,7 +425,7 @@
   services = {
     swayidle = {
       enable = true;
-      systemdTarget = "hyprland-session.target";
+      systemdTarget = "sway-session.target";
       timeouts = [
         { timeout = 900; command = "${pkgs.swaylock}/bin/swaylock"; }
         {

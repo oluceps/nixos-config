@@ -44,7 +44,7 @@ window#waybar.solo {
 /*
 */
 
-#tray, #mode, #battery, #cpu, #memory, #network,  #backlight, #custom-storage, #custom-spotify, #custom-weather, #custom-mail, #temperature {
+#tray, #mode, #battery, #cpu, #memory, #network,  #backlight, #custom-storage, #custom-spotify, #custom-weather, #custom-mail, #temperature, #idle_inhibitor {
 	color: rgba(217, 216, 216, 1);
 	padding: 3px 3px 3px 3px;
 	margin: 0px 4px 0px 4px;

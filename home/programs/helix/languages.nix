@@ -3,18 +3,21 @@ let
 
   apps = lib.genAttrs [
     "rust-analyzer"
-    "black"
+    # "black"
     "nil"
     "shfmt"
     "nixpkgs-fmt"
-    "bash-language-server"
+    # "bash-language-server"
     "taplo"
     "rustfmt"
   ]
     (name: lib.getExe pkgs.${name});
 
   clangd = "${pkgs.clang-tools}/bin/clangd";
-  bash-language-server = "${pkgs.nodePackages_latest.bash-language-server}/bin/bash-language-server";
+  vscode-json-languageserver = lib.getExe pkgs.nodePackages.vscode-json-languageserver;
+  prettier = lib.getExe pkgs.nodePackages.prettier;
+  # pyright = "${pkgs.pyright}/bin/pyright-langserver";
+  # bash-language-server = "${pkgs.nodePackages_latest.bash-language-server}/bin/bash-language-server";
 
 in
 with apps;{
@@ -175,7 +178,7 @@ with apps;{
       file-types = [ "json" ];
       formatter = {
         args = [ "--parser" "json" ];
-        command = "prettier";
+        command = prettier;
       };
       indent = {
         tab-width = 2;
@@ -184,7 +187,7 @@ with apps;{
       injection-regex = "json";
       language-server = {
         args = [ "--stdio" ];
-        command = "vscode-json-language-server";
+        command = vscode-json-languageserver;
       };
       name = "json";
       roots = [ ];
@@ -569,24 +572,22 @@ with apps;{
       scope = "text.html.basic";
     }
     {
-      comment-token = "#";
+      # comment-token = "#";
       file-types = [ "py" ];
-      formatter = {
-        args = [ "-" ];
-        command = black;
-      };
-      indent = {
-        tab-width = 4;
-        unit = "    ";
-      };
-      injection-regex = "python";
+      # formatter = {
+      #   args = [ "-" ];
+      #   command = black;
+      # };
+      # indent = {
+      #   tab-width = 4;
+      #   unit = "    ";
+      # };
+      roots = [ "pyproject.toml" "setup.py" "Poetry.lock" ".git" ];
       language-server = {
         command = "pylsp";
+        # args = [ "--stdio" ];
       };
       name = "python";
-      roots = [ ];
-      scope = "source.python";
-      shebangs = [ "python" ];
     }
     {
       comment-token = "#";
@@ -620,7 +621,7 @@ with apps;{
       injection-regex = "(shell|bash|zsh|sh)";
       language-server = {
         args = [ "start" ];
-        command = bash-language-server;
+        command = "";
       };
       name = "bash";
       roots = [ ];
