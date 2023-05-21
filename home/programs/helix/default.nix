@@ -14,6 +14,25 @@
         builtins.readFile (settingsFormat.generate "catppuccin_macchiato.toml" (import ./catppuccin_macchiato.nix));
     };
 
+  # lsps
+  home.packages = with pkgs;[
+    rust-analyzer
+    nil
+    shfmt
+    nixpkgs-fmt
+    # taplo
+    rustfmt
+    clang-tools
+    haskell-language-server
+    cmake-language-server
+  ]
+  ++ (with pkgs.nodePackages_latest; [
+    vscode-json-languageserver-bin
+    vscode-html-languageserver-bin
+    vscode-css-languageserver-bin
+    prettier
+  ]);
+
   programs.helix = {
     enable = true;
     package = pkgs.helix;
