@@ -14,6 +14,8 @@
     firewall = {
       enable = true;
       trustedInterfaces = [ "virbr0" ];
+      allowedUDPPorts = [ 8080 9000 9001 ];
+      allowedTCPPorts = [ 8080 9000 ];
     };
     nftables.enable = true;
     networkmanager.enable = false;
