@@ -50,6 +50,8 @@
               "javascript"
               "typescript"
               "sway"
+              "diff"
+              "comment"
             ];
       };
 
