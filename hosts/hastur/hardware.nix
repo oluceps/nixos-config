@@ -54,7 +54,7 @@
     options = [ "subvolid=258" "compress-force=zstd" "noatime" "discard=async" "space_cache=v2" ];
   };
 
-  fileSystems."/boot" = {
+  fileSystems."/efi" = {
     device = "/dev/disk/by-uuid/F680-4A3F";
     fsType = "vfat";
   };

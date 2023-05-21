@@ -13,7 +13,7 @@
     mutableUsers = lib.mkForce false;
     users.root = {
       initialHashedPassword = lib.mkForce data.keys.hashedPasswd;
-      openssh.authorizedKeys.keys = [ data.keys.sshPubKey ];
+      openssh.authorizedKeys.keys = with data.keys;[ sshPubKey ];
     };
     users.${user} = {
       initialHashedPassword = lib.mkDefault data.keys.hashedPasswd;
@@ -29,7 +29,7 @@
       ];
       shell = pkgs.bash;
 
-      openssh.authorizedKeys.keys = [ data.keys.sshPubKey ];
+      openssh.authorizedKeys.keys = with data.keys;[ sshPubKey ];
     };
     users.root.shell = pkgs.bash;
 

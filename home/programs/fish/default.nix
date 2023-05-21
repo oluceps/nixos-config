@@ -18,6 +18,8 @@
       "cd.." = "cd ..";
       up = "nix flake update --commit-lock-file /etc/nixos && swc";
       rekey = "nix run .#rekey";
+      fp = "fish --private";
+      e = "exit";
     };
 
     shellInit = ''

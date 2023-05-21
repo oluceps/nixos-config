@@ -31,6 +31,7 @@
         ".pip"
         ".cache"
         ".local"
+        ".mc"
         ".cargo"
         ".rustup"
         ".mozilla"
