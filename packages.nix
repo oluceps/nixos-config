@@ -16,6 +16,7 @@ let
       rustup
       minio-client
       awscli2
+      trunk
     ];
     # ++ [
     #   (fenix.complete.withComponents [ "cargo" "clippy" "rust-src" "rustc" "rustfmt" ])

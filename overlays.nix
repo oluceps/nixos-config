@@ -52,6 +52,7 @@
               "sway"
               "diff"
               "comment"
+              "vue"
             ];
       };
 

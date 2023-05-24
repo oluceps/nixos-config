@@ -209,10 +209,16 @@
       };
       proxies = {
         socks-hyst-az = {
-          enable = true;
+          enable = false;
           type = "socks5";
           host = "127.0.0.1";
           port = 1083;
+        };
+        socks-hyst-do = {
+          enable = true;
+          type = "socks5";
+          host = "127.0.0.1";
+          port = 1085;
         };
       };
     };
