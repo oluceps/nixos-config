@@ -53,6 +53,7 @@
               "diff"
               "comment"
               "vue"
+              "nu"
             ];
       };
 
