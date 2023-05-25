@@ -111,6 +111,9 @@ font:
     family: SF Mono
     style: Medium
 
+key_bindings:
+   - { action: SpawnNewInstance , key: Return, mods: Control}
+
 window:
   # Spread additional padding evenly around the terminal content.
   decorations: none
