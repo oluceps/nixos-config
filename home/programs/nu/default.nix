@@ -1,5 +1,5 @@
 { pkgs, config, ... }: {
-  programs.nu = {
+  programs.nushell = {
     enable = true;
   };
 }
