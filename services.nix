@@ -136,7 +136,7 @@
     hyst-do.enable = true;
 
     # ss-tls cnt to router
-    ss.enable = false;
+    ss.enable = true;
     tuic.enable = false;
     naive.enable = false;
 
@@ -187,11 +187,12 @@
     };
 
     resolved = {
-      enable = false;
+      enable = true;
       dnssec = "false";
       llmnr = "false";
       extraConfig = ''
         DNS=223.6.6.6
+        FallbackDNS=8.8.8.8
         DNSOverTLS=no
         Cache=no
       '';

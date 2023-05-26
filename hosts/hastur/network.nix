@@ -1,8 +1,8 @@
 { ... }: {
-  environment.etc."resolv.conf".text = ''
-    nameserver 223.6.6.6
-    nameserver 8.8.8.8
-  '';
+  # environment.etc."resolv.conf".text = ''
+  #   nameserver 223.6.6.6
+  #   nameserver 8.8.8.8
+  # '';
   networking = {
     hostName = "hastur"; # Define your hostname.
     # replicates the default behaviour.
@@ -86,6 +86,7 @@
           { routeConfig = { Gateway = "192.168.0.1"; }; }
           # { routeConfig = { Gateway = "fe80::c609:38ff:fef2:3ecb"; }; }
         ];
+        dns = [ "::" ];
         # "::1"
       };
 
