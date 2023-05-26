@@ -165,7 +165,7 @@
       enable = true;
       settings = {
         passwordAuthentication = false;
-        UseDns = false;
+        UseDns = true;
         X11Forwarding = false;
       };
       authorizedKeysFiles = lib.mkForce [ "/etc/ssh/authorized_keys.d/%u" ];

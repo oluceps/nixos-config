@@ -25,7 +25,7 @@
         genMaterial = i: genSec i user "nogroup" "400";
       in
       (genProxys [ "rat" "ss" "sing" "hyst-az" "hyst-am" "hyst-do" "tuic" "naive" "wg" ]) //
-      (genMaterial [ "ssh" "gh-eu" "u2f" "gh-token" "age" "pub" "id" "minio" ]) //
+      (genMaterial [ "ssh-cfg" "gh-eu" "u2f" "gh-token" "age" "pub" "id" "minio" ]) //
       {
         dae = { file = ./sec/dae.age; mode = "640"; owner = "proxy"; group = "users"; name = "d.dae"; };
       };
@@ -168,6 +168,7 @@
       enable = true;
       settings = (import ./home/programs/starship { }).programs.starship.settings // {
         format = "$username$directory$git_branch$git_commit$git_status$nix_shell$cmd_duration$line_break$python$character";
+        
       };
     };
     neovim = {
