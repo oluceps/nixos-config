@@ -83,7 +83,10 @@
         description = "edit agenix-rekey secret";
       };
       dec = "rage -d -i /run/agenix/age $argv[1]";
-      enc = "rage -i /etc/nixos/sec/age-yubikey-identity-7d5d5540.txt.pub -R /run/agenix/pub -e $argv[1] -o $argv[1].age";
+      enc = ''
+        rage -i /etc/nixos/sec/age-yubikey-identity-7d5d5540.txt.pub -R /run/agenix/pub -e $argv[1] -o $argv[1].age
+        srm $argv[1]
+      '';
       extract = ''
         set --local ext (echo $argv[1] | awk -F. '{print $NF}')
         switch $ext
