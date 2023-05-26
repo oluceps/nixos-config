@@ -188,13 +188,14 @@
 
     resolved = {
       enable = true;
-      dnssec = "false";
+      dnssec = "true";
       llmnr = "false";
       extraConfig = ''
-        DNS=223.6.6.6
-        FallbackDNS=8.8.8.8
+        DNS=223.5.5.5#dns.alidns.com
+        # FallbackDNS=
         DNSOverTLS=no
         Cache=no
+        DNSStubListener=yes
       '';
     };
   };

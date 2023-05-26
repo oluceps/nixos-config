@@ -1,5 +1,5 @@
-{ ... }: {
-  # environment.etc."resolv.conf".text = ''
+{ lib, ... }: {
+  # environment.etc."resolv.conf".text = lib.mkForce ''
   #   nameserver 223.6.6.6
   #   nameserver 8.8.8.8
   # '';
@@ -82,11 +82,18 @@
         dhcpV4Config.RouteMetric = 2046;
         dhcpV6Config.RouteMetric = 2046;
         address = [ "192.168.0.2/24" ];
+        networkConfig = {
+          DNSSEC = true;
+        };
+        # REALLY IMPORTANT
+        dhcpV4Config.UseDNS = false;
+        dhcpV6Config.UseDNS = false;
+
         routes = [
           { routeConfig = { Gateway = "192.168.0.1"; }; }
           # { routeConfig = { Gateway = "fe80::c609:38ff:fef2:3ecb"; }; }
         ];
-        dns = [ "::" ];
+        # dns = [ "::1" ];
         # "::1"
       };
 
@@ -95,6 +102,12 @@
         DHCP = "yes";
         dhcpV4Config.RouteMetric = 2044;
         dhcpV6Config.RouteMetric = 2044;
+        dhcpV4Config.UseDNS = false;
+        dhcpV6Config.UseDNS = false;
+        # dns = [ "::1" ];
+        networkConfig = {
+          DNSSEC = true;
+        };
       };
 
       "40-wireless" = {
@@ -102,6 +115,9 @@
         DHCP = "yes";
         dhcpV4Config.RouteMetric = 2048;
         dhcpV6Config.RouteMetric = 2048;
+        dhcpV4Config.UseDNS = false;
+        dhcpV6Config.UseDNS = false;
+        # dns = [ "::1" ];
       };
 
     };
