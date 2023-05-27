@@ -1,3 +1,4 @@
+# ref: EHfive/flakes
 { lib, ... }:
 let
   modules = lib.genAttrs
