@@ -39,40 +39,40 @@
     };
     supportedFilesystems = [ "ntfs" "tcp_bbr" ];
     kernel.sysctl = {
-       "kernel.panic" = 10;
-       "kernel.sysrq" = 1;
-       # max read buffer
-       # max write buffer
-       "fs.file-max" = 6553560;
-       # default read buffer
-       "net.core.rmem_default" = 65536;
-       # default write buffer
-       "net.core.wmem_default" = 65536;
-       # max processor input queue
-       #"net.core.netdev_max_backlog" = 4096;
-       # max backlog
+      "kernel.panic" = 10;
+      "kernel.sysrq" = 1;
+      # max read buffer
+      # max write buffer
+      "fs.file-max" = 6553560;
+      # default read buffer
+      "net.core.rmem_default" = 65536;
+      # default write buffer
+      "net.core.wmem_default" = 65536;
+      # max processor input queue
+      #"net.core.netdev_max_backlog" = 4096;
+      # max backlog
 
-       # Ignore ICMP broadcasts to avoid participating in Smurf attacks
-       "net.ipv4.icmp_echo_ignore_broadcasts" = 0;
-       # Ignore bad ICMP errors
-       "net.ipv4.icmp_ignore_bogus_error_responses" = 1;
-       # Reverse-path filter for spoof protection
-       "net.ipv4.conf.default.rp_filter" = 0;
-       "net.ipv4.conf.all.rp_filter" = 0;
-       "net.ipv4.conf.wan.rp_filter" = 0;
-       # SYN flood protection
-       "net.ipv4.tcp_syncookies" = 0;
-       # Do not accept ICMP redirects (prevent MITM attacks)
-       "net.ipv4.conf.all.accept_redirects" = 1;
-       "net.ipv4.conf.default.accept_redirects" = 1;
-       "net.ipv4.conf.all.secure_redirects" = 1;
-       "net.ipv4.conf.default.secure_redirects" = 1;
-       "net.ipv6.conf.all.accept_redirects" = 1;
-       "net.ipv6.conf.default.accept_redirects" = 1;
-       # Protect against tcp time-wait assassination hazards
-       "net.ipv4.tcp_rfc1337" = 1;
-       # TCP Fast Open (TFO)
-       "net.ipv4.tcp_fastopen" = 0;
+      # Ignore ICMP broadcasts to avoid participating in Smurf attacks
+      "net.ipv4.icmp_echo_ignore_broadcasts" = 0;
+      # Ignore bad ICMP errors
+      "net.ipv4.icmp_ignore_bogus_error_responses" = 1;
+      # Reverse-path filter for spoof protection
+      "net.ipv4.conf.default.rp_filter" = 0;
+      "net.ipv4.conf.all.rp_filter" = 0;
+      "net.ipv4.conf.wan.rp_filter" = 0;
+      # SYN flood protection
+      "net.ipv4.tcp_syncookies" = 0;
+      # Do not accept ICMP redirects (prevent MITM attacks)
+      "net.ipv4.conf.all.accept_redirects" = 1;
+      "net.ipv4.conf.default.accept_redirects" = 1;
+      "net.ipv4.conf.all.secure_redirects" = 1;
+      "net.ipv4.conf.default.secure_redirects" = 1;
+      "net.ipv6.conf.all.accept_redirects" = 1;
+      "net.ipv6.conf.default.accept_redirects" = 1;
+      # Protect against tcp time-wait assassination hazards
+      "net.ipv4.tcp_rfc1337" = 1;
+      # TCP Fast Open (TFO)
+      "net.ipv4.tcp_fastopen" = 0;
       # Bufferbloat mitigations
       # Requires >= 4.9 & kernel module
       "net.ipv4.tcp_congestion_control" = "bbr";

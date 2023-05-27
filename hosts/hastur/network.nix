@@ -78,7 +78,7 @@
     networks = {
       "20-wired" = {
         matchConfig.Name = "wan";
-        DHCP = "no";
+        DHCP = "yes";
         dhcpV4Config.RouteMetric = 2046;
         dhcpV6Config.RouteMetric = 2046;
         address = [ "192.168.0.2/24" ];
