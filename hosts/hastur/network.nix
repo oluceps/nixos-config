@@ -1,4 +1,4 @@
-{ lib, ... }: {
+{ ... }: {
   # environment.etc."resolv.conf".text = lib.mkForce ''
   #   nameserver 223.6.6.6
   #   nameserver 8.8.8.8
@@ -14,8 +14,8 @@
     firewall = {
       enable = true;
       trustedInterfaces = [ "virbr0" ];
-      allowedUDPPorts = [ 8080 9000 9001 ];
-      allowedTCPPorts = [ 8080 9000 ];
+      allowedUDPPorts = [ 5353 853 8080 9000 9001 ];
+      allowedTCPPorts = [ 853 8080 9000 ];
     };
     nftables.enable = true;
     networkmanager.enable = false;
@@ -84,6 +84,9 @@
         address = [ "192.168.0.2/24" ];
         networkConfig = {
           DNSSEC = true;
+          MulticastDNS = true;
+          "DNSDefaultRoute" = "yes";
+          "DNSOverTLS" = "yes";
         };
         # REALLY IMPORTANT
         dhcpV4Config.UseDNS = false;

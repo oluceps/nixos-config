@@ -185,19 +185,34 @@
         "192.168.0.0/16"
       ];
     };
-
     resolved = {
       enable = true;
-      dnssec = "true";
-      llmnr = "false";
+      dnssec = "false"; # https://github.com/systemd/systemd/issues/10579
+      domains = [
+        "~."
+        "dns.alidns.com"
+        "dns.google"
+      ];
       extraConfig = ''
-        DNS=223.5.5.5#dns.alidns.com
-        # FallbackDNS=
+        DNS=223.6.6.6#dns.alidns.com
+        FallbackDNS=
         DNSOverTLS=no
-        Cache=no
-        DNSStubListener=yes
+        MulticastDNS=true
       '';
     };
+
+    # resolved = {
+    #   enable = true;
+    #   dnssec = "true";
+    #   llmnr = "true";
+    #   extraConfig = ''
+    #     DNS=223.6.6.6#dns.alidns.com
+    #     # FallbackDNS=
+    #     DNSOverTLS=no
+    #     Cache=no
+    #     DNSStubListener=yes
+    #   '';
+    # };
   };
 
   programs = {
