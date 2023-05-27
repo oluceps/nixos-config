@@ -203,7 +203,7 @@
 
     resolved = {
       enable = true;
-      dnssec = "true";
+      dnssec = "false";
       llmnr = "true";
       extraConfig = ''
         DNS=223.6.6.6#dns.alidns.com
