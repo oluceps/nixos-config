@@ -7,6 +7,7 @@
   ./naive
   ./sundial
   ./dae
+  ./mosdns
 ]
 ++ # Hysteria configs
 (map (import ./hysteria) [
