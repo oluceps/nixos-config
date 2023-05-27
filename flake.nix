@@ -91,6 +91,8 @@
         final: prev: prev.lib.genAttrs (with builtins;(attrNames (readDir ./pkgs)))
           (name: final.callPackage (./pkgs + "/${name}") { });
 
+      nixosModules = import ./modules { lib = inputs.nixpkgs.lib; };
+
       checks = genSystems (system: with _pkgs.${system};
         {
           pre-commit-check = inputs.pre-commit-hooks.lib.${system}.run

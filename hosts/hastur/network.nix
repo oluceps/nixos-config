@@ -1,8 +1,8 @@
-{ ... }: {
+{ lib, ... }: {
   # environment.etc."resolv.conf".text = lib.mkForce ''
-  #   nameserver 223.6.6.6
-  #   nameserver 8.8.8.8
+  #   nameserver 127.0.0.1
   # '';
+  networking.resolvconf.useLocalResolver = true;
   networking = {
     hostName = "hastur"; # Define your hostname.
     # replicates the default behaviour.
@@ -18,7 +18,7 @@
       allowedTCPPorts = [ 853 8080 9000 ];
     };
     nftables.enable = true;
-    networkmanager.enable = false;
+    networkmanager.enable = lib.mkForce false;
 
 
 
@@ -78,7 +78,7 @@
     networks = {
       "20-wired" = {
         matchConfig.Name = "wan";
-        DHCP = "yes";
+        DHCP = "no";
         dhcpV4Config.RouteMetric = 2046;
         dhcpV6Config.RouteMetric = 2046;
         address = [ "192.168.0.2/24" ];
