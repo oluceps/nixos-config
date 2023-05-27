@@ -2,7 +2,7 @@
 , ...
 }: {
   environment.sessionVariables = {
-    SYSTEMD_LOG_LEVEL = "debug";
+    # SYSTEMD_LOG_LEVEL = "debug";
     EDITOR = "hx";
     # NIXOS_OZONE_WL = "1";
     # Steam needs this to find Proton-GE

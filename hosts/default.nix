@@ -11,7 +11,7 @@ let
     ../packages.nix
     ../sysvars.nix
     ../services.nix
-  ] ++ (genModules [ "agenix-rekey" "ragenix" "home-manager" "impermanence" "lanzaboote" "nix-ld" ]) ++ (import ../modules);
+  ] ++ (genModules [ "agenix-rekey" "ragenix" "home-manager" "impermanence" "lanzaboote" "nix-ld" "self" ]);
 
   data = {
     keys = {

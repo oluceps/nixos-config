@@ -202,7 +202,7 @@
     # };
 
     resolved = {
-      enable = true;
+      enable = false;
       dnssec = "false";
       llmnr = "true";
       extraConfig = ''
@@ -212,6 +212,17 @@
         # Cache=no
         DNSStubListener=yes
       '';
+    };
+
+    smartdns = {
+      enable = true;
+      settings = {
+        cache-size = 4096;
+        server-tls = [ "223.6.6.6:853" "1.0.0.1:853" ];
+        server-https = [ "https://dns.alidns.com/dns-query" ];
+        prefetch-domain = true;
+        speed-check-mode = "ping,tcp:80";
+      };
     };
   };
   networking.resolvconf.package = lib.mkForce pkgs.openresolv;
