@@ -185,35 +185,36 @@
         "192.168.0.0/16"
       ];
     };
-    resolved = {
-      enable = true;
-      dnssec = "false"; # https://github.com/systemd/systemd/issues/10579
-      domains = [
-        "~."
-        "dns.alidns.com"
-        "dns.google"
-      ];
-      extraConfig = ''
-        DNS=223.6.6.6#dns.alidns.com
-        FallbackDNS=
-        DNSOverTLS=yes
-        MulticastDNS=true
-      '';
-    };
-
     # resolved = {
     #   enable = true;
-    #   dnssec = "true";
-    #   llmnr = "true";
+    #   dnssec = "false"; # https://github.com/systemd/systemd/issues/10579
+    #   domains = [
+    #     "~."
+    #     "dns.alidns.com"
+    #     "dns.google"
+    #   ];
     #   extraConfig = ''
     #     DNS=223.6.6.6#dns.alidns.com
-    #     # FallbackDNS=
-    #     DNSOverTLS=no
-    #     Cache=no
-    #     DNSStubListener=yes
+    #     FallbackDNS=
+    #     DNSOverTLS=yes
+    #     MulticastDNS=true
     #   '';
     # };
+
+    resolved = {
+      enable = true;
+      dnssec = "true";
+      llmnr = "true";
+      extraConfig = ''
+        DNS=1.0.0.1
+        FallbackDNS=
+        DNSOverTLS=yes
+        # Cache=no
+        DNSStubListener=yes
+      '';
+    };
   };
+  networking.resolvconf.package = lib.mkForce pkgs.openresolv;
 
   programs = {
     ssh.startAgent = false;
