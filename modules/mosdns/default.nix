@@ -36,7 +36,8 @@ in
       wantedBy = [ "multi-user.target" ];
       restartTriggers = [ configFile ];
       serviceConfig = {
-        ExecStart = "${cfg.package}/bin/mosdns start -c ${configFile}";
+        StateDirectory = "mosdns";
+        ExecStart = "${cfg.package}/bin/mosdns start -c ${configFile} -d $STATE_DIRECTORY";
       };
     };
 
