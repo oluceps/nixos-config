@@ -206,9 +206,9 @@
       dnssec = "true";
       llmnr = "true";
       extraConfig = ''
-        DNS=1.0.0.1
+        DNS=223.6.6.6#dns.alidns.com
         FallbackDNS=
-        DNSOverTLS=yes
+        DNSOverTLS=no
         # Cache=no
         DNSStubListener=yes
       '';

@@ -85,8 +85,7 @@
         networkConfig = {
           DNSSEC = true;
           MulticastDNS = true;
-          "DNSDefaultRoute" = "yes";
-          "DNSOverTLS" = "yes";
+          DNSOverTLS = true;
         };
         # REALLY IMPORTANT
         dhcpV4Config.UseDNS = false;
