@@ -196,7 +196,7 @@
       extraConfig = ''
         DNS=223.6.6.6#dns.alidns.com
         FallbackDNS=
-        DNSOverTLS=no
+        DNSOverTLS=yes
         MulticastDNS=true
       '';
     };
