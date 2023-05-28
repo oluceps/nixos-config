@@ -50,6 +50,10 @@
               "javascript"
               "typescript"
               "sway"
+              "diff"
+              "comment"
+              "vue"
+              "nu"
             ];
       };
 

@@ -6,7 +6,8 @@
     nixpkgs-gui.url = "github:NixOS/nixpkgs?rev=954a801cbe128e24e78230f711df17da01a5d98c";
     nixpkgs-22.url = "github:NixOS/nixpkgs?rev=c91d0713ac476dfb367bbe12a7a048f6162f039c";
     nvfetcher.url = "github:berberman/nvfetcher";
-    eunomia-bpf.url = "github:eunomia-bpf/eunomia-bpf/flake-devenv";
+    EHfive.url = "github:EHfive/flakes";
+    # eunomia-bpf.url = "github:eunomia-bpf/eunomia-bpf/flake-devenv";
     agenix-rekey.url = "github:oddlama/agenix-rekey";
     resign.url = "github:oluceps/resign";
     nil.url = "github:oxalica/nil";
@@ -69,7 +70,7 @@
           permittedInsecurePackages = nixpkgs.lib.mkForce [ ];
         };
         overlays = (import ./overlays.nix { inherit inputs system; })
-          ++ genOverlays [ "self" "clansty" "fenix" "berberman" "nvfetcher" ]
+          ++ genOverlays [ "self" "clansty" "fenix" "berberman" "nvfetcher" "EHfive" ]
           ++ [ inputs.nur.overlay ]; #（>﹏<）
       });
 
@@ -90,6 +91,8 @@
       overlays.default =
         final: prev: prev.lib.genAttrs (with builtins;(attrNames (readDir ./pkgs)))
           (name: final.callPackage (./pkgs + "/${name}") { });
+
+      nixosModules = import ./modules { lib = inputs.nixpkgs.lib; };
 
       checks = genSystems (system: with _pkgs.${system};
         {

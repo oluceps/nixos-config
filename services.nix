@@ -136,7 +136,7 @@
     hyst-do.enable = true;
 
     # ss-tls cnt to router
-    ss.enable = false;
+    ss.enable = true;
     tuic.enable = false;
     naive.enable = false;
 
@@ -165,7 +165,7 @@
       enable = true;
       settings = {
         passwordAuthentication = false;
-        UseDns = false;
+        UseDns = true;
         X11Forwarding = false;
       };
       authorizedKeysFiles = lib.mkForce [ "/etc/ssh/authorized_keys.d/%u" ];
@@ -189,14 +189,48 @@
     resolved = {
       enable = false;
       dnssec = "false";
-      llmnr = "false";
+      llmnr = "true";
       extraConfig = ''
-        DNS=223.6.6.6
+        DNS=223.6.6.6#dns.alidns.com
+        FallbackDNS=
         DNSOverTLS=no
-        Cache=no
+        # Cache=no
+        DNSStubListener=yes
       '';
     };
+
+    smartdns = {
+      enable = false;
+      settings = {
+        cache-size = 4096;
+        server-tls = [ "223.6.6.6:853" "1.0.0.1:853" ];
+        server-https = [ "https://dns.alidns.com/dns-query" ];
+        prefetch-domain = true;
+        speed-check-mode = "ping,tcp:80";
+      };
+    };
+    mosdns = {
+      enable = true;
+      config = {
+        log = { level = "info"; production = true; };
+        plugins = [
+          { args = { files = [ "${pkgs.acc-cn}/accelerated-domains.china.txt" ]; }; tag = "direct_domain"; type = "domain_set"; }
+          { args = { files = [ "${pkgs.all-cn}/all_cn.txt" ]; }; tag = "direct_ip"; type = "ip_set"; }
+          { args = { dump_file = "./cache.dump"; lazy_cache_ttl = 86400; size = 65536; }; tag = "cache"; type = "cache"; }
+          { args = { concurrent = 2; upstreams = [{ addr = "https://8.8.4.4/dns-query"; idle_timeout = 86400; } { addr = "https://1.0.0.1/dns-query"; idle_timeout = 86400; }]; }; tag = "remote_forward"; type = "forward"; }
+          { args = { concurrent = 2; upstreams = [{ addr = "https://223.5.5.5/dns-query"; idle_timeout = 86400; } { addr = "https://120.53.53.53/dns-query"; idle_timeout = 86400; }]; }; tag = "local_forward"; type = "forward"; }
+          { args = [{ exec = "ttl 600-3600"; } { exec = "accept"; }]; tag = "ttl_sequence"; type = "sequence"; }
+          { args = [{ exec = "query_summary local_forward"; } { exec = "$local_forward"; } { exec = "goto ttl_sequence"; }]; tag = "local_sequence"; type = "sequence"; }
+          { args = [{ exec = "query_summary remote_forward"; } { exec = "$remote_forward"; } { exec = "goto local_sequence"; matches = "resp_ip $direct_ip"; } { exec = "goto ttl_sequence"; }]; tag = "remote_sequence"; type = "sequence"; }
+          { args = { always_standby = false; primary = "remote_sequence"; secondary = "local_sequence"; threshold = 500; }; tag = "final"; type = "fallback"; }
+          { args = [{ exec = "prefer_ipv4"; } { exec = "$cache"; } { exec = "accept"; matches = "has_resp"; } { exec = "goto local_sequence"; matches = "qname $direct_domain"; } { exec = "$final"; }]; tag = "main_sequence"; type = "sequence"; }
+          { args = { entry = "main_sequence"; listen = ":53"; }; tag = "udp_server"; type = "udp_server"; }
+        ];
+      };
+    };
   };
+  networking.resolvconf.package = lib.mkForce
+    pkgs.openresolv;
 
   programs = {
     ssh.startAgent = false;
@@ -209,10 +243,16 @@
       };
       proxies = {
         socks-hyst-az = {
-          enable = true;
+          enable = false;
           type = "socks5";
           host = "127.0.0.1";
           port = 1083;
+        };
+        socks-hyst-do = {
+          enable = true;
+          type = "socks5";
+          host = "127.0.0.1";
+          port = 1085;
         };
       };
     };

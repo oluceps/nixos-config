@@ -4,7 +4,7 @@
     enable = true;
     settings = {
       import = [ ./alacritty.yml ];
-      font = { size = 13.5; };
+      font = { size = 15; };
       shell = {
         program = lib.getExe pkgs.fish;
       };
