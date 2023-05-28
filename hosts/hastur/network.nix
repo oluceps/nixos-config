@@ -1,8 +1,8 @@
-{ ... }: {
-  environment.etc."resolv.conf".text = ''
-    nameserver 223.6.6.6
-    nameserver 8.8.8.8
-  '';
+{ lib, ... }: {
+  # environment.etc."resolv.conf".text = lib.mkForce ''
+  #   nameserver 127.0.0.1
+  # '';
+  networking.resolvconf.useLocalResolver = true;
   networking = {
     hostName = "hastur"; # Define your hostname.
     # replicates the default behaviour.
@@ -14,11 +14,11 @@
     firewall = {
       enable = true;
       trustedInterfaces = [ "virbr0" ];
-      allowedUDPPorts = [ 8080 9000 9001 ];
-      allowedTCPPorts = [ 8080 9000 ];
+      allowedUDPPorts = [ 5353 853 8080 9000 9001 ];
+      allowedTCPPorts = [ 853 8080 9000 ];
     };
     nftables.enable = true;
-    networkmanager.enable = false;
+    networkmanager.enable = lib.mkForce false;
 
 
 
@@ -82,10 +82,20 @@
         dhcpV4Config.RouteMetric = 2046;
         dhcpV6Config.RouteMetric = 2046;
         address = [ "192.168.0.2/24" ];
+        networkConfig = {
+          DNSSEC = true;
+          MulticastDNS = true;
+          DNSOverTLS = true;
+        };
+        # REALLY IMPORTANT
+        dhcpV4Config.UseDNS = false;
+        dhcpV6Config.UseDNS = false;
+
         routes = [
           { routeConfig = { Gateway = "192.168.0.1"; }; }
           # { routeConfig = { Gateway = "fe80::c609:38ff:fef2:3ecb"; }; }
         ];
+        # dns = [ "::1" ];
         # "::1"
       };
 
@@ -94,6 +104,12 @@
         DHCP = "yes";
         dhcpV4Config.RouteMetric = 2044;
         dhcpV6Config.RouteMetric = 2044;
+        dhcpV4Config.UseDNS = false;
+        dhcpV6Config.UseDNS = false;
+        # dns = [ "::1" ];
+        networkConfig = {
+          DNSSEC = true;
+        };
       };
 
       "40-wireless" = {
@@ -101,6 +117,9 @@
         DHCP = "yes";
         dhcpV4Config.RouteMetric = 2048;
         dhcpV6Config.RouteMetric = 2048;
+        dhcpV4Config.UseDNS = false;
+        dhcpV6Config.UseDNS = false;
+        # dns = [ "::1" ];
       };
 
     };

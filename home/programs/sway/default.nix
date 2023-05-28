@@ -85,14 +85,14 @@
 
         workspaceOutputAssign = [
           {
-            output = "VGA-1";
+            output = "HDMI-A-1";
             workspace = "1";
           }
         ];
 
         output =
           if user == "riro" then {
-            VGA-1 = {
+            HDMI-A-1 = {
               bg = "/etc/nixos/.attachs/wall.jpg fill";
               mode = "1920x1080";
               scale = "1";

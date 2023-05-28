@@ -73,7 +73,7 @@
       "net.ipv4.tcp_rfc1337" = 1;
       # TCP Fast Open (TFO)
       "net.ipv4.tcp_fastopen" = 0;
-      ## Bufferbloat mitigations
+      # Bufferbloat mitigations
       # Requires >= 4.9 & kernel module
       "net.ipv4.tcp_congestion_control" = "bbr";
       # Requires >= 4.19
@@ -95,7 +95,7 @@
       "net.ipv4.tcp_sack" = 1;
 
       "net.ipv4.tcp_slow_start_after_idle" = 0;
-      # "vm.overcommit_memory" = 1;
+      "vm.overcommit_memory" = 1;
       "vm.swappiness" = 95;
       "vm.max_map_count" = 2147483642;
       "net.ipv4.tcp_ecn" = 1;

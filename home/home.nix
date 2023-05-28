@@ -200,6 +200,7 @@
   };
 
   programs = {
+    zoxide.enable = true;
     swww.enable = false;
     bash.enable = true;
     vscode = {

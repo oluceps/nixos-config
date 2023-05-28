@@ -1,8 +1,8 @@
 { inputs, _pkgs }:
 let system = "x86_64-linux"; pkgs = _pkgs.${system}; in
 
-{ inherit (inputs.eunomia-bpf.devShells.${system}) eunomia-dev ebpf-dev; }
-  //
+# { inherit (inputs.eunomia-bpf.devShells.${system}) eunomia-dev ebpf-dev; }
+  #   //
 {
 
   kernel =

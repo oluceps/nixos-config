@@ -6,13 +6,34 @@
   xdg.configFile =
     let
       settingsFormat = pkgs.formats.toml { };
+      genText = x: y: builtins.readFile (settingsFormat.generate x y);
     in
     {
       "helix/languages.toml".text =
-        builtins.readFile (settingsFormat.generate "config.toml" (import ./languages.nix { inherit pkgs lib; }));
+        genText "config.toml" (import ./languages.nix { inherit pkgs lib; });
       "helix/themes/catppuccin_macchiato.toml".text =
-        builtins.readFile (settingsFormat.generate "catppuccin_macchiato.toml" (import ./catppuccin_macchiato.nix));
+        genText "catppuccin_macchiato.toml" (import ./catppuccin_macchiato.nix);
     };
+
+  # lsps
+  home.packages = with pkgs;[
+    rust-analyzer
+    nil
+    shfmt
+    nixpkgs-fmt
+    # taplo
+    rustfmt
+    clang-tools
+    haskell-language-server
+    cmake-language-server
+  ]
+  ++ (with pkgs.nodePackages_latest; [
+    vscode-json-languageserver-bin
+    vscode-html-languageserver-bin
+    vscode-css-languageserver-bin
+    vls
+    prettier
+  ]);
 
   programs.helix = {
     enable = true;
