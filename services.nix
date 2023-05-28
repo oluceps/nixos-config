@@ -12,7 +12,6 @@
   # Enable touchpad support (enabled default in most desktopManager).
   # services.xserver.libinput.enable = true;
 
-  # Enable the OpenSSH daemon.
   xdg.portal = {
     enable = true;
     wlr.enable = true;
@@ -164,7 +163,8 @@
     openssh = {
       enable = true;
       settings = {
-        passwordAuthentication = false;
+        PasswordAuthentication = lib.mkForce false;
+        PermitRootLogin = lib.mkForce "prohibit-password";
         UseDns = true;
         X11Forwarding = false;
       };
