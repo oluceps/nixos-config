@@ -5,6 +5,9 @@
 , ...
 }:
 
+let
+  whenHost = h: with config.networking; (hostName == h);
+in
 {
   # Enable CUPS to print documents.
   # services.printing.enable = true;
@@ -19,6 +22,10 @@
 
 
   systemd = {
+    # package = pkgs.systemd.override {
+    #   withResolved = false;
+    # };
+
     # Given that our systems are headless, emergency mode is useless.
     # We prefer the system to attempt to continue booting so
     # that we can hopefully still access it remotely.
@@ -45,19 +52,27 @@
     '';
   };
 
+  # photoprism minio
+  networking.firewall.allowedTCPPorts = [ 20800 9000 9001 ];
   services = {
     # vault = { enable = true; extraConfig = "ui = true"; package = pkgs.vault-bin; };
     photoprism = {
-      enable = true;
-      originalsPath = "/home/${user}/Pictures";
+      enable = whenHost "hastur";
+      originalsPath = "/var/lib/private/photoprism/originals";
+      address = "::1";
+      passwordFile = config.rekey.secrets.prism.path;
       settings = {
         PHOTOPRISM_ADMIN_USER = "${user}";
-        PHOTOPRISM_DEFAULT_LOCALE = "de";
+        PHOTOPRISM_DEFAULT_LOCALE = "en";
+        PHOTOPRISM_DATABASE_NAME = "photoprism";
+        PHOTOPRISM_DATABASE_SERVER = "/run/mysqld/mysqld.sock";
+        PHOTOPRISM_DATABASE_USER = "photoprism";
+        PHOTOPRISM_DATABASE_DRIVER = "mysql";
       };
       port = 20800;
     };
     minio = {
-      enable = true;
+      enable = whenHost "hastur";
       region = "ap-east-1";
       rootCredentialsFile = config.rekey.secrets.minio.path;
     };
@@ -71,14 +86,14 @@
     #     url = "https://github.com/oluceps/eunomia-bpf";
     #   };
     # };
-    autossh.sessions = [
-      {
-        extraArguments = "-NTR 5002:127.0.0.1:22 az";
-        monitoringPort = 20000;
-        name = "az";
-        inherit user;
-      }
-    ];
+    # autossh.sessions = [
+    #   {
+    #     extraArguments = "-NTR 5002:127.0.0.1:22 az";
+    #     monitoringPort = 20000;
+    #     name = "az";
+    #     inherit user;
+    #   }
+    # ];
     flatpak.enable = true;
     journald.extraConfig =
       ''
@@ -91,16 +106,32 @@
     };
 
     # HORRIBLE
-    # mongodb = {
-    #   enable = true;
-    #   package = pkgs.mongodb-6_0;
-    #   enableAuth = true;
-    #   initialRootPassword = "initial";
-    # };
+    mongodb = {
+      enable = false;
+      package = pkgs.mongodb-6_0;
+      enableAuth = true;
+      initialRootPassword = "initial";
+    };
 
     mysql = {
-      enable = false;
-      package = pkgs.mariadb_109;
+      enable = whenHost "hastur";
+      package = pkgs.mariadb_1011;
+      dataDir = "/var/lib/mysql";
+      ensureDatabases = [ "photoprism" ];
+      ensureUsers = [
+        {
+          name = "riro";
+          ensurePermissions = {
+            "*.*" = "ALL PRIVILEGES";
+          };
+        }
+        {
+          name = "photoprism";
+          ensurePermissions = {
+            "photoprism.*" = "ALL PRIVILEGES";
+          };
+        }
+      ];
     };
 
     greetd = {

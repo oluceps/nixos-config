@@ -63,8 +63,6 @@ let
         userEmail = "i@oluceps.uk";
       };
 
-      autojump.enable = true;
-
       obs-studio = {
         enable = true;
         plugins = with pkgs; [ obs-studio-plugins.wlrobs ];
