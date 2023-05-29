@@ -168,7 +168,6 @@
       enable = true;
       settings = (import ./home/programs/starship { }).programs.starship.settings // {
         format = "$username$directory$git_branch$git_commit$git_status$nix_shell$cmd_duration$line_break$python$character";
-
       };
     };
     neovim = {
