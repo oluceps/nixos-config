@@ -59,7 +59,7 @@ in
     photoprism = {
       enable = whenHost "hastur";
       originalsPath = "/var/lib/private/photoprism/originals";
-      address = "::1";
+      address = "[::]";
       passwordFile = config.rekey.secrets.prism.path;
       settings = {
         PHOTOPRISM_ADMIN_USER = "${user}";
