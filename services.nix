@@ -47,6 +47,15 @@
 
   services = {
     # vault = { enable = true; extraConfig = "ui = true"; package = pkgs.vault-bin; };
+    photoprism = {
+      enable = true;
+      originalsPath = "/home/${user}/Pictures";
+      settings = {
+        PHOTOPRISM_ADMIN_USER = "${user}";
+        PHOTOPRISM_DEFAULT_LOCALE = "de";
+      };
+      port = 20800;
+    };
     minio = {
       enable = true;
       region = "ap-east-1";
@@ -212,17 +221,37 @@
     mosdns = {
       enable = true;
       config = {
-        log = { level = "info"; production = true; };
+        log = { level = "debug"; production = false; };
         plugins = [
-          { args = { files = [ "${pkgs.acc-cn}/accelerated-domains.china.txt" ]; }; tag = "direct_domain"; type = "domain_set"; }
-          { args = { files = [ "${pkgs.all-cn}/all_cn.txt" ]; }; tag = "direct_ip"; type = "ip_set"; }
-          { args = { dump_file = "./cache.dump"; lazy_cache_ttl = 86400; size = 65536; }; tag = "cache"; type = "cache"; }
+          {
+            args = {
+              files = [ "${pkgs.acc-cn}/accelerated-domains.china.txt" ];
+            };
+            tag = "direct_domain";
+            type = "domain_set";
+          }
+          {
+            args = {
+              files = [ "${pkgs.all-cn}/all_cn.txt" ];
+            };
+            tag = "direct_ip";
+            type = "ip_set";
+          }
+          {
+            args = {
+              dump_file = "./cache.dump";
+              lazy_cache_ttl = 86400;
+              size = 65536;
+            };
+            tag = "cache";
+            type = "cache";
+          }
           {
             args = {
               concurrent = 2;
               upstreams = [
-                { addr = "https://8.8.4.4/dns-query"; idle_timeout = 86400; }
-                { addr = "https://1.0.0.1/dns-query"; idle_timeout = 86400; }
+                { addr = "tls://8.8.4.4:853"; idle_timeout = 86400; enable_pipeline = true; }
+                { addr = "tls://1.0.0.1:853"; idle_timeout = 86400; enable_pipeline = true; }
               ];
             };
             tag = "remote_forward";
@@ -232,19 +261,69 @@
             args = {
               concurrent = 2;
               upstreams = [
-                { addr = "https://223.5.5.5/dns-query"; idle_timeout = 86400; }
+                { addr = "https://223.6.6.6/dns-query"; idle_timeout = 86400; }
                 { addr = "https://120.53.53.53/dns-query"; idle_timeout = 86400; }
               ];
             };
             tag = "local_forward";
             type = "forward";
           }
-          { args = [{ exec = "ttl 600-3600"; } { exec = "accept"; }]; tag = "ttl_sequence"; type = "sequence"; }
-          { args = [{ exec = "query_summary local_forward"; } { exec = "$local_forward"; } { exec = "goto ttl_sequence"; }]; tag = "local_sequence"; type = "sequence"; }
-          { args = [{ exec = "query_summary remote_forward"; } { exec = "$remote_forward"; } { exec = "goto local_sequence"; matches = "resp_ip $direct_ip"; } { exec = "goto ttl_sequence"; }]; tag = "remote_sequence"; type = "sequence"; }
-          { args = { always_standby = false; primary = "remote_sequence"; secondary = "local_sequence"; threshold = 500; }; tag = "final"; type = "fallback"; }
-          { args = [{ exec = "prefer_ipv4"; } { exec = "$cache"; } { exec = "accept"; matches = "has_resp"; } { exec = "goto local_sequence"; matches = "qname $direct_domain"; } { exec = "$final"; }]; tag = "main_sequence"; type = "sequence"; }
-          { args = { entry = "main_sequence"; listen = ":53"; }; tag = "udp_server"; type = "udp_server"; }
+          {
+            args = [
+              { exec = "ttl 600-3600"; }
+              { exec = "accept"; }
+            ];
+            tag = "ttl_sequence";
+            type = "sequence";
+          }
+          {
+            args = [
+              { exec = "query_summary local_forward"; }
+              { exec = "$local_forward"; }
+              { exec = "goto ttl_sequence"; }
+            ];
+            tag = "local_sequence";
+            type = "sequence";
+          }
+          {
+            args = [
+              { exec = "query_summary remote_forward"; }
+              { exec = "$remote_forward"; }
+              { exec = "goto local_sequence"; matches = "resp_ip $direct_ip"; }
+              { exec = "goto ttl_sequence"; }
+            ];
+            tag = "remote_sequence";
+            type = "sequence";
+          }
+          {
+            args = {
+              always_standby = false;
+              primary = "remote_sequence";
+              secondary = "local_sequence";
+              threshold = 500;
+            };
+            tag = "final";
+            type = "fallback";
+          }
+          {
+            args = [
+              { exec = "prefer_ipv4"; }
+              { exec = "$cache"; }
+              { exec = "accept"; matches = "has_resp"; }
+              { exec = "goto local_sequence"; matches = "qname $direct_domain"; }
+              { exec = "$final"; }
+            ];
+            tag = "main_sequence";
+            type = "sequence";
+          }
+          {
+            args = {
+              entry = "main_sequence";
+              listen = ":53";
+            };
+            tag = "udp_server";
+            type = "udp_server";
+          }
         ];
       };
     };
