@@ -34,8 +34,13 @@
   home.packages = with pkgs;
 
     [
-      # jetbrains.pycharm-professional
+      jetbrains.pycharm-professional
+      jetbrains.idea-ultimate
+
+      typst
+
       yuzu-mainline
+      photoprism
 
       virt-manager
       xdg-utils
@@ -166,7 +171,6 @@
       cmatrix
       termius
       # kotatogram-desktop
-      autojump
       nmap
       lm_sensors
       eww-wayland
@@ -317,7 +321,6 @@
         }
       ];
     };
-    autojump.enable = true;
 
     obs-studio = {
       enable = true;
