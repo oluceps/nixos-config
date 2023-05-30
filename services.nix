@@ -107,7 +107,7 @@ in
 
     # HORRIBLE
     mongodb = {
-      enable = false;
+      enable = true;
       package = pkgs.mongodb-6_0;
       enableAuth = true;
       initialRootPassword = "initial";
