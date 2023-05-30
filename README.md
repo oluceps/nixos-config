@@ -1,79 +1,30 @@
 ![built with nix](https://img.shields.io/static/v1?logo=nixos&logoColor=white&label=&message=Built%20with%20Nix&color=41439a)
+![state](https://img.shields.io/badge/works-on%20my%20machines-FEDFE1)
 ![CI state](https://github.com/oluceps/nixos-config/actions/workflows/eval.yaml/badge.svg)
-![CI state](https://github.com/oluceps/nixos-config/actions/workflows/sensitive.yaml/badge.svg)
-
-[简体中文](./README_zh_CN.md)
-
----
+![CI state](https://github.com/oluceps/nixos-config/actions/workflows/sensitive.yaml/badge.svg)  
 
 # Nix flake
 
-Home managing with [home-manager](https://github.com/nix-community/home-manager)  
-Secrets managing with [agenix](https://github.com/ryantm/agenix) [rekey](https://github.com/oddlama/agenix-rekey)  
-Secure boot with [lanzaboote](https://github.com/nix-community/lanzaboote)  
-Root-On-Tmpfs persistence with [impermanence](https://github.com/nix-community/impermanence)  
+[简体中文](./README_zh_CN.md)
+
+with:
+
++ [agenix](https://github.com/ryantm/agenix) & [rekey](https://github.com/oddlama/agenix-rekey), keys are not stored on disk, dec & enc with yubikey.
++ [lanzaboote](https://github.com/nix-community/lanzaboote) implements secure boot.
++ root on tmpfs, keep states with [impermanence](https://github.com/nix-community/impermanence).
++ [home-manager](https://github.com/nix-community/home-manager) configurations as flake module.
 
 ---
 
+![screenshot](./.attachs/shot_1.png)
+
+
+<details><summary>misc</summary>
+
 ![screenshot](./.attachs/shot_2.png)
 
-<details>
-
-![screenshot](./.attachs/050101344059_0050101333921_0image_2023-05-01_01-18-05.png)
-
 </details>
 
-
-## How to use
-> Follow Nix official guide to initialize NixOS first.  
-
-flake outputs:  
-<details>
-<summary>Full</summary>
-
-```console
-> nix flake show
-git+file:///etc/nixos
-├───apps
-│   ├───aarch64-linux
-│   │   ├───edit-secret: app
-│   │   ├───rekey: app
-│   │   └───rekey-save-outputs: app
-│   └───x86_64-linux
-│       ├───edit-secret: app
-│       ├───rekey: app
-│       └───rekey-save-outputs: app
-├───checks
-│   ├───aarch64-linux
-│   │   └───pre-commit-check omitted (use '--all-systems' to show)
-│   └───x86_64-linux
-│       └───pre-commit-check: derivation 'pre-commit-run'
-├───devShells
-│   ├───aarch64-linux
-│   │   ├───eunomia omitted (use '--all-systems' to show)
-│   │   ├───kernel omitted (use '--all-systems' to show)
-│   │   └───ubt-rv omitted (use '--all-systems' to show)
-│   └───x86_64-linux
-│       ├───eunomia: development environment 'nix-shell'
-│       ├───kernel: development environment 'kernel-build-env-shell-env'
-│       └───ubt-rv: development environment 'riscv-ubuntu-qemu-boot-script'
-├───nixosConfigurations
-│   ├───hastur: NixOS configuration
-│   ├───kaambl: NixOS configuration
-│   └───livecd: NixOS configuration
-└───overlays
-    └───default: Nixpkgs overlay
-```  
-</details>
-
-### NixOS Deployment
-
-__Before deployment, adjust configurations manually__
-
-```console
-nixos-rebuild switch --flake github:oluceps/nixos-config#HOSTNAME
-  
-```
 |Type|Program|
 |---|---|
 |Editor|[helix](https://github.com/oluceps/nixos-config/tree/main/home/programs/helix)|
@@ -83,21 +34,12 @@ nixos-rebuild switch --flake github:oluceps/nixos-config#HOSTNAME
 |Terminal|[foot](https://github.com/oluceps/nixos-config/tree/main/home/programs/foot)|
 |backup|[btrbk](https://github.com/oluceps/nixos-config/tree/main/modules/btrbk)|  
 
-__Build devShell__  
-```console
-nix develop .#devShells.ARCH.SHELL
-```   
+__Overlay & nixosModules__  
 
-__Build livecd__  
-```console
-nix build .#nixosConfigurations.livecd.config.system.build.isoImage
-```
+This flake contains overlay and modules of few packages,
 
-__Use Overlay__  
+Applying:  
 
-This flake contains overlay of few packages (check ./pkgs), to apply:  
-
-Add to your flake, passing overlay while importing nixpkgs:  
 ```nix
 # flake.nix
 {
@@ -113,13 +55,19 @@ Add to your flake, passing overlay while importing nixpkgs:
         # with pname consist with dir name
         environment.systemPackages = [ pkgs.shadow-tls ];
       }
+
+      inputs.oluceps.nixosModules.default
+      # or any standalone module (see `nix flake show`)
     ];
   };
 };
 }
 ```
 
-## Resources  
+
+
+## References
+
 Excellent configurations that I've learned and copied:  
 + [NickCao/flakes](https://github.com/NickCao/flakes)  
 + [ocfox/nixos-config](https://github.com/ocfox/nixos-config)  
@@ -127,13 +75,12 @@ Excellent configurations that I've learned and copied:
 + [fufexan/dotfiles](https://github.com/fufexan/dotfiles)  
 + [gvolpe/nix-config](https://github.com/gvolpe/nix-config)
 
+---
+
++ [Erase your darlings](https://grahamc.com/blog/erase-your-darlings)  
++ [NixOS: tmpfs as root](https://elis.nu/blog/2020/05/nixos-tmpfs-as-root/)  
++ [How to Learn Nix](https://ianthehenry.com/posts/how-to-learn-nix/)  
++ [Attrset functions](https://ryantm.github.io/nixpkgs/functions/library/attrsets/)  
++ [Way to search function](http://noogle.dev)  
+ 
 [NixOS-CN-telegram](https://github.com/nixos-cn/NixOS-CN-telegram)
-
-
-## References
-[Erase your darlings](https://grahamc.com/blog/erase-your-darlings)  
-[NixOS: tmpfs as root](https://elis.nu/blog/2020/05/nixos-tmpfs-as-root/)  
-[How to Learn Nix](https://ianthehenry.com/posts/how-to-learn-nix/)  
-[Attrset functions](https://ryantm.github.io/nixpkgs/functions/library/attrsets/)  
-[Way to search function](http://noogle.dev)  
-
