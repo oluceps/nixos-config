@@ -4,7 +4,7 @@
   boot = {
     # Use the systemd-boot EFI boot loader.
     tmp = {
-      useTmpfs = false;
+      useTmpfs = true;
       tmpfsSize = "80%";
     };
 
