@@ -1,7 +1,9 @@
 > v.zh_CN README translated with ChatGPT
 
 
-# Nix flake
+# 尼克斯雪花 (?
+
+此仓库包含一些 `NixOS` 系统的配置，几乎完全通过 Nix 配置。
 
 + 使用 [agenix](https://github.com/ryantm/agenix) 和 [rekey](https://github.com/oddlama/agenix-rekey) ，密钥不存储在磁盘上，可以使用 YubiKey 进行解密和加密。
 + 使用 [lanzaboote](https://github.com/nix-community/lanzaboote) 实现了安全引导。
