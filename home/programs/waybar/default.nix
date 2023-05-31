@@ -118,8 +118,7 @@
           pulseaudio = {
             min-length = 5;
             format = "{volume}% {icon}";
-            format-alt = "{volume} {icon}";
-            format-alt-click = "click-right";
+            on-click = "${lib.getExe pkgs.switch-mute}";
             format-muted = "x";
             format-icons = {
               phone = [ " " " " " 墳" " " ];
