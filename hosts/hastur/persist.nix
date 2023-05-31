@@ -15,6 +15,7 @@
     users.${user} = {
       files = [
         ".npmrc"
+        ".mongoshrc.js"
       ];
       directories = [
         "Src"
@@ -38,6 +39,7 @@
         ".mozilla"
         ".FeelUOwn"
         ".config"
+        ".mongodb"
         { directory = ".gnupg"; mode = "0700"; }
         { directory = ".ssh"; mode = "0700"; }
       ];
