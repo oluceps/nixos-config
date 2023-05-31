@@ -211,6 +211,12 @@
       save-clipboard-to = prev.writeShellScriptBin "save-clipboard-to" ''
         wl-paste > $HOME/Pictures/screenshot/$(date +'shot_%Y-%m-%d-%H%M%S.png')
       '';
+      switch-mute = final.nuenv.mkScript {
+        name = "switch-mute";
+        script = let pamixer = prev.lib.getExe prev.pamixer; in ''
+          ${pamixer} --get-mute | str trim | if $in == "false" { ${pamixer} -m } else { ${pamixer} -u }
+        '';
+      };
 
       systemd-run-app = prev.writeShellApplication {
         name = "systemd-run-app";

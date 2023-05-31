@@ -7,6 +7,7 @@ let
       [ openocd ]
       lua
       # nodejs-18_x
+      switch-mute
       yarn
       go
       nix-tree
@@ -25,6 +26,7 @@ let
 
     #   #"targets.wasm32-unknown-unknown.latest.rust-std"
     # ];
+    db = [ mongosh ];
 
     web = [ hugo ];
 
