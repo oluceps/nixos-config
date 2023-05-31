@@ -5,9 +5,9 @@
 
 # Nix flake
 
-This repo contains declaritive configuration of few NixOS system, with ~100% config Nixfied.
-
 [简体中文](./README_zh_CN.md)
+
+This repo contains declaritive configuration of few NixOS system, with ~100% config Nixfied.
 
 with:
 
