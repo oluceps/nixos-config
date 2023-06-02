@@ -32,9 +32,9 @@ in
       # See https://github.com/daeuniverse/dae/issues/43
       NICComp = pkgs.writeShellApplication {
         name = "nicComp";
-        text = ''
-          iface=$(${pkgs.iproute2}/bin/ip route | ${pkgs.lib.getExe pkgs.gawk} '/default/ {print $5}')
-          ${pkgs.lib.getExe pkgs.ethtool} -K "$iface" tx-checksum-ip-generic off
+        text = with pkgs; ''
+          iface=$(${iproute2}/bin/ip route | ${lib.getExe gawk} '/default/ {print $5}')
+          ${lib.getExe ethtool} -K "$iface" tx-checksum-ip-generic off
         '';
       };
 
