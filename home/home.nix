@@ -38,6 +38,7 @@
       jetbrains.idea-ultimate
 
       typst
+      ruffle
 
       yuzu-mainline
       photoprism
@@ -185,7 +186,7 @@
       vlc
       bluedevil
       julia-bin
-      # prismlauncher
+      prismlauncher
     ]
     ++
     (with nur.repos; [
