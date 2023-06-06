@@ -30,6 +30,7 @@
     ];
     kernelParams = [
       "mitigations=off"
+      "amd_pstate=active"
     ];
     resumeDevice = "/dev/disk/by-uuid/5ddc05a2-22a7-4803-8bca-fc64fad0b478";
   };

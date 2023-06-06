@@ -2,7 +2,7 @@ monitor=VGA-1,1920x1080@75,auto,1
 # monitor=VGA-1,transform,1
 exec-once=fcitx5
 exec-once=mako
-exec-once=waybar
+# exec-once=waybar
 
 # Log errors
 env = HYPRLAND_LOG_WLR, 1
