@@ -42,7 +42,7 @@ let
     virt = [
       # virt-manager
       virtiofsd
-      windows-run
+      runwin
       ubt-rv-run
     ];
     fs = [ gparted e2fsprogs fscrypt-experimental f2fs-tools compsize ];
@@ -54,6 +54,7 @@ let
       onagre
       libsixel
       ouch
+      nix-output-monitor
 
       # common
       [ killall hexyl jq fx bottom lsd fd choose duf tokei procs exa lsof tree bat ]

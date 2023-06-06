@@ -40,6 +40,12 @@
       typst
       ruffle
 
+      fractal
+      schildichat-desktop-wayland
+
+      gnome.gnome-boxes
+
+
       yuzu-mainline
       photoprism
 
