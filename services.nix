@@ -55,6 +55,7 @@ in
   # photoprism minio
   networking.firewall.allowedTCPPorts = [ 20800 9000 9001 ];
   services = {
+    fwupd.enable = true;
     # vault = { enable = true; extraConfig = "ui = true"; package = pkgs.vault-bin; };
     photoprism = {
       enable = whenHost "hastur";

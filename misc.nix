@@ -105,7 +105,7 @@
   nix =
     {
       package = pkgs.nixVersions.stable;
-
+      registry.nixpkgs.flake = inputs.nixpkgs;
       settings = {
 
         trusted-public-keys = [
