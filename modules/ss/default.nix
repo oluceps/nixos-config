@@ -25,7 +25,7 @@ in
 
   config =
     let
-      configFile = config.rekey.secrets.ss.path;
+      configFile = config.age.secrets.ss.path;
     in
     mkIf cfg.enable {
       systemd.services.ss = {

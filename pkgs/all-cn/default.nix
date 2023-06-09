@@ -2,11 +2,11 @@
 
 stdenv.mkDerivation {
   pname = "all_cn";
-  version = "1685223206";
+  version = "1686318104";
 
   src = fetchurl {
     url = "https://ispip.clang.cn/all_cn.txt";
-    sha256 = "sha256-J599+1Ph1VaqCIGoc7I7ArVljxGOpc5e/hMqlOHdPNQ=";
+    sha256 = "sha256-cI5cIpSYBtChQ94Z4hIgNXIfxMSSVzkKYfXpbASbMXo=";
   };
 
   dontUnpack = true;

@@ -28,7 +28,7 @@ let
               # hyst-az -> azure server
               # hyst-do -> digital ocean
               # hyst-am -> amazon cloud
-              config.rekey.secrets.${name}.path;
+              config.age.secrets.${name}.path;
           in
           mkIf
             cfg.enable

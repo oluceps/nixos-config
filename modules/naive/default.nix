@@ -21,7 +21,7 @@ in
   };
   config =
     let
-      configFile = config.rekey.secrets.naive.path;
+      configFile = config.age.secrets.naive.path;
     in
     mkIf cfg.enable {
       systemd.services.naive = {

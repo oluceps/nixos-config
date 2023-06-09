@@ -61,7 +61,7 @@ in
       enable = whenHost "hastur";
       originalsPath = "/var/lib/private/photoprism/originals";
       address = "[::]";
-      passwordFile = config.rekey.secrets.prism.path;
+      passwordFile = config.age.secrets.prism.path;
       settings = {
         PHOTOPRISM_ADMIN_USER = "${user}";
         PHOTOPRISM_DEFAULT_LOCALE = "en";
@@ -75,9 +75,14 @@ in
     minio = {
       enable = whenHost "hastur";
       region = "ap-east-1";
-      rootCredentialsFile = config.rekey.secrets.minio.path;
+      rootCredentialsFile = config.age.secrets.minio.path;
     };
 
+    dbus = {
+      enable = true;
+      implementation = "broker";
+      apparmor = "enabled";
+    };
     gvfs.enable = true;
     # github-runners = {
     #   runner1 = {

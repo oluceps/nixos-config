@@ -21,7 +21,7 @@ in
   };
 
   config =
-    let configFile = config.rekey.secrets.tuic.path;
+    let configFile = config.age.secrets.tuic.path;
     in
     mkIf
       cfg.enable
