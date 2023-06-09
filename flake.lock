@@ -2830,11 +2830,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1686318886,
-        "narHash": "sha256-lhqAD0q0mUIqMtta+nXCDiA+XMQbYf/8oeP3jRqhFeM=",
+        "lastModified": 1686329223,
+        "narHash": "sha256-FI9bJqcCEAKzchETkljfTaBSO+OD40gLKDRFVzmITEI=",
         "owner": "oluceps",
         "repo": "nur-pkgs",
-        "rev": "5e5f11f018546391be4b47158bc555f31ba81746",
+        "rev": "043b7dd19b3d9ae481ade95bb66f189b334750ec",
         "type": "github"
       },
       "original": {
