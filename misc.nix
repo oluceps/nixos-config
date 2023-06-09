@@ -14,22 +14,24 @@
   ];
 
 
-  rekey = {
-    extraEncryptionPubkeys = [ data.keys.ageKey ];
-    masterIdentities = [ ./sec/age-yubikey-identity-7d5d5540.txt.pub ];
+  age = {
+
+    rekey = {
+      extraEncryptionPubkeys = [ data.keys.ageKey ];
+      masterIdentities = [ ./sec/age-yubikey-identity-7d5d5540.txt.pub ];
+    };
 
     secrets =
       let
-        genSec = ns: owner: group: mode: lib.genAttrs ns (n: { file = ./sec/${n}.age;  inherit owner group mode; });
+        genSec = ns: owner: group: mode: lib.genAttrs ns (n: { rekeyFile = ./sec/${n}.age;  inherit owner group mode; });
         genProxys = i: genSec i "proxy" "users" "740";
         genMaterial = i: genSec i user "nogroup" "400";
       in
       (genProxys [ "rat" "ss" "sing" "hyst-az" "hyst-am" "hyst-do" "tuic" "naive" "wg" ]) //
       (genMaterial [ "ssh-cfg" "gh-eu" "u2f" "gh-token" "age" "pub" "id" "minio" "prism" ]) //
       {
-        dae = { file = ./sec/dae.age; mode = "640"; owner = "proxy"; group = "users"; name = "d.dae"; };
+        dae = { rekeyFile = ./sec/dae.age; mode = "640"; owner = "proxy"; group = "users"; name = "d.dae"; };
       };
-
   };
 
 
@@ -151,7 +153,7 @@
       extraOptions = ''
         keep-outputs = true
         keep-derivations = true
-        !include ${config.rekey.secrets.gh-token.path}
+        !include ${config.age.secrets.gh-token.path}
       '';
     };
 
@@ -250,9 +252,10 @@
       twemoji-color-font
       maple-mono-SC-NF
       cascadia-code
+
     ]
     ++ (with (pkgs.glowsans); [ glowsansSC glowsansTC glowsansJ ])
-    ++ (with nur-pkgs;[ san-francisco plangothic maoken-tangyuan hk-grotesk ]);
+    ++ (with nur-pkgs;[ san-francisco plangothic maoken-tangyuan hk-grotesk lxgw-neo-xihei ]);
     #"HarmonyOS Sans SC" "HarmonyOS Sans TC"
     fontconfig = {
       subpixel.rgba = "none";
@@ -272,7 +275,7 @@
     pam = {
       u2f = {
         enable = true;
-        authFile = config.rekey.secrets.u2f.path;
+        authFile = config.age.secrets.u2f.path;
         control = "sufficient";
         cue = true;
       };

@@ -36,6 +36,7 @@
     [
       jetbrains.pycharm-professional
       jetbrains.idea-ultimate
+      jetbrains.clion
 
       typst
       ruffle
@@ -98,7 +99,7 @@
 
       feeluown
       feeluown-bilibili
-      feeluown-local
+      # feeluown-local
       feeluown-netease
       feeluown-qqmusic
 

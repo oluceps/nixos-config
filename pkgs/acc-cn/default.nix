@@ -2,11 +2,11 @@
 
 stdenv.mkDerivation {
   pname = "accelerated-domains-cn";
-  version = "1685223206";
+  version = "1686318104";
 
   src = fetchurl {
     url = "https://raw.githubusercontent.com/yubanmeiqin9048/domain/release/accelerated-domains.china.txt";
-    sha256 = "sha256-K2saWe3HoZsgHD+EJ8lV6Pma2hJYNJ23x9fqEYdH1U8=";
+    sha256 = "sha256-iezvV+PfgRgiDc3OMTwcNqRIZ1y9LT8xYvE/gUaGq7A=";
   };
 
   dontUnpack = true;

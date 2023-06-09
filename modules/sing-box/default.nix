@@ -21,7 +21,7 @@ in
   };
   config =
     let
-      configFile = if ! min then config.rekey.secrets.sing.path else
+      configFile = if ! min then config.age.secrets.sing.path else
       pkgs.writeTextFile {
         name = "config.json";
         text = builtins.readFile ./min.json;
