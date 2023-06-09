@@ -104,6 +104,7 @@
     algorithm = "zstd";
   };
 
+  # systemd.services.nix-daemon.serviceConfig.Slice = "user.slice";
   nix =
     {
       package = pkgs.nixVersions.stable;
