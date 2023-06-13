@@ -75,7 +75,7 @@ let
       [ zig lldb haskell-language-server gopls cmake-language-server zls android-file-transfer nixpkgs-review shfmt ]
     ];
 
-    info = [ neofetch htop onefetch hardinfo qjournalctl hyprpicker imgcat nix-index ccze ];
+    info = [ freshfetch htop onefetch hardinfo qjournalctl hyprpicker imgcat nix-index ccze ];
 
   };
 in

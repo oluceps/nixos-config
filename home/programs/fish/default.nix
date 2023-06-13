@@ -17,9 +17,10 @@
       g = "lazygit";
       "cd.." = "cd ..";
       up = "nix flake update --commit-lock-file /etc/nixos && swc";
-      rekey = "nix run .#rekey";
+      rekey = "pushd /etc/nixos;nix run .#rekey;popd";
       fp = "fish --private";
       e = "exit";
+      rp = "rustplayer";
     };
 
     shellInit = ''
@@ -78,7 +79,9 @@
       };
       ekey = {
         body = ''
+          pushd /etc/nixos
           nix run .#edit-secret $argv[1]
+          popd
         '';
         description = "edit agenix-rekey secret";
       };
