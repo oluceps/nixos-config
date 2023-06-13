@@ -202,6 +202,7 @@
     ]) ++
     (with nur-pkgs;[
       techmino
+      rustplayer
     ]);
   home.pointerCursor = {
     gtk.enable = true;
