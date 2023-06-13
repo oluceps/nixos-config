@@ -96,20 +96,20 @@ colors:
 
 font:
   bold:
-    family: SF Mono
+    family: IntelOne Mono
     style: Bold
 
   bold_italic:
-    family: SF Mono
+    family: IntelOne Mono
     style: Bold Italic
 
   italic:
-    family: SF Mono
+    family: IntelOne Mono
     style: Italic
 
   normal:
-    family: SF Mono
-    style: Medium
+    family: Intel One Mono
+    style: Normal
 
 key_bindings:
    - { action: SpawnNewInstance , key: Return, mods: Control}
