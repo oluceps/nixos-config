@@ -22,17 +22,16 @@
       v4l2loopback
     ];
     kernelPackages = pkgs.linuxPackages_latest;
-    binfmt.emulatedSystems = [
-      "riscv64-linux"
-      "aarch64-linux"
-      "mips64el-linux"
-      "mipsel-linux"
-    ];
+    # binfmt.emulatedSystems = [
+    #   "riscv64-linux"
+    #   "aarch64-linux"
+    #   "mips64el-linux"
+    #   "mipsel-linux"
+    # ];
     kernelParams = [
       "mitigations=off"
       "amd_pstate=active"
     ];
-    resumeDevice = "/dev/disk/by-uuid/5ddc05a2-22a7-4803-8bca-fc64fad0b478";
   };
 
 
@@ -66,7 +65,7 @@
     fsType = "vfat";
   };
 
-  swapDevices = [{ device = "/dev/disk/by-uuid/5ddc05a2-22a7-4803-8bca-fc64fad0b478"; }];
+  swapDevices = [{ device = "/dev/disk/by-partuuid/eba8e78e-a535-417b-8a43-6e08be9b7502"; randomEncryption.enable = true; }];
 
   hardware.cpu.amd.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
 }
