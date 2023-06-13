@@ -58,7 +58,7 @@
     let
       genSystems = nixpkgs.lib.genAttrs [ "aarch64-linux" "x86_64-linux" ];
 
-      genOverlays = map (let m = i: inputs.${i}.overlays; in (i: (m i).default or (m i).${i})); # ugly
+      genOverlays = map (let m = i: inputs.${i}.overlays; in (i: (m i).default or (m i).${i}));
 
       _pkgs = genSystems (system: import nixpkgs {
         inherit system;

@@ -253,7 +253,7 @@
       twemoji-color-font
       maple-mono-SC-NF
       cascadia-code
-
+      intel-one-mono
     ]
     ++ (with (pkgs.glowsans); [ glowsansSC glowsansTC glowsansJ ])
     ++ (with nur-pkgs;[ san-francisco plangothic maoken-tangyuan hk-grotesk lxgw-neo-xihei ]);
