@@ -6,7 +6,7 @@ stdenv.mkDerivation {
 
   src = fetchurl {
     url = "https://ispip.clang.cn/all_cn.txt";
-    sha256 = "sha256-cI5cIpSYBtChQ94Z4hIgNXIfxMSSVzkKYfXpbASbMXo=";
+    sha256 = "sha256-ZamLlzE5AwsgShyTJ41SqEAUiRt211KmQ+YMdXhr1yY=";
   };
 
   dontUnpack = true;

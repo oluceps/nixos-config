@@ -6,7 +6,7 @@ stdenv.mkDerivation {
 
   src = fetchurl {
     url = "https://raw.githubusercontent.com/yubanmeiqin9048/domain/release/accelerated-domains.china.txt";
-    sha256 = "sha256-iezvV+PfgRgiDc3OMTwcNqRIZ1y9LT8xYvE/gUaGq7A=";
+    sha256 = "sha256-rmf9rqGaoN82C6OAK9vO5xtEN+/+b6G4xGMIvzLVuCw=";
   };
 
   dontUnpack = true;
