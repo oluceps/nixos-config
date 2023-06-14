@@ -30,7 +30,7 @@ let
 
     web = [ hugo ];
 
-    crypt = [ rage age-plugin-yubikey yubikey-manager yubikey-manager-qt gnupg ];
+    crypt = [ rage age-plugin-yubikey yubikey-manager yubikey-manager-qt gnupg cryptsetup ];
 
     net = lib.flatten [
       # anti-censor
