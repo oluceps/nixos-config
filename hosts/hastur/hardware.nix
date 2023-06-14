@@ -67,7 +67,14 @@
     fsType = "vfat";
   };
 
-  swapDevices = [{ device = "/dev/disk/by-partuuid/eba8e78e-a535-417b-8a43-6e08be9b7502"; randomEncryption.enable = true; }];
+  swapDevices = [{
+    device = "/dev/disk/by-partuuid/eba8e78e-a535-417b-8a43-6e08be9b7502";
+    randomEncryption = {
+      enable = true;
+      cipher = "aes-xts-plain64";
+      source = "/dev/random";
+    };
+  }];
 
   hardware.cpu.amd.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
 }
