@@ -92,7 +92,21 @@
       "net.ipv4.tcp_tw_recycle" = 0;
       "net.ipv4.tcp_tw_reuse" = 1;
       "net.ipv4.tcp_no_metrics_save" = 1;
+
+      # hardend
       "net.ipv4.tcp_sack" = 1;
+      "net.ipv4.tcp_dsack" = 0;
+      "net.ipv4.tcp_fack" = 0;
+
+      "kernel.yama.ptrace_scope" = 2;
+      "vm.mmap_rnd_bits" = 32;
+      "vm.mmap_rnd_compat_bits" = 16;
+
+      "fs.protected_symlinks" = 1;
+      "fs.protected_hardlinks" = 1;
+
+      "fs.protected_fifos" = 2;
+      "fs.protected_regular" = 2;
 
       "net.ipv4.tcp_slow_start_after_idle" = 0;
       "vm.overcommit_memory" = 1;

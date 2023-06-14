@@ -31,6 +31,9 @@
     kernelParams = [
       "mitigations=off"
       "amd_pstate=active"
+      # "efi=disable_early_pci_dma"
+      "amd_iommu=on"
+      # "random.trust_cpu=off"
     ];
   };
 

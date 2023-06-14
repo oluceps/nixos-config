@@ -5,7 +5,7 @@
     server.enable = false;
     settings = {
       main = {
-        font = "SF Mono:size=13:style=Medium";
+        font = "Maple Mono SC NF:size=13:style=Regular";
         dpi-aware = "yes";
         term = "foot";
         pad = "8x12";
