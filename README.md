@@ -58,7 +58,7 @@ Applying:
         environment.systemPackages = [ pkgs.shadow-tls ];
       }
 
-      inputs.oluceps.nixosModules.default
+      inputs.oluceps.nixosModules.default # (you won't wanna do that)
       # or any standalone module (see `nix flake show`)
     ];
   };
