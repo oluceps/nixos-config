@@ -1,7 +1,7 @@
 { pkgs, lib, ... }:
 {
   services.polybar = {
-    enable = false;
+    enable = lib.mkDefault false;
     extraConfig = builtins.readFile ./config.ini;
   };
 }
