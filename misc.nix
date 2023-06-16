@@ -1,6 +1,4 @@
-# Edit this configuration file to define what should be installed on
-# your system.  Help is available in the configuration.nix(5) man page
-# and in the NixOS manual (accessible by running ‘nixos-help’).
+# original configuration.nix w
 { inputs
 , config
 , pkgs
@@ -158,7 +156,6 @@
       '';
     };
 
-  # Set your time zone.
   time.timeZone = "Asia/Shanghai";
 
   console = {
@@ -252,6 +249,7 @@
       noto-fonts-cjk-serif
       twemoji-color-font
       maple-mono-SC-NF
+      maple-mono-otf
       cascadia-code
       intel-one-mono
     ]
@@ -264,7 +262,7 @@
       hinting.enable = false;
       defaultFonts = lib.mkForce {
         serif = [ "Glow Sans SC" "Glow Sans TC" "Glow Sans J" "Noto Serif" "Noto Serif CJK SC" "Noto Serif CJK TC" "Noto Serif CJK JP" ];
-        monospace = [ "Maple Mono SC NF" "SF Mono" "Fantasque Sans Mono" ];
+        monospace = [ "Maple Mono" "SF Mono" "Fantasque Sans Mono" ];
         sansSerif = [ "Hanken Grotesk" "Glow Sans SC" ];
         emoji = [ "twemoji-color-font" "noto-fonts-emoji" ];
       };

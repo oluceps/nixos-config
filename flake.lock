@@ -596,6 +596,28 @@
         "type": "github"
       }
     },
+    "fenix_4": {
+      "inputs": {
+        "nixpkgs": [
+          "typst",
+          "nixpkgs"
+        ],
+        "rust-analyzer-src": "rust-analyzer-src_4"
+      },
+      "locked": {
+        "lastModified": 1686291735,
+        "narHash": "sha256-mpq2m6TN3ImqqUqA4u93NvkZu5vH//3spqjmPRbRlvA=",
+        "owner": "nix-community",
+        "repo": "fenix",
+        "rev": "6e6a94c4d0cac4821b6452fbae46609b89a8ddcf",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nix-community",
+        "repo": "fenix",
+        "type": "github"
+      }
+    },
     "flake-compat": {
       "flake": false,
       "locked": {
@@ -1345,15 +1367,15 @@
         "rust-overlay": "rust-overlay_2"
       },
       "locked": {
-        "lastModified": 1686670890,
-        "narHash": "sha256-0/n/h3e5wJE0rFm8hs10E60Xz2Zw6kFgblfGD2r+cVA=",
-        "owner": "helix-editor",
+        "lastModified": 1686866824,
+        "narHash": "sha256-hqqpSrEbw6kXmRpuLZE5pucvHVMSpZvJCMZB+clw2ow=",
+        "owner": "oluceps",
         "repo": "helix",
-        "rev": "df094909d17469ded9782bd3fa714a7c34f20cd6",
+        "rev": "beb7e6b7638ebcb4b6e718eaff43a62e667e50de",
         "type": "github"
       },
       "original": {
-        "owner": "helix-editor",
+        "owner": "oluceps",
         "repo": "helix",
         "type": "github"
       }
@@ -2660,6 +2682,22 @@
         "type": "github"
       }
     },
+    "nixpkgs_32": {
+      "locked": {
+        "lastModified": 1686226982,
+        "narHash": "sha256-nLuiPoeiVfqqzeq9rmXxpybh77VS37dsY/k8N2LoxVg=",
+        "owner": "nixos",
+        "repo": "nixpkgs",
+        "rev": "a64b73e07d4aa65cfcbda29ecf78eaf9e72e44bd",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nixos",
+        "ref": "nixos-unstable",
+        "repo": "nixpkgs",
+        "type": "github"
+      }
+    },
     "nixpkgs_4": {
       "locked": {
         "lastModified": 1686020360,
@@ -3225,7 +3263,8 @@
         "pre-commit-hooks": "pre-commit-hooks",
         "prismlauncher": "prismlauncher",
         "ragenix": "ragenix",
-        "resign": "resign"
+        "resign": "resign",
+        "typst": "typst"
       }
     },
     "rust-analyzer-src": {
@@ -3270,6 +3309,23 @@
         "owner": "rust-lang",
         "repo": "rust-analyzer",
         "rev": "1f1fe81f0db301124b3026bd2940294526cdd852",
+        "type": "github"
+      },
+      "original": {
+        "owner": "rust-lang",
+        "ref": "nightly",
+        "repo": "rust-analyzer",
+        "type": "github"
+      }
+    },
+    "rust-analyzer-src_4": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1686239338,
+        "narHash": "sha256-c6Mm7UnDf3j3akY3YB3rELFA76QRbB8ttSBsh00LWi0=",
+        "owner": "rust-lang",
+        "repo": "rust-analyzer",
+        "rev": "9c03aa1ac2e67051db83a85baf3cfee902e4dd84",
         "type": "github"
       },
       "original": {
@@ -3685,6 +3741,25 @@
       "original": {
         "owner": "oxalica",
         "repo": "tree-sitter-nix",
+        "type": "github"
+      }
+    },
+    "typst": {
+      "inputs": {
+        "fenix": "fenix_4",
+        "nixpkgs": "nixpkgs_32"
+      },
+      "locked": {
+        "lastModified": 1686649205,
+        "narHash": "sha256-ggGzjdiB+GT7vbm8C+gTH3lxBuh2JT3ZaKJlE9l0Qxs=",
+        "owner": "typst",
+        "repo": "typst",
+        "rev": "6c542ea1a4a0ee85069dad6974ff331851eff406",
+        "type": "github"
+      },
+      "original": {
+        "owner": "typst",
+        "repo": "typst",
         "type": "github"
       }
     },

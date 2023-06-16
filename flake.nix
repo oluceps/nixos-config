@@ -27,6 +27,7 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     nur.url = "github:nix-community/NUR";
+    typst.url = "github:typst/typst";
     nur-pkgs = {
       url = "github:oluceps/nur-pkgs";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -48,7 +49,7 @@
       # inputs.nixpkgs.follows = "nixpkgs";
     };
     home-manager.url = "github:nix-community/home-manager";
-    helix.url = "github:helix-editor/helix";
+    helix.url = "github:oluceps/helix";
     hyprland.url = "github:vaxerski/Hyprland";
     berberman.url = "github:berberman/flakes";
     clansty.url = "github:clansty/flake";
@@ -71,7 +72,7 @@
           permittedInsecurePackages = nixpkgs.lib.mkForce [ ];
         };
         overlays = (import ./overlays.nix { inherit inputs system; })
-          ++ genOverlays [ "self" "clansty" "fenix" "berberman" "nvfetcher" "EHfive" "nuenv" ]
+          ++ genOverlays [ "self" "clansty" "fenix" "berberman" "nvfetcher" "EHfive" "nuenv" "typst" ]
           ++ [ inputs.nur.overlay ]; #（>﹏<）
       });
 
