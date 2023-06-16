@@ -54,6 +54,7 @@
               "comment"
               "vue"
               "nu"
+              "typst"
             ];
       };
 
@@ -218,6 +219,14 @@
         '';
       };
 
+      clean-home = final.nuenv.mkScript {
+        name = "clean-home";
+        script = ''
+          cd /home/riro/
+          ls | each {|it| findmnt $it.name | if $in == "" { rm -r $it.name}}
+          cd -
+        '';
+      };
       systemd-run-app = prev.writeShellApplication {
         name = "systemd-run-app";
         text = ''

@@ -49,6 +49,8 @@ let
 
     cmd = lib.flatten [
       # (ragenix.override { plugins = [ age-plugin-yubikey ]; })
+      clean-home
+      typst
       helix
       srm
       onagre
