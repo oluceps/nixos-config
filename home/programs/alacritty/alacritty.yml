@@ -96,19 +96,19 @@ colors:
 
 font:
   bold:
-    family: Maple Mono SC NF
+    family: Maple Mono
     style: Bold
 
   bold_italic:
-    family: Maple Mono SC NF
+    family: Maple Mono
     style: Bold Italic
 
   italic:
-    family: Maple Mono SC NF
+    family: Maple Mono
     style: Italic
 
   normal:
-    family: Maple Mono SC NF
+    family: Maple Mono
     style: Regular
 
 key_bindings:
