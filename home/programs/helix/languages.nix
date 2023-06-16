@@ -18,6 +18,7 @@
     nil = { command = "nil"; };
     ocamllsp = { command = "ocamllsp"; };
     taplo = { command = "taplo"; args = [ "lsp" "stdio" ]; };
+    typst-lsp = { command = "typst-lsp"; };
     texlab = { command = "texlab"; };
     vuels = { command = "vls"; };
     pylsp = { command = "pylsp"; };
@@ -28,6 +29,14 @@
     cmake-language-server = { command = "cmake-language-server"; };
   };
   language = [
+    {
+      name = "typst";
+      scope = "source.typst";
+      injection-regex = "typ";
+      file-types = [ "typ" ];
+      language-servers = [ "typst-lsp" ];
+      roots = [];
+    }
     {
       name = "nix";
       formatter = {

@@ -26,6 +26,7 @@
     clang-tools
     haskell-language-server
     cmake-language-server
+    typst-lsp
   ]
   ++ (with pkgs.nodePackages_latest; [
     vscode-json-languageserver-bin
