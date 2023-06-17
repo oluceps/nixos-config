@@ -35,7 +35,7 @@
       injection-regex = "typ";
       file-types = [ "typ" ];
       language-servers = [ "typst-lsp" ];
-      roots = [];
+      roots = [ ];
     }
     {
       name = "nix";
