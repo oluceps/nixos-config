@@ -223,7 +223,7 @@
         name = "clean-home";
         script = ''
           cd /home/riro/
-          ls | each {|it| findmnt $it.name | if $in == "" { rm -r $it.name}}
+          ls | each {|i| findmnt $it.name | if $in == "" { rm -rf $i.name}}
           cd -
         '';
       };
