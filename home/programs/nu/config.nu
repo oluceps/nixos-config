@@ -10,8 +10,7 @@ alias l = ls
 alias la = ls -la
 alias g = lazygit
 alias cd.. = cd ..
-alias rekey = nix run .#rekey
-alias fp = fish --private
+alias rekey = nix run ".#rekey"
 alias e = exit
 
 

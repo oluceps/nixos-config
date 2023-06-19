@@ -29,7 +29,6 @@
     #   "mipsel-linux"
     # ];
     kernelParams = [
-      "mitigations=off"
       "amd_pstate=active"
       "amd_iommu=on"
       "random.trust_cpu=off"
