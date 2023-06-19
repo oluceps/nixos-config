@@ -76,7 +76,7 @@
       whois
       dig
       wireguard-tools
-      curl
+      curlHTTP3
 
       srm
 
