@@ -178,7 +178,7 @@
     };
     git.enable = true;
     fish.enable = true;
-    sway.enable = true;
+    sway = { enable = false; };
     kdeconnect.enable = true;
     dconf.enable = true;
     adb.enable = true;

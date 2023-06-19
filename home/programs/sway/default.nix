@@ -114,6 +114,7 @@
           in
           with pkgs; lib.mkOptionDefault
             ({
+              # "blur" = "enable";
               "${modifier}+h" = "focus left";
               "${modifier}+j" = "focus down";
               "${modifier}+k" = "focus up";
