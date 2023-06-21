@@ -62,12 +62,12 @@
   # };
 
   fileSystems."/efi" = {
-    device = "/dev/disk/by-uuid/F680-4A3F";
+    device = "/dev/disk/by-uuid/3418-1C5E";
     fsType = "vfat";
   };
 
   swapDevices = [{
-    device = "/dev/disk/by-partuuid/eba8e78e-a535-417b-8a43-6e08be9b7502";
+    device = "/dev/disk/by-partuuid/67a00700-d210-4dbf-a02d-bfefbf6a9a72";
     randomEncryption = {
       enable = true;
       cipher = "aes-xts-plain64";
