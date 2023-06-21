@@ -116,9 +116,10 @@
           "nur-pkgs.cachix.org-1:PAvPHVwmEBklQPwyNZfy4VQqQjzVIaFOkYYnmnKco78="
           "hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc="
           "helix.cachix.org-1:ejp9KQpR1FBI2onstMQ34yogDm4OgU2ru6lIwPvuCVs="
+          "nixpkgs-wayland.cachix.org-1:3lwxaILxMRkVhehr5StQprHdEo4IrE8sRho9R9HOLYA="
         ];
         substituters = (map (n: "https://${n}.cachix.org")
-          [ "nix-community" "nur-pkgs" "hyprland" "helix" ])
+          [ "nix-community" "nur-pkgs" "hyprland" "helix" "nixpkgs-wayland" ])
         ++
         [
           "https://cache.nixos.org"
@@ -178,7 +179,7 @@
     };
     git.enable = true;
     fish.enable = true;
-    sway = { enable = false; };
+    sway = { enable = true; };
     kdeconnect.enable = true;
     dconf.enable = true;
     adb.enable = true;
@@ -201,15 +202,15 @@
 
   };
   # hardware = {
-  # nvidia = {
-  #   package = config.boot.kernelPackages.nvidiaPackages.stable;
-  #   modesetting.enable = true;
-  #   powerManagement.enable = false;
-  # };
+  #   nvidia = {
+  #     package = config.boot.kernelPackages.nvidiaPackages.stable;
+  #     modesetting.enable = true;
+  #     powerManagement.enable = false;
+  #   };
 
-  # opengl = {
-  #   enable = true;
-  # };
+  #   opengl = {
+  #     enable = true;
+  #   };
   # };
 
   services = {
