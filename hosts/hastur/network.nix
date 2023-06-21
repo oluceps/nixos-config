@@ -78,10 +78,10 @@
     networks = {
       "20-wired" = {
         matchConfig.Name = "wan";
-        DHCP = "no";
+        DHCP = "yes";
         dhcpV4Config.RouteMetric = 2046;
         dhcpV6Config.RouteMetric = 2046;
-        address = [ "192.168.0.2/24" ];
+        # address = [ "192.168.0.2/24" ];
         networkConfig = {
           DNSSEC = true;
           MulticastDNS = true;
@@ -91,10 +91,10 @@
         dhcpV4Config.UseDNS = false;
         dhcpV6Config.UseDNS = false;
 
-        routes = [
-          { routeConfig = { Gateway = "192.168.0.1"; }; }
-          # { routeConfig = { Gateway = "fe80::c609:38ff:fef2:3ecb"; }; }
-        ];
+        # routes = [
+        # { routeConfig = { Gateway = "192.168.0.1"; }; }
+        # { routeConfig = { Gateway = "fe80::c609:38ff:fef2:3ecb"; }; }
+        # ];
         # dns = [ "::1" ];
         # "::1"
       };
