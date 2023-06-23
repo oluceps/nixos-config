@@ -11,7 +11,7 @@ pkgs.writeShellApplication {
       -spice port=5900,disable-ticketing=on \
       -device virtserialport,chardev=spicechannel0,name=com.redhat.spice.0 \
       -chardev spicevmc,id=spicechannel0,name=vdagent \
-      -nic user,model=virtio-net-pci \
+      -nic user,model=virtio-net-pci,smb="$HOME/Downloads" \
       -drive if=virtio,file=/var/lib/libvirt/images/win10.qcow2,aio=io_uring \
       "$@"
   '';
