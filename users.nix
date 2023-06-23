@@ -4,9 +4,26 @@
 , lib
 , ...
 }: {
-  security.doas = {
-    enable = true;
-    wheelNeedsPassword = false;
+
+  security = {
+    doas = {
+      enable = true;
+      wheelNeedsPassword = false;
+    };
+    sudo = {
+      enable = lib.mkForce false;
+      extraRules = [
+        {
+          users = [ "${user}" ];
+          commands = [
+            {
+              command = "ALL";
+              options = [ "NOPASSWD" ];
+            }
+          ];
+        }
+      ];
+    };
   };
 
   users = {
@@ -22,9 +39,6 @@
       extraGroups = [
         "wheel"
         "kvm"
-        "libvirtd"
-        "qemu-libvirtd"
-        "docker"
         "adbusers"
       ];
       shell = pkgs.bash;
@@ -37,19 +51,5 @@
       isSystemUser = true;
       group = "nogroup";
     };
-  };
-  security.sudo = {
-    enable = lib.mkForce false;
-    extraRules = [
-      {
-        users = [ "${user}" ];
-        commands = [
-          {
-            command = "ALL";
-            options = [ "NOPASSWD" ];
-          }
-        ];
-      }
-    ];
   };
 }
