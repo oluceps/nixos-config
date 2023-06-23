@@ -15,6 +15,7 @@
       files = [
         ".npmrc"
         ".mongoshrc.js"
+        ".gitconfig"
       ];
       directories = [
         "Src"
