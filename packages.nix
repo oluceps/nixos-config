@@ -6,6 +6,7 @@ let
       [ bpf-linker pkg-config gdb gcc gnumake cmake clang-tools_15 llvmPackages_latest.clang ]
       [ openocd ]
       lua
+      delta
       # nodejs-18_x
       switch-mute
       yarn
