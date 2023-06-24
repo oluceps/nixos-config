@@ -215,7 +215,7 @@ in
     btrfs.autoScrub = {
       enable = true;
       interval = "weekly";
-      fileSystems = [ "/persist" "/nix" ];
+      fileSystems = [ "/persist" ];
     };
     pcscd.enable = true;
 

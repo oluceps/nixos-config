@@ -80,11 +80,7 @@
       #     sha256 = "sha256-nYA8W7iabaepiIsxDrCkG/WIFNrVdubk/AtFhIvYJB8=";
       #   };
       # });
-      # sway-unwrapped = prev.sway-unwrapped.overrideAttrs
-      #   (old: {
-      #     patches = (old.patches or [ ])
-      #     ++ [ ./.attachs/0001-text_input-Implement-input-method-popups.patch ];
-      #   });
+      sway-unwrapped = inputs.nixpkgs-wayland.packages.${system}.sway-unwrapped;
 
 
       # sway-unwrapped =

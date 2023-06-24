@@ -15,7 +15,7 @@ in
     };
     package = mkOption {
       type = types.package;
-      default = pkgs.dae;
+      default = pkgs.nur-pkgs.dae;
     };
 
     txChecksumIpGeneric = mkOption {

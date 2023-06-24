@@ -24,8 +24,8 @@ return {
 	warn_about_missing_glyphs = false,
 	use_ime = true,
 	xim_im_name = "fcitx5",
-	-- front_end = "WebGpu",
-	-- webgpu_power_preference = "HighPerformance",
+	front_end = "WebGpu",
+	webgpu_power_preference = "HighPerformance",
 	enable_kitty_graphics = true,
 	window_close_confirmation = "NeverPrompt",
 
@@ -45,11 +45,11 @@ return {
 	-- Font configuration
 	-- https://wezfurlong.org/wezterm/config/fonts.html
 	-- font = wezterm.font('Maple Mono SC NF'),
-	font = wezterm.font{
-    family = "Maple Mono SC NF",
-    weight = 'Regular',
-    harfbuzz_features = {'calt=1', 'clig=1', 'liga=1'}
-  },
+	font = wezterm.font {
+		family = "Maple Mono SC NF",
+		weight = 'Medium',
+		harfbuzz_features = { 'calt=1', 'clig=1', 'liga=1' }
+	},
 	font_size = 16,
 
 	-- Disable ligatures
