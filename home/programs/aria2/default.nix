@@ -10,6 +10,7 @@
       rpc-secret = "HmSu9kuMU9M=";
       disk-cache = "64M";
       continue = true;
+      disable-ipv6 = false;
       no-file-allocation-limit = "64M";
       ca-certificate = "/etc/ssl/certs/ca-bundle.crt";
       always-resume = false;
