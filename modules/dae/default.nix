@@ -15,7 +15,7 @@ in
     };
     package = mkOption {
       type = types.package;
-      default = pkgs.nur-pkgs.dae;
+      default = pkgs.dae;
     };
 
     txChecksumIpGeneric = mkOption {
@@ -67,6 +67,7 @@ in
             ++ (with lib; optional cfg.txChecksumIpGeneric (getExe NICComp));
           ExecStart = "${dae} run --disable-timestamp -c ${configFile}";
           ExecReload = "${dae} reload $MAINPID";
+          ExecSuspend = "${dae} suspend $MAINPID";
           Restart = "on-abnormal";
         };
       };

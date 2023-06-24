@@ -33,6 +33,7 @@
               "toml"
               "rust"
               "nix"
+              "lua"
               "protobuf"
               "yaml"
               "json"
