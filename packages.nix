@@ -35,9 +35,13 @@ let
 
     net = lib.flatten [
       # anti-censor
-      [ nur-pkgs.dae sing-box rathole tor arti nur-pkgs.tuic]
+      [ nur-pkgs.dae sing-box rathole tor arti nur-pkgs.tuic ]
 
       [ iperf3 i2p ethtool dnsutils autossh tcpdump netcat dog wget mtr-gui socat miniserve mtr wakelan netcat-gnu q nali lynx nethogs restic w3m whois dig wireguard-tools curlHTTP3 ngrep gping knot-dns tcping-go ]
+    ];
+    graph = [
+      vulkan-validation-layers
+      vulkan-extension-layer
     ];
 
     virt = [

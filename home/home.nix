@@ -181,7 +181,7 @@
       # kotatogram-desktop
       nmap
       lm_sensors
-      eww-wayland
+      # eww-wayland
       rofi
       picom
 

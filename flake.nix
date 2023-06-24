@@ -77,7 +77,7 @@
         };
         overlays = (import ./overlays.nix { inherit inputs system; })
           ++ genOverlays [ "self" "clansty" "fenix" "berberman" "nvfetcher" "EHfive" "nuenv" "typst" ]
-          ++ (with inputs;[ nur.overlay nixpkgs-wayland.overlay ]); #（>﹏<）
+          ++ (with inputs;[ nur.overlay ]); #（>﹏<）
       });
 
       genericImport = p: import p { inherit inputs _pkgs; };
