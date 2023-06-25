@@ -25,7 +25,7 @@
         genProxys = i: genSec i "proxy" "users" "740";
         genMaterial = i: genSec i user "nogroup" "400";
       in
-      (genProxys [ "rat" "ss" "sing" "hyst-az" "hyst-am" "hyst-do" "tuic" "naive" "wg" "dae.sub" ]) //
+      (genProxys [ "rat" "ss" "sing" "hyst-az" "hyst-am" "hyst-do" "tuic" "naive" "wg" "dae.sub" "by.sub" ]) //
       (genMaterial [ "ssh-cfg" "gh-eu" "u2f" "gh-token" "age" "pub" "id" "minio" "prism" ]) //
       {
         dae = { rekeyFile = ./sec/dae.age; mode = "640"; owner = "proxy"; group = "users"; name = "d.dae"; };
@@ -203,7 +203,7 @@
   };
   # hardware = {
   #   nvidia = {
-  #     package = config.boot.kernelPackages.nvidiaPackages.stable;
+  #     package = config.boot.kernelPackages.nvidiaPackages.latest;
   #     modesetting.enable = true;
   #     powerManagement.enable = false;
   #   };
