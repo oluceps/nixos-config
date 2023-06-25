@@ -12,6 +12,7 @@ let
       "sundial"
       "dae"
       "mosdns"
+      "cn-up"
     ]
     (n: import (./. + ("/" + n))) //
   # Hysteria configs

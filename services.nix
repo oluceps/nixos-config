@@ -55,6 +55,8 @@ in
   # photoprism minio
   networking.firewall.allowedTCPPorts = [ 20800 9000 9001 ];
   services = {
+
+    cn-up.enable = config.services.mosdns.enable;
     btrbk = {
       enable = true;
       config = ''
@@ -275,14 +277,14 @@ in
         plugins = [
           {
             args = {
-              files = [ "${pkgs.acc-cn}/accelerated-domains.china.txt" ];
+              files = [ "accelerated-domains.china.txt" ];
             };
             tag = "direct_domain";
             type = "domain_set";
           }
           {
             args = {
-              files = [ "${pkgs.all-cn}/all_cn.txt" ];
+              files = [ "all_cn.txt" ];
             };
             tag = "direct_ip";
             type = "ip_set";
