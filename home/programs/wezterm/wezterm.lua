@@ -1,23 +1,13 @@
 local wezterm = require("wezterm")
 -- local act = wezterm.act
 
-local catppuccin = require("catppuccin").setup({
-	-- whether or not to sync with the system's theme
-	sync = false,
-	-- the flavours to switch between when syncing
-	-- available flavours: "latte" | "frappe" | "macchiato" | "mocha"
-	sync_flavours = {
-		light = "latte",
-		dark = "mocha",
-	},
-	-- the default/fallback flavour, when syncing is disabled
-	flavour = "frappe",
-})
-
-return {
+local config =
+{
+	default_prog = { '/usr/bin/env', 'fish', '-l' },
 	-- Smart tab bar [distraction-free mode]
 	hide_tab_bar_if_only_one_tab = true,
 	enable_wayland = true,
+	enable_scroll_bar = true,
 	scrollback_lines = 5000,
 
 	pane_focus_follows_mouse = true,
@@ -38,23 +28,18 @@ return {
 		left = 8,
 	},
 
-	colors = catppuccin,
+	color_scheme = 'Catppuccin Mocha',
 
 	window_background_opacity = 0.82,
 
 	-- Font configuration
 	-- https://wezfurlong.org/wezterm/config/fonts.html
-	-- font = wezterm.font('Maple Mono SC NF'),
 	font = wezterm.font {
 		family = "Maple Mono",
-		weight = 'Regular',
+		-- weight = 'Regular',
 		harfbuzz_features = { 'calt=1', 'clig=1', 'liga=1' }
 	},
-	font_size = 16,
-
-	-- Disable ligatures
-	-- https://wezfurlong.org/wezterm/config/font-shaping.html
-	-- harfbuzz_features = { 'calt=0', 'clig=0', 'liga=0' },
+	font_size = 15,
 
 	-- Cursor style
 	default_cursor_style = "BlinkingBar",
@@ -67,6 +52,13 @@ return {
 
 		{ key = ",", mods = "CTRL", action = wezterm.action.SplitVertical({ domain = "CurrentPaneDomain" }) },
 		{ key = ".", mods = "CTRL", action = wezterm.action.SplitHorizontal({ domain = "CurrentPaneDomain" }) },
+		{
+			key = 'w',
+			mods = 'CTRL',
+			action = wezterm.action.CloseCurrentPane { confirm = true },
+		},
+		{ key = 'n', mods = 'SHIFT|CTRL', action = wezterm.action.SpawnWindow },
+
 	},
 	hyperlink_rules = {
 		-- Linkify things that look like URLs and the host has a TLD name.
@@ -115,3 +107,4 @@ return {
 		},
 	},
 }
+return config
