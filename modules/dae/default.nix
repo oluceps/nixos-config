@@ -46,6 +46,7 @@ in
       };
 
       systemd.services.dae = {
+        reloadTriggers = [ configFile ];
         wantedBy = [ "multi-user.target" ];
         after = [
           "network-online.target"
