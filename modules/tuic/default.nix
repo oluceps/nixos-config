@@ -29,7 +29,6 @@ in
           wantedBy = [ "multi-user.target" ];
           after = [ "network.target" ];
           description = "tuic daemon";
-
           serviceConfig = {
             Type = "simple";
             User = "proxy";

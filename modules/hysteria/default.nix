@@ -37,9 +37,7 @@ let
                 wantedBy = [ "multi-user.target" ];
                 after = [ "network-online.target" "dae.service" ];
                 description = "hysteria daemon";
-
                 serviceConfig = {
-                  Type = "simple";
                   User = "proxy";
                   ExecStart = "${lib.getExe cfg.package} client -c ${configFile}";
                   AmbientCapabilities = [ "CAP_NET_ADMIN" "CAP_NET_BIND_SERVICE" ];

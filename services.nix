@@ -277,6 +277,7 @@ in
         plugins = [
           {
             args = {
+              # may have trouble while bootstraping
               files = [ "accelerated-domains.china.txt" ];
             };
             tag = "direct_domain";

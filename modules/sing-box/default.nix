@@ -34,7 +34,6 @@ in
         wantedBy = [ "multi-user.target" ];
         after = [ "network-online.target" ];
         description = "sing-box Daemon";
-
         serviceConfig = {
           User = "proxy";
           ExecStart = "${lib.getExe cfg.package} run -c ${configFile} -D $STATE_DIRECTORY";
