@@ -38,6 +38,8 @@
       jetbrains.idea-ultimate
       jetbrains.clion
 
+      kooha # recorder
+
       typst
       ruffle
 
@@ -282,7 +284,7 @@
 
       enableAutosuggestions = true;
       enableCompletion = true;
-      enableSyntaxHighlighting = true;
+      syntaxHighlighting.enable = true;
       autocd = true;
       dotDir = ".config/zsh";
       defaultKeymap = "emacs";

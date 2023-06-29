@@ -8,6 +8,7 @@ let
   cfg = config.services.sing-box;
 in
 {
+  disabledModules = [ "services/networking/sing-box.nix" ];
   options.services.sing-box = {
     enable = mkOption {
       type = types.bool;
