@@ -284,7 +284,7 @@
 
       enableAutosuggestions = true;
       enableCompletion = true;
-      syntaxHighlighting.enable = true;
+      # syntaxHighlighting.enable = true;
       autocd = true;
       dotDir = ".config/zsh";
       defaultKeymap = "emacs";
