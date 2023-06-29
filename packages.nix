@@ -49,6 +49,7 @@ let
       virtiofsd
       runwin
       ubt-rv-run
+      opulr-a-run
     ];
     fs = [ gparted e2fsprogs fscrypt-experimental f2fs-tools compsize ];
 
