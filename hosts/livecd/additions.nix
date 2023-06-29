@@ -11,8 +11,6 @@
       squashfsCompression = "zstd -Xcompression-level 6";
     };
 
-
-
     nix = {
       package = pkgs.nixVersions.stable;
 
@@ -116,7 +114,8 @@
       inetutils
       pciutils
       usbutils
-    ];
+    ] ++
+    [ rage age-plugin-yubikey yubikey-manager yubikey-manager-qt gnupg cryptsetup ];
   }
   inputs.home-manager.nixosModules.home-manager
 
