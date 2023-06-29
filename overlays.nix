@@ -89,6 +89,10 @@
       #       inherit system;
       #     }).sway-unwrapped;
 
+      fd_iuBrGE = (import
+        inputs.nixpkgs-22
+        { system = "x86_64-linux"; }).pkgsCross.aarch64-multiplatform.OVMF.fd;
+
       fishPlugins.foreign-env = prev.fishPlugins.foreign-env.overrideAttrs
         (old: {
           preInstall = old.preInstall + (with prev; ''
