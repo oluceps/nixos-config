@@ -3,7 +3,7 @@ local act = wezterm.action
 
 local config =
 {
-	default_prog = { '/usr/bin/env', 'fish', '-l' },
+	default_prog = { '/usr/bin/env', 'fish' },
 	-- Smart tab bar [distraction-free mode]
 	hide_tab_bar_if_only_one_tab = true,
 	enable_wayland = true,

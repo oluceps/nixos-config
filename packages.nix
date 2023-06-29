@@ -3,7 +3,7 @@ let
   p = with pkgs; {
     dev = lib.flatten [
       [ pinentry-curses swagger-codegen3 bump2version openssl linuxPackages_latest.perf cloud-utils ]
-      [ bpf-linker pkg-config gdb gcc gnumake cmake clang-tools_15 llvmPackages_latest.clang ]
+      [ bpf-linker gdb gcc gnumake cmake clang-tools_15 llvmPackages_latest.clang ]
       [ openocd ]
       lua
       delta
@@ -65,7 +65,7 @@ let
 
       # common
       [ killall hexyl jq fx bottom lsd fd choose duf tokei procs exa lsof tree bat ]
-      [ broot powertop ranger ripgrep qrencode lazygit b3sum unzip zip coreutils bpftools inetutils pciutils usbutils pinentry ]
+      [ broot powertop ranger ripgrep qrencode lazygit b3sum unzip zip coreutils inetutils pciutils usbutils pinentry ]
     ];
 
     lang = lib.flatten [

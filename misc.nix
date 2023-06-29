@@ -70,7 +70,7 @@
     docker.enable = false;
     podman.enable = true;
     libvirtd = {
-      enable = true;
+      enable = false;
       qemu = {
         ovmf = {
           enable = true;
