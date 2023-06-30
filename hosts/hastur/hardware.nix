@@ -15,7 +15,7 @@
     initrd = {
       systemd.enable = true;
       availableKernelModules = [ "nvme" "xhci_pci" "ahci" "usb_storage" "usbhid" "sd_mod" ];
-      kernelModules = [ "tpm" "tpm_tis" "tpm_crb" "kvm-amd" ];
+      kernelModules = [ "tpm" "tpm_tis" "tpm_crb" "kvm-amd" "amdgpu" ];
     };
     kernelModules = [ "ec_sys" "uhid" "kvm-amd" ];
     extraModulePackages = with config.boot.kernelPackages; [

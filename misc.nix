@@ -9,6 +9,7 @@
 }: {
   systemd.tmpfiles.rules = [
     "C /var/cache/tuigreet/lastuser - - - - ${pkgs.writeText "lastuser" "${user}"}"
+    "L+    /opt/rocm/hip   -    -    -     -    ${pkgs.hip}"
   ];
 
 
@@ -201,17 +202,23 @@
     };
 
   };
-  # hardware = {
-  #   nvidia = {
-  #     package = config.boot.kernelPackages.nvidiaPackages.latest;
-  #     modesetting.enable = true;
-  #     powerManagement.enable = false;
-  #   };
+  hardware = {
+    #   nvidia = {
+    #     package = config.boot.kernelPackages.nvidiaPackages.latest;
+    #     modesetting.enable = true;
+    #     powerManagement.enable = false;
+    #   };
 
-  #   opengl = {
-  #     enable = true;
-  #   };
-  # };
+    opengl = {
+      enable = true;
+      extraPackages = with pkgs; [
+        rocm-opencl-icd
+        rocm-opencl-runtime
+      ];
+      driSupport = true;
+      driSupport32Bit = true;
+    };
+  };
 
   services = {
     dbus.packages = [ pkgs.gcr ];
@@ -228,7 +235,7 @@
         };
       };
 
-    # xserver.videoDrivers = [ "nvidia" ];
+    xserver.videoDrivers = [ "amdgpu" ];
   };
 
   fonts = {

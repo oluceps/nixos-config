@@ -41,7 +41,6 @@ let
     ];
     # graph = [
     #   vulkan-validation-layers
-    #   vulkan-extension-layer
     # ];
 
     virt = [
