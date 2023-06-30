@@ -235,7 +235,7 @@
         };
       };
 
-    xserver.videoDrivers = [ "amdgpu" ];
+    # xserver.videoDrivers = [ "amdgpu" ];
   };
 
   fonts = {
