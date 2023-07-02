@@ -4,7 +4,7 @@
   environment.sessionVariables = {
     # SYSTEMD_LOG_LEVEL = "debug";
     EDITOR = "hx";
-    WLR_RENDERER = "vulkan";
+    # WLR_RENDERER = "vulkan";
     # NIXOS_OZONE_WL = "1";
     # Steam needs this to find Proton-GE
     STEAM_EXTRA_COMPAT_TOOLS_PATHS = "\${HOME}/.steam/root/compatibilitytools.d";
