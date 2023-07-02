@@ -209,15 +209,15 @@
     #     powerManagement.enable = false;
     #   };
 
-    opengl = {
-      enable = true;
-      extraPackages = with pkgs; [
-        rocm-opencl-icd
-        rocm-opencl-runtime
-      ];
-      driSupport = true;
-      driSupport32Bit = true;
-    };
+    # opengl = {
+    #   enable = true;
+    #   extraPackages = with pkgs; [
+    #     rocm-opencl-icd
+    #     rocm-opencl-runtime
+    #   ];
+    #   driSupport = true;
+    #   driSupport32Bit = true;
+    # };
   };
 
   services = {
