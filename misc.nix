@@ -68,8 +68,8 @@
 
   networking.firewall.trustedInterfaces = [ "virbr0" ];
   virtualisation = {
-    docker.enable = false;
-    podman.enable = true;
+    docker.enable = true;
+    podman.enable = false;
     libvirtd = {
       enable = false;
       qemu = {
@@ -239,9 +239,9 @@
   };
 
   fonts = {
-    enableDefaultFonts = false;
+    enableDefaultFonts = true;
     fontDir.enable = false;
-    enableGhostscriptFonts = true;
+    enableGhostscriptFonts = false;
     fonts = with pkgs; [
 
       (nerdfonts.override {

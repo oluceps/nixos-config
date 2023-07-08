@@ -40,6 +40,7 @@
         "wheel"
         "kvm"
         "adbusers"
+        "docker"
       ];
       shell = pkgs.bash;
 

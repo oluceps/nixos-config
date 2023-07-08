@@ -1,5 +1,5 @@
 local wezterm = require("wezterm")
-local act = wezterm.action
+-- local act = wezterm.action
 
 local config =
 {
@@ -15,7 +15,7 @@ local config =
 	use_ime = true,
 	xim_im_name = "fcitx5",
 	front_end = "WebGpu",
-	-- webgpu_power_preference = "HighPerformance",
+	webgpu_power_preference = "HighPerformance",
 	enable_kitty_graphics = true,
 	window_close_confirmation = "NeverPrompt",
 
@@ -34,11 +34,16 @@ local config =
 
 	-- Font configuration
 	-- https://wezfurlong.org/wezterm/config/fonts.html
-	font = wezterm.font {
-		family = "Maple Mono",
-		-- weight = 'Regular',
-		harfbuzz_features = { 'calt=1', 'clig=1', 'liga=1' }
-	},
+	font =
+			wezterm.font_with_fallback {
+				{ family = "Maple Mono" },
+			},
+	-- 	wezterm.font {
+	-- 	family = "Maple Mono",
+	-- 	weight = 'Light',
+	-- 	harfbuzz_features = { 'calt=1', 'clig=1', 'liga=1' }
+	-- },
+
 	font_size = 15,
 
 	-- Cursor style

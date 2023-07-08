@@ -34,6 +34,9 @@
   home.packages = with pkgs;
 
     [
+      factorio
+
+      logseq
       jetbrains.pycharm-professional
       jetbrains.idea-ultimate
       jetbrains.clion
