@@ -6,8 +6,8 @@
   programs.kitty = {
     enable = true;
     font = {
-      name = "Fira Code Medium";
-      size = 11;
+      name = "Maple Mono";
+      size = 15;
     };
     settings = {
       background_opacity = "0.65";

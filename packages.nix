@@ -3,7 +3,7 @@ let
   p = with pkgs; {
     dev = lib.flatten [
       [ pinentry-curses swagger-codegen3 bump2version openssl linuxPackages_latest.perf cloud-utils ]
-      [ bpf-linker gdb gcc gnumake cmake clang-tools_15 llvmPackages_latest.clang ]
+      [ bpf-linker gdb gcc gnumake cmake ] # clang-tools_15 llvmPackages_latest.clang ]
       [ openocd ]
       lua
       delta
@@ -20,6 +20,8 @@ let
       awscli2
       trunk
       cargo-expand
+      wasmer
+      wasmtime
     ];
     # ++ [
     #   (fenix.complete.withComponents [ "cargo" "clippy" "rust-src" "rustc" "rustfmt" ])
@@ -49,6 +51,7 @@ let
       runwin
       ubt-rv-run
       opulr-a-run
+      lunar-run
     ];
     fs = [ gparted e2fsprogs fscrypt-experimental f2fs-tools compsize ];
 

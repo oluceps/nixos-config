@@ -34,6 +34,7 @@
         ".cache"
         ".local"
         ".mc"
+        ".factorio"
         ".cargo"
         ".rustup"
         ".mozilla"
