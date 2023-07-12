@@ -193,7 +193,7 @@ in
     };
 
     hyst-az.enable = false;
-    hyst-do.enable = true;
+    hyst-do.enable = false;
 
     # ss-tls cnt to router
     ss.enable = true;

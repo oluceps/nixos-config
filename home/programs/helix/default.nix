@@ -32,6 +32,7 @@
     vscode-json-languageserver-bin
     vscode-html-languageserver-bin
     vscode-css-languageserver-bin
+    bash-language-server
     vls
     prettier
   ]);
