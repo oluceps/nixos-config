@@ -9,7 +9,6 @@
 }: {
   systemd.tmpfiles.rules = [
     "C /var/cache/tuigreet/lastuser - - - - ${pkgs.writeText "lastuser" "${user}"}"
-    "L+    /opt/rocm/hip   -    -    -     -    ${pkgs.hip}"
   ];
 
 
@@ -107,7 +106,10 @@
   nix =
     {
       package = pkgs.nixVersions.stable;
-      registry.nixpkgs.flake = inputs.nixpkgs;
+      registry = {
+        nixpkgs.flake = inputs.nixpkgs;
+        self.flake = inputs.self;
+      };
       settings = {
 
         trusted-public-keys = [
@@ -134,7 +136,7 @@
           "cgroups"
           "repl-flake"
           "recursive-nix"
-          # "ca-derivations"
+          "ca-derivations"
         ];
         auto-allocate-uids = true;
         use-cgroups = true;

@@ -7,11 +7,11 @@
 
   security = {
     doas = {
-      enable = true;
+      enable = false;
       wheelNeedsPassword = false;
     };
     sudo = {
-      enable = lib.mkForce false;
+      enable = lib.mkForce true;
       extraRules = [
         {
           users = [ "${user}" ];

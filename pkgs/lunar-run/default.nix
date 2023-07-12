@@ -8,7 +8,7 @@ pkgs.writeShellApplication {
       -m 31G \
       -nographic \
       -device virtio-net-pci,netdev=net0 \
-      -netdev user,id=net0,hostfwd=tcp::2222-:22 \
+      -netdev user,id=net0,hostfwd=tcp::2222-:22,hostfwd=tcp::8080-:8080 \
       -drive if=virtio,format=qcow2,file=/var/lib/libvirt/images/lunar-server-cloudimg-amd64.img \
       "$@"
   '';

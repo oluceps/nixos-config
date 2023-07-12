@@ -53,7 +53,7 @@
       # inputs.nixpkgs.follows = "nixpkgs";
     };
     home-manager.url = "github:nix-community/home-manager";
-    helix.url = "github:oluceps/helix";
+    helix.url = "github:helix-editor/helix";
     hyprland.url = "github:vaxerski/Hyprland";
     berberman.url = "github:berberman/flakes";
     clansty.url = "github:clansty/flake";
