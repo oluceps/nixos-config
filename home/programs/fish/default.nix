@@ -4,9 +4,9 @@
     plugins = [ ];
     shellAliases = {
       nd = "cd /etc/nixos";
-      swc = "doas nixos-rebuild switch --flake /etc/nixos --verbose";
-      daso = "doas";
-      daos = "doas";
+      swc = "sudo nixos-rebuild switch --flake /etc/nixos --verbose";
+      daso = "sudo";
+      daos = "sudo";
       off = "poweroff";
       kls = "lsd --icon never";
       lks = "lsd --icon never";
