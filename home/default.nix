@@ -12,6 +12,7 @@ in
       imports = [
         homeProfile
         inputs.hyprland.homeManagerModules.default
+        inputs.android-nixpkgs.hmModule
         #        
       ];
     };
