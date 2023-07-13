@@ -1,5 +1,6 @@
 { config
 , pkgs
+, lib
 , ...
 }:
 {
@@ -14,6 +15,16 @@
   home.sessionVariables = {
     EDITOR = "hx";
   };
+
+  android-sdk.enable = true;
+
+  android-sdk.packages = sdk: with sdk; [
+    # build-tools-31-0-0
+    cmdline-tools-latest
+    # emulator
+    # platforms-android-31
+    # sources-android-31
+  ];
 
   systemd.user = {
     sessionVariables = {
@@ -35,7 +46,6 @@
 
     [
       factorio
-
       logseq
       jetbrains.pycharm-professional
       jetbrains.idea-ultimate
