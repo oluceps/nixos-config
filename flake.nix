@@ -9,6 +9,9 @@
       url = "github:nix-community/nixpkgs-wayland";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    android-nixpkgs = {
+      url = "github:tadfisher/android-nixpkgs";
+    };
     nvfetcher.url = "github:berberman/nvfetcher";
     nuenv.url = "github:DeterminateSystems/nuenv";
     EHfive.url = "github:EHfive/flakes";
@@ -76,7 +79,7 @@
           permittedInsecurePackages = nixpkgs.lib.mkForce [ ];
         };
         overlays = (import ./overlays.nix { inherit inputs system; })
-          ++ genOverlays [ "self" "clansty" "fenix" "berberman" "nvfetcher" "EHfive" "nuenv" "typst" ]
+          ++ genOverlays [ "self" "clansty" "fenix" "berberman" "nvfetcher" "EHfive" "nuenv" "typst" "android-nixpkgs" ]
           ++ (with inputs;[ nur.overlay ]); #（>﹏<）
       });
 

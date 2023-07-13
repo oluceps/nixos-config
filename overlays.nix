@@ -24,7 +24,6 @@
       #       inherit system;
       #     }).lazygit;
       # inputs.hyprland.packages.${system}.default;
-
       helix = inputs.helix.packages.${system}.default.override {
         includeGrammarIf = grammar:
           prev.lib.any
