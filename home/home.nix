@@ -245,6 +245,8 @@
       userName = "oluceps";
       userEmail = "i@oluceps.uk";
       extraConfig = {
+        user.signingKey = "/run/agenix/id_sk";
+        tag.gpgsign = true;
         safe.directory = "/etc/nixos";
         core.editor = with pkgs; (lib.getExe helix);
         commit.gpgsign = true;
