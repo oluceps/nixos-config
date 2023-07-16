@@ -33,7 +33,7 @@ let
 
     web = [ hugo ];
 
-    crypt = [ rage age-plugin-yubikey yubikey-manager yubikey-manager-qt gnupg cryptsetup ];
+    crypt = [ rage age-plugin-yubikey yubikey-manager yubikey-manager-qt cryptsetup ];
 
     net = lib.flatten [
       # anti-censor
@@ -68,7 +68,7 @@ let
 
       # common
       [ killall hexyl jq fx bottom lsd fd choose duf tokei procs exa lsof tree bat ]
-      [ broot powertop ranger ripgrep qrencode lazygit b3sum unzip zip coreutils inetutils pciutils usbutils pinentry ]
+      [ broot powertop ranger ripgrep ripgrep-all qrencode lazygit b3sum unzip zip coreutils inetutils pciutils usbutils pinentry ]
     ];
 
     lang = lib.flatten [
