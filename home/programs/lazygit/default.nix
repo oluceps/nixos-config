@@ -7,5 +7,8 @@
       editAtLine: 'hx {{filename}}:{{line}}'
       editAtLineAndWait: 'hx {{filename}}:{{line}}'
       editInTerminal: true
+    # git:
+    #   commit:
+    #     signOff: true
   '';
 }
