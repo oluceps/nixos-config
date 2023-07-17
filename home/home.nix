@@ -252,7 +252,7 @@
         commit.gpgsign = true;
         gpg = {
           format = "ssh";
-          ssh.defaultKeyCommand = "ssh-add -L";
+          # ssh.defaultKeyCommand = "ssh-add -L";
           ssh.allowedSignersFile = toString (pkgs.writeText "allowed_signers" "");
         };
         merge.conflictStyle = "diff3";
