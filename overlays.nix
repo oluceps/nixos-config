@@ -79,7 +79,7 @@
       #     sha256 = "sha256-nYA8W7iabaepiIsxDrCkG/WIFNrVdubk/AtFhIvYJB8=";
       #   };
       # });
-      sway-unwrapped = inputs.nixpkgs-wayland.packages.${system}.sway-unwrapped;
+      # sway-unwrapped = inputs.nixpkgs-wayland.packages.${system}.sway-unwrapped;
 
 
       # sway-unwrapped =
