@@ -2,6 +2,26 @@
   # This headless machine uses to perform heavy task.
   # Running database and web services.
 
+  system.stateVersion = "22.11"; # Did you read the comment?
+
+  hardware = {
+    #   nvidia = {
+    #     package = config.boot.kernelPackages.nvidiaPackages.latest;
+    #     modesetting.enable = true;
+    #     powerManagement.enable = false;
+    #   };
+
+    # opengl = {
+    #   enable = true;
+    #   extraPackages = with pkgs; [
+    #     rocm-opencl-icd
+    #     rocm-opencl-runtime
+    #   ];
+    #   driSupport = true;
+    #   driSupport32Bit = true;
+    # };
+  };
+
   systemd = {
     # Given that our systems are headless, emergency mode is useless.
     # We prefer the system to attempt to continue booting so
@@ -31,50 +51,52 @@
 
   # photoprism minio
   networking.firewall.allowedTCPPorts =
-    [ 9000 9001 ] ++ [ config.photoprism.port ];
+    [ 9000 9001 ] ++ [ config.services.photoprism.port ];
 
-  photoprism = {
-    enable = true;
-    originalsPath = "/var/lib/private/photoprism/originals";
-    address = "[::]";
-    passwordFile = config.age.secrets.prism.path;
-    settings = {
-      PHOTOPRISM_ADMIN_USER = "${user}";
-      PHOTOPRISM_DEFAULT_LOCALE = "en";
-      PHOTOPRISM_DATABASE_NAME = "photoprism";
-      PHOTOPRISM_DATABASE_SERVER = "/run/mysqld/mysqld.sock";
-      PHOTOPRISM_DATABASE_USER = "photoprism";
-      PHOTOPRISM_DATABASE_DRIVER = "mysql";
+  services = {
+    photoprism = {
+      enable = true;
+      originalsPath = "/var/lib/private/photoprism/originals";
+      address = "[::]";
+      passwordFile = config.age.secrets.prism.path;
+      settings = {
+        PHOTOPRISM_ADMIN_USER = "${user}";
+        PHOTOPRISM_DEFAULT_LOCALE = "en";
+        PHOTOPRISM_DATABASE_NAME = "photoprism";
+        PHOTOPRISM_DATABASE_SERVER = "/run/mysqld/mysqld.sock";
+        PHOTOPRISM_DATABASE_USER = "photoprism";
+        PHOTOPRISM_DATABASE_DRIVER = "mysql";
+      };
+      port = 20800;
     };
-    port = 20800;
-  };
 
 
-  minio = {
-    enable = true;
-    region = "ap-east-1";
-    rootCredentialsFile = config.age.secrets.minio.path;
-  };
+    minio = {
+      enable = true;
+      region = "ap-east-1";
+      rootCredentialsFile = config.age.secrets.minio.path;
+    };
 
 
-  mysql = {
-    enable = true;
-    package = pkgs.mariadb_1011;
-    dataDir = "/var/lib/mysql";
-    ensureDatabases = [ "photoprism" ];
-    ensureUsers = [
-      {
-        name = "riro";
-        ensurePermissions = {
-          "*.*" = "ALL PRIVILEGES";
-        };
-      }
-      {
-        name = "photoprism";
-        ensurePermissions = {
-          "photoprism.*" = "ALL PRIVILEGES";
-        };
-      }
-    ];
+    mysql = {
+      enable = true;
+      package = pkgs.mariadb_1011;
+      dataDir = "/var/lib/mysql";
+      ensureDatabases = [ "photoprism" ];
+      ensureUsers = [
+        {
+          name = "riro";
+          ensurePermissions = {
+            "*.*" = "ALL PRIVILEGES";
+          };
+        }
+        {
+          name = "photoprism";
+          ensurePermissions = {
+            "photoprism.*" = "ALL PRIVILEGES";
+          };
+        }
+      ];
+    };
   };
 }
