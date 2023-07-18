@@ -45,7 +45,7 @@
   home.packages = with pkgs;
 
     [
-      factorio
+      # factorio
       logseq
       jetbrains.pycharm-professional
       jetbrains.idea-ultimate
@@ -57,10 +57,6 @@
       ruffle
 
       fractal
-      schildichat-desktop-wayland
-
-      gnome.gnome-boxes
-
 
       yuzu-mainline
       photoprism
@@ -188,7 +184,6 @@
 
       smartmontools
       android-tools
-      cargo-cross
       zellij
       netease-cloud-music-gtk
       cmatrix
@@ -196,15 +191,12 @@
       # kotatogram-desktop
       nmap
       lm_sensors
-      # eww-wayland
-      rofi
-      picom
 
       feh
       pamixer
       sl
       ncpamixer
-      texlive.combined.scheme-full
+      # texlive.combined.scheme-full
       vlc
       bluedevil
       julia-bin
