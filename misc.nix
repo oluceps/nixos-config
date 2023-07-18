@@ -204,23 +204,6 @@
     };
 
   };
-  hardware = {
-    #   nvidia = {
-    #     package = config.boot.kernelPackages.nvidiaPackages.latest;
-    #     modesetting.enable = true;
-    #     powerManagement.enable = false;
-    #   };
-
-    # opengl = {
-    #   enable = true;
-    #   extraPackages = with pkgs; [
-    #     rocm-opencl-icd
-    #     rocm-opencl-runtime
-    #   ];
-    #   driSupport = true;
-    #   driSupport32Bit = true;
-    # };
-  };
 
   services = {
     dbus.packages = [ pkgs.gcr ];
@@ -324,7 +307,6 @@
     };
   };
 
-  system.stateVersion = "22.11"; # Did you read the comment?
   documentation = {
     enable = true;
     nixos.enable = false;
