@@ -1,10 +1,10 @@
 [
   ./hardware.nix
   ./network.nix
-  ./persist.nix
-  ./secureboot.nix
   ./rekey.nix
   ./spec.nix
+  ../persist.nix
+  ../secureboot.nix
   ../../home
   ../../boot.nix
 ]
