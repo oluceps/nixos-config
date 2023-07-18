@@ -20,42 +20,7 @@ in
     wlr.enable = true;
   };
 
-
-  systemd = {
-    # package = pkgs.systemd.override {
-    #   withResolved = false;
-    # };
-
-    # Given that our systems are headless, emergency mode is useless.
-    # We prefer the system to attempt to continue booting so
-    # that we can hopefully still access it remotely.
-    enableEmergencyMode = false;
-
-    # For more detail, see:
-    #   https://0pointer.de/blog/projects/watchdog.html
-    watchdog = {
-      # systemd will send a signal to the hardware watchdog at half
-      # the interval defined here, so every 10s.
-      # If the hardware watchdog does not get a signal for 20s,
-      # it will forcefully reboot the system.
-      runtimeTime = "20s";
-      # Forcefully reboot if the final stage of the reboot
-      # hangs without progress for more than 30s.
-      # For more info, see:
-      #   https://utcc.utoronto.ca/~cks/space/blog/linux/SystemdShutdownWatchdog
-      rebootTime = "30s";
-    };
-
-    sleep.extraConfig = ''
-      AllowSuspend=no
-      AllowHibernation=no
-    '';
-  };
-
-  # photoprism minio
-  networking.firewall.allowedTCPPorts = [ 20800 9000 9001 ];
   services = {
-
     cn-up.enable = config.services.mosdns.enable;
     btrbk = {
       enable = true;
@@ -72,32 +37,13 @@ in
     };
     fwupd.enable = true;
     # vault = { enable = true; extraConfig = "ui = true"; package = pkgs.vault-bin; };
-    photoprism = {
-      enable = whenHost "hastur";
-      originalsPath = "/var/lib/private/photoprism/originals";
-      address = "[::]";
-      passwordFile = config.age.secrets.prism.path;
-      settings = {
-        PHOTOPRISM_ADMIN_USER = "${user}";
-        PHOTOPRISM_DEFAULT_LOCALE = "en";
-        PHOTOPRISM_DATABASE_NAME = "photoprism";
-        PHOTOPRISM_DATABASE_SERVER = "/run/mysqld/mysqld.sock";
-        PHOTOPRISM_DATABASE_USER = "photoprism";
-        PHOTOPRISM_DATABASE_DRIVER = "mysql";
-      };
-      port = 20800;
-    };
-    minio = {
-      enable = whenHost "hastur";
-      region = "ap-east-1";
-      rootCredentialsFile = config.age.secrets.minio.path;
-    };
 
     dbus = {
       enable = true;
       implementation = "broker";
       apparmor = "enabled";
     };
+
     gvfs.enable = true;
     # github-runners = {
     #   runner1 = {
@@ -132,27 +78,6 @@ in
       package = pkgs.mongodb-6_0;
       enableAuth = true;
       initialRootPassword = "initial";
-    };
-
-    mysql = {
-      enable = whenHost "hastur";
-      package = pkgs.mariadb_1011;
-      dataDir = "/var/lib/mysql";
-      ensureDatabases = [ "photoprism" ];
-      ensureUsers = [
-        {
-          name = "riro";
-          ensurePermissions = {
-            "*.*" = "ALL PRIVILEGES";
-          };
-        }
-        {
-          name = "photoprism";
-          ensurePermissions = {
-            "photoprism.*" = "ALL PRIVILEGES";
-          };
-        }
-      ];
     };
 
     greetd = {

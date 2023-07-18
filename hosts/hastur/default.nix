@@ -4,6 +4,7 @@
   ./persist.nix
   ./secureboot.nix
   ./rekey.nix
+  ./spec.nix
   ../../home
   ../../boot.nix
 ]
