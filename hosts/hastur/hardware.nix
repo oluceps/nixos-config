@@ -33,7 +33,7 @@
       "amd_iommu=on"
       # "iommu=pt"
       "random.trust_cpu=off"
-      "amdgpu.noretry=0"
+      # "amdgpu.noretry=0"
       # "amdgpu.lockup_timeout=1000"
       # "amdgpu.gpu_recovery=1"
       # "amdgpu.audio=0"
