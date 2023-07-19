@@ -237,14 +237,14 @@
       userName = "oluceps";
       userEmail = "i@oluceps.uk";
       extraConfig = {
-        user.signingKey = "/run/agenix/id_sk";
+        # user.signingKey = "/run/agenix/id_sk";
         tag.gpgsign = true;
         safe.directory = "/etc/nixos";
         core.editor = with pkgs; (lib.getExe helix);
         commit.gpgsign = true;
         gpg = {
           format = "ssh";
-          # ssh.defaultKeyCommand = "ssh-add -L";
+          ssh.defaultKeyCommand = "ssh-add -L";
           ssh.allowedSignersFile = toString (pkgs.writeText "allowed_signers" "");
         };
         merge.conflictStyle = "diff3";
