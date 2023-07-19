@@ -5,9 +5,6 @@
 , ...
 }:
 
-let
-  whenHost = h: with config.networking; (hostName == h);
-in
 {
   # Enable CUPS to print documents.
   # services.printing.enable = true;
@@ -18,6 +15,7 @@ in
   xdg.portal = {
     enable = true;
     wlr.enable = true;
+    xdgOpenUsePortal = true;
   };
 
   services = {
