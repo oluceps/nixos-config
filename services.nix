@@ -238,7 +238,7 @@
               concurrent = 2;
               upstreams = [
                 { addr = "https://223.6.6.6/dns-query"; idle_timeout = 86400; }
-                { addr = "https://120.53.53.53/dns-query"; idle_timeout = 86400; }
+                { addr = "2400:3200::1"; idle_timeout = 86400; }
               ];
             };
             tag = "local_forward";
@@ -283,7 +283,7 @@
           }
           {
             args = [
-              { exec = "prefer_ipv4"; }
+              { exec = "prefer_ipv6"; }
               { exec = "$cache"; }
               { exec = "accept"; matches = "has_resp"; }
               { exec = "goto local_sequence"; matches = "qname $direct_domain"; }
