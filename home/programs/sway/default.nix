@@ -143,7 +143,7 @@
               "Print" = "exec ${lib.getExe sway-contrib.grimshot} copy area";
               "Alt+Print" = "exec ${deps.grim} - | ${wl-copy} -t image/png";
               "Ctrl+Shift+l" = "exec ${lib.getExe swaylock}";
-              "${modifier}+Ctrl+p" = "exec ${lib.getExe cliphist} list | ${lib.getExe fuzzel} -d ${lib.getExe fuzzelArgs} | ${lib.getExe cliphist} decode | ${wl-copy}";
+              "${modifier}+Ctrl+p" = "exec ${lib.getExe cliphist} list | ${lib.getExe fuzzel} -d ${fuzzelArgs} ${"-w 50"} | ${lib.getExe cliphist} decode | ${wl-copy}";
               "${modifier}+shift+r" = "exec ${lib.getExe screen-recorder-toggle}";
             }
             # override default
