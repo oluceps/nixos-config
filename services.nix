@@ -2,6 +2,7 @@
 , lib
 , user
 , config
+, inputs
 , ...
 }:
 
@@ -19,7 +20,6 @@
   };
 
   services = {
-    cn-up.enable = config.services.mosdns.enable;
     btrbk = {
       enable = true;
       config = ''
@@ -201,14 +201,14 @@
           {
             args = {
               # may have trouble while bootstraping
-              files = [ "accelerated-domains.china.txt" ];
+              files = [ "${inputs.nixyDomains.packages.x86_64-linux.default.src}/assets/accelerated-domains.china.txt" ];
             };
             tag = "direct_domain";
             type = "domain_set";
           }
           {
             args = {
-              files = [ "all_cn.txt" ];
+              files = [ "${inputs.nixyDomains.packages.x86_64-linux.default.src}/assets/all_cn.txt" ];
             };
             tag = "direct_ip";
             type = "ip_set";
