@@ -3075,11 +3075,11 @@
         "nixpkgs": "nixpkgs_29"
       },
       "locked": {
-        "lastModified": 1689945477,
-        "narHash": "sha256-EGl8nkvTQTsR685b8h5uTUwHdQS832h2mPCc57h/XAg=",
+        "lastModified": 1689948423,
+        "narHash": "sha256-lZ/6CoQQzoy7F7f6WnY9IU5Pql5ZQM6/jRIYrUHYlWA=",
         "owner": "oluceps",
         "repo": "nixyDomains",
-        "rev": "6cd43db7383fd850f45db82b71b121665858e634",
+        "rev": "4147274633e21b93c2063a49cda12b87236d8aa8",
         "type": "github"
       },
       "original": {
