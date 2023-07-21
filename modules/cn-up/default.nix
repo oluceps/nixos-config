@@ -1,7 +1,6 @@
 { pkgs
 , config
 , lib
-, user
 , ...
 }:
 with lib;
