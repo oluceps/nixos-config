@@ -20,6 +20,7 @@
   };
 
   services = {
+    bpftune.enable = true;
     btrbk = {
       enable = true;
       config = ''
@@ -201,14 +202,14 @@
           {
             args = {
               # may have trouble while bootstraping
-              files = [ "${inputs.nixyDomains.packages.x86_64-linux.default.src}/assets/accelerated-domains.china.txt" ];
+              files = [ "${inputs.nixyDomains.packages.x86_64-linux.default.src}/accelerated-domains.china.txt" ];
             };
             tag = "direct_domain";
             type = "domain_set";
           }
           {
             args = {
-              files = [ "${inputs.nixyDomains.packages.x86_64-linux.default.src}/assets/all_cn.txt" ];
+              files = [ "${inputs.nixyDomains.packages.x86_64-linux.default.src}/all_cn.txt" ];
             };
             tag = "direct_ip";
             type = "ip_set";
@@ -227,7 +228,7 @@
               concurrent = 2;
               upstreams = [
                 { addr = "tls://8.8.4.4:853"; idle_timeout = 86400; enable_pipeline = true; }
-                { addr = "tls://1.0.0.1:853"; idle_timeout = 86400; enable_pipeline = true; }
+                { addr = "tls://1.1.1.1:853"; idle_timeout = 86400; enable_pipeline = true; }
               ];
             };
             tag = "remote_forward";
@@ -283,7 +284,7 @@
           }
           {
             args = [
-              { exec = "prefer_ipv6"; }
+              { exec = "prefer_ipv4"; }
               { exec = "$cache"; }
               { exec = "accept"; matches = "has_resp"; }
               { exec = "goto local_sequence"; matches = "qname $direct_domain"; }
