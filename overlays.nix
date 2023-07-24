@@ -33,6 +33,7 @@
               "rust"
               "nix"
               "lua"
+              "make"
               "protobuf"
               "yaml"
               "json"
