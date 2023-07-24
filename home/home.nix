@@ -51,6 +51,8 @@
       jetbrains.idea-ultimate
       jetbrains.clion
 
+      # bottles
+
       kooha # recorder
 
       typst
@@ -66,7 +68,7 @@
       fluffychat
       mpv
       hyfetch
-      qq
+      
       # microsoft-edge
       dosbox-staging
       meld

@@ -303,6 +303,7 @@
         fcitx5-gtk
         fcitx5-configtool
         fcitx5-pinyin-zhwiki
+        fcitx5-pinyin-moegirl
       ];
     };
   };
