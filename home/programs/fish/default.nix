@@ -8,12 +8,13 @@
       daso = "sudo";
       daos = "sudo";
       off = "poweroff";
-      kls = "lsd --icon never";
-      lks = "lsd --icon never";
-      sl = "lsd --icon never";
-      ls = "lsd --icon never";
-      l = "lsd --icon never -lh";
-      la = "lsd --icon never -la";
+      mg = "kitty +kitten hyperlinked_grep --smart-case $argv .";
+      kls = "lsd --icon never --hyperlink auto";
+      lks = "lsd --icon never --hyperlink auto";
+      sl = "lsd --icon never --hyperlink auto";
+      ls = "lsd --icon never --hyperlink auto";
+      l = "lsd --icon never --hyperlink auto -lh";
+      la = "lsd --icon never --hyperlink auto -la";
       g = "lazygit";
       "cd.." = "cd ..";
       up = "nix flake update --commit-lock-file /etc/nixos && swc";
@@ -52,6 +53,9 @@
       set fish_pager_color_completion normal
       set fish_pager_color_description B3A06D --italics
       set fish_pager_color_selected_background --reverse
+      set fish_cursor_default line blink
+      set fish_cursor_insert line
+      set fish_cursor_replace_one underscore
     '';
     interactiveShellInit = ''
       # Need to declare here, since something buggy.

@@ -134,3 +134,10 @@ window:
     y: 10
   # padding top and left
   startup_mode: Maximized
+cursor:
+  style:
+    blinking: Always
+    blink_interval: 500
+
+  vi_mode_style:
+    shape: Block
