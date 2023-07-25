@@ -22,6 +22,7 @@
       fp = "fish --private";
       e = "exit";
       rp = "rustplayer";
+      y = "yazi";
     };
 
     shellInit = ''

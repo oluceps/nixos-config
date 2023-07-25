@@ -208,6 +208,7 @@
     (with nur.repos; [
       linyinfeng.canokey-udev-rules
       xddxdd.dingtalk
+      xyenon.yazi
     ]) ++
     (with nur-pkgs;[
       techmino
