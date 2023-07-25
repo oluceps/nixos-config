@@ -1,5 +1,5 @@
-{ pkgs }: {
-  home.packages = [ pkgs.wezterm-n ];
+{ pkgs, ... }: {
+  home.packages = [ pkgs.lf ];
   programs.lf = {
     enable = true;
     extraConfig = ''
