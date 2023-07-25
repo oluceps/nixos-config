@@ -23,6 +23,7 @@
       e = "exit";
       rp = "rustplayer";
       y = "yazi";
+      i = "kitty +kitten icat $argv";
     };
 
     shellInit = ''
