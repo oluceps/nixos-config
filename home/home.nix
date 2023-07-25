@@ -68,7 +68,7 @@
       fluffychat
       mpv
       hyfetch
-      
+
       # microsoft-edge
       dosbox-staging
       meld
@@ -230,7 +230,6 @@
       package = pkgs.vscode.fhsWithPackages (ps: with ps; [ rustup zlib ]);
     };
     jq.enable = true;
-    lf.enable = true;
     pandoc.enable = true;
     git = {
       enable = true;
@@ -298,13 +297,14 @@
       dotDir = ".config/zsh";
       defaultKeymap = "emacs";
       initExtra = ''
-        eval $(starship init zsh)
+        eval $
+        (starship init zsh)
       '';
       loginExtra = ''
         if
-          [[ $(id --user $USER) == 1000 ]] && [[ $(tty) == "/dev/tty1" ]]
+        [[ $(id --user $USER) == 1000 ]] && [[ $(tty) == "/dev/tty1" ]]
         then
-          exec sway
+        exec sway
         fi
       '';
 
