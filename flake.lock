@@ -270,11 +270,11 @@
         "pre-commit-hooks": "pre-commit-hooks"
       },
       "locked": {
-        "lastModified": 1690387255,
-        "narHash": "sha256-8LAaXjBu0vo15SmcQy7JZ22rpEZtQ1mJpEsmrj4ufn4=",
+        "lastModified": 1690393249,
+        "narHash": "sha256-aLS6zyt8Zf1QFK5oBCP2VnqrrzfrtiTfNoQ0AE+ZVTE=",
         "owner": "oluceps",
         "repo": "flake.nix",
-        "rev": "837d01d6bc944ad8b156fe06b2643899c07b2572",
+        "rev": "99ce9f4bb9dc3b83ac157d614e5a6dc75116b4c6",
         "type": "github"
       },
       "original": {
