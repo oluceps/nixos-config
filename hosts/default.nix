@@ -1,4 +1,4 @@
-{ inputs, _pkgs }:
+{ inputs, _pkgs, ... }:
 let
   lib = inputs.nixpkgs.lib;
 
@@ -11,7 +11,8 @@ let
     ../packages.nix
     ../sysvars.nix
     ../services.nix
-  ] ++ (genModules [ "agenix-rekey" "ragenix" "home-manager" "impermanence" "lanzaboote" "nix-ld" "self" ]);
+  ] ++ (genModules [ "agenix-rekey" "ragenix" "home-manager" "impermanence" "lanzaboote" "nix-ld" "self" ])
+  ++ [ inputs.dae.nixosModules.dae ];
 
   data = {
     keys = {
