@@ -10,15 +10,13 @@
     ];
 
   boot = {
-    initrd.availableKernelModules = [ "xhci_pci" "ehci_pci" "ahci" "usb_storage" "sd_mod" "sr_mod" "rtsx_usb_sdmmc" ];
-    initrd.kernelModules = [ "kvm-intel" "wl" "intel_pstate" ];
-    kernelModules = [ "kvm-intel" "wl" ];
-    extraModulePackages = [ config.boot.kernelPackages.broadcom_sta ];
-    kernelPackages = pkgs.linuxPackages_latest;
-    kernelParams = [
-      "mitigations=off"
-      "nowatchdog"
-    ];
+    initrd = {
+      systemd.enable = true;
+      availableKernelModules = [ "nvme" "xhci_pci" "ahci" "usb_storage" "usbhid" "sd_mod" ];
+      kernelModules = [ "tpm" "tpm_tis" "tpm_crb" "kvm-amd" ];
+    };
+    kernelModules = [ "ec_sys" "uhid" "kvm-amd" ];
+
   };
   powerManagement.cpuFreqGovernor = "schedutil";
 

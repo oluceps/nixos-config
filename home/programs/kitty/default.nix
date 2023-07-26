@@ -95,7 +95,8 @@
       color7  #B8C0E0
       color15 #A5ADCB
     
-      cursor_blink_interval 2
+      cursor_shape beam
+      cursor_blink_interval -1
     
       protocol file
       ext js,jsx,ts,tsx,rs,c,cpp,cc,json,toml,kt,yaml,yml,sh,fish,nu,nix,lock

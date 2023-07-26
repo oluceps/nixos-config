@@ -55,7 +55,7 @@
         lsp = {
           enable = true;
           display-messages = true;
-          display-inlay-hints = true;
+          display-inlay-hints = false;
           snippets = true;
         };
 
