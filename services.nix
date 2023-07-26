@@ -135,7 +135,9 @@
 
     dae = {
       enable = true;
-      txChecksumIpGeneric = false;
+      # disableTxChecksumIpGeneric = false;
+      package = pkgs.nur-pkgs.dae;
+      configFilePath = config.age.secrets.dae.path;
     };
 
     btrfs.autoScrub = {
