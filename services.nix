@@ -135,9 +135,13 @@
 
     dae = {
       enable = true;
-      # disableTxChecksumIpGeneric = false;
-      package = pkgs.nur-pkgs.dae;
+      disableTxChecksumIpGeneric = false;
       configFilePath = config.age.secrets.dae.path;
+      assets = with pkgs; [ v2ray-geoip v2ray-domain-list-community ];
+      tproxyPort = {
+        enable = true;
+        port = 12345;
+      };
     };
 
     btrfs.autoScrub = {
