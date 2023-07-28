@@ -55,9 +55,9 @@
       set fish_pager_color_completion normal
       set fish_pager_color_description B3A06D --italics
       set fish_pager_color_selected_background --reverse
-      set fish_cursor_default line blink
-      set fish_cursor_insert line
-      set fish_cursor_replace_one underscore
+      set fish_cursor_default block blink
+      set fish_cursor_insert line blink
+      set fish_cursor_replace_one underscore blink
     '';
     interactiveShellInit = ''
       # Need to declare here, since something buggy.

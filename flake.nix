@@ -12,12 +12,11 @@
     android-nixpkgs = {
       url = "github:tadfisher/android-nixpkgs";
     };
-    dae.url = "github:oluceps/flake.nix";
+    dae.url = "/home/riro/Src/flake.nix";
     nixyDomains.url = "github:oluceps/nixyDomains";
     nvfetcher.url = "github:berberman/nvfetcher";
     nuenv.url = "github:DeterminateSystems/nuenv";
     EHfive.url = "github:EHfive/flakes";
-    # eunomia-bpf.url = "github:eunomia-bpf/eunomia-bpf/flake-devenv";
     agenix-rekey.url = "github:oddlama/agenix-rekey";
     resign.url = "github:oluceps/resign";
     nil.url = "github:oxalica/nil";

@@ -1,6 +1,5 @@
 { pkgs
 , lib
-, user
 , config
 , inputs
 , ...
@@ -136,9 +135,9 @@
     dae = {
       enable = true;
       disableTxChecksumIpGeneric = false;
-      configFilePath = config.age.secrets.dae.path;
+      configFile = config.age.secrets.dae.path;
       assets = with pkgs; [ v2ray-geoip v2ray-domain-list-community ];
-      tproxyPort = {
+      openFirewall = {
         enable = true;
         port = 12345;
       };
