@@ -270,17 +270,14 @@
         "pre-commit-hooks": "pre-commit-hooks"
       },
       "locked": {
-        "lastModified": 1690393249,
-        "narHash": "sha256-aLS6zyt8Zf1QFK5oBCP2VnqrrzfrtiTfNoQ0AE+ZVTE=",
-        "owner": "oluceps",
-        "repo": "flake.nix",
-        "rev": "99ce9f4bb9dc3b83ac157d614e5a6dc75116b4c6",
-        "type": "github"
+        "lastModified": 1690525679,
+        "narHash": "sha256-gf8a5XwhwrU7E8zgptiw4jrYGLAZGPrXSRJ+xtTBDjA=",
+        "type": "git",
+        "url": "file:///home/riro/Src/flake.nix"
       },
       "original": {
-        "owner": "oluceps",
-        "repo": "flake.nix",
-        "type": "github"
+        "type": "git",
+        "url": "file:///home/riro/Src/flake.nix"
       }
     },
     "darwin": {
@@ -3322,11 +3319,11 @@
     },
     "nur_3": {
       "locked": {
-        "lastModified": 1690287667,
-        "narHash": "sha256-IDhGfygPFOT591psrpyQTFZetTEi+1BKzIAstb+3qxc=",
+        "lastModified": 1690519479,
+        "narHash": "sha256-V/G0sWcXLCEvbu0l//GkBuj5j+vCfe5JFMvyAw6d7HY=",
         "owner": "nix-community",
         "repo": "NUR",
-        "rev": "58ff5464f35bf1ab2f9e811e48fdd8dbf3800bfe",
+        "rev": "91203bd91b0737ae75c92986478fad89eda09743",
         "type": "github"
       },
       "original": {
