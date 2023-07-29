@@ -12,7 +12,7 @@
     android-nixpkgs = {
       url = "github:tadfisher/android-nixpkgs";
     };
-    dae.url = "/home/riro/Src/flake.nix";
+    dae.url = "github:daeuniverse/flake.nix";
     nixyDomains.url = "github:oluceps/nixyDomains";
     nvfetcher.url = "github:berberman/nvfetcher";
     nuenv.url = "github:DeterminateSystems/nuenv";
