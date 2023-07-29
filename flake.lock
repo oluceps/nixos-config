@@ -264,20 +264,42 @@
     },
     "dae": {
       "inputs": {
+        "dae-src": "dae-src",
         "flake-parts": "flake-parts",
         "nixpkgs": "nixpkgs_18",
         "pnpm2nix": "pnpm2nix",
         "pre-commit-hooks": "pre-commit-hooks"
       },
       "locked": {
-        "lastModified": 1690525679,
-        "narHash": "sha256-gf8a5XwhwrU7E8zgptiw4jrYGLAZGPrXSRJ+xtTBDjA=",
+        "lastModified": 1690627026,
+        "narHash": "sha256-sRKLtH7tNd/Gwu0noJlxx1ge4zeg76/k2MwKyPXafVw=",
+        "ref": "refs/heads/sub",
+        "rev": "e6100fec60ed258ee02ee6ecfba548e7d19cb579",
+        "revCount": 6,
         "type": "git",
         "url": "file:///home/riro/Src/flake.nix"
       },
       "original": {
         "type": "git",
         "url": "file:///home/riro/Src/flake.nix"
+      }
+    },
+    "dae-src": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1690546324,
+        "narHash": "sha256-WNLWjjmGjB3//jfTegeJzJyS83JGqhuafo7uSKMUb3k=",
+        "ref": "refs/heads/main",
+        "rev": "afae72e4b94a9b4267c60494b156ed0465084e14",
+        "revCount": 576,
+        "submodules": true,
+        "type": "git",
+        "url": "https://github.com/daeuniverse/dae"
+      },
+      "original": {
+        "submodules": true,
+        "type": "git",
+        "url": "https://github.com/daeuniverse/dae"
       }
     },
     "darwin": {
@@ -2802,11 +2824,11 @@
     },
     "nixpkgs_18": {
       "locked": {
-        "lastModified": 1690179384,
-        "narHash": "sha256-+arbgqFTAtoeKtepW9wCnA0njCOyoiDFyl0Q0SBSOtE=",
+        "lastModified": 1690548937,
+        "narHash": "sha256-x3ZOPGLvtC0/+iFAg9Kvqm/8hTAIkGjc634SqtgaXTA=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "b12803b6d90e2e583429bb79b859ca53c348b39a",
+        "rev": "2a9d660ff0f7ffde9d73be328ee6e6f10ef66b28",
         "type": "github"
       },
       "original": {
@@ -3511,11 +3533,11 @@
         "nixpkgs-stable": "nixpkgs-stable_2"
       },
       "locked": {
-        "lastModified": 1689668210,
-        "narHash": "sha256-XAATwDkaUxH958yXLs1lcEOmU6pSEIkatY3qjqk8X0E=",
+        "lastModified": 1690464206,
+        "narHash": "sha256-38V4kmOh6ikpfGiAS+Kt2H/TA2DubSqE66veP/jmB4Q=",
         "owner": "cachix",
         "repo": "pre-commit-hooks.nix",
-        "rev": "eb433bff05b285258be76513add6f6c57b441775",
+        "rev": "9289996dcac62fd45836db7c07b87d2521eb526d",
         "type": "github"
       },
       "original": {
