@@ -224,10 +224,10 @@
   };
 
   fonts = {
-    enableDefaultFonts = true;
+    enableDefaultPackages = true;
     fontDir.enable = false;
     enableGhostscriptFonts = false;
-    fonts = with pkgs; [
+    packages = with pkgs; [
 
       (nerdfonts.override {
         fonts = [

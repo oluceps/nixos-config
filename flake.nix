@@ -101,7 +101,9 @@
       overlays.default =
         final: prev: prev.lib.genAttrs
           (with builtins;
-          (with prev.lib; attrNames (filterAttrs (n: _: !elem n [ "ubt-rv-run" ]) (readDir ./pkgs))))
+          (with prev.lib; attrNames (
+            filterAttrs (n: _: !elem n [ "ubt-rv-run" ]) # temporary disable pkg
+              (readDir ./pkgs))))
           (name: final.callPackage (./pkgs + "/${name}") { });
 
       nixosModules = import ./modules { lib = inputs.nixpkgs.lib; };

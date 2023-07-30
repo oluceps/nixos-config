@@ -22,6 +22,7 @@ let
       cargo-expand
       wasmer
       wasmtime
+      comma
     ];
     # ++ [
     #   (fenix.complete.withComponents [ "cargo" "clippy" "rust-src" "rustc" "rustfmt" ])
@@ -33,7 +34,7 @@ let
 
     web = [ hugo ];
 
-    crypt = [ rage age-plugin-yubikey yubikey-manager yubikey-manager-qt cryptsetup ];
+    crypt = [ rage age-plugin-yubikey yubico-piv-tool yubikey-manager yubikey-manager-qt cryptsetup ];
 
     net = lib.flatten [
       # anti-censor
@@ -49,7 +50,7 @@ let
       # virt-manager
       virtiofsd
       runwin
-      ubt-rv-run
+      # ubt-rv-run
       opulr-a-run
       lunar-run
     ];
