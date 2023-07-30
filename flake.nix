@@ -99,7 +99,9 @@
           });
 
       overlays.default =
-        final: prev: prev.lib.genAttrs (with builtins;(attrNames (readDir ./pkgs)))
+        final: prev: prev.lib.genAttrs
+          (with builtins;
+          (with prev.lib; attrNames (filterAttrs (n: _: !elem n [ "ubt-rv-run" ]) (readDir ./pkgs))))
           (name: final.callPackage (./pkgs + "/${name}") { });
 
       nixosModules = import ./modules { lib = inputs.nixpkgs.lib; };
