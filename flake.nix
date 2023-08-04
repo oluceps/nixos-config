@@ -1,5 +1,43 @@
 {
   description = "oluceps' flake";
+  outputs = inputs@{ flake-parts, ... }:
+    flake-parts.lib.mkFlake { inherit inputs; } {
+      imports = [
+        ./hosts
+      ];
+      systems = [ "x86_64-linux" "aarch64-linux" ];
+      perSystem = { pkgs, system, ... }: {
+        _module.args.pkgs = import inputs.nixpkgs {
+          inherit system;
+        };
+        apps = inputs.agenix-rekey.defineApps inputs.self pkgs
+          {
+            inherit (inputs.self.nixosConfigurations)
+              hastur
+              kaambl;
+          };
+        checks = with pkgs;
+          {
+            pre-commit-check = inputs.pre-commit-hooks.lib.${system}.run
+              {
+                src = lib.cleanSource ./.;
+                hooks = { nixpkgs-fmt.enable = true; };
+              };
+          };
+      };
+      flake = {
+        overlays.default =
+          final: prev: prev.lib.genAttrs
+            (with builtins;
+            (with prev.lib; attrNames (
+              filterAttrs (n: _: !elem n [ "ubt-rv-run" ]) # temporary disable pkg
+                (readDir ./pkgs))))
+            (name: final.callPackage (./pkgs + "/${name}") { });
+
+        nixosModules = import ./modules { lib = inputs.nixpkgs.lib; };
+
+      };
+    };
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     nixpkgs-master.url = "github:NixOS/nixpkgs/master";
@@ -63,61 +101,5 @@
     berberman.url = "github:berberman/flakes";
     clansty.url = "github:clansty/flake";
   };
-
-  outputs = { self, nixpkgs, ... }@inputs:
-    let
-      genSystems = nixpkgs.lib.genAttrs [ "aarch64-linux" "x86_64-linux" ];
-
-      genOverlays = map (let m = i: inputs.${i}.overlays; in (i: (m i).default or (m i).${i}));
-
-      _pkgs = genSystems (system: import nixpkgs {
-        inherit system;
-        config = {
-          # contentAddressedByDefault = true;
-          allowUnfree = true;
-          allowBroken = false;
-          segger-jlink.acceptLicense = true;
-          allowUnsupportedSystem = true;
-          permittedInsecurePackages = nixpkgs.lib.mkForce [ ];
-        };
-        overlays = (import ./overlays.nix { inherit inputs system; })
-          ++ genOverlays [ "self" "clansty" "fenix" "berberman" "nvfetcher" "EHfive" "nuenv" "typst" "android-nixpkgs" ]
-          ++ (with inputs;[ nur.overlay ]); #（>﹏<）
-      });
-
-      genericImport = p: import p { inherit inputs _pkgs; };
-    in
-    {
-      nixosConfigurations = genericImport ./hosts;
-
-      devShells.x86_64-linux = genericImport ./shells.nix;
-
-      apps =
-        genSystems (system: inputs.agenix-rekey.defineApps self _pkgs.${system}
-          {
-            inherit (self.nixosConfigurations)
-              hastur kaambl;
-          });
-
-      overlays.default =
-        final: prev: prev.lib.genAttrs
-          (with builtins;
-          (with prev.lib; attrNames (
-            filterAttrs (n: _: !elem n [ "ubt-rv-run" ]) # temporary disable pkg
-              (readDir ./pkgs))))
-          (name: final.callPackage (./pkgs + "/${name}") { });
-
-      nixosModules = import ./modules { lib = inputs.nixpkgs.lib; };
-
-      checks = genSystems (system: with _pkgs.${system};
-        {
-          pre-commit-check = inputs.pre-commit-hooks.lib.${system}.run
-            {
-              src = lib.cleanSource ./.;
-              hooks = { nixpkgs-fmt.enable = true; };
-            };
-        });
-
-    };
 
 }
