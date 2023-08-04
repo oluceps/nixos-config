@@ -4,7 +4,7 @@ let
     dev = lib.flatten [
       [ pinentry-curses swagger-codegen3 bump2version openssl linuxPackages_latest.perf cloud-utils ]
       [ bpf-linker gdb gcc gnumake cmake ] # clang-tools_15 llvmPackages_latest.clang ]
-      [ openocd ]
+      # [ openocd ]
       lua
       delta
       # nodejs-18_x
@@ -23,6 +23,7 @@ let
       wasmer
       wasmtime
       comma
+      nix-update
     ];
     # ++ [
     #   (fenix.complete.withComponents [ "cargo" "clippy" "rust-src" "rustc" "rustfmt" ])
@@ -40,7 +41,7 @@ let
       # anti-censor
       [ sing-box rathole tor arti nur-pkgs.tuic ]
 
-      [ iperf3 i2p ethtool dnsutils autossh tcpdump netcat dog wget mtr-gui socat miniserve mtr wakelan netcat-gnu q nali lynx nethogs restic w3m whois dig wireguard-tools curlHTTP3 xh ngrep gping knot-dns tcping-go httping ]
+      [ iperf3 i2p ethtool dnsutils autossh tcpdump netcat dog wget mtr-gui socat miniserve mtr wakelan q nali lynx nethogs restic w3m whois dig wireguard-tools curlHTTP3 xh ngrep gping knot-dns tcping-go httping ]
     ];
     # graph = [
     #   vulkan-validation-layers

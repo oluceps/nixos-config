@@ -24,6 +24,7 @@
       #       inherit system;
       #     }).lazygit;
       # inputs.hyprland.packages.${system}.default;
+      nixos-rebuild = (import inputs.nixpkgs-rebuild { inherit system; }).nixos-rebuild;
       helix = inputs.helix.packages.${system}.default.override {
         includeGrammarIf = grammar:
           prev.lib.any

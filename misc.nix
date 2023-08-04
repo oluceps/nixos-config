@@ -243,6 +243,7 @@
       twemoji-color-font
       maple-mono-SC-NF
       maple-mono-otf
+      maple-mono-autohint
       cascadia-code
       intel-one-mono
     ]

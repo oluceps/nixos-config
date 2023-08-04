@@ -4,7 +4,8 @@
     plugins = [ ];
     shellAliases = {
       nd = "cd /etc/nixos";
-      swc = "sudo nixos-rebuild switch --flake /etc/nixos --log-format internal-json -v 2>&1 | nom --json";
+      swc = "sudo nixos-rebuild switch --flake /etc/nixos";
+      #--log-format internal-json -v 2>&1 | nom --json";
       daso = "sudo";
       daos = "sudo";
       off = "poweroff";

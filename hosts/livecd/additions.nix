@@ -64,7 +64,6 @@
       miniserve
       mtr
       wakelan
-      netcat-gnu
       q
       nali
       lynx
