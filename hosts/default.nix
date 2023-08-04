@@ -1,4 +1,5 @@
-{ inputs, _pkgs, ... }:
+{ inputs, self, ... }:
+
 let
   lib = inputs.nixpkgs.lib;
 
@@ -28,10 +29,9 @@ let
 
   nixosSystem = lib.nixosSystem;
 
-  genSysAttr = { system, user, hostname }:
+  genSysAttr = { system ? pkgs.stdenv.hostPlatform.system, user, hostname, pkgs }:
     rec {
-      inherit system;
-      pkgs = _pkgs.${system};
+      inherit system pkgs;
       specialArgs = fund // { inherit system user; };
       modules = (import ./${hostname}) ++ sharedModules;
     };
@@ -39,33 +39,60 @@ let
   genGeneralSys = i: nixosSystem (genSysAttr i);
 
 in
+
 {
-  hastur = genGeneralSys {
-    system = "x86_64-linux";
-    user = "riro";
-    hostname = "hastur";
-  };
-
-  kaambl = genGeneralSys {
-    system = "x86_64-linux";
-    user = "elena";
-    hostname = "kaambl";
-  };
-
-  livecd =
+  flake = { pkgs, ... }:
     let
-      system = "x86_64-linux";
-      user = "nixos";
-      hostname = "livecd";
-      pkgs = _pkgs.${system};
+      generalPkgs =
+        system: import inputs.nixpkgs rec {
+          inherit system;
+          config = {
+            # contentAddressedByDefault = true;
+            allowUnfree = true;
+            allowBroken = false;
+            segger-jlink.acceptLicense = true;
+            allowUnsupportedSystem = true;
+            permittedInsecurePackages = pkgs.lib.mkForce [ ];
+          };
+          overlays = (import ../overlays.nix { inherit inputs system; })
+            ++ (
+            let genOverlays = map (let m = i: inputs.${i}.overlays; in (i: (m i).default or (m i).${i}));
+            in (genOverlays [ "self" "clansty" "fenix" "berberman" "nvfetcher" "EHfive" "nuenv" "typst" "android-nixpkgs" ])
+          )
+            ++ (with inputs;[ nur.overlay ]); #（>﹏<）
+
+        };
     in
-    nixosSystem
-      ((genSysAttr { inherit system user hostname; })
-        //
-        {
-          modules =
-            (import ./${hostname})
-              ++ (import ./${hostname}/additions.nix
-              (fund // { inherit user pkgs; }));
-        });
+    {
+      _module.args.pkgs = generalPkgs "x86_64-linux";
+      nixosConfigurations = {
+        hastur = genGeneralSys {
+          inherit pkgs;
+          user = "riro";
+          hostname = "hastur";
+        };
+
+        kaambl = genGeneralSys {
+          inherit pkgs;
+          user = "elena";
+          hostname = "kaambl";
+        };
+
+        livecd =
+          let
+            inherit pkgs;
+            user = "nixos";
+            hostname = "livecd";
+          in
+          nixosSystem
+            ((genSysAttr { inherit user hostname pkgs; })
+              //
+              {
+                modules =
+                  (import ./${hostname})
+                    ++ (import ./${hostname}/additions.nix
+                    (fund // { inherit user pkgs; }));
+              });
+      };
+    };
 }
