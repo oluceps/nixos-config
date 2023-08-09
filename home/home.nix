@@ -178,8 +178,6 @@
 
       vial
 
-      geda
-
       ncdu_2 # disk space info
 
       btop

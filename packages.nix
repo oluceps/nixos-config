@@ -106,6 +106,9 @@ in
             tqdm
 
             python-lsp-server
+            mkdocs
+            mkdocs-static-i18n
+            mkdocs-material
 
 
             # wordcloud
