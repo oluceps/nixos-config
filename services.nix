@@ -19,7 +19,7 @@
   };
 
   services = {
-    bpftune.enable = true;
+    bpftune.enable = false;
     btrbk = {
       enable = true;
       config = ''
@@ -206,7 +206,6 @@
         plugins = [
           {
             args = {
-              # may have trouble while bootstraping
               files = [ "${inputs.nixyDomains.packages.x86_64-linux.default.src}/accelerated-domains.china.txt" ];
             };
             tag = "direct_domain";
