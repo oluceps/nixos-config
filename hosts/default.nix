@@ -74,7 +74,7 @@ in
 
         kaambl = genGeneralSys {
           inherit pkgs;
-          user = "elena";
+          user = "elen";
           hostname = "kaambl";
         };
 
