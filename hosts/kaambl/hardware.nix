@@ -9,9 +9,12 @@
       (modulesPath + "/installer/scan/not-detected.nix")
     ];
   boot = {
-    initrd.availableKernelModules = [ "nvme" "xhci_pci" "usb_storage" "sd_mod" ];
-    initrd.kernelModules = [ ];
-    kernelModules = [ "kvm-amd" ];
+    initrd = {
+      systemd.enable = true;
+      availableKernelModules = [ "nvme" "xhci_pci" "ahci" "usb_storage" "usbhid" "sd_mod" ];
+      kernelModules = [ "tpm" "tpm_tis" "tpm_crb" "kvm-amd" "amdgpu" ];
+    };
+    kernelModules = [ "ec_sys" "uhid" "kvm-amd" ];
     kernelParams = [ "amd_pstate=active" "amd_iommu=on" ];
     extraModulePackages = with config.boot.kernelPackages; [
       v4l2loopback
