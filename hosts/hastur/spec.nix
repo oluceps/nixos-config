@@ -55,6 +55,8 @@
 
   xdg.portal.wlr.enable = true;
 
+  programs.dconf.enable = true;
+
   services = {
 
     pipewire = {

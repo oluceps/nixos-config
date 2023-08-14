@@ -184,7 +184,6 @@
     fish.enable = true;
     sway = { enable = true; };
     kdeconnect.enable = true;
-    dconf.enable = true;
     adb.enable = true;
     mosh.enable = true;
     nix-ld.enable = true;
