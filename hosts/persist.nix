@@ -5,6 +5,7 @@
       "/etc/nixos"
       "/etc/ssh"
       "/etc/secureboot"
+      "/etc/NetworkManager"
       "/var/log"
       "/var/lib"
     ];

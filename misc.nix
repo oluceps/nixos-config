@@ -9,8 +9,6 @@
 }: {
   systemd.tmpfiles.rules = [
     "C /var/cache/tuigreet/lastuser - - - - ${pkgs.writeText "lastuser" "${user}"}"
-    "C /etc/NetworkManager/system-connections/PDCN_5G.nmconnection - - - - ${config.age.secrets."PDCN_5G.nmconnection".path}"
-
   ];
 
 
@@ -28,7 +26,7 @@
         genMaterial = i: genSec i user "nogroup" "400";
       in
       (genProxys [ "rat" "ss" "sing" "hyst-az" "hyst-am" "hyst-do" "tuic" "naive" "wg" "dae.sub" "by.sub" ]) //
-      (genMaterial [ "ssh-cfg" "gh-eu" "u2f" "gh-token" "age" "pub" "id" "id_sk" "minio" "prism" "PDCN_5G.nmconnection" ]) //
+      (genMaterial [ "ssh-cfg" "gh-eu" "u2f" "gh-token" "age" "pub" "id" "id_sk" "minio" "prism" ]) //
       {
         dae = { rekeyFile = ./sec/dae.age; mode = "640"; owner = "proxy"; group = "users"; name = "d.dae"; };
       };
