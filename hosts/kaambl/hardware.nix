@@ -8,12 +8,16 @@
     [
       (modulesPath + "/installer/scan/not-detected.nix")
     ];
-
-  boot.initrd.availableKernelModules = [ "nvme" "xhci_pci" "usb_storage" "sd_mod" ];
-  boot.initrd.kernelModules = [ ];
-  boot.kernelModules = [ "kvm-amd" ];
-  boot.extraModulePackages = [ ];
-  boot.kernelParams = [ "amd_pstate=active" "amd_iommu=on" ];
+  boot = {
+    initrd.availableKernelModules = [ "nvme" "xhci_pci" "usb_storage" "sd_mod" ];
+    initrd.kernelModules = [ ];
+    kernelModules = [ "kvm-amd" ];
+    kernelParams = [ "amd_pstate=active" "amd_iommu=on" ];
+    extraModulePackages = with config.boot.kernelPackages; [
+      v4l2loopback
+    ];
+    kernelPackages = pkgs.linuxPackages_latest;
+  };
 
   fileSystems."/" =
     {
@@ -59,5 +63,5 @@
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
   hardware.cpu.amd.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
   # high-resolution display
-  hardware.video.hidpi.enable = lib.mkDefault true;
+  # hardware.video.hidpi.enable = lib.mkDefault true;
 }
