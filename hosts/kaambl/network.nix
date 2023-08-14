@@ -2,6 +2,7 @@
 , pkgs
 , ...
 }: {
+  networking.resolvconf.useLocalResolver = true;
   networking = {
     hostName = "kaambl"; # Define your hostname.
     # wireless.enable = true;  # Enables wireless support via wpa_supplicant.
