@@ -4,12 +4,12 @@
 }: {
   networking = {
     hostName = "kaambl"; # Define your hostname.
-    wireless.enable = true;  # Enables wireless support via wpa_supplicant.
+    # wireless.enable = true;  # Enables wireless support via wpa_supplicant.
     # The global useDHCP flag is deprecated, therefore explicitly set to false here.
     # Per-interface useDHCP will be mandatory in the future, so this generated config
     # replicates the default behaviour.
     enableIPv6 = true;
-    wireless.iwd.enable = true;
+    # wireless.iwd.enable = true;
 
     # interfaces.enp4s0.useDHCP = true;
     #  interfaces.wlp5s0.useDHCP = true;
