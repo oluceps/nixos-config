@@ -2,6 +2,41 @@
   # Mobile device.
 
   system.stateVersion = "23.05"; # Did you read the comment?
+  hardware.opengl.driSupport = true;
+  # For 32 bit applications
+  hardware.opengl.driSupport32Bit = true;
+  hardware.opengl.extraPackages = with pkgs; [
+    rocm-opencl-icd
+    rocm-opencl-runtime
+  ];
+  systemd.tmpfiles.rules = [
+    "L+    /opt/rocm/hip   -    -    -     -    ${pkgs.hip}"
+  ];
+  services = {
+    xserver.videoDrivers = [ "amdgpu" ];
+
+    xserver = {
+      # services = {
+      #   xserver = {
+      #     enable = true;
+      #     displayManager.gdm.enable = true;
+      #     desktopManager.gnome.enable = true;
+      #   };
+      # };
+      # environment.systemPackages = with pkgs; [ gnomeExtensions.appindicator ];
+      # services.udev.packages = with pkgs; [ gnome.gnome-settings-daemon ];
+
+      enable = true;
+      displayManager = {
+        sddm.enable = true;
+        defaultSession = "plasmawayland";
+      };
+      desktopManager.plasma5.enable = true;
+    };
+
+  };
+
+
 
   systemd = {
     enableEmergencyMode = true;
@@ -19,16 +54,6 @@
     };
 
   };
-
-
-  services = {
-    xserver = {
-      enable = true;
-      displayManager.gdm.enable = true;
-      desktopManager.gnome.enable = true;
-    };
-  };
-  environment.systemPackages = with pkgs; [ gnomeExtensions.appindicator ];
-  services.udev.packages = with pkgs; [ gnome.gnome-settings-daemon ];
+  programs.dconf.enable = true;
 
 }
