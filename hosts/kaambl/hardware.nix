@@ -9,46 +9,55 @@
       (modulesPath + "/installer/scan/not-detected.nix")
     ];
 
-  boot = {
-    initrd = {
-      systemd.enable = true;
-      availableKernelModules = [ "nvme" "xhci_pci" "ahci" "usb_storage" "usbhid" "sd_mod" ];
-      kernelModules = [ "tpm" "tpm_tis" "tpm_crb" "kvm-amd" ];
-    };
-    kernelModules = [ "ec_sys" "uhid" "kvm-amd" ];
-
-  };
-  powerManagement.cpuFreqGovernor = "schedutil";
-
+  boot.initrd.availableKernelModules = [ "nvme" "xhci_pci" "usb_storage" "sd_mod" ];
+  boot.initrd.kernelModules = [ ];
+  boot.kernelModules = [ "kvm-amd" ];
+  boot.extraModulePackages = [ ];
+  boot.kernelParams = [ "amd_pstate=active" "amd_iommu=on" ];
 
   fileSystems."/" =
     {
-      device = "/dev/disk/by-uuid/7dca3398-8f56-4cd0-803b-637ccec065b9";
-      fsType = "btrfs";
-      options = [ "subvol=root" "compress-force=zstd" "noatime" "discard=async" ];
+      device = "none";
+      fsType = "tmpfs";
+      options = [ "defaults" "size=2G" "mode=755" ];
     };
 
-  fileSystems."/home" =
+
+  fileSystems."/persist" =
     {
-      device = "/dev/disk/by-uuid/7dca3398-8f56-4cd0-803b-637ccec065b9";
+      device = "/dev/disk/by-uuid/3a718c71-9404-45ea-8435-2fbd31f46d53";
       fsType = "btrfs";
-      options = [ "subvol=home" "compress-force=zstd" "noatime" "discard=async" ];
+      options = [ "subvolid=256" "compress-force=zstd" "noatime" "discard=async" "space_cache=v2" ];
+      neededForBoot = true;
     };
 
   fileSystems."/nix" =
     {
-      device = "/dev/disk/by-uuid/7dca3398-8f56-4cd0-803b-637ccec065b9";
+      device = "/dev/disk/by-uuid/3a718c71-9404-45ea-8435-2fbd31f46d53";
       fsType = "btrfs";
-      options = [ "subvol=nix" "compress-force=zstd" "noatime" "discard=async" ];
+      options = [ "subvolid=257" "compress-force=zstd" "noatime" "discard=async" "space_cache=v2" ];
     };
 
-  fileSystems."/boot" =
+
+  fileSystems."/efi" =
     {
-      device = "/dev/disk/by-uuid/6CFA-BCAF";
+      device = "/dev/disk/by-uuid/CD6D-D5D1";
       fsType = "vfat";
     };
 
-  swapDevices = [ ];
+  #  swapDevices =
+  #    [ { device = "/dev/disk/by-uuid/1bbdbdd0-3527-4de2-95c4-3bc316c90968"; }
+  #    ];
 
-  hardware.cpu.intel.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
+  # Enables DHCP on each ethernet and wireless interface. In case of scripted networking
+  # (the default) this is the recommended approach. When using systemd-networkd it's
+  # still possible to use this option, but it's recommended to use it in conjunction
+  # with explicit per-interface declarations with `networking.interfaces.<interface>.useDHCP`.
+  networking.useDHCP = lib.mkDefault true;
+  # networking.interfaces.wlp1s0.useDHCP = lib.mkDefault true;
+
+  nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
+  hardware.cpu.amd.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
+  # high-resolution display
+  hardware.video.hidpi.enable = lib.mkDefault true;
 }

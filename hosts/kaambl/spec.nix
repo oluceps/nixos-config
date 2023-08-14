@@ -1,8 +1,7 @@
 { pkgs, config, user, ... }: {
-  # HONOR Magicbook 14 ryzen
   # Mobile device.
 
-  system.stateVersion = "22.11"; # Did you read the comment?
+  system.stateVersion = "23.05"; # Did you read the comment?
 
   systemd = {
     enableEmergencyMode = true;
