@@ -2,6 +2,7 @@
 let
   p = with pkgs; {
     dev = lib.flatten [
+      resign
       [ pinentry-curses swagger-codegen3 bump2version openssl linuxPackages_latest.perf cloud-utils ]
       [ bpf-linker gdb gcc gnumake cmake ] # clang-tools_15 llvmPackages_latest.clang ]
       # [ openocd ]

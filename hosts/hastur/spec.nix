@@ -53,6 +53,8 @@
   networking.firewall.allowedTCPPorts =
     [ 9000 9001 ] ++ [ config.services.photoprism.port ];
 
+  xdg.portal.wlr.enable = true;
+
   services = {
 
     pipewire = {
