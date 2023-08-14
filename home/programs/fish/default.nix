@@ -27,6 +27,7 @@
       i = "kitty +kitten icat $argv";
     };
 
+
     shellInit = ''
       fish_vi_key_bindings
       set -g direnv_fish_mode eval_on_arrow
@@ -65,6 +66,12 @@
       # For foot `jump between prompt` function
       function mark_prompt_start --on-event fish_prompt
           echo -en "\e]133;A\e\\"
+      end
+
+      function fish_user_key_bindings
+          for mode in insert default visual
+            bind -M $mode \cf forward-char
+          end
       end
     '';
     functions = {
