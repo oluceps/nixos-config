@@ -15,7 +15,7 @@
       enable = true;
       trustedInterfaces = [ "virbr0" ];
       allowedUDPPorts = [ 8080 ];
-      allowedTCPPorts = [ 8080 ];
+      allowedTCPPorts = [ 8080 9900 ];
     };
     nftables.enable = true;
     networkmanager.enable = lib.mkForce false;
