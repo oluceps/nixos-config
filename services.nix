@@ -107,13 +107,6 @@
     };
 
     gnome.gnome-keyring.enable = true;
-    pipewire = {
-      enable = true;
-      alsa.enable = true;
-      alsa.support32Bit = true;
-      pulse.enable = true;
-      jack.enable = true;
-    };
 
     hyst-az.enable = false;
     hyst-do.enable = false;
