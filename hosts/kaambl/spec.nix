@@ -13,19 +13,7 @@
     "L+    /opt/rocm/hip   -    -    -     -    ${pkgs.hip}"
   ];
   services = {
-    xserver.videoDrivers = [ "amdgpu" ];
-
     xserver = {
-      # services = {
-      #   xserver = {
-      #     enable = true;
-      #     displayManager.gdm.enable = true;
-      #     desktopManager.gnome.enable = true;
-      #   };
-      # };
-      # environment.systemPackages = with pkgs; [ gnomeExtensions.appindicator ];
-      # services.udev.packages = with pkgs; [ gnome.gnome-settings-daemon ];
-
       enable = true;
       displayManager = {
         sddm.enable = true;
@@ -34,8 +22,17 @@
       desktopManager.plasma5.enable = true;
     };
 
+    xserver.videoDrivers = [ "amdgpu" ];
   };
+  # services.xserver = {
+  #   enable = true;
+  #   displayManager.gdm.enable = true;
+  #   desktopManager.gnome.enable = true;
+  # };
 
+
+  # environment.systemPackages = with pkgs; [ gnomeExtensions.appindicator ];
+  # services.udev.packages = with pkgs; [ gnome.gnome-settings-daemon ];
 
 
   systemd = {

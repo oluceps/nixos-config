@@ -15,7 +15,10 @@
       kernelModules = [ "tpm" "tpm_tis" "tpm_crb" "kvm-amd" "amdgpu" ];
     };
     kernelModules = [ "ec_sys" "uhid" "kvm-amd" ];
-    kernelParams = [ "amd_pstate=active" "amd_iommu=on" ];
+    kernelParams = [
+      "amd_pstate=active"
+      # "amd_iommu=on"
+    ];
     extraModulePackages = with config.boot.kernelPackages; [
       v4l2loopback
     ];
