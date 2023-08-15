@@ -9,7 +9,8 @@
     map (d: ./programs + d)
       (map (n: "/" + n)
         (with builtins;attrNames
-          (readDir ./programs)));
+          (lib.filterAttrs (n: _: !elem n [ "hyprland" ])  # one or more of them conflict with gnome  "sway" "hyprland" "waybar"
+            (readDir ./programs))));
 
   home.stateVersion = "22.11";
   home.sessionVariables = {
@@ -222,7 +223,7 @@
 
   programs = {
     zoxide.enable = true;
-    swww.enable = false;
+    # swww.enable = false;
     bash.enable = true;
     vscode = {
       enable = true;
