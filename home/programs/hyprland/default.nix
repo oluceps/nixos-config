@@ -1,4 +1,4 @@
-{ pkgs, user, lib, ... }:
+{ pkgs, user, lib, config, ... }:
 
 {
 
@@ -15,7 +15,7 @@
     };
   };
 
-  home = {
+  home = lib.mkIf config.wayland.windowManager.hyprland.enable {
     sessionVariables = {
       EDITOR = "hx";
       TERMINAL = "foot";
