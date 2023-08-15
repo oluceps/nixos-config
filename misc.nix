@@ -311,7 +311,7 @@
   documentation = {
     enable = true;
     nixos.enable = false;
-    man.enable = true;
+    man.enable = false;
   };
 
 }
