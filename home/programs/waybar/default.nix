@@ -121,8 +121,8 @@
             on-click = "${lib.getExe pkgs.switch-mute}";
             format-muted = "x";
             format-icons = {
-              phone = [ " " " " " 墳" " " ];
-              default = [ "" "墳" "" ];
+              phone = [ " " ];
+              default = [ "" ];
             };
             scroll-step = 1;
             tooltip = false;
