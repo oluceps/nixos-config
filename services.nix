@@ -35,11 +35,11 @@
     fwupd.enable = true;
     # vault = { enable = true; extraConfig = "ui = true"; package = pkgs.vault-bin; };
 
-    # dbus = {
-    # enable = true;
-    # implementation = "broker";
-    # apparmor = "enabled";
-    # };
+    dbus = {
+      enable = true;
+      implementation = "broker";
+      apparmor = "enabled";
+    };
 
     gvfs.enable = true;
     # github-runners = {
