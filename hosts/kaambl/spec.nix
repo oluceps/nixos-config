@@ -13,26 +13,26 @@
     "L+    /opt/rocm/hip   -    -    -     -    ${pkgs.hip}"
   ];
   services = {
-    xserver = {
-      enable = true;
-      displayManager = {
-        sddm.enable = true;
-        defaultSession = "plasmawayland";
-      };
-      desktopManager.plasma5.enable = true;
-    };
+    # xserver = {
+    #   enable = true;
+    #   displayManager = {
+    #     sddm.enable = true;
+    #     defaultSession = "plasmawayland";
+    #   };
+    #   desktopManager.plasma5.enable = true;
+    # };
 
     xserver.videoDrivers = [ "amdgpu" ];
   };
-  # services.xserver = {
-  #   enable = true;
-  #   displayManager.gdm.enable = true;
-  #   desktopManager.gnome.enable = true;
-  # };
+  services.xserver = {
+    enable = true;
+    displayManager.gdm.enable = true;
+    desktopManager.gnome.enable = true;
+  };
 
 
-  # environment.systemPackages = with pkgs; [ gnomeExtensions.appindicator ];
-  # services.udev.packages = with pkgs; [ gnome.gnome-settings-daemon ];
+  environment.systemPackages = with pkgs; [ gnomeExtensions.appindicator ];
+  services.udev.packages = with pkgs; [ gnome.gnome-settings-daemon ];
 
 
   systemd = {
