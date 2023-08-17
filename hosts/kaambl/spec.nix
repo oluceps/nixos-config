@@ -12,25 +12,12 @@
   systemd.tmpfiles.rules = [
     "L+    /opt/rocm/hip   -    -    -     -    ${pkgs.hip}"
   ];
-  services = {
-    # xserver = {
-    #   enable = true;
-    #   displayManager = {
-    #     sddm.enable = true;
-    #     defaultSession = "plasmawayland";
-    #   };
-    #   desktopManager.plasma5.enable = true;
-    # };
-
-    xserver.videoDrivers = [ "amdgpu" ];
-  };
   services.xserver = {
+    videoDrivers = [ "amdgpu" ];
     enable = true;
     displayManager.gdm.enable = true;
     desktopManager.gnome.enable = true;
   };
-
-
   environment.systemPackages = with pkgs; [ gnomeExtensions.appindicator ];
   services.udev.packages = with pkgs; [ gnome.gnome-settings-daemon ];
 
