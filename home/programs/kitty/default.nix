@@ -1,11 +1,13 @@
 { pkgs
+, user
 , ...
 }: {
   programs.kitty = {
     enable = true;
     font = {
       name = "Maple Mono";
-      size = 15;
+      size =
+        if user == "elen" then 13 else 15;
     };
     settings = {
       background_opacity = "0.85";
