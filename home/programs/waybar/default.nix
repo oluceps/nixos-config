@@ -12,7 +12,7 @@
       style = builtins.readFile ./waybar.css;
       systemd = {
         enable = true;
-        # target = "hyprland-session.target";
+        target = "sway-session.target";
       };
       settings = {
         mainBar = {
