@@ -1,5 +1,10 @@
 { lib, pkgs, ... }:
 {
+  xdg.configFile."autostart/gnome-keyring-ssh.desktop".text = ''
+    ${lib.fileContents
+    "${pkgs.gnome3.gnome-keyring}/etc/xdg/autostart/gnome-keyring-ssh.desktop"}
+    Hidden=true
+  '';
   systemd.user = {
     sessionVariables = {
       SSH_AUTH_SOCK = "$XDG_RUNTIME_DIR/resign.ssh";
