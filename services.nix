@@ -37,7 +37,7 @@
 
     dbus = {
       enable = true;
-      implementation = "broker";
+      # implementation = "broker";
       apparmor = "enabled";
     };
 
@@ -96,7 +96,7 @@
     hyst-do.enable = false;
 
     # ss-tls cnt to router
-    ss.enable = true;
+    ss.enable = false;
     tuic.enable = true;
     naive.enable = false;
 
