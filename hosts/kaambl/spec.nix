@@ -20,7 +20,14 @@
   };
   environment.systemPackages = with pkgs; [ gnomeExtensions.appindicator ];
   services.udev.packages = with pkgs; [ gnome.gnome-settings-daemon ];
-
+  xdg.portal = {
+    enable = true;
+    extraPortals = with pkgs; [
+      xdg-desktop-portal-wlr
+      xdg-desktop-portal-gtk
+    ];
+    gtkUsePortal = true;
+  };
 
   systemd = {
     enableEmergencyMode = true;
