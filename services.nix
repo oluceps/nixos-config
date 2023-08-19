@@ -14,7 +14,7 @@
 
   xdg.portal = {
     enable = true;
-    xdgOpenUsePortal = false;
+    xdgOpenUsePortal = true;
   };
 
   services = {
