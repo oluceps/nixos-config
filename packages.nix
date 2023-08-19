@@ -48,6 +48,8 @@ let
     #   vulkan-validation-layers
     # ];
 
+    de = [ gnomeExtensions.simple-net-speed ];
+
     virt = [
       # virt-manager
       virtiofsd

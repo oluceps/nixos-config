@@ -7,7 +7,7 @@
     font = {
       name = "Maple Mono";
       size =
-        if user == "elen" then 13 else 15;
+        if user == "elen" then 12.5 else 15;
     };
     settings = {
       background_opacity = "0.85";
