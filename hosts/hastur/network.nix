@@ -14,8 +14,8 @@
     firewall = {
       enable = true;
       trustedInterfaces = [ "virbr0" ];
-      allowedUDPPorts = [ 8080 ];
-      allowedTCPPorts = [ 8080 9900 2222 ];
+      allowedUDPPorts = [ 8080 5173 ];
+      allowedTCPPorts = [ 8080 9900 2222 5173 ];
     };
     nftables.enable = true;
     networkmanager.enable = lib.mkForce false;
