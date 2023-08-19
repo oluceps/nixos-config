@@ -2,6 +2,7 @@
   # This headless machine uses to perform heavy task.
   # Running database and web services.
 
+  security.pam.u2f.authFile = config.age.secrets."riro.u2f".path;
   system.stateVersion = "22.11"; # Did you read the comment?
 
   hardware = {

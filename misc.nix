@@ -27,7 +27,7 @@
         genBootSec = i: genSec i "root" "root" "400";
       in
       (genProxys [ "rat" "ss" "sing" "hyst-az" "hyst-am" "hyst-do" "tuic" "naive" "wg" "dae.sub" "by.sub" ]) //
-      (genMaterial [ "ssh-cfg" "gh-eu" "u2f" "gh-token" "age" "pub" "id" "id_sk" "minio" "prism" ]) //
+      (genMaterial [ "ssh-cfg" "gh-eu" "riro.u2f" "elen.u2f" "gh-token" "age" "pub" "id" "id_sk" "minio" "prism" ]) //
       (genBootSec [ "db.key" "db.pem" ]) //
       {
         dae = { rekeyFile = ./sec/dae.age; mode = "640"; owner = "proxy"; group = "users"; name = "d.dae"; };
@@ -207,7 +207,6 @@
   };
 
   services = {
-    dbus.packages = [ pkgs.gcr ];
     xserver =
       {
         enable = lib.mkDefault false;
@@ -267,6 +266,7 @@
   security = {
 
     pam = {
+
       u2f = {
         enable = true;
         authFile = config.age.secrets.u2f.path;
@@ -282,7 +282,11 @@
           value = "unlimited";
         }
       ];
-      services.swaylock = { };
+      services = {
+        swaylock = { };
+        login.u2fAuth = true;
+        sudo.u2fAuth = true;
+      };
     };
 
     polkit.enable = true;
