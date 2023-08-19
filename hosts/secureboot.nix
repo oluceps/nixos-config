@@ -3,7 +3,8 @@
     bootspec.enable = true;
     lanzaboote = {
       enable = true;
-      pkiBundle = "/persist/etc/secureboot";
+      publicKeyFile = "/run/agenix/db.pem";
+      privateKeyFile = "/run/agenix/db.key";
     };
   };
 }
