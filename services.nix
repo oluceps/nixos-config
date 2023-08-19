@@ -37,7 +37,7 @@
 
     dbus = {
       enable = true;
-      # implementation = "broker";
+      implementation = "broker";
       apparmor = "enabled";
     };
 

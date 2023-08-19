@@ -1,7 +1,6 @@
 { pkgs, config, user, ... }: {
   # Mobile device.
 
-  security.pam.u2f.authFile = config.age.secrets."elen.u2f".path;
   system.stateVersion = "23.05"; # Did you read the comment?
   hardware.opengl.driSupport = true;
   # For 32 bit applications

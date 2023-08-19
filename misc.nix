@@ -269,7 +269,7 @@
 
       u2f = {
         enable = true;
-        authFile = config.age.secrets.u2f.path;
+        authFile = config.age.secrets."${user}.u2f".path;
         control = "sufficient";
         cue = true;
       };
