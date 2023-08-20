@@ -141,6 +141,7 @@
       # cinnamon.nemo
       gnome.nautilus
       gnome.eog
+      gnome.dconf-editor
       #zathura
 
       # social
