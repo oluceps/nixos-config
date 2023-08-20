@@ -284,8 +284,6 @@
       ];
       services = {
         swaylock = { };
-        login.u2fAuth = true;
-        sudo.u2fAuth = true;
       };
     };
 
