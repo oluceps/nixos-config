@@ -20,11 +20,6 @@
   };
   environment.systemPackages = with pkgs; [ gnomeExtensions.appindicator ];
   services.udev.packages = with pkgs; [ gnome.gnome-settings-daemon ];
-  xdg.portal = {
-    enable = true;
-    gtkUsePortal = true;
-  };
-
   systemd = {
     enableEmergencyMode = true;
     watchdog = {
