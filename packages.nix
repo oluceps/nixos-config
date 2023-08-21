@@ -1,7 +1,7 @@
 { pkgs, lib, ... }:
 let
   p = with pkgs; {
-    dev = lib.flatten [
+    dev = [
       resign
       gnome.dconf-editor
       [ pinentry-curses swagger-codegen3 bump2version openssl linuxPackages_latest.perf cloud-utils ]
@@ -39,7 +39,7 @@ let
 
     crypt = [ rage age-plugin-yubikey yubico-piv-tool yubikey-manager yubikey-manager-qt cryptsetup ];
 
-    net = lib.flatten [
+    net = [
       # anti-censor
       [ sing-box rathole tor arti nur-pkgs.tuic ]
 
@@ -61,7 +61,7 @@ let
     ];
     fs = [ gparted e2fsprogs fscrypt-experimental f2fs-tools compsize ];
 
-    cmd = lib.flatten [
+    cmd = [
       # (ragenix.override { plugins = [ age-plugin-yubikey ]; })
       clean-home
       typst
@@ -77,7 +77,7 @@ let
       [ broot powertop ranger ripgrep ripgrep-all qrencode lazygit b3sum unzip zip coreutils inetutils pciutils usbutils pinentry ]
     ];
 
-    lang = lib.flatten [
+    lang = [
       [
         editorconfig-checker
         kotlin-language-server
