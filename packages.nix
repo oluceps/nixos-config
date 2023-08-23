@@ -74,9 +74,9 @@ let
 
       # common
       [ killall hexyl jq fx bottom lsd fd choose duf tokei procs exa lsof tree bat ]
-      [ broot powertop ranger ripgrep ripgrep-all qrencode lazygit b3sum unzip zip coreutils inetutils pciutils usbutils pinentry ]
+      [ broot powertop ranger ripgrep qrencode lazygit b3sum unzip zip coreutils inetutils pciutils usbutils pinentry ]
     ];
-
+    # ripgrep-all 
     lang = [
       [
         editorconfig-checker
