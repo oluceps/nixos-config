@@ -11,6 +11,12 @@
     # replicates the default behaviour.
     enableIPv6 = true;
     # wireless.iwd.enable = true;
+    firewall = {
+      enable = true;
+      trustedInterfaces = [ "virbr0" ];
+      allowedUDPPorts = [ 8080 5173 ];
+      allowedTCPPorts = [ 8080 9900 2222 5173 ];
+    };
 
     # interfaces.enp4s0.useDHCP = true;
     #  interfaces.wlp5s0.useDHCP = true;
