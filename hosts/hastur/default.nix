@@ -4,25 +4,24 @@
       inherit (import ../lib.nix { inherit inputs; }) sharedModules base genOverlays;
     in
     {
-      _module.args.pkgs = import inputs.nixpkgs rec {
-        system = "x86_64-linux";
-        config = {
-          # contentAddressedByDefault = true;
-          allowUnfree = true;
-          allowBroken = false;
-          segger-jlink.acceptLicense = true;
-          allowUnsupportedSystem = true;
-          permittedInsecurePackages = inputs.nixpkgs.lib.mkForce [ ];
-        };
-        overlays = (import ../../overlays.nix { inherit inputs system; })
-          ++
-          (genOverlays [ "self" "clansty" "fenix" "berberman" "nvfetcher" "EHfive" "nuenv" "typst" "android-nixpkgs" ])
-          ++ (with inputs;[ nur.overlay ]); #（>﹏<）
-      };
       nixosConfigurations = {
         hastur = inputs.nixpkgs.lib.nixosSystem
           {
-            inherit pkgs;
+            pkgs = import inputs.nixpkgs {
+              system = "x86_64-linux";
+              config = {
+                # contentAddressedByDefault = true;
+                allowUnfree = true;
+                allowBroken = false;
+                segger-jlink.acceptLicense = true;
+                allowUnsupportedSystem = true;
+                permittedInsecurePackages = inputs.nixpkgs.lib.mkForce [ ];
+              };
+              overlays = (import ../../overlays.nix { inherit inputs; })
+                ++
+                (genOverlays [ "self" "clansty" "fenix" "berberman" "nvfetcher" "EHfive" "nuenv" "typst" "android-nixpkgs" ])
+                ++ (with inputs;[ nur.overlay ]); #（>﹏<）
+            };
             specialArgs = base // { user = "riro"; };
             modules = [
               ./hardware.nix

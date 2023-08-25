@@ -1,5 +1,5 @@
-{ inputs, system }:
-[
+{ inputs }:
+let system = "x86_64-linux"; in [
   (final: prev:
     prev.lib.genAttrs
       [

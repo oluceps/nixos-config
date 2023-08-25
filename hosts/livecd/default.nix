@@ -1,24 +1,22 @@
 { inputs, ... }: {
   flake = { pkgs, ... }:
     let
-      inherit (import ../lib.nix { inherit inputs; }) lib;
+      inherit (import ../lib.nix { inherit inputs; }) lib base;
     in
     {
       nixosConfigurations = {
         nixos = lib.nixosSystem
-          {
-            inherit pkgs;
+          rec {
+            pkgs = import inputs.nixpkgs {
+              system = "x86_64-linux";
+            };
+            specialArgs = { user = "nixos"; };
             modules = [
-              ./hardware.nix
-              ./network.nix
-              ./rekey.nix
-              ./spec.nix
-              ../persist.nix
-              ../secureboot.nix
-              ./home.nix
-              ../../packages.nix
-              (import ../../modules/sing-box { min = true; })
-            ];
+              # ./home.nix
+              # ../../packages.nix
+              # (import ../../modules/sing-box { min = true; })
+            ]
+            ++ (import ./additions.nix (base // { inherit pkgs; }));
           };
       };
     };
