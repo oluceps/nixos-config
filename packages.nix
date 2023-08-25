@@ -58,6 +58,7 @@ let
       # ubt-rv-run
       opulr-a-run
       lunar-run
+      virt-viewer
     ];
     fs = [ gparted e2fsprogs fscrypt-experimental f2fs-tools compsize ];
 

@@ -18,9 +18,7 @@
       kernelModules = [ "tpm" "tpm_tis" "tpm_crb" "kvm-amd" ];
     };
     kernelModules = [ "ec_sys" "uhid" "kvm-amd" ];
-    extraModulePackages = with config.boot.kernelPackages; [
-      v4l2loopback
-    ];
+    extraModulePackages = with config.boot.kernelPackages; [ v4l2loopback ];
     kernelPackages = pkgs.linuxPackages_latest;
     # binfmt.emulatedSystems = [
     #   "riscv64-linux"
@@ -79,6 +77,6 @@
       source = "/dev/random";
     };
   }];
-
+  nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
   hardware.cpu.amd.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
 }
