@@ -1,5 +1,5 @@
 [
   ./hastur
-  # ./kaambl
-  # ./livecd
+  ./kaambl
+  ./livecd
 ]

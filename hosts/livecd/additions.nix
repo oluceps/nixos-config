@@ -1,10 +1,10 @@
-{ inputs, user, pkgs, data, lib }:
+{ inputs, pkgs, data, lib }:
 [
   (inputs.nixpkgs
   + "/nixos/modules/installer/cd-dvd/installation-cd-graphical-gnome.nix")
 ] ++ [
 
-  (import ../../users.nix { inherit user pkgs data lib; })
+  (import ../../users.nix { inherit pkgs data lib; user = "nixos"; })
   {
     isoImage = {
       compressImage = true;
@@ -24,7 +24,7 @@
           "https://cache.nixos.org"
         ];
         experimental-features = [ "nix-command" "flakes" ];
-        trusted-users = [ "root" "${user}" ];
+        trusted-users = [ "root" ];
       };
     };
     services = {
