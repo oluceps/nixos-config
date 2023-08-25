@@ -14,38 +14,11 @@
     firewall = {
       enable = true;
       trustedInterfaces = [ "virbr0" ];
-      allowedUDPPorts = [ 8080 5173 ];
+      allowedUDPPorts = [ 8080 5173 51820 9918 ];
       allowedTCPPorts = [ 8080 9900 2222 5173 ];
     };
     nftables.enable = true;
     networkmanager.enable = lib.mkForce false;
-
-
-
-    # wireguard.interfaces = {
-    #   wg0 = {
-    #     ips = [ "172.16.0.2/32" "fd01:5ca1:ab1e:88ba:9158:7ec7:1f13:7535/128" ];
-    #     listenPort = 51820;
-    #     privateKeyFile = config.age.secrets.wg.path;
-    #     peers = [
-    #       {
-    #         # Public key of the server (not a file path).
-    #         publicKey = "bmXOC+F1FxEMF9dyiK2H5/1SUtzH0JuVo51h2wPfgyo=";
-
-    #         # Forward all the traffic via VPN.
-    #         allowedIPs = [ "172.16.0.0/24" ];
-    #         # Or forward only particular subnets
-    #         # allowedIPs = [ "10.100.0.1" "91.108.12.0/22" ];
-
-    #         # Set this to the server IP and port.
-    #         endpoint = "162.159.192.8:2408"; # ToDo: route to endpoint not automatically configured https://wiki.archlinux.org/index.php/WireGuardLoop_routing https://discourse.nixos.org/t/solved-minimal-firewall-setup-for-wireguard-client/7577
-
-    #         # Send keepalives every 25 seconds. Important to keep NAT tables alive.
-    #         persistentKeepalive = 25;
-    #       }
-    #     ];
-    #   };
-    # };
   };
   systemd.network = {
     enable = true;
@@ -74,8 +47,50 @@
       linkConfig.Name = "wlan";
     };
 
+    netdevs = {
+      wg0 = {
+        netdevConfig = {
+          Kind = "wireguard";
+          Name = "wg0";
+          MTUBytes = "1300";
+        };
+        wireguardConfig = {
+          PrivateKeyFile = "/run/agenix/wg";
+          ListenPort = 9918;
+        };
+        wireguardPeers = [
+          {
+            wireguardPeerConfig = {
+              PublicKey = "+fuA9nUmFVKy2Ijfh5xfcnO9tpA/SkIL4ttiWKsxyXI=";
+              AllowedIPs = [ "fc00::1/64" "10.100.0.1" ];
+              Endpoint = "146.190.121.75:51820";
+            };
+          }
+        ];
+      };
+    };
+
 
     networks = {
+      "10-wg0" = {
+        matchConfig.Name = "wg0";
+        # IP addresses the client interface will have
+        address = [
+          "fc00::3/120"
+          "10.0.0.2/24"
+        ];
+        DHCP = "no";
+        dns = [ "fc00::53" ];
+        ntp = [ "fc00::123" ];
+        gateway = [
+          "fc00::1"
+          "10.0.0.1"
+        ];
+        networkConfig = {
+          IPv6AcceptRA = false;
+        };
+      };
+
       "20-wired" = {
         matchConfig.Name = "wan";
         DHCP = "yes";
