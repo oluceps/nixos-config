@@ -7,7 +7,7 @@
       nixosConfigurations = {
         hastur = inputs.nixpkgs.lib.nixosSystem
           {
-            pkgs = import inputs.nixpkgs {
+            pkgs = import inputs.nixpkgs-pin {
               system = "x86_64-linux";
               config = {
                 # contentAddressedByDefault = true;
