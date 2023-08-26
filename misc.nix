@@ -21,13 +21,14 @@
         genProxys = i: genSec i "proxy" "users" "740";
         genMaterial = i: genSec i user "nogroup" "400";
         genBootSec = i: genSec i "root" "root" "400";
+        genWgSec = i: genSec i "root" "root" "644";
       in
-      (genProxys [ "rat" "ss" "sing" "hyst-az" "hyst-am" "hyst-do" "tuic" "naive"  "dae.sub" "by.sub" ]) //
+      (genProxys [ "rat" "ss" "sing" "hyst-az" "hyst-am" "hyst-do" "tuic" "naive" "dae.sub" "by.sub" ]) //
       (genMaterial [ "ssh-cfg" "gh-eu" "riro.u2f" "elen.u2f" "gh-token" "age" "pub" "id" "id_sk" "minio" "prism" ]) //
       (genBootSec [ "db.key" "db.pem" ]) //
+      (genWgSec [ "wg" "wgk" ]) //
       {
         dae = { rekeyFile = ./sec/dae.age; mode = "640"; owner = "proxy"; group = "users"; name = "d.dae"; };
-        wg = { rekeyFile = ./sec/wg.age; mode = "644"; owner = "root"; group = "root"; name = "wg"; };
       };
   };
 
