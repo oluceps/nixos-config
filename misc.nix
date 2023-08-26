@@ -17,16 +17,16 @@
 
     secrets =
       let
-        genSec = ns: owner: group: mode: lib.genAttrs ns (n: { rekeyFile = ./sec/${n}.age;  inherit owner group mode; });
-        genProxys = i: genSec i "proxy" "users" "740";
-        genMaterial = i: genSec i user "nogroup" "400";
-        genBootSec = i: genSec i "root" "root" "400";
-        genWgSec = i: genSec i "systemd-network" "root" "600";
+        gen = ns: owner: group: mode: lib.genAttrs ns (n: { rekeyFile = ./sec/${n}.age;  inherit owner group mode; });
+        genProxys = i: gen i "proxy" "users" "740";
+        genMaterial = i: gen i user "nogroup" "400";
+        genBoot = i: gen i "root" "root" "400";
+        genWg = i: gen i "systemd-network" "root" "600";
       in
       (genProxys [ "rat" "ss" "sing" "hyst-az" "hyst-am" "hyst-do" "tuic" "naive" "dae.sub" "by.sub" ]) //
       (genMaterial [ "ssh-cfg" "gh-eu" "riro.u2f" "elen.u2f" "gh-token" "age" "pub" "id" "id_sk" "minio" "prism" ]) //
-      (genBootSec [ "db.key" "db.pem" ]) //
-      (genWgSec [ "wg" "wgk" ]) //
+      (genBoot [ "db.key" "db.pem" ]) //
+      (genWg [ "wg" "wgk" ]) //
       {
         dae = { rekeyFile = ./sec/dae.age; mode = "640"; owner = "proxy"; group = "users"; name = "d.dae"; };
       };
