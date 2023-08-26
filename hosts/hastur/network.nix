@@ -1,7 +1,4 @@
-{ lib, ... }: {
-  # environment.etc."resolv.conf".text = lib.mkForce ''
-  #   nameserver 127.0.0.1
-  # '';
+{ lib, config, ... }: {
   networking.resolvconf.useLocalResolver = true;
   networking = {
     hostName = "hastur"; # Define your hostname.
@@ -13,7 +10,7 @@
     useDHCP = false;
     firewall = {
       enable = true;
-      trustedInterfaces = [ "virbr0" ];
+      trustedInterfaces = [ "virbr0" "wg0" ];
       allowedUDPPorts = [ 8080 5173 51820 9918 ];
       allowedTCPPorts = [ 8080 9900 2222 5173 ];
     };
@@ -55,15 +52,15 @@
           MTUBytes = "1300";
         };
         wireguardConfig = {
-          PrivateKeyFile = "/run/agenix/wg";
-          ListenPort = 9918;
+          PrivateKeyFile = config.age.secrets.wg.path;
         };
         wireguardPeers = [
           {
             wireguardPeerConfig = {
               PublicKey = "+fuA9nUmFVKy2Ijfh5xfcnO9tpA/SkIL4ttiWKsxyXI=";
-              AllowedIPs = [ "fc00::1/64" "10.100.0.1" ];
+              AllowedIPs = [ "10.0.0.0/24" ];
               Endpoint = "146.190.121.75:51820";
+              PersistentKeepalive = 25;
             };
           }
         ];
@@ -76,19 +73,18 @@
         matchConfig.Name = "wg0";
         # IP addresses the client interface will have
         address = [
-          "fc00::3/120"
           "10.0.0.2/24"
         ];
         DHCP = "no";
-        dns = [ "fc00::53" ];
-        ntp = [ "fc00::123" ];
-        gateway = [
-          "fc00::1"
-          "10.0.0.1"
-        ];
-        networkConfig = {
-          IPv6AcceptRA = false;
-        };
+        # dns = [ "fc00::53" ];
+        # ntp = [ "fc00::123" ];
+        # gateway = [
+        # "fc00::1"
+        # "10.0.0.1"
+        # ];
+        # networkConfig = {
+        #   IPv6AcceptRA = false;
+        # };
       };
 
       "20-wired" = {
