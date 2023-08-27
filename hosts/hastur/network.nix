@@ -46,17 +46,17 @@
 
     netdevs = {
 
-      bond1 = {
-        netdevConfig = {
-          Kind = "bond";
-          Name = "bond1";
-        };
-        bondConfig = {
-          Mode = "active-backup";
-          PrimaryReselectPolicy = "always";
-          MIIMonitorSec = "1s";
-        };
-      };
+      # bond1 = {
+      #   netdevConfig = {
+      #     Kind = "bond";
+      #     Name = "bond1";
+      #   };
+      #   bondConfig = {
+      #     Mode = "active-backup";
+      #     PrimaryReselectPolicy = "always";
+      #     MIIMonitorSec = "1s";
+      #   };
+      # };
 
       wg0 = {
         netdevConfig = {
@@ -100,41 +100,41 @@
         # };
       };
 
-      "10-bond1" = {
-        matchConfig.Name = "bond1";
-        DHCP = "yes";
-        dhcpV4Config.RouteMetric = 2046;
-        dhcpV6Config.RouteMetric = 2046;
-        # REALLY IMPORTANT
-        dhcpV4Config.UseDNS = false;
-        dhcpV6Config.UseDNS = false;
-      };
+      # "10-bond1" = {
+      #   matchConfig.Name = "bond1";
+      #   DHCP = "yes";
+      #   dhcpV4Config.RouteMetric = 2046;
+      #   dhcpV6Config.RouteMetric = 2046;
+      #   # REALLY IMPORTANT
+      #   dhcpV4Config.UseDNS = false;
+      #   dhcpV6Config.UseDNS = false;
+      # };
 
 
       "20-wired" = {
         matchConfig.Name = "wan";
-        # DHCP = "yes";
-        # dhcpV4Config.RouteMetric = 2046;
-        # dhcpV6Config.RouteMetric = 2046;
+        DHCP = "yes";
+        dhcpV4Config.RouteMetric = 2046;
+        dhcpV6Config.RouteMetric = 2046;
         # address = [ "192.168.0.2/24" ];
         networkConfig = {
-          Bond = "bond1";
-          PrimarySlave = true;
-          # DNSSEC = true;
-          # MulticastDNS = true;
-          # DNSOverTLS = true;
+          # Bond = "bond1";
+          # PrimarySlave = true;
+          DNSSEC = true;
+          MulticastDNS = true;
+          DNSOverTLS = true;
         };
         # # REALLY IMPORTANT
-        # dhcpV4Config.UseDNS = false;
-        # dhcpV6Config.UseDNS = false;
+        dhcpV4Config.UseDNS = false;
+        dhcpV6Config.UseDNS = false;
       };
 
-      "40-wireless" = {
-        matchConfig.Name = "wlan";
-        networkConfig = {
-          Bond = "bond1";
-        };
-      };
+      # "40-wireless" = {
+      #   matchConfig.Name = "wlan";
+      #   networkConfig = {
+      #     Bond = "bond1";
+      #   };
+      # };
 
       "30-rndis" = {
         matchConfig.Name = "rndis";
