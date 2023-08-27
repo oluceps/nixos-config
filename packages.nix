@@ -26,6 +26,7 @@ let
       wasmtime
       comma
       nix-update
+      nodejs_latest.pkgs.pnpm
     ];
     # ++ [
     #   (fenix.complete.withComponents [ "cargo" "clippy" "rust-src" "rustc" "rustfmt" ])
