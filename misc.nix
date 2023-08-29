@@ -160,7 +160,7 @@
       '';
     };
 
-  time.timeZone = "Asia/Shanghai";
+  time.timeZone = "Asia/Singapore";
 
   console = {
     font = "LatArCyrHeb-16";
