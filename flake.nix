@@ -38,7 +38,7 @@
     };
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
-    nixpkgs-pin.url = "github:NixOS/nixpkgs?rev=671b761d05acb95983437582390a492079c1e0cb";
+    nixpkgs-pin.url = "github:NixOS/nixpkgs?rev=a999c1cc0c9eb2095729d5aa03e0d8f7ed256780";
     nixpkgs-master.url = "github:NixOS/nixpkgs/master";
     nixpkgs-gui.url = "github:NixOS/nixpkgs?rev=954a801cbe128e24e78230f711df17da01a5d98c";
     nixpkgs-22.url = "github:NixOS/nixpkgs?rev=c91d0713ac476dfb367bbe12a7a048f6162f039c";
@@ -50,6 +50,7 @@
     android-nixpkgs = {
       url = "github:tadfisher/android-nixpkgs";
     };
+    # path:/home/riro/Src/flake.nix
     dae.url = "github:daeuniverse/flake.nix";
     nixyDomains.url = "github:oluceps/nixyDomains";
     nvfetcher.url = "github:berberman/nvfetcher";

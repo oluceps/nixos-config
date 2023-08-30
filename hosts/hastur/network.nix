@@ -68,16 +68,25 @@
           PrivateKeyFile = config.age.secrets.wg.path;
         };
         wireguardPeers = [
+          # {
+          #   wireguardPeerConfig = {
+          #     PublicKey = "+fuA9nUmFVKy2Ijfh5xfcnO9tpA/SkIL4ttiWKsxyXI=";
+          #     AllowedIPs = [ "10.0.0.0/24" ];
+          #     Endpoint = "146.190.121.75:51820";
+          #     PersistentKeepalive = 25;
+          #   };
+          # }
           {
             wireguardPeerConfig = {
-              PublicKey = "+fuA9nUmFVKy2Ijfh5xfcnO9tpA/SkIL4ttiWKsxyXI=";
+              PublicKey = "ANd++mjV7kYu/eKOEz17mf65bg8BeJ/ozBmuZxRT3w0=";
               AllowedIPs = [ "10.0.0.0/24" ];
-              Endpoint = "146.190.121.75:51820";
-              PersistentKeepalive = 25;
+              Endpoint = "111.229.162.99:51820";
+              PersistentKeepalive = 15;
             };
           }
         ];
       };
+
     };
 
 
@@ -99,7 +108,6 @@
         #   IPv6AcceptRA = false;
         # };
       };
-
       # "10-bond1" = {
       #   matchConfig.Name = "bond1";
       #   DHCP = "yes";

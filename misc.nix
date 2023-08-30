@@ -7,7 +7,6 @@
 , data
 , ...
 }: {
-  disabledModules = [ "services/networking/dae.nix" ];
   age = {
 
     rekey = {

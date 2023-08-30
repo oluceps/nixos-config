@@ -316,15 +316,15 @@
         "pre-commit-hooks": "pre-commit-hooks"
       },
       "locked": {
-        "lastModified": 1693317710,
+        "lastModified": 1693324487,
         "narHash": "sha256-5H+z+Ay/4BazmmFEtIf5g/PH8PrJPulAhAyS/jnCmTg=",
-        "owner": "oluceps",
+        "owner": "daeuniverse",
         "repo": "flake.nix",
-        "rev": "e44c955d7203a3af5e9d1e808954234586526b40",
+        "rev": "c44641a601cdb7dcf81a33f703275d429dc98f4d",
         "type": "github"
       },
       "original": {
-        "owner": "oluceps",
+        "owner": "daeuniverse",
         "repo": "flake.nix",
         "type": "github"
       }
