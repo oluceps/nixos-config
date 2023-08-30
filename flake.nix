@@ -5,10 +5,9 @@
       imports = import ./hosts;
       systems = [ "x86_64-linux" "aarch64-linux" ];
       perSystem = { pkgs, system, inputs', ... }: {
-        _module.args.pkgs = import inputs.nixpkgs {
-          inherit system;
-        };
-        apps = inputs.agenix-rekey.defineApps inputs.self pkgs
+        apps = inputs.agenix-rekey.defineApps inputs.self
+          # https://github.com/oddlama/agenix-rekey/issues/8
+          (import inputs.nixpkgs-pin { system = "x86_64-linux"; })
           {
             inherit (inputs.self.nixosConfigurations)
               hastur
@@ -38,7 +37,7 @@
     };
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
-    nixpkgs-pin.url = "github:NixOS/nixpkgs?rev=a999c1cc0c9eb2095729d5aa03e0d8f7ed256780";
+    nixpkgs-pin.url = "github:NixOS/nixpkgs?rev=eeb19e9f25248f9166dff02ca0eadf6aa21c4122";
     nixpkgs-master.url = "github:NixOS/nixpkgs/master";
     nixpkgs-gui.url = "github:NixOS/nixpkgs?rev=954a801cbe128e24e78230f711df17da01a5d98c";
     nixpkgs-22.url = "github:NixOS/nixpkgs?rev=c91d0713ac476dfb367bbe12a7a048f6162f039c";
@@ -56,7 +55,10 @@
     nvfetcher.url = "github:berberman/nvfetcher";
     nuenv.url = "github:DeterminateSystems/nuenv";
     EHfive.url = "github:EHfive/flakes";
-    agenix-rekey.url = "github:oddlama/agenix-rekey";
+    agenix-rekey = {
+      url = "github:oddlama/agenix-rekey";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     resign.url = "github:oluceps/resign";
     nil.url = "github:oxalica/nil";
     nix-direnv.url = "github:nix-community/nix-direnv";
