@@ -155,12 +155,12 @@
 
     resolved = {
       enable = false;
-      dnssec = "false";
+      dnssec = "true";
       llmnr = "true";
       extraConfig = ''
-        DNS=223.6.6.6#dns.alidns.com
+        DNS=1.0.0.1#one.one.one.one
         FallbackDNS=
-        DNSOverTLS=no
+        DNSOverTLS=true
         # Cache=no
         DNSStubListener=yes
       '';

@@ -3,6 +3,7 @@ let
   p = with pkgs; {
     dev = [
       resign
+      pv
       gnome.dconf-editor
       [ pinentry-curses swagger-codegen3 bump2version openssl linuxPackages_latest.perf cloud-utils ]
       [ bpf-linker gdb gcc gnumake cmake ] # clang-tools_15 llvmPackages_latest.clang ]

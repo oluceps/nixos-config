@@ -130,7 +130,7 @@
       calibre
       obsidian
       mdbook
-      sioyek
+      # sioyek
       foliate
 
       # file
@@ -208,7 +208,6 @@
     (with nur.repos; [
       linyinfeng.canokey-udev-rules
       xddxdd.dingtalk
-      xyenon.yazi
     ]) ++
     (with nur-pkgs;[
       techmino
