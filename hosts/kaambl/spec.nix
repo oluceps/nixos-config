@@ -9,9 +9,7 @@
     rocm-opencl-icd
     rocm-opencl-runtime
   ];
-  systemd.tmpfiles.rules = [
-    "L+    /opt/rocm/hip   -    -    -     -    ${pkgs.hip}"
-  ];
+
   services.xserver = {
     videoDrivers = [ "amdgpu" ];
     enable = true;
@@ -38,4 +36,32 @@
   };
   programs.dconf.enable = true;
 
+  systemd.tmpfiles.rules = [
+    "L+    /opt/rocm/hip   -    -    -     -    ${pkgs.hip}"
+    "L+ /run/gdm/.config/monitors.xml - - - - ${pkgs.writeText "gdm-monitors.xml" ''
+        <monitors version="2">
+            <configuration>
+                <logicalmonitor>
+                    <x>0</x>
+                    <y>0</y>
+                    <scale>2</scale>
+                    <primary>yes</primary>
+                    <monitor>
+                        <monitorspec>
+                            <connector>eDP-1</connector>
+                            <vendor>BOE</vendor>
+                            <product>0x0893</product>
+                            <serial>0x00000000</serial>
+                        </monitorspec>
+                        <mode>
+                            <width>2160</width>
+                            <height>1440</height>
+                            <rate>60.001</rate>
+                        </mode>
+                    </monitor>
+                </logicalmonitor>
+            </configuration>
+        </monitors>
+    ''}"
+  ];
 }
