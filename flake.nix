@@ -7,7 +7,7 @@
       perSystem = { pkgs, system, inputs', ... }: {
         apps = inputs.agenix-rekey.defineApps inputs.self
           # https://github.com/oddlama/agenix-rekey/issues/8
-          (import inputs.nixpkgs-pin { system = "x86_64-linux"; })
+          pkgs
           {
             inherit (inputs.self.nixosConfigurations)
               hastur
@@ -36,7 +36,7 @@
       };
     };
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+    nixpkgs.url = "github:NixOS/nixpkgs?rev=e7f38be3775bab9659575f192ece011c033655f0";
     nixpkgs-pin.url = "github:NixOS/nixpkgs?rev=eeb19e9f25248f9166dff02ca0eadf6aa21c4122";
     nixpkgs-master.url = "github:NixOS/nixpkgs/master";
     nixpkgs-gui.url = "github:NixOS/nixpkgs?rev=954a801cbe128e24e78230f711df17da01a5d98c";
