@@ -2,5 +2,5 @@
 
 # copy agenix-rekey secrets to remote
 
-nix copy --substitute-on-destination --to ssh://$argv[1] \
+nix copy --substitute-on-destination --to ssh://rhs \
   $(nix eval --raw .#nixosConfigurations.kaambl.config.age.rekey.derivation)
