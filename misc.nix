@@ -319,4 +319,7 @@
   systemd.tmpfiles.rules = [
     "C /var/cache/tuigreet/lastuser - - - - ${pkgs.writeText "lastuser" "${user}"}"
   ];
+
+  environment.etc."machine-id".text = "b08dfa6083e7567a1921a715000001fb";
+
 }
