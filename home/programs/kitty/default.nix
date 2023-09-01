@@ -50,6 +50,7 @@
       wayland_titlebar_color system
       macos_titlebar_color system
     
+      hide_window_decorations yes
       # Tab bar colors
       active_tab_foreground   #181926
       active_tab_background   #C6A0F6
