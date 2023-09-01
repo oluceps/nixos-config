@@ -17,7 +17,12 @@
     desktopManager.gnome.enable = true;
   };
   environment.systemPackages = with pkgs; [ gnomeExtensions.appindicator ];
-  services.udev.packages = with pkgs; [ gnome.gnome-settings-daemon ];
+  services.udev = {
+    packages = with pkgs; [ gnome.gnome-settings-daemon ];
+    extraRules = ''
+      ACTION=="add", SUBSYSTEM=="pci", DRIVER=="pcieport", ATTR{power/wakeup}="disabled"
+    '';
+  };
   systemd = {
     enableEmergencyMode = true;
     watchdog = {
