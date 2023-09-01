@@ -36,7 +36,7 @@
     mime = {
       enable = true;
       defaultApplications = {
-        "tg" = [ "telegramdesktop.desktop" ];
+        "tg" = [ "org.telegram.desktop.desktop" ];
 
         "application/pdf" = [ "sioyek.desktop" ];
         "ppt/pptx" = [ "wps-office-wpp.desktop" ];
