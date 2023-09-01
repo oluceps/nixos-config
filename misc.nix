@@ -210,14 +210,7 @@
         layout = "us";
         xkbOptions = "eurosign:e";
         windowManager.bspwm.enable = true;
-
-        # displayManager.gdm = {
-        # enable = false;
-        # wayland = true;
-        # };
       };
-
-    # xserver.videoDrivers = [ "amdgpu" ];
   };
 
   fonts = {

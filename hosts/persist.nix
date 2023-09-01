@@ -9,9 +9,6 @@
       "/var/log"
       "/var/lib"
     ];
-    # files = [
-    #   "/etc/machine-id"
-    # ];
     users.${user} = {
       files = [
         ".npmrc"
