@@ -17,7 +17,6 @@
     kernelModules = [ "ec_sys" "uhid" "kvm-amd" ];
     kernelParams = [
       "amd_pstate=active"
-      # "amd_iommu=on"
     ];
     extraModulePackages = with config.boot.kernelPackages; [
       v4l2loopback
