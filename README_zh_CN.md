@@ -23,9 +23,9 @@
 |Type|Program|
 |---|---|
 |Editor|[helix](https://github.com/oluceps/nixos-config/tree/main/home/programs/helix)|
-|WM|[Hyprland](https://github.com/oluceps/nixos-config/tree/main/home/programs/hyprland)|
-|Shell|[fish](https://github.com/oluceps/nixos-config/tree/main/home/programs/fish)|
+|WM|[sway](https://github.com/oluceps/nixos-config/tree/main/home/programs/sway)|
 |Bar|[waybar](https://github.com/oluceps/nixos-config/tree/main/home/programs/waybar)|
+|Shell|[fish](https://github.com/oluceps/nixos-config/tree/main/home/programs/fish)|
 |Terminal|[foot](https://github.com/oluceps/nixos-config/tree/main/home/programs/foot)|
 |backup|[btrbk](https://github.com/oluceps/nixos-config/tree/main/modules/btrbk)|  
 
