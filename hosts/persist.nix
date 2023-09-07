@@ -17,13 +17,13 @@
       ];
       directories = [
         "Src"
-        "Calib"
+        "Books"
         "Documents"
         "Downloads"
         "Pictures"
         "Videos"
         "Music"
-        "tools"
+        "Tools"
         "Vault"
         { directory = "Sec"; mode = "0700"; }
         ".npm-packages"

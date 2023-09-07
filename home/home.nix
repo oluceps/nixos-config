@@ -130,7 +130,7 @@
       calibre
       obsidian
       mdbook
-      # sioyek
+      sioyek
       foliate
 
       # file
