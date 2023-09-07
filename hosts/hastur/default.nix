@@ -19,7 +19,7 @@
               };
               overlays = (import ../../overlays.nix { inherit inputs; })
                 ++
-                (genOverlays [ "self" "clansty" "fenix" "berberman" "nvfetcher" "EHfive" "nuenv" "typst" "android-nixpkgs" ])
+                (genOverlays [ "self" "clansty" "fenix" "berberman" "nvfetcher" "EHfive" "nuenv" "typst" "android-nixpkgs" "dae" ])
                 ++ (with inputs;[ nur.overlay ]); #（>﹏<）
             };
             specialArgs = base // { user = "riro"; };
