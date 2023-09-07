@@ -50,7 +50,7 @@
       url = "github:tadfisher/android-nixpkgs";
     };
     # path:/home/riro/Src/flake.nix
-    dae.url = "github:daeuniverse/flake.nix";
+    dae.url = "github:oluceps/flake.nix?rev=f463a991fd86ddb357e9d182a3f0713a8ebaf148";
     nixyDomains.url = "github:oluceps/nixyDomains";
     nvfetcher.url = "github:berberman/nvfetcher";
     nuenv.url = "github:DeterminateSystems/nuenv";
