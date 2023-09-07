@@ -65,6 +65,16 @@ let system = "x86_64-linux"; in [
 
       nur-pkgs = inputs.nur-pkgs.packages.${system};
 
+      fluent-gtk-theme =
+        prev.fluent-gtk-theme.overrideAttrs
+          (old: {
+            src = prev.fetchFromGitHub {
+              owner = "vinceliuice";
+              repo = "Fluent-gtk-theme";
+              rev = "bea82c5a498e8d7fabe41a67e14ba40cdec3a3a8";
+              sha256 = "";
+            };
+          });
       # linuxPackages_latest =
       #   (import inputs.nixpkgs-pin-kernel {
       #     inherit system; config = {
@@ -92,7 +102,9 @@ let system = "x86_64-linux"; in [
 
       fd_iuBrGE = (import
         inputs.nixpkgs-22
-        { system = "x86_64-linux"; }).pkgsCross.aarch64-multiplatform.OVMF.fd;
+        {
+          system = "x86_64-linux";
+        }).pkgsCross.aarch64-multiplatform.OVMF.fd;
 
       fishPlugins.foreign-env = prev.fishPlugins.foreign-env.overrideAttrs
         (old: {
@@ -101,25 +113,27 @@ let system = "x86_64-linux"; in [
           '');
         });
 
-      picom = prev.picom.overrideAttrs (old: {
-        src = prev.fetchFromGitHub {
-          owner = "yshui";
-          repo = "picom";
-          rev = "0fe4e0a1d4e2c77efac632b15f9a911e47fbadf3";
-          sha256 = "sha256-daLb7ebMVeL+f8WydH4DONkUA+0D6d+v+pohJb2qjOo=";
-        };
-      });
+      picom = prev.picom.overrideAttrs
+        (old: {
+          src = prev.fetchFromGitHub {
+            owner = "yshui";
+            repo = "picom";
+            rev = "0fe4e0a1d4e2c77efac632b15f9a911e47fbadf3";
+            sha256 = "sha256-daLb7ebMVeL+f8WydH4DONkUA+0D6d+v+pohJb2qjOo=";
+          };
+        });
 
-      via = prev.via.overrideAttrs (old: rec{
-        version = "2.0.5";
-        src = prev.fetchurl {
-          url = "https://github.com/the-via/releases/releases/download/v${version}/via-${version}-linux.AppImage";
-          name = "via-${version}-linux.AppImage";
-          sha256 = "sha256-APNtzfeV6z8IF20bomcgMq7mwcK1fbDdFF77Xr0UPOs=";
+      via = prev.via.overrideAttrs
+        (old: rec{
+          version = "2.0.5";
+          src = prev.fetchurl {
+            url = "https://github.com/the-via/releases/releases/download/v${version}/via-${version}-linux.AppImage";
+            name = "via-${version}-linux.AppImage";
+            sha256 = "sha256-APNtzfeV6z8IF20bomcgMq7mwcK1fbDdFF77Xr0UPOs=";
 
-        };
-      }
-      );
+          };
+        }
+        );
 
       # waybar = prev.waybar.overrideAttrs (old: {
       #   patchPhase = ''
@@ -129,21 +143,22 @@ let system = "x86_64-linux"; in [
       # });
 
 
-      rathole = prev.rathole.overrideAttrs (old: rec {
-        version = "0.4.8-patch";
-        src = prev.fetchFromGitHub {
-          owner = "oluceps";
-          repo = "rathole";
-          rev = "9727e15377d9430cd2d3b97f2292037048610209";
-          sha256 = "sha256-yqZPs0rp3LD7n4+JGa55gZ4xMcumy+oazrxCqpDzIfQ=";
-        };
+      rathole = prev.rathole.overrideAttrs
+        (old: rec {
+          version = "0.4.8-patch";
+          src = prev.fetchFromGitHub {
+            owner = "oluceps";
+            repo = "rathole";
+            rev = "9727e15377d9430cd2d3b97f2292037048610209";
+            sha256 = "sha256-yqZPs0rp3LD7n4+JGa55gZ4xMcumy+oazrxCqpDzIfQ=";
+          };
 
-        cargoDeps = old.cargoDeps.overrideAttrs (prev.lib.const {
-          inherit src;
-          # otherwise the old "src" will be used.
-          outputHash = "sha256-BZ6AgH/wnxrDLkyncR0pbayae9v5P7X7UnlJ48JR8sM=";
+          cargoDeps = old.cargoDeps.overrideAttrs (prev.lib.const {
+            inherit src;
+            # otherwise the old "src" will be used.
+            outputHash = "sha256-BZ6AgH/wnxrDLkyncR0pbayae9v5P7X7UnlJ48JR8sM=";
+          });
         });
-      });
 
       # shadowsocks-rust = prev.shadowsocks-rust.overrideAttrs (old: rec {
       #   version = "1.15.0-alpha.9";
@@ -189,63 +204,72 @@ let system = "x86_64-linux"; in [
 
 
 
-      record-status = prev.writeShellScriptBin "record-status" ''
-        pid=`pgrep wf-recorder`
-        status=$?
-        if [ $status != 0 ]
-        then
-          echo '';
-        else
-          echo '';
-        fi;
-      '';
-
-      screen-recorder-toggle = prev.writeShellScriptBin "screen-recorder-toggle" ''
-        pid=`${prev.procps}/bin/pgrep wf-recorder`
-        status=$?
-        if [ $status != 0 ]
-        then
-          ${prev.wf-recorder}/bin/wf-recorder -g "$(${prev.slurp}/bin/slurp)" -f $HOME/Videos/record/$(date +'recording_%Y-%m-%d-%H%M%S.mp4') --pixel-format yuv420p -t;
-        else
-          ${prev.procps}/bin/pkill --signal SIGINT wf-recorder
-        fi;
-      '';
-
-      save-clipboard-to = prev.writeShellScriptBin "save-clipboard-to" ''
-        wl-paste > $HOME/Pictures/screenshot/$(date +'shot_%Y-%m-%d-%H%M%S.png')
-      '';
-      switch-mute = final.nuenv.mkScript {
-        name = "switch-mute";
-        script = let pamixer = prev.lib.getExe prev.pamixer; in ''
-          ${pamixer} --get-mute | str trim | if $in == "false" { ${pamixer} -m } else { ${pamixer} -u }
+      record-status = prev.writeShellScriptBin
+        "record-status"
+        ''
+          pid=`pgrep wf-recorder`
+          status=$?
+          if [ $status != 0 ]
+          then
+            echo '';
+          else
+            echo '';
+          fi;
         '';
-      };
 
-      clean-home = final.nuenv.mkScript {
-        name = "clean-home";
-        script = ''
-          cd /home/riro/
-          ls | each {|i| findmnt $i.name | if $in == "" { rm -rf $i.name}}
-          cd -
+      screen-recorder-toggle = prev.writeShellScriptBin
+        "screen-recorder-toggle"
+        ''
+          pid=`${prev.procps}/bin/pgrep wf-recorder`
+          status=$?
+          if [ $status != 0 ]
+          then
+            ${prev.wf-recorder}/bin/wf-recorder -g "$(${prev.slurp}/bin/slurp)" -f $HOME/Videos/record/$(date +'recording_%Y-%m-%d-%H%M%S.mp4') --pixel-format yuv420p -t;
+          else
+            ${prev.procps}/bin/pkill --signal SIGINT wf-recorder
+          fi;
         '';
-      };
-      systemd-run-app = prev.writeShellApplication {
-        name = "systemd-run-app";
-        text = ''
-          name=$(${prev.coreutils}/bin/basename "$1")
-          id=$(${prev.openssl}/bin/openssl rand -hex 4)
-          exec systemd-run \
-            --user \
-            --scope \
-            --unit "$name-$id" \
-            --slice=app \
-            --same-dir \
-            --collect \
-            --property PartOf=graphical-session.target \
-            --property After=graphical-session.target \
-            -- "$@"
+
+      save-clipboard-to = prev.writeShellScriptBin
+        "save-clipboard-to"
+        ''
+          wl-paste > $HOME/Pictures/screenshot/$(date +'shot_%Y-%m-%d-%H%M%S.png')
         '';
-      };
+      switch-mute = final.nuenv.mkScript
+        {
+          name = "switch-mute";
+          script = let pamixer = prev.lib.getExe prev.pamixer; in ''
+            ${pamixer} --get-mute | str trim | if $in == "false" { ${pamixer} -m } else { ${pamixer} -u }
+          '';
+        };
+
+      clean-home = final.nuenv.mkScript
+        {
+          name = "clean-home";
+          script = ''
+            cd /home/riro/
+            ls | each {|i| findmnt $i.name | if $in == "" { rm -rf $i.name}}
+            cd -
+          '';
+        };
+      systemd-run-app = prev.writeShellApplication
+        {
+          name = "systemd-run-app";
+          text = ''
+            name=$(${prev.coreutils}/bin/basename "$1")
+            id=$(${prev.openssl}/bin/openssl rand -hex 4)
+            exec systemd-run \
+              --user \
+              --scope \
+              --unit "$name-$id" \
+              --slice=app \
+              --same-dir \
+              --collect \
+              --property PartOf=graphical-session.target \
+              --property After=graphical-session.target \
+              -- "$@"
+          '';
+        };
     })
 
 ]

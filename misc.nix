@@ -92,7 +92,7 @@
   qt = {
     enable = true;
     platformTheme = "gnome";
-    style = "adwaita-dark";
+    style = "adwaita";
   };
   zramSwap = {
     enable = true;
@@ -311,8 +311,26 @@
 
   systemd.tmpfiles.rules = [
     "C /var/cache/tuigreet/lastuser - - - - ${pkgs.writeText "lastuser" "${user}"}"
+    "C /root/.ssh/config - - - - ${pkgs.writeText "ssh-config" 
+    ''
+    Host rha
+    HostName 10.0.0.2
+    User riro
+    Port 22
+    AddKeysToAgent yes
+    ForwardAgent yes
+    IdentityFile ${config.age.secrets.id.path}
+    ''}"
   ];
 
-  environment.etc."machine-id".text = "b08dfa6083e7567a1921a715000001fb";
+  environment.etc = {
+    "machine-id".text = "b08dfa6083e7567a1921a715000001fb";
+  };
+
+  # system.activationScripts = {
+  #   stdio.text =
+  #     ''
+  #     '';
+  # };
 
 }

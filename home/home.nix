@@ -1,6 +1,7 @@
 { config
 , pkgs
 , lib
+, inputs
 , ...
 }:
 {
@@ -131,6 +132,7 @@
       obsidian
       mdbook
       sioyek
+      zathura
       foliate
 
       # file
@@ -429,8 +431,13 @@
   gtk = {
     enable = true;
     theme = {
-      package = pkgs.materia-theme;
-      name = "Materia-light";
+      package = pkgs.callPackage
+        "${inputs.nixpkgs}/pkgs/data/themes/fluent-gtk-theme"
+        {
+          themeVariants = [ "orange" ];
+          tweaks = [ "blur" ];
+        };
+      name = "Fluent-orange";
     };
 
     iconTheme = {
@@ -440,11 +447,6 @@
     gtk2.configLocation = "${config.xdg.configHome}/gtk-2.0/gtkrc";
 
   };
-  qt = {
-    enable = true;
-    platformTheme = "gtk";
-  };
-
 
   services = {
     swayidle = {

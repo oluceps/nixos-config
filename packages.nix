@@ -1,4 +1,4 @@
-{ pkgs, lib, ... }:
+{ inputs, pkgs, lib, ... }:
 let
   p = with pkgs; {
     dev = [
@@ -51,7 +51,7 @@ let
     #   vulkan-validation-layers
     # ];
 
-    de = [ gnomeExtensions.simple-net-speed ];
+    de = with gnomeExtensions;[ simple-net-speed blur-my-shell ];
 
     virt = [
       # virt-manager
