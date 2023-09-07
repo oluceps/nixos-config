@@ -10,7 +10,7 @@
         if user == "elen" then 12.5 else 15;
     };
     settings = {
-      background_opacity = "0.96";
+      background_opacity = "0.9";
       confirm_os_window_close = "0";
     };
 
