@@ -109,6 +109,7 @@
     sing-box.enable = false;
     rathole.enable = true;
 
+    daed.enable = false;
     dae = {
       enable = true;
       disableTxChecksumIpGeneric = false;
@@ -180,17 +181,17 @@
       enable = true;
       config = {
         log = { level = "debug"; production = false; };
-        plugins = [
+        plugins = with inputs.nixyDomains.packages.x86_64-linux.default; [
           {
             args = {
-              files = [ "${inputs.nixyDomains.packages.x86_64-linux.default.src}/accelerated-domains.china.txt" ];
+              files = [ "${src}/accelerated-domains.china.txt" ];
             };
             tag = "direct_domain";
             type = "domain_set";
           }
           {
             args = {
-              files = [ "${inputs.nixyDomains.packages.x86_64-linux.default.src}/all_cn.txt" ];
+              files = [ "${src}/all_cn.txt" ];
             };
             tag = "direct_ip";
             type = "ip_set";
