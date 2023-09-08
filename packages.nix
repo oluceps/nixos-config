@@ -2,6 +2,7 @@
 let
   p = with pkgs; {
     dev = [
+      home-manager
       resign
       pv
       gnome.dconf-editor

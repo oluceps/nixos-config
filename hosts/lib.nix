@@ -9,7 +9,7 @@
     ../packages.nix
     ../sysvars.nix
     ../services.nix
-  ] ++ (genModules [ "agenix-rekey" "ragenix" "home-manager" "impermanence" "lanzaboote" "nix-ld" "self" ])
+  ] ++ (genModules [ "agenix-rekey" "ragenix" "impermanence" "lanzaboote" "nix-ld" "self" ])
   ++ (with inputs.dae.nixosModules;[ dae daed ]);
 
   data = {

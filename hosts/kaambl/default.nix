@@ -20,13 +20,7 @@
       user = "elen";
     in
     {
-      homeConfigurations.${user} =
-        inputs.home-manager.lib.homeManagerConfiguration {
-          inherit pkgs;
-          modules = [ ../../home/home.nix ];
-          extraSpecialArgs = { inherit inputs user; };
-        };
-
+      
       nixosConfigurations = {
         kaambl = lib.nixosSystem
           {
@@ -39,7 +33,6 @@
               ./spec.nix
               ../persist.nix
               ../secureboot.nix
-              ../../home
               ../../boot.nix
             ] ++ sharedModules;
           };

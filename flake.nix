@@ -2,7 +2,7 @@
   description = "oluceps' flake";
   outputs = inputs@{ flake-parts, ... }:
     flake-parts.lib.mkFlake { inherit inputs; } {
-      imports = import ./hosts;
+      imports = (import ./hosts) ++ [ ./home ];
       systems = [ "x86_64-linux" "aarch64-linux" ];
       perSystem = { pkgs, system, inputs', ... }: {
         apps = inputs.agenix-rekey.defineApps inputs.self
