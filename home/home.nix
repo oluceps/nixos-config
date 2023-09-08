@@ -13,6 +13,9 @@
           (lib.filterAttrs (n: _: !elem n [ "hyprland" ])  # one or more of them conflict with gnome  "sway" "hyprland" "waybar"
             (readDir ./programs))));
 
+  home.username = "elen";
+  home.homeDirectory = "/home/elen";
+
   home.stateVersion = "22.11";
   home.sessionVariables = {
     EDITOR = "hx";
