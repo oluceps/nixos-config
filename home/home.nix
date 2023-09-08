@@ -224,6 +224,7 @@
   };
 
   programs = {
+    yazi.enable = true;
     zoxide.enable = true;
     # swww.enable = false;
     bash.enable = true;
