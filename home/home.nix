@@ -435,10 +435,10 @@
       package = pkgs.callPackage
         "${inputs.nixpkgs}/pkgs/data/themes/fluent-gtk-theme"
         {
-          themeVariants = [ "orange" ];
+          themeVariants = [ "purple" ];
           tweaks = [ "blur" ];
         };
-      name = "Fluent-orange";
+      name = "Fluent-purple";
     };
 
     iconTheme = {
