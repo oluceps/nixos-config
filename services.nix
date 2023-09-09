@@ -98,6 +98,7 @@
     # ss-tls cnt to router
     ss.enable = false;
     tuic.enable = true;
+    juicity.enable = true;
     naive.enable = false;
 
     clash =

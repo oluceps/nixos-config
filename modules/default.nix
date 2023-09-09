@@ -7,6 +7,7 @@ let
       "rathole"
       "clash-m"
       "tuic"
+      "juicity"
       "btrbk"
       "naive"
       "sundial"
