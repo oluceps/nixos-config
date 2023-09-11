@@ -2,6 +2,7 @@
 let
   p = with pkgs; {
     dev = [
+      racket
       resign
       pv
       gnome.dconf-editor

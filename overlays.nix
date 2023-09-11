@@ -57,6 +57,7 @@ let system = "x86_64-linux"; in [
               "vue"
               "nu"
               "typst"
+              "scheme"
             ];
       };
 
