@@ -6,10 +6,10 @@ function copy_secrets
   switch $argv[2]
       case "hastur"
       nix copy --substitute-on-destination --to ssh://rha \
-        $(nix eval --raw .#nixosConfigurations.hastur.config.age.rekey.derivation)
+        $(nix eval --raw .#nixosConfigurations.$argv[3].config.age.rekey.derivation)
       case "kaambl"
       nix copy --substitute-on-destination --to ssh://rka \
-        $(nix eval --raw .#nixosConfigurations.kaambl.config.age.rekey.derivation)
+        $(nix eval --raw .#nixosConfigurations.$argv[3].config.age.rekey.derivation)
       case "*"
           echo "unknown host: $argv[2]"
   end

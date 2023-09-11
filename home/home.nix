@@ -104,7 +104,7 @@
       pcsctools
       ccid
 
-      nrfconnect
+      # nrfconnect
       nrfutil
       # nrf-command-line-tools
       yubikey-manager
@@ -278,11 +278,11 @@
         n = "neovide";
         off = "poweroff";
         cat = "bat";
-        kls = "exa";
-        sl = "exa";
-        ls = "exa";
-        l = "exa -l";
-        la = "exa -la";
+        kls = "eza";
+        sl = "eza";
+        ls = "eza";
+        l = "eza -l";
+        la = "eza -la";
         g = "lazygit";
       };
       history = {

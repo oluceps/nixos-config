@@ -76,7 +76,7 @@ let
       nix-output-monitor
 
       # common
-      [ killall hexyl jq fx bottom lsd fd choose duf tokei procs exa lsof tree bat ]
+      [ killall hexyl jq fx bottom lsd fd choose duf tokei procs lsof tree bat ]
       [ broot powertop ranger ripgrep qrencode lazygit b3sum unzip zip coreutils inetutils pciutils usbutils pinentry ]
     ];
     # ripgrep-all 
