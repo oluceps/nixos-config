@@ -36,7 +36,7 @@
       };
     };
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs?rev=e7f38be3775bab9659575f192ece011c033655f0";
+    nixpkgs.url = "github:oluceps/nixpkgs?rev=bc07451d4f96c77355f7e7ebb7932666d094793d";
     nixpkgs-pin.url = "github:NixOS/nixpkgs?rev=eeb19e9f25248f9166dff02ca0eadf6aa21c4122";
     nixpkgs-master.url = "github:NixOS/nixpkgs/master";
     nixpkgs-gui.url = "github:NixOS/nixpkgs?rev=954a801cbe128e24e78230f711df17da01a5d98c";
