@@ -58,6 +58,7 @@ let
       # virt-manager
       virtiofsd
       runwin
+      runbkworm
       # ubt-rv-run
       opulr-a-run
       lunar-run
