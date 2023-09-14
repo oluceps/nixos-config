@@ -66,6 +66,12 @@
 
   networking.firewall.trustedInterfaces = [ "virbr0" ];
   virtualisation = {
+    vmVariant = {
+      virtualisation = {
+        memorySize = 2048;
+        cores = 6;
+      };
+    };
     docker.enable = false;
     podman.enable = true;
     libvirtd = {
