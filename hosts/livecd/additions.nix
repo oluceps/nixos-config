@@ -4,12 +4,12 @@
   + "/nixos/modules/installer/cd-dvd/installation-cd-graphical-gnome.nix")
 ] ++ [
 
-  (import ../../users.nix { inherit pkgs data lib; user = "nixos"; })
   {
     isoImage = {
       compressImage = true;
       squashfsCompression = "zstd -Xcompression-level 6";
     };
+    programs.fish.enable = true;
 
     nix = {
       package = pkgs.nixVersions.stable;
