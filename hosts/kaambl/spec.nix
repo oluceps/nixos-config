@@ -13,15 +13,21 @@
   services.xserver = {
     videoDrivers = [ "amdgpu" ];
     enable = true;
-    displayManager.gdm.enable = true;
-    desktopManager.gnome.enable = true;
+    displayManager = {
+      # sddm.enable = true;
+      gdm = {
+        enable = true;
+      };
+
+    };
+    desktopManager = {
+      # plasma5.enable = true;
+      gnome.enable = true;
+    };
   };
   environment.systemPackages = with pkgs; [ gnomeExtensions.appindicator ];
   services.udev = {
     packages = with pkgs; [ gnome.gnome-settings-daemon ];
-    extraRules = ''
-      ACTION=="add", SUBSYSTEM=="pci", DRIVER=="pcieport", ATTR{power/wakeup}="disabled"
-    '';
   };
   systemd = {
     enableEmergencyMode = true;

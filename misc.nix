@@ -22,7 +22,7 @@
         genBoot = i: gen i "root" "root" "400";
         genWg = i: gen i "systemd-network" "root" "600";
       in
-      (genProxys [ "rat" "ss" "sing" "hyst-az" "hyst-am" "hyst-do" "tuic" "naive" "dae.sub" "by.sub" ]) //
+      (genProxys [ "rat" "ss" "sing" "hyst-az" "hyst-am" "hyst-do" "tuic" "naive" "dae.sub" "by.sub" "jc-do" ]) //
       (genMaterial [ "ssh-cfg" "gh-eu" "riro.u2f" "elen.u2f" "gh-token" "age" "pub" "id" "id_sk" "minio" "prism" ]) //
       (genBoot [ "db.key" "db.pem" ]) //
       (genWg [ "wg" "wgk" ]) //
@@ -66,6 +66,12 @@
 
   networking.firewall.trustedInterfaces = [ "virbr0" ];
   virtualisation = {
+    vmVariant = {
+      virtualisation = {
+        memorySize = 2048;
+        cores = 6;
+      };
+    };
     docker.enable = false;
     podman.enable = true;
     libvirtd = {
@@ -92,7 +98,7 @@
   qt = {
     enable = true;
     platformTheme = "gnome";
-    style = "adwaita-dark";
+    style = "adwaita";
   };
   zramSwap = {
     enable = true;
@@ -311,8 +317,26 @@
 
   systemd.tmpfiles.rules = [
     "C /var/cache/tuigreet/lastuser - - - - ${pkgs.writeText "lastuser" "${user}"}"
+    "C /root/.ssh/config - - - - ${pkgs.writeText "ssh-config" 
+    ''
+    Host rha
+    HostName 10.0.0.2
+    User riro
+    Port 22
+    AddKeysToAgent yes
+    ForwardAgent yes
+    IdentityFile ${config.age.secrets.id.path}
+    ''}"
   ];
 
-  environment.etc."machine-id".text = "b08dfa6083e7567a1921a715000001fb";
+  environment.etc = {
+    "machine-id".text = "b08dfa6083e7567a1921a715000001fb";
+  };
+
+  # system.activationScripts = {
+  #   stdio.text =
+  #     ''
+  #     '';
+  # };
 
 }

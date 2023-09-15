@@ -27,8 +27,8 @@ stdenv.mkDerivation {
   src = fetchFromGitHub {
     owner = "johnfactotum";
     repo = "foliate";
-    rev = "a3cfb71ab60a235103a565be4d269e2a5d84adee";
-    hash = "sha256-BxNYg4Kxc7YW+L1Di/PdT1TKWZsOQ5VN8KpEgQ7X9L4=";
+    rev = "efddb107ae3c3a7c3acca73ad0c6a19981234e04";
+    hash = "sha256-zvxNxpIRd6tZ+bd9c4BwaCVk3Genbo0SSU4rf0zFdBQ=";
     fetchSubmodules = true;
   };
 
