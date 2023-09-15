@@ -11,7 +11,7 @@
                             ".config.age.rekey.derivation)")))
 
 (define (prepare-update args)
-  (let* ((cmd (string-append "nix build .#nixosConfigurations."
+  (let ((cmd (string-append "nix build .#nixosConfigurations."
                              (vector-ref args 1)
                              ".config.system.build.toplevel --log-format internal-json -v 2>&1 | nom --json")))
                              (system cmd)))
