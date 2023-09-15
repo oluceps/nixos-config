@@ -12,9 +12,6 @@
             };
             specialArgs = { user = "nixos"; };
             modules = [
-              # ./home.nix
-              # ../../packages.nix
-              # (import ../../modules/sing-box { min = true; })
             ]
             ++ (import ./additions.nix (base // { inherit pkgs; }));
           };

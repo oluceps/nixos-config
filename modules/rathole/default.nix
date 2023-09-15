@@ -33,7 +33,7 @@ in
         serviceConfig = {
           Type = "simple";
           User = "proxy";
-          ExecStart = "${lib.getExe cfg.package} -c ${configFile}";
+          ExecStart = "${lib.getBin cfg.package}/bin/rathole -c ${configFile}";
           LimitNOFILE = 1048576;
           RestartSec = "5s";
           Restart = "on-failure";

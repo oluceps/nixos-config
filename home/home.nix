@@ -1,6 +1,7 @@
 { config
 , pkgs
 , lib
+, inputs
 , ...
 }:
 {
@@ -103,7 +104,7 @@
       pcsctools
       ccid
 
-      nrfconnect
+      # nrfconnect
       nrfutil
       # nrf-command-line-tools
       yubikey-manager
@@ -130,7 +131,8 @@
       calibre
       obsidian
       mdbook
-      # sioyek
+      sioyek
+      zathura
       foliate
 
       # file
@@ -222,6 +224,7 @@
   };
 
   programs = {
+    yazi.enable = true;
     zoxide.enable = true;
     # swww.enable = false;
     bash.enable = true;
@@ -275,11 +278,11 @@
         n = "neovide";
         off = "poweroff";
         cat = "bat";
-        kls = "exa";
-        sl = "exa";
-        ls = "exa";
-        l = "exa -l";
-        la = "exa -la";
+        kls = "eza";
+        sl = "eza";
+        ls = "eza";
+        l = "eza -l";
+        la = "eza -la";
         g = "lazygit";
       };
       history = {
@@ -429,8 +432,13 @@
   gtk = {
     enable = true;
     theme = {
-      package = pkgs.materia-theme;
-      name = "Materia-light";
+      package = pkgs.callPackage
+        "${inputs.nixpkgs}/pkgs/data/themes/fluent-gtk-theme"
+        {
+          themeVariants = [ "purple" ];
+          tweaks = [ "blur" ];
+        };
+      name = "Fluent-purple";
     };
 
     iconTheme = {
@@ -440,11 +448,6 @@
     gtk2.configLocation = "${config.xdg.configHome}/gtk-2.0/gtkrc";
 
   };
-  qt = {
-    enable = true;
-    platformTheme = "gtk";
-  };
-
 
   services = {
     swayidle = {

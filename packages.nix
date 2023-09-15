@@ -1,7 +1,8 @@
-{ pkgs, lib, ... }:
+{ inputs, pkgs, lib, ... }:
 let
   p = with pkgs; {
     dev = [
+      racket
       resign
       pv
       gnome.dconf-editor
@@ -51,12 +52,13 @@ let
     #   vulkan-validation-layers
     # ];
 
-    de = [ gnomeExtensions.simple-net-speed ];
+    de = with gnomeExtensions;[ simple-net-speed blur-my-shell ];
 
     virt = [
       # virt-manager
       virtiofsd
       runwin
+      runbkworm
       # ubt-rv-run
       opulr-a-run
       lunar-run
@@ -76,7 +78,7 @@ let
       nix-output-monitor
 
       # common
-      [ killall hexyl jq fx bottom lsd fd choose duf tokei procs exa lsof tree bat ]
+      [ killall hexyl jq fx bottom lsd fd choose duf tokei procs lsof tree bat ]
       [ broot powertop ranger ripgrep qrencode lazygit b3sum unzip zip coreutils inetutils pciutils usbutils pinentry ]
     ];
     # ripgrep-all 
