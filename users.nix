@@ -53,6 +53,7 @@
     };
     sudo = {
       enable = lib.mkForce true;
+      # package = pkgs.sudo-rs;
       extraRules = [
         {
           users = [ "${user}" ];
