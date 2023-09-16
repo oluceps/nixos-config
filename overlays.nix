@@ -236,7 +236,7 @@ let system = "x86_64-linux"; in [
         ''
           wl-paste > $HOME/Pictures/screenshot/$(date +'shot_%Y-%m-%d-%H%M%S.png')
         '';
-      switch-mute = final.nuenv.mkScript
+      switch-mute = final.nuenv.writeScriptBin
         {
           name = "switch-mute";
           script = let pamixer = prev.lib.getExe prev.pamixer; in ''
@@ -244,7 +244,7 @@ let system = "x86_64-linux"; in [
           '';
         };
 
-      clean-home = final.nuenv.mkScript
+      clean-home = final.nuenv.writeScriptBin
         {
           name = "clean-home";
           script = ''

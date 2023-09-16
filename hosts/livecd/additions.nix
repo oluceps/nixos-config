@@ -90,7 +90,6 @@
       tokei
       procs
 
-      exa
 
       lsof
       tree
