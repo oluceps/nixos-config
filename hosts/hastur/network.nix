@@ -71,14 +71,6 @@
           PrivateKeyFile = config.age.secrets.wg.path;
         };
         wireguardPeers = [
-          # {
-          #   wireguardPeerConfig = {
-          #     PublicKey = "+fuA9nUmFVKy2Ijfh5xfcnO9tpA/SkIL4ttiWKsxyXI=";
-          #     AllowedIPs = [ "10.0.0.0/24" ];
-          #     Endpoint = "146.190.121.75:51820";
-          #     PersistentKeepalive = 25;
-          #   };
-          # }
           {
             wireguardPeerConfig = {
               PublicKey = "ANd++mjV7kYu/eKOEz17mf65bg8BeJ/ozBmuZxRT3w0=";
@@ -90,6 +82,26 @@
         ];
       };
 
+      wg1 = {
+        netdevConfig = {
+          Kind = "wireguard";
+          Name = "wg1";
+          MTUBytes = "1300";
+        };
+        wireguardConfig = {
+          PrivateKeyFile = config.age.secrets.wg.path;
+        };
+        wireguardPeers = [
+          {
+            wireguardPeerConfig = {
+              PublicKey = "+fuA9nUmFVKy2Ijfh5xfcnO9tpA/SkIL4ttiWKsxyXI=";
+              AllowedIPs = [ "10.0.1.0/24" ];
+              Endpoint = "146.190.121.75:51820";
+              PersistentKeepalive = 15;
+            };
+          }
+        ];
+      };
     };
 
 
@@ -101,26 +113,15 @@
           "10.0.0.2/24"
         ];
         DHCP = "no";
-        # dns = [ "fc00::53" ];
-        # ntp = [ "fc00::123" ];
-        # gateway = [
-        # "fc00::1"
-        # "10.0.0.1"
-        # ];
-        # networkConfig = {
-        #   IPv6AcceptRA = false;
-        # };
       };
-      # "10-bond1" = {
-      #   matchConfig.Name = "bond1";
-      #   DHCP = "yes";
-      #   dhcpV4Config.RouteMetric = 2046;
-      #   dhcpV6Config.RouteMetric = 2046;
-      #   # REALLY IMPORTANT
-      #   dhcpV4Config.UseDNS = false;
-      #   dhcpV6Config.UseDNS = false;
-      # };
 
+      "10-wg1" = {
+        matchConfig.Name = "wg1";
+        address = [
+          "10.0.1.2/24"
+        ];
+        DHCP = "no";
+      };
 
       "20-wired" = {
         matchConfig.Name = "wan";
