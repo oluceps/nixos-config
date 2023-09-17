@@ -2,6 +2,7 @@
 , pkgs
 , ...
 }: {
+  services.mosdns.enable = true;
   networking = {
     resolvconf.useLocalResolver = true;
     firewall = {
@@ -31,7 +32,7 @@
     # proxy.noProxy = "127.0.0.1,localhost,internal.domain";
 
     networkmanager.enable = true;
-    # networkmanager.dns = "systemd-resolved";
+    networkmanager.dns = "none";
 
   };
 

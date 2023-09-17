@@ -179,7 +179,6 @@
       };
     };
     mosdns = {
-      enable = true;
       config = {
         log = { level = "debug"; production = false; };
         plugins = with inputs.nixyDomains.packages.x86_64-linux.default; [

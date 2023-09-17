@@ -1,6 +1,8 @@
 { lib, config, ... }: {
-  networking.resolvconf.useLocalResolver = true;
+  services.mosdns.enable = true;
   networking = {
+    resolvconf.useLocalResolver = true;
+
     hostName = "hastur"; # Define your hostname.
     # replicates the default behaviour.
     enableIPv6 = true;
@@ -16,6 +18,7 @@
     };
     nftables.enable = true;
     networkmanager.enable = lib.mkForce false;
+
   };
   systemd.network = {
     enable = true;
