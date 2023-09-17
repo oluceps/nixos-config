@@ -22,7 +22,7 @@
         genBoot = i: gen i "root" "root" "400";
         genWg = i: gen i "systemd-network" "root" "600";
       in
-      (genProxys [ "rat" "ss" "sing" "hyst-az" "hyst-am" "hyst-do" "tuic" "naive" "dae.sub" "by.sub" "jc-do" ]) //
+      (genProxys [ "rat" "ss" "sing" "hyst-az" "hyst-am" "hyst-do" "tuic" "naive" "dae.sub" "by.sub" "jc-do" "tinc-k-ed" "tinc-k-rsa" ]) //
       (genMaterial [ "ssh-cfg" "gh-eu" "riro.u2f" "elen.u2f" "gh-token" "age" "pub" "id" "id_sk" "minio" "prism" ]) //
       (genBoot [ "db.key" "db.pem" ]) //
       (genWg [ "wg" "wgk" ]) //
