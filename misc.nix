@@ -317,16 +317,18 @@
 
   systemd.tmpfiles.rules = [
     "C /var/cache/tuigreet/lastuser - - - - ${pkgs.writeText "lastuser" "${user}"}"
-    "C /root/.ssh/config - - - - ${pkgs.writeText "ssh-config" 
+    "C /root/.ssh/config - - - - ${
+    pkgs.writeText "ssh-config" (let genHost = name: addr: 
     ''
-    Host rha
-    HostName 10.0.0.2
+    Host ${name}
+    HostName ${addr}
     User riro
     Port 22
     AddKeysToAgent yes
     ForwardAgent yes
     IdentityFile ${config.age.secrets.id.path}
-    ''}"
+    ''; in
+    (genHost "rha" "10.0.0.2") + (genHost "rha0" "10.0.1.2"))}"
   ];
 
   environment.etc = {
