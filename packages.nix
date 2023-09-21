@@ -2,6 +2,7 @@
 let
   p = with pkgs; {
     dev = [
+      yubikey-personalization
       racket
       resign
       pv

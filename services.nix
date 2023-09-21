@@ -210,7 +210,7 @@
               concurrent = 2;
               upstreams = [
                 { addr = "tls://8.8.8.8:853"; idle_timeout = 86400; enable_pipeline = true; }
-                { addr = "tls://1.0.0.1:853"; idle_timeout = 86400; enable_pipeline = true; }
+                { addr = "tls://8.8.4.4:853"; idle_timeout = 86400; enable_pipeline = true; }
               ];
             };
             tag = "remote_forward";

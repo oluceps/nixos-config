@@ -22,9 +22,10 @@
       v4l2loopback
     ];
     kernelPackages =
-      (import inputs.nixpkgs-pin {
-        system = "x86_64-linux";
-      }).linuxPackages_latest;
+      # (import inputs.nixpkgs-pin {
+      #   system = "x86_64-linux";
+      # }).
+      pkgs.linuxPackages_latest;
   };
 
   fileSystems."/" =
