@@ -87,6 +87,7 @@
         via
         opensk-udev-rules
         nrf-udev-rules
+        libu2f-host
       ];
     };
 
@@ -291,7 +292,6 @@
     pkgs.openresolv;
 
   programs = {
-    ssh.startAgent = false;
     proxychains = {
       enable = true;
       package = pkgs.proxychains-ng;

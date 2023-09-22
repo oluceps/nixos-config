@@ -107,7 +107,6 @@
     algorithm = "zstd";
   };
 
-  # systemd.services.nix-daemon.serviceConfig.Slice = "user.slice";
   nix =
     {
       package = pkgs.nixVersions.stable;
@@ -172,7 +171,31 @@
     keyMap = "us";
   };
 
+  systemd.user.services.ssh-agent.serviceConfig.ExecStartPost = "${pkgs.writeShellScript "ssh-add" ''
+    shopt -s extglob
+    SSH_AUTH_SOCK="$1" ${config.programs.ssh.package}/bin/ssh-add /run/agenix/id_sk
+  ''} %t/ssh-agent";
+
+  environment.systemPackages = [ pkgs.keyutils ];
+  environment.etc."request-key.conf".text =
+    let
+      request-key = pkgs.writeShellScript "request-key" ''
+        export DISPLAY=:0
+        PIN=$(/run/wrappers/bin/sudo -u \#$1 -g \#$2 --preserve-env=DISPLAY ${lib.getExe pkgs.lxqt.lxqt-openssh-askpass} "$3")
+        printf "%s\0" "$PIN"
+      '';
+    in
+    ''
+      create user * * |${request-key} %u %g %c
+    '';
+
+
+
   programs = {
+    ssh = {
+      package = pkgs.openssh-fido2;
+      startAgent = true;
+    };
     starship = {
       enable = true;
       settings = (import ./home/programs/starship { }).programs.starship.settings // {
@@ -314,6 +337,11 @@
     nixos.enable = false;
     man.enable = false;
   };
+
+  # systemd.user.services.ssh-agent.serviceConfig.ExecStartPost = "${pkgs.writeShellScript "ssh-add" ''
+  #   shopt -s extglob
+  #   SSH_AUTH_SOCK="$1" ${config.programs.ssh.package}/bin/ssh-add ~/.ssh/id_!(*.pub)
+  # ''} %t/ssh-agent";
 
   systemd.tmpfiles.rules = [
     "C /var/cache/tuigreet/lastuser - - - - ${pkgs.writeText "lastuser" "${user}"}"
