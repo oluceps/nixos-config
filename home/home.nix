@@ -157,6 +157,7 @@
       scrcpy
 
       alacritty
+      rio
       appimage-run
       lutris
       tofi
