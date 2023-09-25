@@ -1,9 +1,21 @@
 local wezterm = require("wezterm")
+local mux = wezterm.mux
 -- local act = wezterm.action
+wezterm.on('gui-startup', function(cmd)
+  local tab, pane, window = mux.spawn_window(cmd or {})
+  window:gui_window():maximize()
+end)
+
+local custom = wezterm.color.get_builtin_schemes()["Catppuccin Mocha"]
+custom.background = "#35333c"
+-- custom.tab_bar.background = "#040404"
+-- custom.tab_bar.inactive_tab.bg_color = "#0f0f0f"
+-- custom.tab_bar.new_tab.bg_color = "#080808"
+
 
 local config =
 {
-	default_prog = { '/usr/bin/env', 'fish' },
+	-- default_prog = { '/usr/bin/env', 'fish' },
 	-- Smart tab bar [distraction-free mode]
 	hide_tab_bar_if_only_one_tab = true,
 	enable_wayland = true,
@@ -18,6 +30,7 @@ local config =
 	webgpu_power_preference = "HighPerformance",
 	enable_kitty_graphics = true,
 	window_close_confirmation = "NeverPrompt",
+	window_decorations = "RESIZE",
 
 	-- Color scheme
 	-- https://wezfurlong.org/wezterm/config/appearance.html
@@ -28,9 +41,14 @@ local config =
 		left = 8,
 	},
 
-	color_scheme = 'Catppuccin Mocha',
+	color_schemes = {
+		["kappuccin"] = custom,
+	},
+	color_scheme = "kappuccin",
 
-	window_background_opacity = 0.82,
+	window_background_opacity = 0.95,
+
+
 
 	-- Font configuration
 	-- https://wezfurlong.org/wezterm/config/fonts.html
@@ -44,7 +62,7 @@ local config =
 	-- 	harfbuzz_features = { 'calt=1', 'clig=1', 'liga=1' }
 	-- },
 
-	font_size = 15,
+	font_size = 13.5,
 
 	-- Cursor style
 	default_cursor_style = "BlinkingBar",
