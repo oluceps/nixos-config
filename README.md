@@ -9,6 +9,8 @@
 
 This repo contains declaritive configuration of few NixOS system, with ~100% config Nixfied.
 
+> NOTICE: Contains public credential in `hosts/lib.nix`. 
+
 with:
 
 + [agenix](https://github.com/ryantm/agenix) & [rekey](https://github.com/oddlama/agenix-rekey), keys are not stored on disk, dec & enc with yubikey.
