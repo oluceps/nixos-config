@@ -187,6 +187,11 @@
     };
     git.enable = true;
     fish.enable = true;
+    bash = {
+      interactiveShellInit = ''
+        exec fish
+      '';
+    };
     sway = { enable = true; };
     kdeconnect.enable = true;
     adb.enable = true;
