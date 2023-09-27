@@ -61,6 +61,7 @@ let
       virtiofsd
       runwin
       runbkworm
+      bkworm
       # ubt-rv-run
       opulr-a-run
       lunar-run
