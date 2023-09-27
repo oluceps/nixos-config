@@ -2,6 +2,7 @@
 let
   p = with pkgs; {
     dev = [
+      qemu-utils
       yubikey-personalization
       racket
       resign

@@ -14,6 +14,7 @@
             (readDir ./programs))));
 
   home.stateVersion = "22.11";
+
   home.sessionVariables = {
     EDITOR = "hx";
   };
