@@ -27,7 +27,7 @@
           "adbusers"
           "docker"
         ];
-        shell = pkgs.fish;
+        shell = pkgs.bash;
 
         openssh.authorizedKeys.keys = with data.keys;[ sshPubKey ];
       };
