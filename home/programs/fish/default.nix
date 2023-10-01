@@ -19,7 +19,6 @@
       g = "lazygit";
       "cd.." = "cd ..";
       up = "nix flake update --commit-lock-file /etc/nixos && swc";
-      rekey = "pushd /etc/nixos;nix run .#rekey;popd";
       fp = "fish --private";
       e = "exit";
       rp = "rustplayer";
@@ -93,14 +92,7 @@
         body = "doas nixos-rebuild switch --flake /etc/nixos --verbose --max-jobs $argv[1]";
         description = "specific job max for rebuild";
       };
-      ekey = {
-        body = ''
-          pushd /etc/nixos
-          nix run .#edit-secret $argv[1]
-          popd
-        '';
-        description = "edit agenix-rekey secret";
-      };
+
       dec = "rage -d -i /run/agenix/age $argv[1]";
       enc = ''
         rage -i /etc/nixos/sec/age-yubikey-identity-7d5d5540.txt.pub -R /run/agenix/pub -e $argv[1] -o $argv[1].age
