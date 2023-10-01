@@ -2,6 +2,7 @@
 let
   p = with pkgs; {
     dev = [
+      friture
       qemu-utils
       yubikey-personalization
       racket
