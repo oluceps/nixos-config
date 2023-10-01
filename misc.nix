@@ -188,9 +188,9 @@
     git.enable = true;
     fish.enable = true;
     bash = {
-      interactiveShellInit = ''
-        exec fish
-      '';
+      # interactiveShellInit = ''
+      #   exec fish
+      # '';
     };
     sway = { enable = true; };
     kdeconnect.enable = true;
