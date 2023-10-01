@@ -145,6 +145,7 @@
       gnome.nautilus
       gnome.eog
       gnome.dconf-editor
+      gnome.gnome-boxes
       #zathura
 
       # social
@@ -210,7 +211,7 @@
     ]
     ++
     (with nur.repos; [
-      linyinfeng.canokey-udev-rules
+      # linyinfeng.canokey-udev-rules
       xddxdd.dingtalk
     ]) ++
     (with nur-pkgs;[
