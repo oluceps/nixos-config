@@ -6,8 +6,8 @@
       "/etc/nixos"
       "/etc/ssh"
       "/etc/NetworkManager"
-      "/var/log"
-      "/var/lib"
+      # "/var/log"
+      # "/var/lib"
     ];
     users.${user} = {
       files = [
