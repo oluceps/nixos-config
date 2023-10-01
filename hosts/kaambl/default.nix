@@ -4,6 +4,7 @@
       inherit (import ../lib.nix { inherit inputs; }) sharedModules base genOverlays lib;
     in
     {
+
       nixosConfigurations = {
         kaambl = lib.nixosSystem
           {
@@ -19,7 +20,18 @@
               };
               overlays = (import ../../overlays.nix { inherit inputs; })
                 ++
-                (genOverlays [ "self" "clansty" "fenix" "berberman" "nvfetcher" "EHfive" "nuenv" "typst" "android-nixpkgs" ])
+                (genOverlays [
+                  "self"
+                  "clansty"
+                  "fenix"
+                  "berberman"
+                  "nvfetcher"
+                  "EHfive"
+                  "nuenv"
+                  "typst"
+                  "android-nixpkgs"
+                  "agenix-rekey"
+                ])
                 ++ (with inputs;[ nur.overlay ]); #（>﹏<）
             };
             specialArgs = base // { user = "elen"; };

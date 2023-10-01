@@ -5,14 +5,12 @@
       imports = import ./hosts;
       systems = [ "x86_64-linux" "aarch64-linux" ];
       perSystem = { pkgs, system, inputs', ... }: {
-        apps = inputs.agenix-rekey.defineApps inputs.self
-          # https://github.com/oddlama/agenix-rekey/issues/8
-          pkgs
-          {
-            inherit (inputs.self.nixosConfigurations)
-              hastur
-              kaambl;
-          };
+
+        _module.args.pkgs = import inputs.nixpkgs {
+          inherit system;
+          overlays = [ inputs.agenix-rekey.overlays.default ];
+        };
+
         checks = with pkgs;
           {
             pre-commit-check = inputs.pre-commit-hooks.lib.${system}.run
@@ -21,8 +19,20 @@
                 hooks = { nixpkgs-fmt.enable = true; };
               };
           };
+
+        devShells.default = pkgs.mkShell {
+          packages = [ pkgs.agenix-rekey ];
+        };
+
       };
+
       flake = {
+
+        agenix-rekey = inputs.agenix-rekey.configure {
+          userFlake = inputs.self;
+          nodes = { inherit (inputs.self.nixosConfigurations) hastur kaambl; };
+        };
+
         overlays.default =
           final: prev: prev.lib.genAttrs
             (with builtins;
@@ -32,7 +42,6 @@
             (name: final.callPackage (./pkgs + "/${name}") { });
 
         nixosModules = import ./modules { lib = inputs.nixpkgs.lib; };
-
       };
     };
   inputs = {
