@@ -168,7 +168,7 @@
   time.timeZone = "Asia/Singapore";
 
   console = {
-    font = "LatArCyrHeb-16";
+    # font = "LatArCyrHeb-16";
     keyMap = "us";
   };
 
