@@ -24,8 +24,9 @@
       rp = "rustplayer";
       y = "yazi";
       i = "kitty +kitten icat $argv";
-      rha = "ssh rha";
-      rka = "ssh rka";
+      rha = "ssh rha -t fish";
+      ubt = "ssh ubt -t fish";
+      rka = "ssh rka -t fish";
     };
 
 
