@@ -1,5 +1,6 @@
 { config
 , pkgs
+, lib
 , ...
 }: {
   services.mosdns.enable = true;
@@ -16,6 +17,10 @@
 
     };
 
+    wireless.iwd.enable = true;
+    useNetworkd = true;
+    useDHCP = false;
+
     hostName = "kaambl"; # Define your hostname.
     # wireless.enable = true;  # Enables wireless support via wpa_supplicant.
     # The global useDHCP flag is deprecated, therefore explicitly set to false here.
@@ -31,52 +36,124 @@
 
     # proxy.noProxy = "127.0.0.1,localhost,internal.domain";
 
-    networkmanager.enable = true;
+    nftables.enable = true;
+    networkmanager.enable = lib.mkForce false;
     networkmanager.dns = "none";
 
   };
+  systemd.network = {
+    enable = true;
 
-  #  systemd.network.wait-online = {
-  #    anyInterface = false;
-  #    #ignoredInterfaces = [ "utun" "meta"  ];
-  #  };
+    wait-online = {
+      enable = true;
+      anyInterface = true;
+      ignoredInterfaces = [ "wlan" "wg0" ];
+    };
 
-  # systemd.network = {
-  #   enable = true;
+    links."30-rndis" = {
+      matchConfig.Driver = "rndis_host";
+      linkConfig = {
+        NamePolicy = "keep";
+        Name = "rndis";
+        MACAddressPolicy = "persistent";
+      };
+    };
+    links."40-wlan" = {
+      matchConfig.Driver = "ath11k_pci";
+      linkConfig.Name = "wlan0";
+    };
 
-  #   links."10-wan" = {
-  #     matchConfig.MACAddress = "20:47:47:0e:c8:66";
-  #     linkConfig.Name = "wan";
-  #   };
+    netdevs = {
 
-  #   links."20-wlan" = {
-  #     matchConfig.MACAddress = "ac:d1:b8:d0:f4:f5";
-  #     linkConfig.Name = "wlan";
-  #   };
-  #   networks = {
-  #     "20-wireless" = {
-  #       matchConfig.Name = "wlan";
-  #       DHCP = "yes";
-  #       #address = [ "192.168.0.10/24" ];
-  #       #      dhcpV4Config.RouteMetric = 2048;
-  #       #      dhcpV6Config.RouteMetric = 2048;
-  #       #        routes = [
-  #       #          { routeConfig = { Gateway = "192.168.0.9"; }; }
-  #       #          #{routeConfig = {Gateway = "fe80::c609:38ff:fef2:3ecb";};}
-  #       #        ];
-  #       #        #dns = ["192.168.2.2" "fe80::c609:38ff:fef2:3ecb"];
-  #       dns = [ "127.0.0.1:53" "::1" ];
-  #     };
-  #     #      enp4s0 = {
-  #     #        name = "enp4s0";
-  #     #        address = ["192.168.2.9/24"];
-  #     #
-  #     #        routes = [
-  #     #          {routeConfig = {Gateway = "192.168.2.1";};}
-  #     #        ];
-  #     #        dns = ["223.6.6.6"];
-  #     #
-  #     #      };
-  #   };
-  # };
+      wg0 = {
+        netdevConfig = {
+          Kind = "wireguard";
+          Name = "wg0";
+          MTUBytes = "1300";
+        };
+        wireguardConfig = {
+          PrivateKeyFile = config.age.secrets.wgk.path;
+        };
+        wireguardPeers = [
+          {
+            wireguardPeerConfig = {
+              PublicKey = "ANd++mjV7kYu/eKOEz17mf65bg8BeJ/ozBmuZxRT3w0=";
+              AllowedIPs = [ "10.0.0.0/24" ];
+              Endpoint = "111.229.162.99:51820";
+              PersistentKeepalive = 15;
+            };
+          }
+        ];
+      };
+
+      wg1 = {
+        netdevConfig = {
+          Kind = "wireguard";
+          Name = "wg1";
+          MTUBytes = "1300";
+        };
+        wireguardConfig = {
+          PrivateKeyFile = config.age.secrets.wgk.path;
+        };
+        wireguardPeers = [
+          {
+            wireguardPeerConfig = {
+              PublicKey = "+fuA9nUmFVKy2Ijfh5xfcnO9tpA/SkIL4ttiWKsxyXI=";
+              AllowedIPs = [ "10.0.1.0/24" ];
+              Endpoint = "146.190.121.75:51820";
+              PersistentKeepalive = 15;
+            };
+          }
+        ];
+      };
+    };
+
+
+    networks = {
+      "10-wg0" = {
+        matchConfig.Name = "wg0";
+        # IP addresses the client interface will have
+        address = [
+          "10.0.0.3/24"
+        ];
+        DHCP = "no";
+      };
+
+      "10-wg1" = {
+        matchConfig.Name = "wg1";
+        address = [
+          "10.0.1.3/24"
+        ];
+        DHCP = "no";
+      };
+
+      "20-wireless" = {
+        matchConfig.Name = "wlan0";
+        DHCP = "yes";
+        dhcpV4Config.RouteMetric = 2046;
+        dhcpV6Config.RouteMetric = 2046;
+        networkConfig = {
+          DNSSEC = true;
+          MulticastDNS = true;
+          DNSOverTLS = true;
+        };
+        # # REALLY IMPORTANT
+        dhcpV4Config.UseDNS = false;
+        dhcpV6Config.UseDNS = false;
+      };
+
+      "30-rndis" = {
+        matchConfig.Name = "rndis";
+        DHCP = "yes";
+        dhcpV4Config.RouteMetric = 2044;
+        dhcpV6Config.RouteMetric = 2044;
+        dhcpV4Config.UseDNS = false;
+        dhcpV6Config.UseDNS = false;
+        networkConfig = {
+          DNSSEC = true;
+        };
+      };
+
+    };
+  };
 }

@@ -27,6 +27,7 @@
         "screen-recorder-toggle"
         "systemd-run-app"
       ];
+      modifier = "Mod4";
     in
     {
 
@@ -46,9 +47,21 @@
       extraConfig = ''
         bindgesture swipe:right workspace prev
         bindgesture swipe:left workspace next
+        bindsym --whole-window {
+            ${modifier}+button4 workspace prev
+            ${modifier}+button5 workspace next
+        }
       '';
       config = {
-        modifier = "Mod4";
+
+        inherit modifier;
+        assigns = {
+          "1" = [{ app_id = "Alacritty"; }];
+          "2" = [{ app_id = "firefox"; }];
+          "3" = [{ app_id = "org.telegram.desktop"; }];
+          "4" = [{ app_id = "thunderbird"; }];
+          "5" = [{ app_id = "qemu"; }];
+        };
         window.commands = [
           {
             criteria = { app_id = "gcr-prompter"; };
@@ -153,11 +166,8 @@
               "${modifier}+Ctrl+k" = "move up";
               "${modifier}+Ctrl+l" = "move right";
               "${modifier}+Ctrl+s" = "exec ${deps.save-clipboard-to}";
-              "${modifier}+button4" = "workspace prev";
-              "${modifier}+button5" = "workspace next";
 
-
-              "XF86AudioMute" = "exec pamixer --toggle-mute";
+              "--no-repeat XF86AudioMute" = "exec pamixer --toggle-mute";
               "XF86AudioRaiseVolume" = "exec pamixer -i 5";
               "XF86AudioLowerVolume" = "exec pamixer -d 5";
               "XF86MonBrightnessUp" = "exec brightnessctl set +3%";
