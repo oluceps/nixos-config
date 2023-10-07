@@ -38,7 +38,15 @@
             # [ "tray" ] ++
               base
             else if user == "elen"
-            then [ "network" "temperature" "cpu" "memory" "battery" "pulseaudio" ]
+            then [
+              "idle_inhibitor"
+              "network"
+              "temperature"
+              "cpu"
+              "memory"
+              "battery"
+              "pulseaudio"
+            ]
             else base;
           "sway/mode" = {
             format = " {}";
