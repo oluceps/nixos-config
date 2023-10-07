@@ -48,6 +48,7 @@
   home.packages = with pkgs;
 
     [
+      anyrun
       # factorio
       logseq
       jetbrains.pycharm-professional

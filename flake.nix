@@ -55,6 +55,7 @@
       url = "github:nix-community/nixpkgs-wayland";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    anyrun.url = "github:Kirottu/anyrun";
     android-nixpkgs = {
       url = "github:tadfisher/android-nixpkgs";
     };
