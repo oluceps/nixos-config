@@ -42,8 +42,19 @@
         export _JAVA_AWT_WM_NONREPARENTING=1
       '';
       wrapperFeatures.gtk = true;
+
+      extraConfig = ''
+        bindgesture swipe:right workspace prev
+        bindgesture swipe:left workspace next
+      '';
       config = {
-        modifier = if user == "riro" then "Mod4" else "Mod1";
+        modifier = "Mod4";
+        window.commands = [
+          {
+            criteria = { app_id = "gcr-prompter"; };
+            command = "floating enable";
+          }
+        ];
         startup = [
           { command = "fcitx5 -d"; }
           { command = with pkgs; "${lib.getExe systemd-run-app} ${lib.getExe firefox}"; }
@@ -57,6 +68,12 @@
           smartGaps = true;
         };
         bars = [ ];
+        input = {
+          "1267:12764:ELAN2204:00_04F3:31DC_Touchpad" = {
+            tap = "enabled";
+            natural_scroll = "enabled";
+          };
+        };
 
         colors = {
           focused = {
@@ -96,6 +113,13 @@
               bg = "/etc/nixos/.attachs/wall.jpg fill";
               mode = "1920x1080";
               scale = "1";
+            };
+          } else if user == "elen" then {
+
+            eDP-1 = {
+              bg = "/etc/nixos/.attachs/wall.jpg fill";
+              mode = "1260x1440";
+              scale = "2";
             };
           } else {
 
