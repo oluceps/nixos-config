@@ -9,6 +9,14 @@
     rocm-opencl-icd
     rocm-opencl-runtime
   ];
+  services.pipewire = {
+
+    enable = true;
+    alsa.enable = true;
+    alsa.support32Bit = true;
+    pulse.enable = true;
+    jack.enable = true;
+  };
 
   services.xserver = {
     videoDrivers = [ "amdgpu" ];
@@ -25,10 +33,11 @@
       gnome.enable = false;
     };
   };
-  environment.systemPackages = with pkgs; [ gnomeExtensions.appindicator ];
-  services.udev = {
-    packages = with pkgs; [ gnome.gnome-settings-daemon ];
-  };
+  # services.udev = {
+  #   packages = with pkgs; [ gnome.gnome-settings-daemon ];
+  # };
+
+  # environment.systemPackages = with pkgs; [ gnomeExtensions.appindicator ];
   systemd = {
     enableEmergencyMode = true;
     watchdog = {
