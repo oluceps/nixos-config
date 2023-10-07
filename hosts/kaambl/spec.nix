@@ -16,13 +16,13 @@
     displayManager = {
       # sddm.enable = true;
       gdm = {
-        enable = true;
+        enable = false;
       };
 
     };
     desktopManager = {
       # plasma5.enable = true;
-      gnome.enable = true;
+      gnome.enable = false;
     };
   };
   environment.systemPackages = with pkgs; [ gnomeExtensions.appindicator ];
