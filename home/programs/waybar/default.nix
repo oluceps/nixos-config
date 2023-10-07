@@ -37,7 +37,7 @@
             if user == "riro" then
             # [ "tray" ] ++
               base
-            else if user == "elena"
+            else if user == "elen"
             then [ "network" "temperature" "cpu" "memory" "battery" "pulseaudio" ]
             else base;
           "sway/mode" = {
