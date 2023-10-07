@@ -47,7 +47,7 @@
     wait-online = {
       enable = true;
       anyInterface = true;
-      ignoredInterfaces = [ "wlan" "wg0" ];
+      ignoredInterfaces = [ "wlan" "wg0" "wg1" ];
     };
 
     links."30-rndis" = {
