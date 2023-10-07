@@ -153,6 +153,8 @@
               "${modifier}+Ctrl+k" = "move up";
               "${modifier}+Ctrl+l" = "move right";
               "${modifier}+Ctrl+s" = "exec ${deps.save-clipboard-to}";
+              "${modifier}+button4" = "workspace prev";
+              "${modifier}+button5" = "workspace next";
 
 
               "XF86AudioMute" = "exec pamixer --toggle-mute";
