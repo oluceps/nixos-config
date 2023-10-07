@@ -283,6 +283,14 @@
             tag = "udp_server";
             type = "udp_server";
           }
+          {
+            args = {
+              entry = "main_sequence";
+              listen = ":53";
+            };
+            tag = "tcp_server";
+            type = "tcp_server";
+          }
         ];
       };
     };

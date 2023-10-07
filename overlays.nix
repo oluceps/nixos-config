@@ -10,6 +10,7 @@ let system = "x86_64-linux"; in [
         "ragenix"
         "prismlauncher"
         "resign"
+        "anyrun"
       ]
       (n: inputs.${n}.packages.${system}.default)
     # //
