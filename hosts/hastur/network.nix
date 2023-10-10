@@ -26,7 +26,7 @@
     wait-online = {
       enable = true;
       anyInterface = true;
-      ignoredInterfaces = [ "wlan" "wg0" ];
+      ignoredInterfaces = [ "wlan" ];
     };
 
     links."10-wan" = {
@@ -48,18 +48,6 @@
     };
 
     netdevs = {
-
-      # bond1 = {
-      #   netdevConfig = {
-      #     Kind = "bond";
-      #     Name = "bond1";
-      #   };
-      #   bondConfig = {
-      #     Mode = "active-backup";
-      #     PrimaryReselectPolicy = "always";
-      #     MIIMonitorSec = "1s";
-      #   };
-      # };
 
       wg0 = {
         netdevConfig = {
