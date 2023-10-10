@@ -9,22 +9,21 @@ let
 in
 
 {
-  # Configure Conduit itself
   services.matrix-conduit = {
     enable = true;
 
-    # This causes NixOS to use the flake defined in this repository instead of
-    # the build of Conduit built into nixpkgs.
     package = inputs.conduit.packages.${pkgs.system}.default;
 
     settings.global = {
       inherit server_name;
+      database_backend = "rocksdb";
+      port = 6167;
     };
   };
-
-
-  # Open firewall ports for HTTP, HTTPS, and Matrix federation
-  networking.firewall.allowedTCPPorts = [ 80 443 8448 ];
-  networking.firewall.allowedUDPPorts = [ 80 443 8448 ];
+  networking.firewall =
+    let port = config.services.matrix-conduit.settings.global.port; in {
+      allowedTCPPorts = [ port ];
+      allowedUDPPorts = [ port ];
+    };
 }
 
