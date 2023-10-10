@@ -30,6 +30,10 @@
           snapshot_dir .snapshots
           subvolume .
           snapshot_create onchange
+        volume /var
+          snapshot_dir .snapshots
+          subvolume .
+          snapshot_create onchange
       '';
     };
     fwupd.enable = true;
