@@ -40,6 +40,7 @@
               ./network.nix
               ./rekey.nix
               ./spec.nix
+              ./matrix.nix
 
               ../persist.nix
               ../secureboot.nix
