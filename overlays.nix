@@ -235,7 +235,7 @@ let system = "x86_64-linux"; in [
       save-clipboard-to = prev.writeShellScriptBin
         "save-clipboard-to"
         ''
-          wl-paste > $HOME/Pictures/screenshot/$(date +'shot_%Y-%m-%d-%H%M%S.png')
+          wl-paste > $HOME/Pictures/Screenshots/$(date +'shot_%Y-%m-%d-%H%M%S.png')
         '';
       switch-mute = final.nuenv.writeScriptBin
         {

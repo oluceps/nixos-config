@@ -9,6 +9,7 @@
     rocm-opencl-icd
     rocm-opencl-runtime
   ];
+  services.blueman.enable = true;
   services.pipewire = {
 
     enable = true;

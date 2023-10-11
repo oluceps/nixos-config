@@ -100,11 +100,11 @@
 
       packages = with pkgs;[
         android-udev-rules
-        qmk-udev-rules
+        # qmk-udev-rules
         yubikey-personalization
         libu2f-host
         via
-        opensk-udev-rules
+        # opensk-udev-rules
         nrf-udev-rules
       ];
     };
