@@ -31,6 +31,7 @@
                   "android-nixpkgs"
                   "dae"
                   "agenix-rekey"
+                  "misskey"
                 ])
                 ++ (with inputs;[ nur.overlay ]); #（>﹏<）
             };
@@ -47,6 +48,10 @@
 
               ../../boot.nix
               ../../home
+
+              inputs.misskey.nixosModules.default
+              ./misskey.nix
+
             ] ++ sharedModules;
           };
       };

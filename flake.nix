@@ -81,6 +81,10 @@
       url = "github:Mic92/nix-ld";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    misskey = {
+      url = "github:Ninlives/misskey.nix";
+      # inputs.nixpkgs.follows = "nixpkgs";
+    };
     nixified-ai.url = "github:nixified-ai/flake";
     pre-commit-hooks = {
       url = "github:cachix/pre-commit-hooks.nix";
