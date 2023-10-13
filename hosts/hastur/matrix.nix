@@ -18,6 +18,8 @@ in
       inherit server_name;
       database_backend = "rocksdb";
       port = 6167;
+      address = "0.0.0.0";
+      # allow_registration = true;
     };
   };
   networking.firewall =

@@ -60,7 +60,7 @@
   services = {
 
     keycloak = {
-      enable = true;
+      enable = false;
       settings = {
         http-host = "10.0.1.2";
         http-port = 8125;
