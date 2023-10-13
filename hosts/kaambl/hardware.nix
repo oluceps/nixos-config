@@ -58,6 +58,12 @@
       options = [ "subvol=/var" "compress-force=zstd" "noatime" "discard=async" "space_cache=v2" ];
     };
 
+  # fileSystems."/tmp" = {
+  #   device = "/dev/disk/by-uuid/3a718c71-9404-45ea-8435-2fbd31f46d53";
+  #   fsType = "btrfs";
+  #   options = [ "subvol=/tmp" "noatime" "discard=async" "space_cache=v2" ];
+  # };
+
   fileSystems."/efi" =
     {
       device = "/dev/disk/by-uuid/CD6D-D5D1";
