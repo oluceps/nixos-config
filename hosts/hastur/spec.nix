@@ -105,6 +105,7 @@
       authentication = pkgs.lib.mkOverride 10 ''
         #type database  DBuser  auth-method
         local all       all     trust
+        local misskey misskey peer map=misskey
 
         #type database DBuser origin-address auth-method
         # ipv4
@@ -115,6 +116,14 @@
         host all       all     ::1/128        trust
       '';
 
+      ensureDatabases = [ "misskey" ];
+      ensureUsers = [{
+        name = "misskey";
+        ensurePermissions."DATABASE misskey" = "ALL PRIVILEGES";
+      }];
+      identMap = ''
+        misskey misskey misskey
+      '';
     };
 
     pipewire = {
