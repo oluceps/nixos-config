@@ -60,6 +60,7 @@
       kooha # recorder
 
       typst
+      blender-hip
       ruffle
 
       fractal
