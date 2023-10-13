@@ -63,6 +63,7 @@ let
       runwin
       runbkworm
       bkworm
+      arch-run
       # ubt-rv-run
       opulr-a-run
       lunar-run
@@ -80,6 +81,7 @@ let
       libsixel
       ouch
       nix-output-monitor
+      linuxKernel.packages.linux_latest_libre.cpupower
 
       # common
       [ killall hexyl jq fx bottom lsd fd choose duf tokei procs lsof tree bat ]
