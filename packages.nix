@@ -73,6 +73,7 @@ let
 
     cmd = [
       # (ragenix.override { plugins = [ age-plugin-yubikey ]; })
+      linuxKernel.packages.linux_latest_libre.cpupower
       clean-home
       typst
       helix
