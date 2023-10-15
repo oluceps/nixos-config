@@ -38,7 +38,7 @@ in
             serviceConfig = {
               Type = "simple";
               User = "proxy";
-              ExecStart = "${cfg.package}/bin/tuic-${binSuffix} -c ${configFile}";
+              ExecStart = "${cfg.package}/bin/tuic-${binSuffix} -c ${cfg.configFile}";
               AmbientCapabilities = [ "CAP_NET_ADMIN" "CAP_NET_BIND_SERVICE" ];
               Restart = "on-failure";
             };

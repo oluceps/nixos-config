@@ -39,7 +39,7 @@ in
             serviceConfig = {
               Type = "simple";
               User = "proxy";
-              ExecStart = "${cfg.package}/bin/juicity-${binSuffix} run -c ${configFile}";
+              ExecStart = "${cfg.package}/bin/juicity-${binSuffix} run -c ${cfg.configFile}";
               Restart = "on-failure";
             };
           };

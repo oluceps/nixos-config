@@ -29,6 +29,11 @@
       serve = true;
       configFile = config.age.secrets.tuic-san.path;
     };
+    juicity = {
+      enable = true;
+      serve = true;
+      configFile = config.age.secrets.juic-san.path;
+    };
   };
   services.caddy = {
     enable = true;
