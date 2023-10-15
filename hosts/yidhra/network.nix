@@ -96,9 +96,12 @@
       "10-wg1" = {
         matchConfig.Name = "wg1";
         address = [
-          "10.0.1.3/24"
+          "10.0.1.1/24"
         ];
-        DHCP = "no";
+        networkConfig = {
+          IPMasquerade = "ipv4";
+          IPForward = true;
+        };
       };
 
       # LACK output
