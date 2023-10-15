@@ -1,5 +1,5 @@
 { pkgs, config, user, ... }: {
-  # Mobile device.
+  # server.
 
   system.stateVersion = "23.05"; # Did you read the comment?
 
