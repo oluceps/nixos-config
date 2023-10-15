@@ -10,8 +10,8 @@
       checkReversePath = false;
       enable = true;
       trustedInterfaces = [ "virbr0" "wg0" "wg1" ];
-      allowedUDPPorts = [ 8080 5173 ];
-      allowedTCPPorts = [ 8080 9900 2222 5173 ];
+      allowedUDPPorts = [ 80 443 8080 5173 ];
+      allowedTCPPorts = [ 80 443 8080 9900 2222 5173 ];
     };
 
     wireless.iwd.enable = true;
@@ -47,18 +47,6 @@
       ignoredInterfaces = [ "wlan" "wg0" "wg1" ];
     };
 
-    links."30-rndis" = {
-      matchConfig.Driver = "rndis_host";
-      linkConfig = {
-        NamePolicy = "keep";
-        Name = "rndis";
-        MACAddressPolicy = "persistent";
-      };
-    };
-    links."40-wlan" = {
-      matchConfig.Driver = "ath11k_pci";
-      linkConfig.Name = "wlan0";
-    };
 
     netdevs = {
 
