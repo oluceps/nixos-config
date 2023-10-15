@@ -33,7 +33,7 @@
         hostName = "pb.nyaw.xyz";
         extraConfig = ''
           reverse_proxy 127.0.0.1:3999
-          tls /home/riro/nyaw.xyz-ssl-bundle/domain.cert.pem /home/riro/nyaw.xyz-ssl-bundle/private.key.pem
+          tls ${config.age.secrets."nyaw.cert".path} ${config.age.secrets."nyaw.key".path}
         '';
       };
 
@@ -41,7 +41,7 @@
         hostName = "nyaw.xyz";
         extraConfig = ''
           reverse_proxy 10.0.1.2:3000
-          tls /home/riro/nyaw.xyz-ssl-bundle/domain.cert.pem /home/riro/nyaw.xyz-ssl-bundle/private.key.pem
+          tls ${config.age.secrets."nyaw.cert".path} ${config.age.secrets."nyaw.key".path}
           redir /matrix https://matrix.to/#/@sec:nyaw.xyz
       
           header /.well-known/matrix/* Content-Type application/json
