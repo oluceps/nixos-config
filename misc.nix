@@ -25,7 +25,7 @@
       (genProxys [ "rat" "ss" "sing" "hyst-az" "hyst-am" "hyst-do" "tuic" "naive" "dae.sub" "by.sub" "jc-do" "tinc-k-ed" "tinc-k-rsa" ]) //
       (genMaterial [ "minisign.key" "ssh-cfg" "gh-eu" "riro.u2f" "elen.u2f" "gh-token" "age" "pub" "id" "id_sk" "minio" "prism" "aws-s3-cred" ]) //
       (genBoot [ "db.key" "db.pem" ]) //
-      (genWg [ "wg" "wgk" ]) //
+      (genWg [ "wg" "wgk" "wgy" ]) //
       {
         dae = { rekeyFile = ./sec/dae.age; mode = "640"; owner = "proxy"; group = "users"; name = "d.dae"; };
       };

@@ -20,7 +20,6 @@
   services = {
     bpftune.enable = false;
     btrbk = {
-      enable = true;
       config = ''
         ssh_identity /persist/keys/ssh_host_ed25519_key
         timestamp_format        long

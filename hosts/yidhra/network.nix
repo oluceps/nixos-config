@@ -8,20 +8,17 @@
     resolvconf.useLocalResolver = true;
     firewall = {
       checkReversePath = false;
-      # wireless.iwd.enable = true;
-
       enable = true;
       trustedInterfaces = [ "virbr0" "wg0" "wg1" ];
       allowedUDPPorts = [ 8080 5173 ];
       allowedTCPPorts = [ 8080 9900 2222 5173 ];
-
     };
 
     wireless.iwd.enable = true;
     useNetworkd = true;
     useDHCP = false;
 
-    hostName = "kaambl"; # Define your hostname.
+    hostName = "yidhra"; # Define your hostname.
     # wireless.enable = true;  # Enables wireless support via wpa_supplicant.
     # The global useDHCP flag is deprecated, therefore explicitly set to false here.
     # Per-interface useDHCP will be mandatory in the future, so this generated config
@@ -65,27 +62,6 @@
 
     netdevs = {
 
-      wg0 = {
-        netdevConfig = {
-          Kind = "wireguard";
-          Name = "wg0";
-          MTUBytes = "1300";
-        };
-        wireguardConfig = {
-          PrivateKeyFile = config.age.secrets.wgk.path;
-        };
-        wireguardPeers = [
-          {
-            wireguardPeerConfig = {
-              PublicKey = "ANd++mjV7kYu/eKOEz17mf65bg8BeJ/ozBmuZxRT3w0=";
-              AllowedIPs = [ "10.0.0.0/24" ];
-              Endpoint = "111.229.162.99:51820";
-              PersistentKeepalive = 15;
-            };
-          }
-        ];
-      };
-
       wg1 = {
         netdevConfig = {
           Kind = "wireguard";
@@ -93,14 +69,21 @@
           MTUBytes = "1300";
         };
         wireguardConfig = {
-          PrivateKeyFile = config.age.secrets.wgk.path;
+          PrivateKeyFile = config.age.secrets.wgy.path;
+          ListenPort = 51820;
         };
         wireguardPeers = [
           {
             wireguardPeerConfig = {
-              PublicKey = "+fuA9nUmFVKy2Ijfh5xfcnO9tpA/SkIL4ttiWKsxyXI=";
-              AllowedIPs = [ "10.0.1.0/24" ];
-              Endpoint = "146.190.121.75:51820";
+              PublicKey = "BCbrvvMIoHATydMkZtF8c+CHlCpKUy1NW+aP0GnYfRM=";
+              AllowedIPs = [ "10.0.1.2/32" ];
+              PersistentKeepalive = 15;
+            };
+          }
+          {
+            wireguardPeerConfig = {
+              PublicKey = "i7Li/BDu5g5+Buy6m6Jnr09Ne7xGI/CcNAbyK9KKbQg=";
+              AllowedIPs = [ "10.0.1.3/32" ];
               PersistentKeepalive = 15;
             };
           }
@@ -110,15 +93,6 @@
 
 
     networks = {
-      "10-wg0" = {
-        matchConfig.Name = "wg0";
-        # IP addresses the client interface will have
-        address = [
-          "10.0.0.3/24"
-        ];
-        DHCP = "no";
-      };
-
       "10-wg1" = {
         matchConfig.Name = "wg1";
         address = [
@@ -127,33 +101,7 @@
         DHCP = "no";
       };
 
-      "20-wireless" = {
-        matchConfig.Name = "wlan0";
-        DHCP = "yes";
-        dhcpV4Config.RouteMetric = 2046;
-        dhcpV6Config.RouteMetric = 2046;
-        networkConfig = {
-          DNSSEC = true;
-          MulticastDNS = true;
-          DNSOverTLS = true;
-        };
-        # # REALLY IMPORTANT
-        dhcpV4Config.UseDNS = false;
-        dhcpV6Config.UseDNS = false;
-      };
-
-      "30-rndis" = {
-        matchConfig.Name = "rndis";
-        DHCP = "yes";
-        dhcpV4Config.RouteMetric = 2044;
-        dhcpV6Config.RouteMetric = 2044;
-        dhcpV4Config.UseDNS = false;
-        dhcpV6Config.UseDNS = false;
-        networkConfig = {
-          DNSSEC = true;
-        };
-      };
-
+      # LACK output
     };
   };
 }

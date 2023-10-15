@@ -44,6 +44,7 @@
               ../secureboot.nix
               ../../home
               ../../boot.nix
+              ../../packages.nix
             ] ++ sharedModules;
           };
       };

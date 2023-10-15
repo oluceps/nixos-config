@@ -6,7 +6,6 @@
   sharedModules = [
     ../misc.nix
     ../users.nix
-    ../packages.nix
     ../sysvars.nix
     ../services.nix
   ] ++ (genModules [ "agenix-rekey" "ragenix" "home-manager" "impermanence" "lanzaboote" "nix-ld" "self" ])

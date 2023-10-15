@@ -40,10 +40,7 @@
               ./network.nix
               ./rekey.nix
               ./spec.nix
-              ../persist.nix
-              ../secureboot.nix
-              ../../home
-              ../../boot.nix
+              ./packages.nix
             ] ++ sharedModules;
           };
       };

@@ -10,6 +10,7 @@
     rocm-opencl-runtime
   ];
   services.blueman.enable = true;
+  services.btrbk.enable = true;
   services.pipewire = {
 
     enable = true;

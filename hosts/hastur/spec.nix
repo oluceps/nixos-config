@@ -59,6 +59,8 @@
 
   services = {
 
+    btrbk.enable = true;
+
     keycloak = {
       enable = false;
       settings = {
