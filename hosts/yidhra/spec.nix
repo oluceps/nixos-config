@@ -2,45 +2,10 @@
   # Mobile device.
 
   system.stateVersion = "23.05"; # Did you read the comment?
-  hardware.opengl.driSupport = true;
-  # For 32 bit applications
-  hardware.opengl.driSupport32Bit = true;
-  hardware.opengl.extraPackages = with pkgs; [
-    rocm-opencl-icd
-    rocm-opencl-runtime
-  ];
-  services.blueman.enable = true;
-  services.pipewire = {
 
-    enable = true;
-    alsa.enable = true;
-    alsa.support32Bit = true;
-    pulse.enable = true;
-    jack.enable = true;
-  };
 
-  services.xserver = {
-    videoDrivers = [ "amdgpu" ];
-    enable = true;
-    displayManager = {
-      # sddm.enable = true;
-      gdm = {
-        enable = false;
-      };
-
-    };
-    desktopManager = {
-      # plasma5.enable = true;
-      gnome.enable = false;
-    };
-  };
-  # services.udev = {
-  #   packages = with pkgs; [ gnome.gnome-settings-daemon ];
-  # };
-
-  # environment.systemPackages = with pkgs; [ gnomeExtensions.appindicator ];
   systemd = {
-    enableEmergencyMode = true;
+    enableEmergencyMode = false;
     watchdog = {
       # systemd will send a signal to the hardware watchdog at half
       # the interval defined here, so every 10s.
@@ -55,34 +20,43 @@
     };
 
   };
-  programs.dconf.enable = true;
 
   systemd.tmpfiles.rules = [
-    "L+    /opt/rocm/hip   -    -    -     -    ${pkgs.hip}"
-    "L+ /run/gdm/.config/monitors.xml - - - - ${pkgs.writeText "gdm-monitors.xml" ''
-        <monitors version="2">
-            <configuration>
-                <logicalmonitor>
-                    <x>0</x>
-                    <y>0</y>
-                    <scale>2</scale>
-                    <primary>yes</primary>
-                    <monitor>
-                        <monitorspec>
-                            <connector>eDP-1</connector>
-                            <vendor>BOE</vendor>
-                            <product>0x0893</product>
-                            <serial>0x00000000</serial>
-                        </monitorspec>
-                        <mode>
-                            <width>2160</width>
-                            <height>1440</height>
-                            <rate>60.001</rate>
-                        </mode>
-                    </monitor>
-                </logicalmonitor>
-            </configuration>
-        </monitors>
-    ''}"
   ];
+  services.caddy = {
+    enable = true;
+    # globalConfig = ''
+    #   	order forward_proxy before file_server
+    # '';
+    virtualHosts = {
+      "pb.nyaw.xyz" = {
+        hostName = "pb.nyaw.xyz";
+        extraConfig = ''
+          reverse_proxy 127.0.0.1:3999
+          tls /home/riro/nyaw.xyz-ssl-bundle/domain.cert.pem /home/riro/nyaw.xyz-ssl-bundle/private.key.pem
+        '';
+      };
+
+      "nyaw.xyz" = {
+        hostName = "nyaw.xyz";
+        extraConfig = ''
+          reverse_proxy 10.0.1.2:3000
+          tls /home/riro/nyaw.xyz-ssl-bundle/domain.cert.pem /home/riro/nyaw.xyz-ssl-bundle/private.key.pem
+          redir /matrix https://matrix.to/#/@sec:nyaw.xyz
+      
+          header /.well-known/matrix/* Content-Type application/json
+          header /.well-known/matrix/* Access-Control-Allow-Origin *
+          respond /.well-known/matrix/server `{"m.server": "matrix.nyaw.xyz:443"}`
+          respond /.well-known/matrix/client `{"m.homeserver": {"base_url": "https://matrix.nyaw.xyz"},"org.matrix.msc3575.proxy": {"url": "https://matrix.nyaw.xyz"}}`
+        '';
+      };
+      "matrix.nyaw.xyz" = {
+        hostName = "matrix.nyaw.xyz";
+        extraConfig = ''
+          	reverse_proxy /_matrix/* 10.0.1.2:6167
+        '';
+      };
+    };
+
+  };
 }
