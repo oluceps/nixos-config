@@ -23,6 +23,13 @@
 
   systemd.tmpfiles.rules = [
   ];
+  services = {
+    tuic = {
+      enable = true;
+      serve = true;
+      configFile = config.age.secrets.tuic-san.path;
+    };
+  };
   services.caddy = {
     enable = true;
     # globalConfig = ''
