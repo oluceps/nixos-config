@@ -4,6 +4,7 @@
 , ...
 }: {
   services.mosdns.enable = true;
+  networking.domain = "ap-northeast-1.compute.internal";
   networking = {
     resolvconf.useLocalResolver = true;
     firewall = {
@@ -14,7 +15,6 @@
       allowedTCPPorts = [ 80 443 8080 9900 2222 5173 ];
     };
 
-    wireless.iwd.enable = true;
     useNetworkd = true;
     useDHCP = false;
 
@@ -44,9 +44,13 @@
     wait-online = {
       enable = true;
       anyInterface = true;
-      ignoredInterfaces = [ "wlan" "wg0" "wg1" ];
+      ignoredInterfaces = [ "wg0" "wg1" ];
     };
 
+    links."10-ens5" = {
+      matchConfig.MACAddress = "06:2f:f4:98:b8:13";
+      linkConfig.Name = "ens5";
+    };
 
     netdevs = {
 
@@ -92,7 +96,22 @@
         };
       };
 
-      # LACK output
+      "20-wired" = {
+        matchConfig.Name = "ens5";
+        DHCP = "yes";
+        dhcpV4Config.RouteMetric = 2046;
+        dhcpV6Config.RouteMetric = 2046;
+        networkConfig = {
+          # Bond = "bond1";
+          # PrimarySlave = true;
+          DNSSEC = true;
+          MulticastDNS = true;
+          DNSOverTLS = true;
+        };
+        # # REALLY IMPORTANT
+        dhcpV4Config.UseDNS = false;
+        dhcpV6Config.UseDNS = false;
+      };
     };
   };
 }

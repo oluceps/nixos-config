@@ -1,8 +1,9 @@
 { pkgs, config, user, ... }: {
   # server.
 
-  system.stateVersion = "23.05"; # Did you read the comment?
+  system.stateVersion = "22.11";
 
+  zramSwap.enable = true;
 
   systemd = {
     enableEmergencyMode = false;

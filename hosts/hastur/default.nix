@@ -21,7 +21,7 @@
                 ++
                 (genOverlays [
                   "self"
-                  "clansty"
+                  # "clansty"
                   "fenix"
                   "berberman"
                   "nvfetcher"

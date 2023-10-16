@@ -2,6 +2,6 @@
 {
   age = {
     identityPaths = [ "/etc/ssh/ssh_host_ed25519_key" ];
-    rekey.hostPubkey = data.keys.kaamblHostPubKey;
+    rekey.hostPubkey = data.keys.yidhraHostPubKey;
   };
 }
