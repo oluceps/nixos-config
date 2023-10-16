@@ -20,7 +20,6 @@
   services = {
     bpftune.enable = false;
     btrbk = {
-      enable = true;
       config = ''
         ssh_identity /persist/keys/ssh_host_ed25519_key
         timestamp_format        long
@@ -39,20 +38,7 @@
     fwupd.enable = true;
     # vault = { enable = true; extraConfig = "ui = true"; package = pkgs.vault-bin; };
 
-    greetd = {
-      enable = true;
-      settings = {
-        default_session = {
-          command =
-            "${pkgs.greetd.tuigreet}/bin/tuigreet --time --remember --cmd ${pkgs.writeShellScript "sway" ''
-          export $(/run/current-system/systemd/lib/systemd/user-environment-generators/30-systemd-environment-d-generator)
-          exec sway
-        ''}";
-          user = "greeter";
-        };
 
-      };
-    };
 
     dbus = {
       enable = true;
@@ -60,7 +46,7 @@
       apparmor = "enabled";
     };
 
-    gvfs.enable = true;
+
     # github-runners = {
     #   runner1 = {
     #     enable = false;
@@ -115,7 +101,7 @@
     hyst-do.enable = false;
 
     # ss-tls cnt to router
-    ss.enable = false;
+    ss.enable = true;
     tuic.enable = true;
     juicity.enable = true;
     naive.enable = false;

@@ -194,7 +194,7 @@
       smartmontools
       android-tools
       zellij
-      netease-cloud-music-gtk
+      # netease-cloud-music-gtk
       cmatrix
       termius
       # kotatogram-desktop

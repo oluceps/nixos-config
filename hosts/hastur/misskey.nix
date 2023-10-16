@@ -1,4 +1,4 @@
-{pkgs, ... }:
+{ pkgs, ... }:
 {
   services.redis.servers.misskey = {
     enable = true;

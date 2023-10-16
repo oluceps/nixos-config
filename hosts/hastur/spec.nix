@@ -4,6 +4,15 @@
 
   system.stateVersion = "22.11"; # Did you read the comment?
 
+  zramSwap = {
+    enable = true;
+    swapDevices = 1;
+    memoryPercent = 80;
+    algorithm = "zstd";
+  };
+
+  services.gvfs.enable = true;
+
   hardware = {
     #   nvidia = {
     #     package = config.boot.kernelPackages.nvidiaPackages.latest;
@@ -58,6 +67,23 @@
   programs.dconf.enable = true;
 
   services = {
+
+    greetd = {
+      enable = true;
+      settings = {
+        default_session = {
+          command =
+            "${pkgs.greetd.tuigreet}/bin/tuigreet --time --remember --cmd ${pkgs.writeShellScript "sway" ''
+          export $(/run/current-system/systemd/lib/systemd/user-environment-generators/30-systemd-environment-d-generator)
+          exec sway
+        ''}";
+          user = "greeter";
+        };
+
+      };
+    };
+
+    btrbk.enable = true;
 
     keycloak = {
       enable = false;

@@ -9,29 +9,53 @@
     rocm-opencl-icd
     rocm-opencl-runtime
   ];
-  services.blueman.enable = true;
-  services.pipewire = {
-
+  zramSwap = {
     enable = true;
-    alsa.enable = true;
-    alsa.support32Bit = true;
-    pulse.enable = true;
-    jack.enable = true;
+    swapDevices = 1;
+    memoryPercent = 80;
+    algorithm = "zstd";
   };
 
-  services.xserver = {
-    videoDrivers = [ "amdgpu" ];
-    enable = true;
-    displayManager = {
-      # sddm.enable = true;
-      gdm = {
-        enable = false;
-      };
-
+  services = {
+    gvfs.enable = true;
+    blueman.enable = true;
+    btrbk.enable = true;
+    pipewire = {
+      enable = true;
+      alsa.enable = true;
+      alsa.support32Bit = true;
+      pulse.enable = true;
+      jack.enable = true;
     };
-    desktopManager = {
-      # plasma5.enable = true;
-      gnome.enable = false;
+
+    greetd = {
+      enable = true;
+      settings = {
+        default_session = {
+          command =
+            "${pkgs.greetd.tuigreet}/bin/tuigreet --time --remember --cmd ${pkgs.writeShellScript "sway" ''
+          export $(/run/current-system/systemd/lib/systemd/user-environment-generators/30-systemd-environment-d-generator)
+          exec sway
+        ''}";
+          user = "greeter";
+        };
+      };
+    };
+
+    xserver = {
+      videoDrivers = [ "amdgpu" ];
+      enable = true;
+      displayManager = {
+        # sddm.enable = true;
+        gdm = {
+          enable = false;
+        };
+
+      };
+      desktopManager = {
+        # plasma5.enable = true;
+        gnome.enable = false;
+      };
     };
   };
   # services.udev = {
