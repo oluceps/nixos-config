@@ -1,9 +1,11 @@
 { pkgs, config, ... }:
 {
-  boot.loader.grub.device = "/dev/xvda";
   fileSystems."/" = { device = "/dev/nvme0n1p1"; fsType = "ext4"; };
-
   boot = {
+    loader.grub.device = "/dev/nvme0n1";
+
+    tmp.cleanOnBoot = true;
+
     initrd.availableKernelModules = [ "virtio_net" "virtio_pci" "virtio_mmio" "virtio_blk" "virtio_scsi" "9p" "9pnet_virtio" "ata_piix" "uhci_hcd" "xen_blkfront" "vmw_pvscsi" ];
     initrd.kernelModules = [ "virtio_balloon" "virtio_console" "virtio_rng" "nvme" ];
 
@@ -14,8 +16,6 @@
         # to the *boot time* of the host).
         hwclock -s
       '';
-
-    cleanTmpDir = true;
   };
 }
 

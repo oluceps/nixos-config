@@ -9,6 +9,13 @@
     rocm-opencl-icd
     rocm-opencl-runtime
   ];
+  zramSwap = {
+    enable = true;
+    swapDevices = 1;
+    memoryPercent = 80;
+    algorithm = "zstd";
+  };
+
   services = {
     gvfs.enable = true;
     blueman.enable = true;

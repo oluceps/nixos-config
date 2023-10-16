@@ -1,9 +1,25 @@
-{ pkgs, config, user, ... }: {
+{ inputs, pkgs, config, lib, user, ... }:
+{
   # server.
 
   system.stateVersion = "22.11";
 
-  zramSwap.enable = true;
+  nix.gc = {
+    automatic = true;
+    dates = "weekly";
+    options = "--delete-older-than 10d";
+  };
+
+  services = {
+    inherit ((import ../../services.nix { inherit pkgs lib config inputs; }).services) mosdns openssh;
+  };
+
+  zramSwap = {
+    enable = true;
+    swapDevices = 1;
+    memoryPercent = 80;
+    algorithm = "zstd";
+  };
 
   systemd = {
     enableEmergencyMode = false;

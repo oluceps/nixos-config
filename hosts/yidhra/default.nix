@@ -6,7 +6,7 @@
     {
 
       nixosConfigurations = {
-        kaambl = lib.nixosSystem
+        yidhra = lib.nixosSystem
           {
             pkgs = import inputs.nixpkgs {
               system = "x86_64-linux";

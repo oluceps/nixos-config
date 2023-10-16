@@ -100,7 +100,7 @@
             wireguardPeerConfig = {
               PublicKey = "+fuA9nUmFVKy2Ijfh5xfcnO9tpA/SkIL4ttiWKsxyXI=";
               AllowedIPs = [ "10.0.1.0/24" ];
-              Endpoint = "146.190.121.75:51820";
+              Endpoint = "54.199.113.231:51820";
               PersistentKeepalive = 15;
             };
           }

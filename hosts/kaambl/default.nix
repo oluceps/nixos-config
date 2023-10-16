@@ -42,6 +42,7 @@
               ./spec.nix
               ../persist.nix
               ../secureboot.nix
+              ../../services.nix
               ../../home
               ../../boot.nix
               ../../packages.nix

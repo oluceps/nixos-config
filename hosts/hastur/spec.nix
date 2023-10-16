@@ -4,6 +4,13 @@
 
   system.stateVersion = "22.11"; # Did you read the comment?
 
+  zramSwap = {
+    enable = true;
+    swapDevices = 1;
+    memoryPercent = 80;
+    algorithm = "zstd";
+  };
+
   services.gvfs.enable = true;
 
   hardware = {
