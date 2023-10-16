@@ -3,7 +3,6 @@
 , lib
 , ...
 }: {
-  services.mosdns.enable = true;
   networking.domain = "ap-northeast-1.compute.internal";
   networking = {
     resolvconf.useLocalResolver = true;
@@ -11,8 +10,8 @@
       checkReversePath = false;
       enable = true;
       trustedInterfaces = [ "virbr0" "wg0" "wg1" ];
-      allowedUDPPorts = [ 80 443 8080 5173 ];
-      allowedTCPPorts = [ 80 443 8080 9900 2222 5173 ];
+      allowedUDPPorts = [ 80 443 8080 5173 23180 4444 51820 ];
+      allowedTCPPorts = [ 80 443 8080 9900 2222 5173 8448 ];
     };
 
     useNetworkd = true;
