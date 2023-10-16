@@ -5,6 +5,7 @@
 
   sharedModules = [
     ../misc.nix
+    ../age.nix
     ../users.nix
     ../sysvars.nix
     ../services.nix
