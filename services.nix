@@ -46,7 +46,7 @@
       apparmor = "enabled";
     };
 
-    
+
     # github-runners = {
     #   runner1 = {
     #     enable = false;
