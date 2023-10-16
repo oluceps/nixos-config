@@ -22,7 +22,7 @@
                 ++
                 (genOverlays [
                   "self"
-                  "clansty"
+                  # "clansty"
                   "fenix"
                   "berberman"
                   "nvfetcher"
@@ -42,8 +42,10 @@
               ./spec.nix
               ../persist.nix
               ../secureboot.nix
+              ../../services.nix
               ../../home
               ../../boot.nix
+              ../../packages.nix
             ] ++ sharedModules;
           };
       };

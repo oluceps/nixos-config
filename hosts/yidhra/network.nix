@@ -3,25 +3,21 @@
 , lib
 , ...
 }: {
-  services.mosdns.enable = true;
+  networking.domain = "ap-northeast-1.compute.internal";
   networking = {
     resolvconf.useLocalResolver = true;
     firewall = {
       checkReversePath = false;
-      # wireless.iwd.enable = true;
-
       enable = true;
       trustedInterfaces = [ "virbr0" "wg0" "wg1" ];
-      allowedUDPPorts = [ 8080 5173 ];
-      allowedTCPPorts = [ 8080 9900 2222 5173 ];
-
+      allowedUDPPorts = [ 80 443 8080 5173 23180 4444 51820 ];
+      allowedTCPPorts = [ 80 443 8080 9900 2222 5173 8448 ];
     };
 
-    wireless.iwd.enable = true;
     useNetworkd = true;
     useDHCP = false;
 
-    hostName = "kaambl"; # Define your hostname.
+    hostName = "yidhra"; # Define your hostname.
     # wireless.enable = true;  # Enables wireless support via wpa_supplicant.
     # The global useDHCP flag is deprecated, therefore explicitly set to false here.
     # Per-interface useDHCP will be mandatory in the future, so this generated config
@@ -47,44 +43,15 @@
     wait-online = {
       enable = true;
       anyInterface = true;
-      ignoredInterfaces = [ "wlan" "wg0" "wg1" ];
+      ignoredInterfaces = [ "wg0" "wg1" ];
     };
 
-    links."30-rndis" = {
-      matchConfig.Driver = "rndis_host";
-      linkConfig = {
-        NamePolicy = "keep";
-        Name = "rndis";
-        MACAddressPolicy = "persistent";
-      };
-    };
-    links."40-wlan" = {
-      matchConfig.Driver = "ath11k_pci";
-      linkConfig.Name = "wlan0";
+    links."10-ens5" = {
+      matchConfig.MACAddress = "06:2f:f4:98:b8:13";
+      linkConfig.Name = "ens5";
     };
 
     netdevs = {
-
-      wg0 = {
-        netdevConfig = {
-          Kind = "wireguard";
-          Name = "wg0";
-          MTUBytes = "1300";
-        };
-        wireguardConfig = {
-          PrivateKeyFile = config.age.secrets.wgk.path;
-        };
-        wireguardPeers = [
-          {
-            wireguardPeerConfig = {
-              PublicKey = "ANd++mjV7kYu/eKOEz17mf65bg8BeJ/ozBmuZxRT3w0=";
-              AllowedIPs = [ "10.0.0.0/24" ];
-              Endpoint = "111.229.162.99:51820";
-              PersistentKeepalive = 15;
-            };
-          }
-        ];
-      };
 
       wg1 = {
         netdevConfig = {
@@ -93,14 +60,21 @@
           MTUBytes = "1300";
         };
         wireguardConfig = {
-          PrivateKeyFile = config.age.secrets.wgk.path;
+          PrivateKeyFile = config.age.secrets.wgy.path;
+          ListenPort = 51820;
         };
         wireguardPeers = [
           {
             wireguardPeerConfig = {
-              PublicKey = "+fuA9nUmFVKy2Ijfh5xfcnO9tpA/SkIL4ttiWKsxyXI=";
-              AllowedIPs = [ "10.0.1.0/24" ];
-              Endpoint = "54.199.113.231:51820";
+              PublicKey = "BCbrvvMIoHATydMkZtF8c+CHlCpKUy1NW+aP0GnYfRM=";
+              AllowedIPs = [ "10.0.1.2/32" ];
+              PersistentKeepalive = 15;
+            };
+          }
+          {
+            wireguardPeerConfig = {
+              PublicKey = "i7Li/BDu5g5+Buy6m6Jnr09Ne7xGI/CcNAbyK9KKbQg=";
+              AllowedIPs = [ "10.0.1.3/32" ];
               PersistentKeepalive = 15;
             };
           }
@@ -110,29 +84,25 @@
 
 
     networks = {
-      "10-wg0" = {
-        matchConfig.Name = "wg0";
-        # IP addresses the client interface will have
-        address = [
-          "10.0.0.3/24"
-        ];
-        DHCP = "no";
-      };
-
       "10-wg1" = {
         matchConfig.Name = "wg1";
         address = [
-          "10.0.1.3/24"
+          "10.0.1.1/24"
         ];
-        DHCP = "no";
+        networkConfig = {
+          IPMasquerade = "ipv4";
+          IPForward = true;
+        };
       };
 
-      "20-wireless" = {
-        matchConfig.Name = "wlan0";
+      "20-wired" = {
+        matchConfig.Name = "ens5";
         DHCP = "yes";
         dhcpV4Config.RouteMetric = 2046;
         dhcpV6Config.RouteMetric = 2046;
         networkConfig = {
+          # Bond = "bond1";
+          # PrimarySlave = true;
           DNSSEC = true;
           MulticastDNS = true;
           DNSOverTLS = true;
@@ -141,19 +111,6 @@
         dhcpV4Config.UseDNS = false;
         dhcpV6Config.UseDNS = false;
       };
-
-      "30-rndis" = {
-        matchConfig.Name = "rndis";
-        DHCP = "yes";
-        dhcpV4Config.RouteMetric = 2044;
-        dhcpV6Config.RouteMetric = 2044;
-        dhcpV4Config.UseDNS = false;
-        dhcpV6Config.UseDNS = false;
-        networkConfig = {
-          DNSSEC = true;
-        };
-      };
-
     };
   };
 }

@@ -1,11 +1,12 @@
 { inputs, ... }: {
   flake = { pkgs, ... }:
     let
-      inherit (import ../lib.nix { inherit inputs; }) sharedModules base genOverlays;
+      inherit (import ../lib.nix { inherit inputs; }) sharedModules base genOverlays lib;
     in
     {
+
       nixosConfigurations = {
-        hastur = inputs.nixpkgs.lib.nixosSystem
+        yidhra = lib.nixosSystem
           {
             pkgs = import inputs.nixpkgs {
               system = "x86_64-linux";
@@ -29,31 +30,17 @@
                   "nuenv"
                   "typst"
                   "android-nixpkgs"
-                  "dae"
                   "agenix-rekey"
-                  "misskey"
                 ])
                 ++ (with inputs;[ nur.overlay ]); #（>﹏<）
             };
-            specialArgs = base // { user = "riro"; };
+            specialArgs = base // { user = "elen"; };
             modules = [
               ./hardware.nix
               ./network.nix
               ./rekey.nix
               ./spec.nix
-              ./matrix.nix
-
-              ../persist.nix
-              ../secureboot.nix
-              ../../packages.nix
-              ../../services.nix
-
-              ../../boot.nix
-              ../../home
-
-              inputs.misskey.nixosModules.default
-              ./misskey.nix
-
+              ./packages.nix
             ] ++ sharedModules;
           };
       };

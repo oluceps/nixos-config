@@ -4,108 +4,8 @@
 , pkgs
 , lib
 , user
-, data
 , ...
-}: {
-  age = {
-
-    rekey = {
-      extraEncryptionPubkeys = [ data.keys.ageKey ];
-      masterIdentities = [ ./sec/age-yubikey-identity-7d5d5540.txt.pub ];
-    };
-
-    secrets =
-      let
-        gen = ns: owner: group: mode: lib.genAttrs ns (n: { rekeyFile = ./sec/${n}.age;  inherit owner group mode; });
-        genProxys = i: gen i "proxy" "users" "740";
-        genMaterial = i: gen i user "nogroup" "400";
-        genBoot = i: gen i "root" "root" "400";
-        genWg = i: gen i "systemd-network" "root" "600";
-      in
-      (genProxys [ "rat" "ss" "sing" "hyst-az" "hyst-am" "hyst-do" "tuic" "naive" "dae.sub" "by.sub" "jc-do" "tinc-k-ed" "tinc-k-rsa" ]) //
-      (genMaterial [ "minisign.key" "ssh-cfg" "gh-eu" "riro.u2f" "elen.u2f" "gh-token" "age" "pub" "id" "id_sk" "minio" "prism" "aws-s3-cred" ]) //
-      (genBoot [ "db.key" "db.pem" ]) //
-      (genWg [ "wg" "wgk" ]) //
-      {
-        dae = { rekeyFile = ./sec/dae.age; mode = "640"; owner = "proxy"; group = "users"; name = "d.dae"; };
-      };
-  };
-
-
-  xdg = {
-    mime = {
-      enable = true;
-      defaultApplications = {
-        "tg" = [ "org.telegram.desktop.desktop" ];
-
-        "application/pdf" = [ "sioyek.desktop" ];
-        "ppt/pptx" = [ "wps-office-wpp.desktop" ];
-        "doc/docx" = [ "wps-office-wps.desktop" ];
-        "xls/xlsx" = [ "wps-office-et.desktop" ];
-      }
-      //
-      lib.genAttrs [
-        "x-scheme-handler/unknown"
-        "x-scheme-handler/about"
-        "x-scheme-handler/http"
-        "x-scheme-handler/https"
-        "text/html"
-      ]
-        (_: "firefox.desktop")
-      //
-      lib.genAttrs [
-        "image/gif"
-        "image/webp"
-        "image/png"
-        "image/jpeg"
-      ]
-        (_: "org.gnome.eog.desktop")
-      ;
-    };
-  };
-
-  networking.firewall.trustedInterfaces = [ "virbr0" ];
-  virtualisation = {
-    vmVariant = {
-      virtualisation = {
-        memorySize = 2048;
-        cores = 6;
-      };
-    };
-    docker.enable = false;
-    podman.enable = true;
-    libvirtd = {
-      enable = false;
-      qemu = {
-        ovmf = {
-          enable = true;
-          packages =
-            let
-              pkgs = import inputs.nixpkgs-22 {
-                system = "x86_64-linux";
-              };
-            in
-            [
-              pkgs.OVMFFull.fd
-              pkgs.pkgsCross.aarch64-multiplatform.OVMF.fd
-            ];
-        };
-        swtpm.enable = true;
-      };
-    };
-    waydroid.enable = false;
-  };
-  qt = {
-    enable = true;
-    platformTheme = "gnome";
-    style = "adwaita";
-  };
-  zramSwap = {
-    enable = true;
-    swapDevices = 1;
-    memoryPercent = 80;
-    algorithm = "zstd";
-  };
+}: lib.mkMerge [{
 
   # systemd.services.nix-daemon.serviceConfig.Slice = "user.slice";
   nix =
@@ -173,97 +73,6 @@
     keyMap = "us";
   };
 
-  programs = {
-    starship = {
-      enable = true;
-      settings = (import ./home/programs/starship { }).programs.starship.settings // {
-        format = "$username$directory$git_branch$git_commit$git_status$nix_shell$cmd_duration$line_break$python$character";
-      };
-    };
-    neovim = {
-      enable = false;
-      configure = {
-        customRC = ''set number'';
-      };
-    };
-    git.enable = true;
-    fish.enable = true;
-    bash = {
-      # interactiveShellInit = ''
-      #   exec fish
-      # '';
-    };
-    sway = { enable = true; };
-    kdeconnect.enable = true;
-    adb.enable = true;
-    mosh.enable = true;
-    nix-ld.enable = true;
-    command-not-found.enable = false;
-    steam = {
-      enable = true;
-      remotePlay.openFirewall = true; # Open ports in the firewall for Steam Remote Play
-      dedicatedServer.openFirewall = true; # Open ports in the firewall for Source Dedicated Server
-    };
-
-    gnupg = {
-      agent = {
-        enable = false;
-        pinentryFlavor = "curses";
-        enableSSHSupport = true;
-      };
-    };
-
-  };
-
-  services = {
-    xserver =
-      {
-        enable = lib.mkDefault false;
-        layout = "us";
-        xkbOptions = "eurosign:e";
-        windowManager.bspwm.enable = true;
-      };
-  };
-
-  fonts = {
-    enableDefaultPackages = true;
-    fontDir.enable = false;
-    enableGhostscriptFonts = false;
-    packages = with pkgs; [
-
-      (nerdfonts.override {
-        fonts = [
-          "FiraCode"
-          "JetBrainsMono"
-          "FantasqueSansMono"
-        ];
-      })
-      source-han-sans
-      noto-fonts
-      noto-fonts-cjk-sans
-      noto-fonts-cjk-serif
-      twemoji-color-font
-      maple-mono-SC-NF
-      maple-mono-otf
-      maple-mono-autohint
-      cascadia-code
-      intel-one-mono
-    ]
-    ++ (with (pkgs.glowsans); [ glowsansSC glowsansTC glowsansJ ])
-    ++ (with nur-pkgs;[ san-francisco plangothic maoken-tangyuan hk-grotesk lxgw-neo-xihei ]);
-    #"HarmonyOS Sans SC" "HarmonyOS Sans TC"
-    fontconfig = {
-      subpixel.rgba = "none";
-      antialias = true;
-      hinting.enable = false;
-      defaultFonts = lib.mkForce {
-        serif = [ "Glow Sans SC" "Glow Sans TC" "Glow Sans J" "Noto Serif" "Noto Serif CJK SC" "Noto Serif CJK TC" "Noto Serif CJK JP" ];
-        monospace = [ "Maple Mono" "SF Mono" "Fantasque Sans Mono" ];
-        sansSerif = [ "Hanken Grotesk" "Glow Sans SC" ];
-        emoji = [ "twemoji-color-font" "noto-fonts-emoji" ];
-      };
-    };
-  };
 
   security = {
 
@@ -296,24 +105,6 @@
     rtkit.enable = true;
   };
 
-  # $ nix search wget
-  i18n = {
-
-    # Select internationalisation properties.
-    defaultLocale = "en_GB.UTF-8";
-
-    inputMethod = {
-      enabled = "fcitx5";
-      fcitx5.addons = with pkgs; [
-        fcitx5-chinese-addons
-        fcitx5-mozc
-        fcitx5-gtk
-        fcitx5-configtool
-        fcitx5-pinyin-zhwiki
-        fcitx5-pinyin-moegirl
-      ];
-    };
-  };
 
   documentation = {
     enable = true;
@@ -348,3 +139,186 @@
   # };
 
 }
+  (lib.mkIf (config.networking.hostName != "yidhra") {
+    xdg = {
+      mime = {
+        enable = true;
+        defaultApplications = {
+          "tg" = [ "org.telegram.desktop.desktop" ];
+
+          "application/pdf" = [ "sioyek.desktop" ];
+          "ppt/pptx" = [ "wps-office-wpp.desktop" ];
+          "doc/docx" = [ "wps-office-wps.desktop" ];
+          "xls/xlsx" = [ "wps-office-et.desktop" ];
+        }
+        //
+        lib.genAttrs [
+          "x-scheme-handler/unknown"
+          "x-scheme-handler/about"
+          "x-scheme-handler/http"
+          "x-scheme-handler/https"
+          "text/html"
+        ]
+          (_: "firefox.desktop")
+        //
+        lib.genAttrs [
+          "image/gif"
+          "image/webp"
+          "image/png"
+          "image/jpeg"
+        ]
+          (_: "org.gnome.eog.desktop")
+        ;
+      };
+    };
+
+    networking.firewall.trustedInterfaces = [ "virbr0" ];
+    virtualisation = {
+      vmVariant = {
+        virtualisation = {
+          memorySize = 2048;
+          cores = 6;
+        };
+      };
+      docker.enable = false;
+      podman.enable = true;
+      libvirtd = {
+        enable = false;
+        qemu = {
+          ovmf = {
+            enable = true;
+            packages =
+              let
+                pkgs = import inputs.nixpkgs-22 {
+                  system = "x86_64-linux";
+                };
+              in
+              [
+                pkgs.OVMFFull.fd
+                pkgs.pkgsCross.aarch64-multiplatform.OVMF.fd
+              ];
+          };
+          swtpm.enable = true;
+        };
+      };
+      waydroid.enable = false;
+    };
+
+    qt = {
+      enable = true;
+      platformTheme = "gnome";
+      style = "adwaita";
+    };
+
+    programs = {
+      starship = {
+        enable = true;
+        settings = (import ./home/programs/starship { }).programs.starship.settings // {
+          format = "$username$directory$git_branch$git_commit$git_status$nix_shell$cmd_duration$line_break$python$character";
+        };
+      };
+      neovim = {
+        enable = false;
+        configure = {
+          customRC = ''set number'';
+        };
+      };
+      git.enable = true;
+      fish.enable = true;
+      bash = {
+        # interactiveShellInit = ''
+        #   exec fish
+        # '';
+      };
+      sway = { enable = true; };
+      kdeconnect.enable = true;
+      adb.enable = true;
+      mosh.enable = true;
+      nix-ld.enable = true;
+      command-not-found.enable = false;
+      steam = {
+        enable = true;
+        remotePlay.openFirewall = true; # Open ports in the firewall for Steam Remote Play
+        dedicatedServer.openFirewall = true; # Open ports in the firewall for Source Dedicated Server
+      };
+
+      gnupg = {
+        agent = {
+          enable = false;
+          pinentryFlavor = "curses";
+          enableSSHSupport = true;
+        };
+      };
+
+    };
+
+    services = {
+      xserver =
+        {
+          enable = lib.mkDefault false;
+          layout = "us";
+          xkbOptions = "eurosign:e";
+          windowManager.bspwm.enable = true;
+        };
+    };
+
+    fonts = {
+      enableDefaultPackages = true;
+      fontDir.enable = false;
+      enableGhostscriptFonts = false;
+      packages = with pkgs; [
+
+        (nerdfonts.override {
+          fonts = [
+            "FiraCode"
+            "JetBrainsMono"
+            "FantasqueSansMono"
+          ];
+        })
+        source-han-sans
+        noto-fonts
+        noto-fonts-cjk-sans
+        noto-fonts-cjk-serif
+        twemoji-color-font
+        maple-mono-SC-NF
+        maple-mono-otf
+        maple-mono-autohint
+        cascadia-code
+        intel-one-mono
+      ]
+      ++ (with (pkgs.glowsans); [ glowsansSC glowsansTC glowsansJ ])
+      ++ (with nur-pkgs;[ san-francisco plangothic maoken-tangyuan hk-grotesk lxgw-neo-xihei ]);
+      #"HarmonyOS Sans SC" "HarmonyOS Sans TC"
+      fontconfig = {
+        subpixel.rgba = "none";
+        antialias = true;
+        hinting.enable = false;
+        defaultFonts = lib.mkForce {
+          serif = [ "Glow Sans SC" "Glow Sans TC" "Glow Sans J" "Noto Serif" "Noto Serif CJK SC" "Noto Serif CJK TC" "Noto Serif CJK JP" ];
+          monospace = [ "Maple Mono" "SF Mono" "Fantasque Sans Mono" ];
+          sansSerif = [ "Hanken Grotesk" "Glow Sans SC" ];
+          emoji = [ "twemoji-color-font" "noto-fonts-emoji" ];
+        };
+      };
+    };
+
+    # $ nix search wget
+    i18n = {
+
+      # Select internationalisation properties.
+      defaultLocale = "en_GB.UTF-8";
+
+      inputMethod = {
+        enabled = "fcitx5";
+        fcitx5.addons = with pkgs; [
+          fcitx5-chinese-addons
+          fcitx5-mozc
+          fcitx5-gtk
+          fcitx5-configtool
+          fcitx5-pinyin-zhwiki
+          fcitx5-pinyin-moegirl
+        ];
+      };
+    };
+
+  })]

@@ -1,5 +1,6 @@
 [
   ./hastur
   ./kaambl
+  ./yidhra
   ./livecd
 ]

@@ -30,7 +30,7 @@
 
         agenix-rekey = inputs.agenix-rekey.configure {
           userFlake = inputs.self;
-          nodes = { inherit (inputs.self.nixosConfigurations) hastur kaambl; };
+          nodes = { inherit (inputs.self.nixosConfigurations) hastur kaambl yidhra; };
         };
 
         overlays.default =
@@ -120,7 +120,7 @@
     helix.url = "github:helix-editor/helix";
     hyprland.url = "github:vaxerski/Hyprland";
     berberman.url = "github:berberman/flakes";
-    clansty.url = "github:clansty/flake";
+    # clansty.url = "github:clansty/flake";
   };
 
 }

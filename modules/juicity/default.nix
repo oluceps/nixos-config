@@ -17,26 +17,32 @@ in
       type = types.package;
       default = pkgs.juicity;
     };
+    configFile = mkOption {
+      type = types.str;
+      default = config.age.secrets.jc-do.path;
+    };
+    serve = mkOption {
+      type = types.bool;
+      default = false;
+    };
   };
 
   config =
-    let configFile = config.age.secrets.jc-do.path;
-    in
     mkIf
       cfg.enable
-      {
-        systemd.services.juicity = {
-          wantedBy = [ "multi-user.target" ];
-          after = [ "network.target" ];
-          description = "juicity daemon";
-          serviceConfig = {
-            Type = "simple";
-            User = "proxy";
-            ExecStart = "${cfg.package}/bin/juicity-client run -c ${configFile}";
-            Restart = "on-failure";
+      (
+        let binSuffix = if cfg.serve then "server" else "client"; in {
+          systemd.services.juicity = {
+            wantedBy = [ "multi-user.target" ];
+            after = [ "network.target" ];
+            description = "juicity daemon";
+            serviceConfig = {
+              Type = "simple";
+              User = "proxy";
+              ExecStart = "${cfg.package}/bin/juicity-${binSuffix} run -c ${cfg.configFile}";
+              Restart = "on-failure";
+            };
           };
-        };
-      };
-
-
+        }
+      );
 }
