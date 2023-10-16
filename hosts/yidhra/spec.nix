@@ -69,8 +69,17 @@
     # globalConfig = ''
     #   	order forward_proxy before file_server
     # '';
-    user = "proxy";
     virtualHosts = {
+      "magicb.uk" = {
+        hostName = "magicb.uk";
+        extraConfig = ''
+          tls mn1.674927211@gmail.com
+          file_server {
+              root /var/www/public
+          }
+        '';
+      };
+
       "pb.nyaw.xyz" = {
         hostName = "pb.nyaw.xyz";
         extraConfig = ''

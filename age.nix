@@ -22,6 +22,8 @@
       (genWg [ "wg" "wgk" "wgy" ]) //
       {
         dae = { rekeyFile = ./sec/dae.age; mode = "640"; owner = "proxy"; group = "users"; name = "d.dae"; };
+        "nyaw.key" = { rekeyFile = ./sec/nyaw.key.age; mode = "640"; owner = "proxy"; group = "caddy"; };
+        "nyaw.cert" = { rekeyFile = ./sec/nyaw.cert.age; mode = "640"; owner = "proxy"; group = "caddy"; };
       };
   };
 

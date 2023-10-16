@@ -22,6 +22,7 @@ let
     # ];
 
     cmd = [
+      tmux
       clean-home
       helix
       srm
