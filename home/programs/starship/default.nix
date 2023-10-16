@@ -24,7 +24,8 @@
 
       hostname = {
         ssh_only = true;
-        format = "[$hostname](bold red) ";
+        format = "[$hostname]($style) ";
+        style = "#91b493";
       };
 
       git_branch = {

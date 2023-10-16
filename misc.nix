@@ -132,6 +132,12 @@
     "machine-id".text = "b08dfa6083e7567a1921a715000001fb";
   };
 
+  programs.starship = {
+    enable = true;
+    settings = (import ./home/programs/starship { }).programs.starship.settings // {
+      format = "$username$hostname$directory$git_branch$git_commit$git_status$nix_shell$cmd_duration$line_break$python$character";
+    };
+  };
   # system.activationScripts = {
   #   stdio.text =
   #     ''
@@ -139,6 +145,14 @@
   # };
 
 }
+
+
+  #
+  #
+  # ----------------------
+  #
+  #
+
   (lib.mkIf (config.networking.hostName != "yidhra") {
     xdg = {
       mime = {
@@ -211,12 +225,7 @@
     };
 
     programs = {
-      starship = {
-        enable = true;
-        settings = (import ./home/programs/starship { }).programs.starship.settings // {
-          format = "$username$hostname$directory$git_branch$git_commit$git_status$nix_shell$cmd_duration$line_break$python$character";
-        };
-      };
+
       neovim = {
         enable = false;
         configure = {
