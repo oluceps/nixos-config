@@ -22,6 +22,11 @@
         vimcmd_visual_symbol = "[<](bold yellow)";
       };
 
+      hostname = {
+        ssh_only = true;
+        format = "on [$hostname](bold red)";
+      };
+
       git_branch = {
         format = "[$branch]($style) ";
         style = "#f1c4cd";
