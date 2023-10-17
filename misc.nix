@@ -153,7 +153,7 @@
   #
   #
 
-  (lib.mkIf (config.networking.hostName != "yidhra") {
+  (lib.mkIf (!(lib.elem config.networking.hostName [ "yidhra" ])) {
     xdg = {
       mime = {
         enable = true;
