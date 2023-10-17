@@ -56,7 +56,7 @@
 
               ../../boot.nix
               ../../home
-              ../../user.nix
+              ../../users.nix
 
               inputs.misskey.nixosModules.default
               ./misskey.nix

@@ -49,7 +49,7 @@
               ../../age.nix
               ../../packages.nix
               ../../misc.nix
-              ../../user.nix
+              ../../users.nix
               ../../sysvars.nix
             ] ++ sharedModules;
           };
