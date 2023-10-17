@@ -12,7 +12,10 @@
 
         _module.args.pkgs = import inputs.nixpkgs {
           inherit system;
-          overlays = [ inputs.agenix-rekey.overlays.default ];
+          overlays = with inputs;[
+            agenix-rekey.overlays.default
+            colmena.overlays.default
+          ];
         };
 
         checks = with pkgs;
@@ -24,8 +27,8 @@
               };
           };
 
-        devShells.default = pkgs.mkShell {
-          packages = with pkgs;[ agenix-rekey colmena ];
+        devShells.default = with pkgs; mkShell {
+          packages = [ agenix-rekey colmena ];
         };
 
       };
