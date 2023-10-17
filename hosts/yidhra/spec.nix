@@ -10,6 +10,11 @@
     options = "--delete-older-than 10d";
   };
 
+  boot = {
+    supportedFilesystems = [ "tcp_bbr" ];
+    inherit ((import ../../boot.nix { inherit lib; }).boot) kernel;
+  };
+
   services = {
     inherit ((import ../../services.nix { inherit pkgs lib config inputs; }).services) openssh;
   };
