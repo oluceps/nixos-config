@@ -35,9 +35,6 @@
         yidhra = { pkgs, ... }:
           let user = "elen"; in {
             deployment = {
-              # targetHost = "nyaw.xyz";
-              # targetPort = 22;
-              # targetUser = user;
               targetHost = "ls";
             };
 
@@ -47,11 +44,15 @@
                 "network.nix"
                 "spec.nix"
                 "packages.nix"
-              ]) ++ [
-                (import ./yidhra/rekey.nix data)
-                (import ../age.nix { inherit data lib user; })
-                (import ../users.nix { inherit pkgs data lib user; })
-              ]
+              ]) ++
+
+              (
+                let a = { inherit data lib user; }; in [
+                  (import ./yidhra/rekey.nix data)
+                  (import ../age.nix a)
+                  (import ../users.nix ({ inherit pkgs; } // a))
+                ]
+              )
               ++ sharedModules;
           };
       };
