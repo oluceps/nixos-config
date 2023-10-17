@@ -71,6 +71,8 @@ let
     ];
     fs = [ gparted e2fsprogs fscrypt-experimental f2fs-tools compsize ];
 
+    bluetooth = [ bluetuith ];
+
     cmd = [
       # (ragenix.override { plugins = [ age-plugin-yubikey ]; })
       linuxKernel.packages.linux_latest_libre.cpupower

@@ -1,8 +1,11 @@
+{ sharedModules
+, base
+, genOverlays
+, lib
+}:
 { inputs, ... }: {
   flake = { pkgs, ... }:
-    let
-      inherit (import ../lib.nix { inherit inputs; }) sharedModules base genOverlays;
-    in
+
     {
       nixosConfigurations = {
         hastur = inputs.nixpkgs.lib.nixosSystem
@@ -47,9 +50,13 @@
               ../secureboot.nix
               ../../packages.nix
               ../../services.nix
+              ../../misc.nix
+              ../../sysvars.nix
+              ../../age.nix
 
               ../../boot.nix
               ../../home
+              ../../user.nix
 
               inputs.misskey.nixosModules.default
               ./misskey.nix

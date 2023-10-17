@@ -1,4 +1,4 @@
-{ inputs, pkgs, config, lib, user, ... }:
+{ inputs, pkgs, config, lib, ... }:
 {
   # server.
 

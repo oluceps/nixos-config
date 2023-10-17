@@ -2,7 +2,10 @@
   description = "oluceps' flake";
   outputs = inputs@{ flake-parts, ... }:
     flake-parts.lib.mkFlake { inherit inputs; } {
-      imports = import ./hosts;
+      imports = import ./hosts {
+        inherit inputs;
+        inherit (import ./hosts/lib.nix { inherit inputs; }) genOverlays sharedModules base lib data;
+      };
       systems = [ "x86_64-linux" "aarch64-linux" ];
       perSystem = { pkgs, system, inputs', ... }: {
 
@@ -21,7 +24,7 @@
           };
 
         devShells.default = pkgs.mkShell {
-          packages = [ pkgs.agenix-rekey ];
+          packages = with pkgs;[ agenix-rekey colmena ];
         };
 
       };
@@ -53,6 +56,11 @@
     nixpkgs-rebuild.url = "github:SuperSandro2000/nixpkgs?rev=449114c6240520433a650079c0b5440d9ecf6156";
     nixpkgs-wayland = {
       url = "github:nix-community/nixpkgs-wayland";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    colmena = {
+      url = "github:zhaofengli/colmena";
+      inputs.stable.follows = "nixpkgs";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     conduit = {
