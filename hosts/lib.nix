@@ -4,10 +4,7 @@
   genModules = map (let m = i: inputs.${i}.nixosModules; in (i: (m i).default or (m i).${i}));
 
   sharedModules = [
-    ../misc.nix
-    ../age.nix
-    ../users.nix
-    ../sysvars.nix
+    # ../age.nix
   ] ++ (genModules [ "agenix-rekey" "ragenix" "home-manager" "impermanence" "lanzaboote" "nix-ld" "self" ])
   ++ (with inputs.dae.nixosModules;[ dae daed ]);
 

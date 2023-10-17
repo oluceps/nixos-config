@@ -1,10 +1,11 @@
+{ sharedModules
+, base
+, genOverlays
+, lib
+}:
 { inputs, ... }: {
   flake = { pkgs, ... }:
-    let
-      inherit (import ../lib.nix { inherit inputs; }) sharedModules base genOverlays lib;
-    in
     {
-
       nixosConfigurations = {
         kaambl = lib.nixosSystem
           {
@@ -45,7 +46,11 @@
               ../../services.nix
               ../../home
               ../../boot.nix
+              ../../age.nix
               ../../packages.nix
+              ../../misc.nix
+              ../../user.nix
+              ../../sysvars.nix
             ] ++ sharedModules;
           };
       };

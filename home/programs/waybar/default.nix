@@ -93,8 +93,8 @@
           battery = {
             format = "{capacity}% {icon}";
             format-alt = "{time} {icon}";
-            format-icons = [ "" "" "" "" "" ];
-            format-charging = "{capacity}% ";
+            format-icons = [ "󰁺" "󰁻" "󰁼" "󰂀" "󰁹" ];
+            format-charging = "{capacity}% 󰂄";
             interval = 10;
             states = {
               warning = 25;

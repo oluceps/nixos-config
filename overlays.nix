@@ -11,6 +11,7 @@ let system = "x86_64-linux"; in [
         "prismlauncher"
         "resign"
         "anyrun"
+        "colmena"
       ]
       (n: inputs.${n}.packages.${system}.default)
     # //
