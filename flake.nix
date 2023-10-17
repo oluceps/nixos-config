@@ -4,7 +4,8 @@
     flake-parts.lib.mkFlake { inherit inputs; } {
       imports = import ./hosts {
         inherit inputs;
-        inherit (import ./hosts/lib.nix { inherit inputs; }) genOverlays sharedModules base lib data;
+        inherit (import ./hosts/lib.nix { inherit inputs; })
+          genOverlays sharedModules base lib data;
       };
       systems = [ "x86_64-linux" "aarch64-linux" ];
       perSystem = { pkgs, system, inputs', ... }: {
@@ -33,7 +34,8 @@
 
         agenix-rekey = inputs.agenix-rekey.configure {
           userFlake = inputs.self;
-          nodes = { inherit (inputs.self.nixosConfigurations) hastur kaambl yidhra; };
+          nodes = { inherit (inputs.self.nixosConfigurations) hastur kaambl; }
+            // ((with inputs;(colmena.lib.makeHive self.colmena).introspect (x: x)).nodes);
         };
 
         overlays.default =

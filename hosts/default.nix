@@ -1,11 +1,11 @@
 { inputs, genOverlays, sharedModules, base, lib, data, ... }:
-[
+let share = { inherit genOverlays sharedModules base lib; }; in [
   (import
     ./hastur
-    { inherit genOverlays sharedModules base lib; })
+    share)
   (import
     ./kaambl
-    { inherit genOverlays sharedModules base lib; })
+    share)
 
   ({ ... }: {
     flake = { pkgs, ... }: {
