@@ -37,7 +37,7 @@ let
     ];
     # ripgrep-all 
 
-    info = [ freshfetch htop bottom onefetch hardinfo qjournalctl hyprpicker imgcat nix-index ccze ];
+    info = [ freshfetch htop bottom onefetch hardinfo qjournalctl hyprpicker imgcat nix-index ccze kitty ];
 
   };
 in
