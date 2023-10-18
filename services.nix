@@ -214,7 +214,7 @@
             args = {
               concurrent = 2;
               upstreams = [
-                { addr = "https://1.1.1.1/dns-query"; idle_timeout = 86400; }
+                { addr = "https://1.0.0.1/dns-query"; idle_timeout = 86400; }
                 { addr = "tls://8.8.4.4:853"; idle_timeout = 86400; enable_pipeline = true; }
               ];
             };
@@ -225,8 +225,8 @@
             args = {
               concurrent = 2;
               upstreams = [
-                { addr = "223.6.6.6"; idle_timeout = 86400; }
-                { addr = "https://1.12.12.12/dns-query"; idle_timeout = 86400; }
+                { addr = "https://223.6.6.6/dns-query"; idle_timeout = 86400; }
+                { addr = "https://doh.pub/dns-query"; idle_timeout = 86400; }
               ];
             };
             tag = "local_forward";
