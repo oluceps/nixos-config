@@ -226,7 +226,7 @@
               concurrent = 2;
               upstreams = [
                 { addr = "https://223.6.6.6/dns-query"; idle_timeout = 86400; }
-                { addr = "https://doh.pub/dns-query"; idle_timeout = 86400; }
+                { addr = "tls://dot.pub"; idle_timeout = 86400; enable_pipeline = true; }
               ];
             };
             tag = "local_forward";
