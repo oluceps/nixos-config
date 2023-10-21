@@ -55,6 +55,30 @@ let share = { inherit genOverlays sharedModules base lib; }; in [
               )
               ++ sharedModules;
           };
+
+        azasos = { pkgs, ... }:
+          let user = "elen"; in {
+            deployment = {
+              targetHost = "tcs";
+            };
+
+            imports =
+              (map (n: ./azasos + ("/" + n)) [
+                "hardware.nix"
+                "network.nix"
+                "spec.nix"
+                "packages.nix"
+              ]) ++
+
+              (
+                let a = { inherit data lib user; }; in [
+                  (import ./azasos/rekey.nix data)
+                  (import ../age.nix a)
+                  (import ../users.nix ({ inherit pkgs; } // a))
+                ]
+              )
+              ++ sharedModules;
+          };
       };
     };
 
