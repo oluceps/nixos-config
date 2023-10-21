@@ -2,6 +2,10 @@
 , lib
 , ...
 }: {
+  services = {
+    mosdns.enable = true;
+    resolved.enable = !config.services.mosdns.enable;
+  };
   networking.domain = "tencent-shanghai";
   networking = {
     resolvconf.useLocalResolver = true;

@@ -1,4 +1,4 @@
-{ inputs, pkgs, config, lib, ... }:
+{ pkgs, config, lib, ... }:
 {
   # server inside the cage.
 
@@ -16,7 +16,9 @@
   };
 
   services = {
-    inherit ((import ../../services.nix { inherit pkgs lib config inputs; }).services) openssh;
+    inherit ((import ../../services.nix { inherit pkgs lib config; }).services)
+      openssh
+      mosdns;
   };
 
   programs = {

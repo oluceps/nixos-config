@@ -35,6 +35,7 @@
                   "dae"
                   "agenix-rekey"
                   "misskey"
+                  "nixyDomains"
                 ])
                 ++ (with inputs;[ nur.overlay ]); #（>﹏<）
             };
