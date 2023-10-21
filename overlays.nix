@@ -125,7 +125,7 @@ let system = "x86_64-linux"; in [
             src = fetchFromGitHub {
               owner = "daeuniverse";
               repo = "dae";
-              rev = "v${version}";
+              rev = "1f50506b10ac6f2b4ae6e320e9b69e7beb81a604";
               hash = "sha256-gRQhlwX5uUEoghOvky+MnecmHcLAKXPqsORfNXExTGU=";
               fetchSubmodules = true;
             };
