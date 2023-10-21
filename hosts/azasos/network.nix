@@ -2,7 +2,7 @@
 , lib
 , ...
 }: {
-  networking.domain = "ap-northeast-1.compute.internal";
+  networking.domain = "tencent-shanghai";
   networking = {
     resolvconf.useLocalResolver = true;
     firewall = {
