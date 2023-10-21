@@ -126,7 +126,7 @@ let system = "x86_64-linux"; in [
               owner = "daeuniverse";
               repo = "dae";
               rev = "1f50506b10ac6f2b4ae6e320e9b69e7beb81a604";
-              hash = "sha256-gRQhlwX5uUEoghOvky+MnecmHcLAKXPqsORfNXExTGU=";
+              hash = "sha256-pV7Mvs3B7v7A5ymNTkRoM52XShrkvwIstX5pjARGU/0=";
               fetchSubmodules = true;
             };
 
