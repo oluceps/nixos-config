@@ -45,9 +45,9 @@
       ignoredInterfaces = [ "wg0" "wg1" ];
     };
 
-    links."10-eth0" = {
+    links."10-ens5" = {
       matchConfig.MACAddress = "52:54:00:99:b9:31";
-      linkConfig.Name = "eth0";
+      linkConfig.Name = "ens5";
     };
 
     netdevs = {
@@ -127,7 +127,7 @@
       };
 
       "20-wired" = {
-        matchConfig.Name = "eth0";
+        matchConfig.Name = "ens5";
         DHCP = "yes";
         dhcpV4Config.RouteMetric = 2046;
         dhcpV6Config.RouteMetric = 2046;
