@@ -67,16 +67,6 @@ let system = "x86_64-linux"; in [
 
       nur-pkgs = inputs.nur-pkgs.packages.${system};
 
-      fluent-gtk-theme =
-        prev.fluent-gtk-theme.overrideAttrs
-          (old: {
-            src = prev.fetchFromGitHub {
-              owner = "vinceliuice";
-              repo = "Fluent-gtk-theme";
-              rev = "bea82c5a498e8d7fabe41a67e14ba40cdec3a3a8";
-              sha256 = "";
-            };
-          });
       # linuxPackages_latest =
       #   (import inputs.nixpkgs-pin-kernel {
       #     inherit system; config = {
@@ -124,6 +114,80 @@ let system = "x86_64-linux"; in [
             sha256 = "sha256-daLb7ebMVeL+f8WydH4DONkUA+0D6d+v+pohJb2qjOo=";
           };
         });
+
+      dae-unstable =
+        (with prev;
+        buildGoModule
+          rec {
+            pname = "dae";
+            version = "0.3.0";
+
+            src = fetchFromGitHub {
+              owner = "daeuniverse";
+              repo = "dae";
+              rev = "v${version}";
+              hash = "sha256-gRQhlwX5uUEoghOvky+MnecmHcLAKXPqsORfNXExTGU=";
+              fetchSubmodules = true;
+            };
+
+            vendorHash = "sha256-OD6Ztjw2O+2bf8DYDEptp9YfMpsma/Ag1/s5rKyCTmQ=";
+
+            proxyVendor = true;
+
+            nativeBuildInputs = [ clang ];
+
+            ldflags = [
+              "-s"
+              "-w"
+              "-X github.com/daeuniverse/dae/cmd.Version=${version}"
+              "-X github.com/daeuniverse/dae/common/consts.MaxMatchSetLen_=64"
+            ];
+
+            preBuild = ''
+              make CFLAGS="-D__REMOVE_BPF_PRINTK -fno-stack-protector -Wno-unused-command-line-argument" \
+              NOSTRIP=y \
+              ebpf
+            '';
+
+            # network required
+            doCheck = false;
+
+            postInstall = ''
+              install -Dm444 install/dae.service $out/lib/systemd/system/dae.service
+              substituteInPlace $out/lib/systemd/system/dae.service \
+                --replace /usr/bin/dae $out/bin/dae
+            '';
+
+            meta = with lib; {
+              description = "A Linux high-performance transparent proxy solution based on eBPF";
+              homepage = "https://github.com/daeuniverse/dae";
+              license = licenses.agpl3Only;
+              maintainers = with maintainers; [ oluceps pokon548 ];
+              platforms = platforms.linux;
+              mainProgram = "dae";
+            };
+          });
+
+
+
+      # dae-unstable = prev.dae.overrideAttrs (old:
+      #   let
+      #     version = "unstable";
+      #     src = prev.fetchFromGitHub {
+      #       owner = "daeuniverse";
+      #       repo = "dae";
+      #       rev = "9ed6b379393f545f1ec529e8777a2ba988642960";
+      #       hash = "sha256-gRQhlwX5uUEoghOvky+MnecmHcLAKXPqsORfNXExTGU=";
+      #     };
+      #   in
+      #   rec {
+      #     name = "dae-${version}";
+      #     inherit src;
+      #     goModules = (prev.buildGoModule {
+      #       inherit name src;
+      #       vendorHash = "sha256-AKk7VRKWdbiF5zzJ8XRxi9b1Y7AYq701m/Agi9TOQqI=";
+      #     }).goModules;
+      #   });
 
       via = prev.via.overrideAttrs
         (old: rec{
