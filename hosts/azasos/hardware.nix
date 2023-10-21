@@ -1,8 +1,8 @@
 { pkgs, config, ... }:
 {
-  fileSystems."/" = { device = "/dev/nvme0n1p1"; fsType = "ext4"; };
+  fileSystems."/" = { device = "/dev/vda1"; fsType = "ext4"; };
   boot = {
-    loader.grub.device = "/dev/nvme0n1";
+    loader.grub.device = "/dev/vda";
 
     tmp.cleanOnBoot = true;
 
