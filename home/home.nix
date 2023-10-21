@@ -456,7 +456,7 @@
 
   services = {
     swayidle = {
-      enable = true;
+      enable = false;
       systemdTarget = "sway-session.target";
       timeouts = [
         { timeout = 900; command = "${pkgs.swaylock}/bin/swaylock"; }
