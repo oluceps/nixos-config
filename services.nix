@@ -1,7 +1,6 @@
 { pkgs
 , lib
 , config
-, inputs
 , ...
 }:
 
@@ -140,7 +139,7 @@
       settings = {
         PasswordAuthentication = lib.mkForce false;
         PermitRootLogin = lib.mkForce "prohibit-password";
-        UseDns = true;
+        UseDns = false;
         X11Forwarding = false;
       };
       authorizedKeysFiles = lib.mkForce [ "/etc/ssh/authorized_keys.d/%u" ];
@@ -187,7 +186,7 @@
     mosdns = {
       config = {
         log = { level = "debug"; production = false; };
-        plugins = with inputs.nixyDomains.packages.x86_64-linux.default; [
+        plugins = let src = "${pkgs.nixy-domains.src}"; in [
           {
             args = {
               files = [ "${src}/accelerated-domains.china.txt" ];

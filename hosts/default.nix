@@ -28,6 +28,7 @@ let share = { inherit genOverlays sharedModules base lib; }; in [
                 "EHfive"
                 "nuenv"
                 "agenix-rekey"
+                "nixyDomains"
               ]);
           };
         };

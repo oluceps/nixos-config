@@ -2708,11 +2708,11 @@
         "nixpkgs": "nixpkgs_20"
       },
       "locked": {
-        "lastModified": 1697589718,
-        "narHash": "sha256-JSpo0zIwVHGOSqTSX13Cm8FMVCmk4Ffuk/UR87hnC+c=",
+        "lastModified": 1697902111,
+        "narHash": "sha256-syH9h0oX4oG5gXts30kToG58RdELMLX1TOFdr2iMflM=",
         "owner": "oluceps",
         "repo": "nixyDomains",
-        "rev": "4f3c9ad53aa1e75fe01c34460244d168b53f4be2",
+        "rev": "764b5fa0356de33e7d3b247a23a60507d132ac89",
         "type": "github"
       },
       "original": {

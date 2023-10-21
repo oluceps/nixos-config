@@ -32,6 +32,7 @@
                   "typst"
                   "android-nixpkgs"
                   "agenix-rekey"
+                  "nixyDomains"
                 ])
                 ++ (with inputs;[ nur.overlay ]); #（>﹏<）
             };
