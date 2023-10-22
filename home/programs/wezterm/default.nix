@@ -1,5 +1,5 @@
 { pkgs, ... }: {
 
-  home.packages = [ pkgs.wezterm-n ];
+  home.packages = [ pkgs.wezterm ];
   xdg.configFile."wezterm/wezterm.lua".text = builtins.readFile ./wezterm.lua;
 }
