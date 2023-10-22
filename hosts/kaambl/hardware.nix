@@ -66,7 +66,7 @@
 
   fileSystems."/efi" =
     {
-      device = "/dev/disk/by-uuid/CD6D-D5D1";
+      device = "/dev/disk/by-partuuid/fe3e996f-7962-1f4b-8bac-e2c8bc420501";
       fsType = "vfat";
     };
 
