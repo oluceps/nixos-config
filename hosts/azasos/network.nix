@@ -92,6 +92,18 @@
 
           {
             wireguardPeerConfig = {
+              PublicKey = "+fuA9nUmFVKy2Ijfh5xfcnO9tpA/SkIL4ttiWKsxyXI=";
+              AllowedIPs = [
+                "10.0.1.0/24"
+                "10.0.0.0/24"
+              ];
+              Endpoint = "54.199.113.231:51820";
+              PersistentKeepalive = 15;
+            };
+          }
+
+          {
+            wireguardPeerConfig = {
               PublicKey = "TcqM0iPp4Dw1IceB88qw/hSiPWXAzT9GECVT36eyzgc=";
               AllowedIPs = [ "10.0.0.6/32" ];
               PersistentKeepalive = 15;
@@ -123,6 +135,7 @@
         matchConfig.Name = "wg0";
         address = [
           "10.0.0.5/24"
+          "10.0.1.5/24"
         ];
         networkConfig = {
           IPMasquerade = "ipv4";
