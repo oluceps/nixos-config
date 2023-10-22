@@ -226,6 +226,22 @@ let system = "x86_64-linux"; in [
           });
         });
 
+      # rio = prev.rathole.overrideAttrs
+      #   (old: rec {
+      #     src = prev.fetchFromGitHub {
+      #       owner = "raphamorim";
+      #       repo = "rio";
+      #       rev = "12e9142d259969a08794b0098505f4328dbd0321";
+      #       hash = "";
+      #     };
+
+      #     cargoDeps = old.cargoDeps.overrideAttrs (prev.lib.const {
+      #       inherit src;
+      #       # otherwise the old "src" will be used.
+      #       outputHash = "";
+      #     });
+      #   });
+
       # shadowsocks-rust = prev.shadowsocks-rust.overrideAttrs (old: rec {
       #   version = "1.15.0-alpha.9";
       #   src = prev.fetchFromGitHub {
