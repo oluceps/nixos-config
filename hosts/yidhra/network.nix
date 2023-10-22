@@ -1,5 +1,4 @@
 { config
-, pkgs
 , lib
 , ...
 }: {
@@ -17,20 +16,8 @@
     useNetworkd = true;
     useDHCP = false;
 
-    hostName = "yidhra"; # Define your hostname.
-    # wireless.enable = true;  # Enables wireless support via wpa_supplicant.
-    # The global useDHCP flag is deprecated, therefore explicitly set to false here.
-    # Per-interface useDHCP will be mandatory in the future, so this generated config
-    # replicates the default behaviour.
+    hostName = "yidhra";
     enableIPv6 = true;
-
-    # interfaces.enp4s0.useDHCP = true;
-    #  interfaces.wlp5s0.useDHCP = true;
-    #
-    # Configure network proxy if necessary
-    # proxy.default = "http://127.0.0.1:7890";
-
-    # proxy.noProxy = "127.0.0.1,localhost,internal.domain";
 
     nftables.enable = true;
     networkmanager.enable = lib.mkForce false;
@@ -78,6 +65,18 @@
               PersistentKeepalive = 15;
             };
           }
+
+          {
+            wireguardPeerConfig = {
+              PublicKey = "ANd++mjV7kYu/eKOEz17mf65bg8BeJ/ozBmuZxRT3w0=";
+              AllowedIPs = [
+                "10.0.0.0/24"
+                "10.0.1.0/24"
+              ];
+              Endpoint = "111.229.162.99:51820";
+              PersistentKeepalive = 15;
+            };
+          }
         ];
       };
     };
@@ -88,6 +87,7 @@
         matchConfig.Name = "wg1";
         address = [
           "10.0.1.1/24"
+          "10.0.0.5/24"
         ];
         networkConfig = {
           IPMasquerade = "ipv4";
