@@ -11,6 +11,7 @@ let
       "btrbk"
       "naive"
       "sundial"
+      "rustypaste"
       # "dae"
       "mosdns"
     ]
