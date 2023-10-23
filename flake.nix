@@ -97,7 +97,7 @@
     };
     misskey = {
       url = "github:Ninlives/misskey.nix";
-      # inputs.nixpkgs.follows = "nixpkgs";
+      inputs.nixpkgs.follows = "nixpkgs";
     };
     nixified-ai.url = "github:nixified-ai/flake";
     pre-commit-hooks = {
@@ -110,6 +110,7 @@
     };
     nur.url = "github:nix-community/NUR";
     typst.url = "github:typst/typst";
+    typst-lsp.url = "github:nvarner/typst-lsp";
     nur-pkgs = {
       url = "github:oluceps/nur-pkgs";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -125,7 +126,6 @@
     impermanence.url = "github:nix-community/impermanence";
     clash-meta.url = "github:MetaCubeX/Clash.Meta/Alpha";
     alejandra.url = "github:kamadorueda/alejandra";
-    polymc.url = "github:PolyMC/PolyMC";
     prismlauncher = {
       url = "github:PrismLauncher/PrismLauncher";
       # inputs.nixpkgs.follows = "nixpkgs";
