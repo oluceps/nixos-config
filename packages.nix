@@ -1,6 +1,58 @@
-{ inputs, pkgs, lib, ... }:
+{ self, config, pkgs, lib, ... }:
 let
   p = with pkgs; {
+
+    crypt = [ minisign rage age-plugin-yubikey yubico-piv-tool yubikey-manager yubikey-manager-qt cryptsetup ];
+
+    net = [
+      # anti-censor
+      [ sing-box rathole tor arti nur-pkgs.tuic ]
+
+      [ bandwhich fscan iperf3 i2p ethtool dnsutils autossh tcpdump netcat dog wget mtr-gui socat miniserve mtr wakelan q nali lynx nethogs restic w3m whois dig wireguard-tools curlHTTP3 xh ngrep gping knot-dns tcping-go httping ]
+    ];
+    # graph = [
+    #   vulkan-validation-layers
+    # ];
+
+    cmd = [
+      # (ragenix.override { plugins = [ age-plugin-yubikey ]; })
+      linuxKernel.packages.linux_latest_libre.cpupower
+      clean-home
+      typst
+      helix
+      srm
+      onagre
+      libsixel
+      ouch
+      nix-output-monitor
+      linuxKernel.packages.linux_latest_libre.cpupower
+
+      # common
+      [ killall hexyl jq fx bottom lsd fd choose duf tokei procs lsof tree bat ]
+      [ broot powertop ranger ripgrep qrencode lazygit b3sum unzip zip coreutils inetutils pciutils usbutils pinentry ]
+    ];
+    # ripgrep-all 
+
+
+    info = [ freshfetch htop bottom onefetch hardinfo qjournalctl hyprpicker imgcat nix-index ccze ];
+
+  };
+
+  e = with pkgs;{
+    lang = [
+      [
+        editorconfig-checker
+        kotlin-language-server
+        sumneko-lua-language-server
+        yaml-language-server
+        tree-sitter
+        stylua
+        # black
+      ]
+      # languages related
+      [ zig lldb haskell-language-server gopls cmake-language-server zls android-file-transfer nixpkgs-review shfmt ]
+    ];
+
     dev = [
       friture
       qemu-utils
@@ -33,12 +85,7 @@ let
       nix-update
       nodejs_latest.pkgs.pnpm
     ];
-    # ++ [
-    #   (fenix.complete.withComponents [ "cargo" "clippy" "rust-src" "rustc" "rustfmt" ])
-    #   fenix.targets.wasm32-unknown-unknown.latest.rust-std
 
-    #   #"targets.wasm32-unknown-unknown.latest.rust-std"
-    # ];
     wine = [
       # ...
 
@@ -60,21 +107,10 @@ let
       # native wayland support (unstable)
       wineWowPackages.waylandFull
     ];
+
     db = [ mongosh ];
 
     web = [ hugo ];
-
-    crypt = [ minisign rage age-plugin-yubikey yubico-piv-tool yubikey-manager yubikey-manager-qt cryptsetup ];
-
-    net = [
-      # anti-censor
-      [ sing-box rathole tor arti nur-pkgs.tuic ]
-
-      [ fscan iperf3 i2p ethtool dnsutils autossh tcpdump netcat dog wget mtr-gui socat miniserve mtr wakelan q nali lynx nethogs restic w3m whois dig wireguard-tools curlHTTP3 xh ngrep gping knot-dns tcping-go httping ]
-    ];
-    # graph = [
-    #   vulkan-validation-layers
-    # ];
 
     de = with gnomeExtensions;[ simple-net-speed blur-my-shell ];
 
@@ -93,40 +129,6 @@ let
     fs = [ gparted e2fsprogs fscrypt-experimental f2fs-tools compsize ];
 
     bluetooth = [ bluetuith ];
-
-    cmd = [
-      # (ragenix.override { plugins = [ age-plugin-yubikey ]; })
-      linuxKernel.packages.linux_latest_libre.cpupower
-      clean-home
-      typst
-      helix
-      srm
-      onagre
-      libsixel
-      ouch
-      nix-output-monitor
-      linuxKernel.packages.linux_latest_libre.cpupower
-
-      # common
-      [ killall hexyl jq fx bottom lsd fd choose duf tokei procs lsof tree bat ]
-      [ broot powertop ranger ripgrep qrencode lazygit b3sum unzip zip coreutils inetutils pciutils usbutils pinentry ]
-    ];
-    # ripgrep-all 
-    lang = [
-      [
-        editorconfig-checker
-        kotlin-language-server
-        sumneko-lua-language-server
-        yaml-language-server
-        tree-sitter
-        stylua
-        # black
-      ]
-      # languages related
-      [ zig lldb haskell-language-server gopls cmake-language-server zls android-file-transfer nixpkgs-review shfmt ]
-    ];
-
-    info = [ freshfetch htop bottom onefetch hardinfo qjournalctl hyprpicker imgcat nix-index ccze ];
 
   };
 in
@@ -148,53 +150,6 @@ in
             mkdocs
             # mkdocs-static-i18n
             mkdocs-material
-
-
-            # wordcloud
-            # qrcode
-            # matplotlib
-            # pylsp-mypy
-            # pip
-
-            # fontforge
-
-            # pyzbar
-            # pymongo
-
-            # # aiohttp
-            # loguru
-            # pillow
-            # dbus-python
-            # numpy
-            # redis
-            # requests
-            # uvloop
-
-            # fido2
-            # nrfutil
-            # tockloader
-            # intelhex
-            # colorama
-            # tqdm
-            # # cryptography
-
-            # pandas
-            # requests
-            # pyrogram
-            # tgcrypto
-            # JPype1
-            # toml
-            # pyyaml
-            # tockloader
-            # colorama
-            # six
-            # rich
-            # lxml
-            # sympy
-
-            # cffi
-            # beautifulreport
-
           ])
       ))
     ]
@@ -230,5 +185,12 @@ in
         '';
       }
       )
-    ];
+    ] ++
+    (if (!(lib.elem config.networking.hostName (builtins.attrNames self.colmena))) then
+      (lib.flatten
+        (lib.attrValues e)) else [ ]
+    )
+  ;
 }
+
+  

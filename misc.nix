@@ -1,5 +1,6 @@
 # original configuration.nix w
 { inputs
+, self
 , config
 , pkgs
 , lib
@@ -153,7 +154,7 @@
   #
   #
 
-  (lib.mkIf (!(lib.elem config.networking.hostName [ "yidhra" "azasos" ])) {
+  (lib.mkIf (!(lib.elem config.networking.hostName (builtins.attrNames self.colmena))) {
     xdg = {
       mime = {
         enable = true;
