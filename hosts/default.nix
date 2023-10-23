@@ -33,7 +33,7 @@ let share = { inherit genOverlays sharedModules base lib; }; in [
           };
         };
 
-        yidhra = { pkgs, ... }:
+        yidhra = { pkgs, nodes, ... }:
           let user = "elen"; in {
             deployment = {
               targetHost = "ls";
@@ -44,7 +44,6 @@ let share = { inherit genOverlays sharedModules base lib; }; in [
                 "hardware.nix"
                 "network.nix"
                 "spec.nix"
-                "packages.nix"
               ]) ++
 
               (
@@ -52,12 +51,19 @@ let share = { inherit genOverlays sharedModules base lib; }; in [
                   (import ./yidhra/rekey.nix data)
                   (import ../age.nix a)
                   (import ../users.nix ({ inherit pkgs; } // a))
+                  (import ../packages.nix (
+                    ({
+                      inherit pkgs;
+                      inherit (base) self lib;
+                      config = nodes.yidhra.config;
+                    })
+                  ))
                 ]
               )
               ++ sharedModules;
           };
 
-        azasos = { pkgs, ... }:
+        azasos = { pkgs, nodes, ... }:
           let user = "elen"; in {
             deployment = {
               targetHost = "tcs";
@@ -68,7 +74,6 @@ let share = { inherit genOverlays sharedModules base lib; }; in [
                 "hardware.nix"
                 "network.nix"
                 "spec.nix"
-                "packages.nix"
               ]) ++
 
               (
@@ -76,6 +81,13 @@ let share = { inherit genOverlays sharedModules base lib; }; in [
                   (import ./azasos/rekey.nix data)
                   (import ../age.nix a)
                   (import ../users.nix ({ inherit pkgs; } // a))
+                  (import ../packages.nix (
+                    ({
+                      inherit pkgs;
+                      inherit (base) self lib;
+                      config = nodes.azasos.config;
+                    })
+                  ))
                 ]
               )
               ++ sharedModules;

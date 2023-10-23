@@ -22,7 +22,7 @@
 
   lib = inputs.nixpkgs.lib;
 
-  base = { inherit inputs lib data; };
+  base = { inherit inputs lib data; inherit (inputs) self; };
 
   genOverlays = map (let m = i: inputs.${i}.overlays; in (i: (m i).default or (m i).${i}));
 }

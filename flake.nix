@@ -5,7 +5,7 @@
       imports = import ./hosts {
         inherit inputs;
         inherit (import ./hosts/lib.nix { inherit inputs; })
-          genOverlays sharedModules base lib data;
+          genOverlays sharedModules base lib data self;
       };
       systems = [ "x86_64-linux" "aarch64-linux" ];
       perSystem = { pkgs, system, inputs', ... }: {
