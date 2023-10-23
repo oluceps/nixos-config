@@ -27,6 +27,8 @@ let
       nix-output-monitor
       linuxKernel.packages.linux_latest_libre.cpupower
 
+      kitty
+
       # common
       [ killall hexyl jq fx bottom lsd fd choose duf tokei procs lsof tree bat ]
       [ broot powertop ranger ripgrep qrencode lazygit b3sum unzip zip coreutils inetutils pciutils usbutils pinentry ]
@@ -136,33 +138,6 @@ in
   environment.systemPackages = lib.flatten (lib.attrValues p)
     ++ (with pkgs; [ unar texlab edk2 xmrig docker-compose ]) ++
     [
-      (with pkgs; (
-        python3.withPackages
-          (p: with p;[
-            torch
-            fire
-            sentencepiece
-            gensim
-            numpy
-            tqdm
-
-            python-lsp-server
-            mkdocs
-            # mkdocs-static-i18n
-            mkdocs-material
-          ])
-      ))
-    ]
-    ++
-    (with pkgs.nodePackages; [
-      vscode-json-languageserver
-      typescript-language-server
-      vscode-css-languageserver-bin
-      node2nix
-      markdownlint-cli2
-      prettier
-    ]) ++
-    [
       ((pkgs.vim_configurable.override { }).customize {
         name = "vim";
         # Install plugins for example for syntax highlighting of nix files
@@ -188,7 +163,34 @@ in
     ] ++
     (if (!(lib.elem config.networking.hostName (builtins.attrNames self.colmena))) then
       (lib.flatten
-        (lib.attrValues e)) else [ ]
+        (lib.attrValues e)) ++
+      [
+        (with pkgs; (
+          python3.withPackages
+            (p: with p;[
+              torch
+              fire
+              sentencepiece
+              gensim
+              numpy
+              tqdm
+
+              python-lsp-server
+              mkdocs
+              # mkdocs-static-i18n
+              mkdocs-material
+            ])
+        ))
+      ]
+      ++
+      (with pkgs.nodePackages; [
+        vscode-json-languageserver
+        typescript-language-server
+        vscode-css-languageserver-bin
+        node2nix
+        markdownlint-cli2
+        prettier
+      ]) else [ ]
     )
   ;
 }
