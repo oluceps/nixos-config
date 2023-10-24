@@ -1,4 +1,4 @@
-{ inputs, pkgs, data, lib }:
+{ inputs, pkgs, data, lib, ... }:
 [
   (inputs.nixpkgs
   + "/nixos/modules/installer/cd-dvd/installation-cd-graphical-gnome.nix")
