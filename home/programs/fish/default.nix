@@ -1,4 +1,4 @@
-{ ... }: {
+{ lib, ... }: {
   programs.fish = {
     enable = true;
     plugins = [ ];
@@ -24,10 +24,7 @@
       rp = "rustplayer";
       y = "yazi";
       i = "kitty +kitten icat $argv";
-      rha = "ssh rha -t fish";
-      ubt = "ssh ubt -t fish";
-      rka = "ssh rka -t fish";
-    };
+    } // lib.genAttrs [ "rha" "ubt" "rka" ] (n: "ssh ${n} -t fish");
 
 
     shellInit = ''

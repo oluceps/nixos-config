@@ -18,6 +18,12 @@
 
   services = {
     bpftune.enable = false;
+    kubo = {
+      enable = true;
+      settings.Addresses.API = [
+        "/ip4/127.0.0.1/tcp/5001"
+      ];
+    };
     btrbk = {
       config = ''
         ssh_identity /persist/keys/ssh_host_ed25519_key
@@ -150,7 +156,7 @@
     };
 
     fail2ban = {
-      enable = true;
+      enable = false;
       maxretry = 5;
       ignoreIP = [
         "127.0.0.0/8"

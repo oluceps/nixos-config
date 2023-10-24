@@ -5,6 +5,7 @@
 , pkgs
 , lib
 , user
+, data
 , ...
 }: lib.mkMerge [{
 
@@ -115,6 +116,10 @@
 
   systemd.tmpfiles.rules = [
     "C /var/cache/tuigreet/lastuser - - - - ${pkgs.writeText "lastuser" "${user}"}"
+    "C /root/.ssh/known_hosts - - - - ${pkgs.writeText "known_hosts" ''
+    10.0.1.2 ${data.keys.hasturHostPubKey}
+    10.0.0.2 ${data.keys.hasturHostPubKey}
+    ''}"
     "C /root/.ssh/config - - - - ${
     pkgs.writeText "ssh-config" (let genHost = name: addr: 
     ''

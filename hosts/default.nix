@@ -1,4 +1,4 @@
-{ inputs, genOverlays, sharedModules, base, lib, data, ... }:
+{ self, inputs, genOverlays, sharedModules, base, lib, data, ... }:
 let share = { inherit genOverlays sharedModules base lib; }; in [
   (import
     ./hastur
@@ -6,6 +6,8 @@ let share = { inherit genOverlays sharedModules base lib; }; in [
   (import
     ./kaambl
     share)
+
+  ./livecd
 
   ({ ... }: {
     flake = { pkgs, ... }: {
@@ -96,5 +98,4 @@ let share = { inherit genOverlays sharedModules base lib; }; in [
     };
 
   })
-  ./livecd
 ]

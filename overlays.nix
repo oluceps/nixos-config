@@ -210,22 +210,22 @@ let system = "x86_64-linux"; in [
       # });
 
 
-      rathole = prev.rathole.overrideAttrs
-        (old: rec {
-          version = "0.4.8-patch";
-          src = prev.fetchFromGitHub {
-            owner = "oluceps";
-            repo = "rathole";
-            rev = "9727e15377d9430cd2d3b97f2292037048610209";
-            sha256 = "sha256-yqZPs0rp3LD7n4+JGa55gZ4xMcumy+oazrxCqpDzIfQ=";
-          };
+      # rathole = prev.rathole.overrideAttrs
+      #   (old: rec {
+      #     version = "0.4.8-patch";
+      #     src = prev.fetchFromGitHub {
+      #       owner = "oluceps";
+      #       repo = "rathole";
+      #       rev = "9727e15377d9430cd2d3b97f2292037048610209";
+      #       sha256 = "sha256-yqZPs0rp3LD7n4+JGa55gZ4xMcumy+oazrxCqpDzIfQ=";
+      #     };
 
-          cargoDeps = old.cargoDeps.overrideAttrs (prev.lib.const {
-            inherit src;
-            # otherwise the old "src" will be used.
-            outputHash = "sha256-BZ6AgH/wnxrDLkyncR0pbayae9v5P7X7UnlJ48JR8sM=";
-          });
-        });
+      #     cargoDeps = old.cargoDeps.overrideAttrs (prev.lib.const {
+      #       inherit src;
+      #       # otherwise the old "src" will be used.
+      #       outputHash = "sha256-BZ6AgH/wnxrDLkyncR0pbayae9v5P7X7UnlJ48JR8sM=";
+      #     });
+      #   });
 
       # rio = prev.rathole.overrideAttrs
       #   (old: rec {
