@@ -1,5 +1,6 @@
 monitor=VGA-1,1920x1080@75,auto,1
 # monitor=VGA-1,transform,1
+monitor=eDP-1,2160x1440@60,0x0,1.5
 exec-once=fcitx5
 exec-once=mako
 # exec-once=waybar
@@ -45,11 +46,6 @@ master {
 decoration {
     # See https://wiki.hyprland.org/Configuring/Variables/ for more
     rounding = 11 
-    blur = true
-    blur_size = 4
-    blur_passes = 3
-    blur_new_optimizations = true
-
     drop_shadow = false
     shadow_range = 4
     shadow_render_power = 3
