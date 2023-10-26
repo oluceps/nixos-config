@@ -24,7 +24,7 @@
       rp = "rustplayer";
       y = "yazi";
       i = "kitty +kitten icat $argv";
-    } // lib.genAttrs [ "rha" "ubt" "rka" ] (n: "ssh ${n} -t fish");
+    } // lib.genAttrs [ "rha" "lsa" "tcs" "ubt" "rka" ] (n: "ssh ${n} -t fish");
 
 
     shellInit = ''

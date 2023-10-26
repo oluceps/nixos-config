@@ -38,7 +38,7 @@ let share = { inherit genOverlays sharedModules base lib; }; in [
         yidhra = { pkgs, nodes, ... }:
           let user = "elen"; in {
             deployment = {
-              targetHost = "ls";
+              targetHost = "lsa";
             };
 
             imports =
