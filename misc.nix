@@ -9,7 +9,7 @@
 , ...
 }: lib.mkMerge [{
 
-  # systemd.services.nix-daemon.serviceConfig.Slice = "user.slice";
+  systemd.services.nix-daemon.serviceConfig.LimitNOFILE = 500000;
   nix =
     {
       package = pkgs.nixVersions.stable;
