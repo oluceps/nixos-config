@@ -41,6 +41,7 @@
         ".mongodb"
         ".vscode"
         ".gradle"
+        ".steam"
         "Android"
         "Games"
         { directory = ".gnupg"; mode = "0700"; }
