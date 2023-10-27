@@ -106,7 +106,7 @@
     hyst-do.enable = false;
 
     # ss-tls cnt to router
-    ss.enable = true;
+    ss.enable = false;
     tuic.enable = true;
     juicity.enable = true;
     naive.enable = false;
@@ -118,7 +118,7 @@
       };
 
     sing-box.enable = false;
-    rathole.enable = true;
+    rathole.enable = false;
 
     daed.enable = false;
     dae = {

@@ -33,6 +33,7 @@
                   "android-nixpkgs"
                   "agenix-rekey"
                   "nixyDomains"
+                  "nixpkgs-wayland"
                 ])
                 ++ (with inputs;[ nur.overlay ]); #（>﹏<）
             };
