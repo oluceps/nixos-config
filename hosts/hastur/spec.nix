@@ -68,11 +68,6 @@
 
   services = {
 
-  nix-serve = {
-    enable = true;
-    secretKeyFile = "/home/riro/secret-key-file";
-  };
-
     greetd = {
       enable = true;
       settings = {
