@@ -16,7 +16,7 @@
   };
 
   services = {
-    inherit ((import ../../services.nix { inherit pkgs lib config inputs; }).services) openssh;
+    inherit ((import ../../services.nix { inherit pkgs lib config inputs; }).services) openssh fail2ban;
     rustypaste = {
       enable = true;
       settings = {
