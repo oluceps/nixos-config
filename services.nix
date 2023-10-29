@@ -156,7 +156,7 @@
     };
 
     fail2ban = {
-      enable = false;
+      enable = true;
       maxretry = 5;
       ignoreIP = [
         "127.0.0.0/8"

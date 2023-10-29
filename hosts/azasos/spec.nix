@@ -18,7 +18,8 @@
   services = {
     inherit ((import ../../services.nix { inherit pkgs lib config; }).services)
       openssh
-      mosdns;
+      mosdns
+      fail2ban;
   };
 
   programs = {
