@@ -17,7 +17,7 @@
   };
 
   services = {
-    gvfs.enable = true;
+    gvfs.enable = false;
     blueman.enable = true;
     btrbk.enable = true;
     pipewire = {
@@ -82,7 +82,7 @@
   programs.dconf.enable = true;
 
   systemd.tmpfiles.rules = [
-    "L+    /opt/rocm/hip   -    -    -     -    ${pkgs.rocmPackages.clr}"
+    # "L+    /opt/rocm/hip   -    -    -     -    ${pkgs.rocmPackages.clr}"
     "L+ /run/gdm/.config/monitors.xml - - - - ${pkgs.writeText "gdm-monitors.xml" ''
         <monitors version="2">
             <configuration>
