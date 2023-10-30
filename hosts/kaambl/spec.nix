@@ -19,7 +19,7 @@
   services = {
     gvfs.enable = false;
     blueman.enable = true;
-    btrbk.enable = true;
+    # btrbk.enable = true;
     pipewire = {
       enable = true;
       alsa.enable = true;
@@ -42,22 +42,27 @@
       };
     };
 
-    xserver = {
-      videoDrivers = [ "amdgpu" ];
-      enable = true;
-      displayManager = {
-        # sddm.enable = true;
-        gdm = {
-          enable = false;
-        };
+    # xserver = {
+    #   videoDrivers = [ "amdgpu" ];
+    #   enable = true;
+    #   displayManager = {
+    #     # sddm.enable = true;
+    #     gdm = {
+    #       enable = false;
+    #     };
 
-      };
-      desktopManager = {
-        # plasma5.enable = true;
-        gnome.enable = false;
-      };
-    };
+    #   };
+    #   desktopManager = {
+    #     # plasma5.enable = true;
+    #     gnome.enable = false;
+    #   };
+    # };
   };
+
+
+
+
+
   # services.udev = {
   #   packages = with pkgs; [ gnome.gnome-settings-daemon ];
   # };

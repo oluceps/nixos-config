@@ -29,13 +29,12 @@
                   "nvfetcher"
                   "EHfive"
                   "nuenv"
-                  "typst"
                   "android-nixpkgs"
                   "agenix-rekey"
                   "nixyDomains"
                   "nixpkgs-wayland"
-                ])
-                ++ (with inputs;[ nur.overlay ]); #（>﹏<）
+                ]);
+              # ++ (with inputs;[ nur.overlay ]); #（>﹏<）
             };
             specialArgs = base // { user = "elen"; };
             modules = [
@@ -53,7 +52,10 @@
               ../../misc.nix
               ../../users.nix
               ../../sysvars.nix
-            ] ++ sharedModules;
+            ]
+            ++ sharedModules
+            ++
+            [ inputs.home-manager.nixosModules.default ];
           };
       };
     };

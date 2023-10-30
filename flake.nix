@@ -109,7 +109,6 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     nur.url = "github:nix-community/NUR";
-    typst.url = "github:typst/typst";
     typst-lsp.url = "github:nvarner/typst-lsp";
     nur-pkgs = {
       url = "github:oluceps/nur-pkgs";

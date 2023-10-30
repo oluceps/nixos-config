@@ -30,7 +30,6 @@
                   "nvfetcher"
                   "EHfive"
                   "nuenv"
-                  "typst"
                   "android-nixpkgs"
                   "dae"
                   "agenix-rekey"
@@ -62,7 +61,7 @@
               inputs.misskey.nixosModules.default
               ./misskey.nix
 
-            ] ++ sharedModules;
+            ] ++ sharedModules ++ [ inputs.home-manager.nixosModules.default ];
           };
       };
     };

@@ -13,17 +13,18 @@
 
   xdg.portal = {
     enable = true;
+    extraPortals = with pkgs; [ xdg-desktop-portal-gtk ];
     xdgOpenUsePortal = true;
   };
 
   services = {
-    bpftune.enable = false;
-    kubo = {
-      enable = true;
-      settings.Addresses.API = [
-        "/ip4/127.0.0.1/tcp/5001"
-      ];
-    };
+    # bpftune.enable = false;
+    # kubo = {
+    #   enable = true;
+    #   settings.Addresses.API = [
+    #     "/ip4/127.0.0.1/tcp/5001"
+    #   ];
+    # };
     btrbk = {
       config = ''
         ssh_identity /persist/keys/ssh_host_ed25519_key
@@ -73,20 +74,21 @@
       ''
         SystemMaxUse=1G
       '';
-    sundial = {
-      enable = false;
-      calendars = [ "Sun,Mon-Thu 23:18:00" "Fri,Sat 23:48:00" ];
-      warnAt = [ "Sun,Mon-Thu 23:16:00" "Fri,Sat 23:46:00" ];
-    };
+    # sundial = {
+    #   enable = false;
+    #   calendars = [ "Sun,Mon-Thu 23:18:00" "Fri,Sat 23:48:00" ];
+    #   warnAt = [ "Sun,Mon-Thu 23:16:00" "Fri,Sat 23:46:00" ];
+    # };
 
     # HORRIBLE
-    mongodb = {
-      enable = false;
-      package = pkgs.mongodb-6_0;
-      enableAuth = true;
-      initialRootPassword = "initial";
-    };
+    # mongodb = {
+    #   enable = false;
+    #   package = pkgs.mongodb-6_0;
+    #   enableAuth = true;
+    #   initialRootPassword = "initial";
+    # };
 
+    # ????
     udev = {
 
       packages = with pkgs;[
@@ -166,29 +168,29 @@
       ];
     };
 
-    resolved = {
-      enable = false;
-      dnssec = "true";
-      llmnr = "true";
-      extraConfig = ''
-        DNS=1.0.0.1#one.one.one.one
-        FallbackDNS=
-        DNSOverTLS=true
-        # Cache=no
-        DNSStubListener=yes
-      '';
-    };
+    # resolved = {
+    #   enable = false;
+    #   dnssec = "true";
+    #   llmnr = "true";
+    #   extraConfig = ''
+    #     DNS=1.0.0.1#one.one.one.one
+    #     FallbackDNS=
+    #     DNSOverTLS=true
+    #     # Cache=no
+    #     DNSStubListener=yes
+    #   '';
+    # };
 
-    smartdns = {
-      enable = false;
-      settings = {
-        cache-size = 4096;
-        server-tls = [ "223.6.6.6:853" "1.0.0.1:853" ];
-        server-https = [ "https://dns.alidns.com/dns-query" ];
-        prefetch-domain = true;
-        speed-check-mode = "ping,tcp:80";
-      };
-    };
+    # smartdns = {
+    #   enable = false;
+    #   settings = {
+    #     cache-size = 4096;
+    #     server-tls = [ "223.6.6.6:853" "1.0.0.1:853" ];
+    #     server-https = [ "https://dns.alidns.com/dns-query" ];
+    #     prefetch-domain = true;
+    #     speed-check-mode = "ping,tcp:80";
+    #   };
+    # };
     mosdns = {
       config = {
         log = { level = "debug"; production = false; };
