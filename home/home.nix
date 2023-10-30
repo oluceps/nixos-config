@@ -10,7 +10,7 @@
     map (d: ./programs + d)
       (map (n: "/" + n)
         (with builtins;attrNames
-          (lib.filterAttrs (n: _: !elem n [ "hyprland" ])  # one or more of them conflict with gnome  "sway" "hyprland" "waybar"
+          (lib.filterAttrs (n: _: !elem n [ "sway" "hyprland" ])  # one or more of them conflict with gnome  "sway" "hyprland" "waybar"
             (readDir ./programs))));
 
   home.stateVersion = "22.11";
@@ -148,14 +148,14 @@
       gnome.eog
       gnome.dconf-editor
       gnome.gnome-boxes
-      #zathura
+      # zathura
 
       # social
       # discord
       tdesktop
       nheko
       element-desktop-wayland
-      thunderbird
+      # thunderbird
       # fluffychat
       discord-canary
       scrcpy
@@ -212,10 +212,10 @@
       prismlauncher
     ]
     ++
-    (with nur.repos; [
-      # linyinfeng.canokey-udev-rules
-      xddxdd.dingtalk
-    ]) ++
+    # (with nur.repos; [
+    # linyinfeng.canokey-udev-rules
+    # xddxdd.dingtalk
+    # ]) ++
     (with nur-pkgs;[
       techmino
       rustplayer
