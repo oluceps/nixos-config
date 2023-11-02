@@ -120,6 +120,7 @@
   };
   services.caddy = {
     enable = true;
+    package = pkgs.caddy-mod;
     # globalConfig = ''
     #   	order forward_proxy before file_server
     # '';
