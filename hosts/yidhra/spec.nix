@@ -120,7 +120,9 @@
   };
   services.caddy = {
     enable = true;
-    package = pkgs.caddy-mod;
+    # user = "root";
+    # configFile = config.age.secrets.caddy-lsa.path;
+    # package = pkgs.caddy-mod;
     # globalConfig = ''
     #   	order forward_proxy before file_server
     # '';
@@ -149,7 +151,7 @@
           reverse_proxy 10.0.1.2:3000
           tls ${config.age.secrets."nyaw.cert".path} ${config.age.secrets."nyaw.key".path}
           redir /matrix https://matrix.to/#/@sec:nyaw.xyz
-      
+
           header /.well-known/matrix/* Content-Type application/json
           header /.well-known/matrix/* Access-Control-Allow-Origin *
           respond /.well-known/matrix/server `{"m.server": "matrix.nyaw.xyz:443"}`
@@ -160,6 +162,13 @@
         hostName = "matrix.nyaw.xyz";
         extraConfig = ''
           	reverse_proxy /_matrix/* 10.0.1.2:6167
+        '';
+      };
+      "ctos.magicb.uk" = {
+        hostName = "ctos.magicb.uk";
+        extraConfig = ''
+           tls mn1.674927211@gmail.com
+           reverse_proxy 127.0.0.1:8080
         '';
       };
     };

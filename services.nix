@@ -168,18 +168,18 @@
       ];
     };
 
-    # resolved = {
-    #   enable = false;
-    #   dnssec = "true";
-    #   llmnr = "true";
-    #   extraConfig = ''
-    #     DNS=1.0.0.1#one.one.one.one
-    #     FallbackDNS=
-    #     DNSOverTLS=true
-    #     # Cache=no
-    #     DNSStubListener=yes
-    #   '';
-    # };
+    resolved = {
+      enable = false;
+      dnssec = "true";
+      llmnr = "true";
+      extraConfig = ''
+        DNS=1.0.0.1#one.one.one.one
+        FallbackDNS=
+        DNSOverTLS=true
+        # Cache=no
+        DNSStubListener=yes
+      '';
+    };
 
     # smartdns = {
     #   enable = false;
