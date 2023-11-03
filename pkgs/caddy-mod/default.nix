@@ -1,8 +1,8 @@
-{ buildGoModule
+{ buildGo120Module
 , fetchFromGitHub
 }:
 
-buildGoModule rec {
+buildGo120Module rec {
   pname = "caddy";
   version = "naive";
 
@@ -10,10 +10,10 @@ buildGoModule rec {
     owner = "oluceps";
     repo = "caddy";
     rev = "968872791e51dad9b217e0597e74376d826eae94";
-    hash = "";
+    hash = "sha256-7qWaEJ6hlmUCW8x0Rqi9oQPCDtRENNapgVVukrNO50A=";
   };
 
-  vendorHash = "";
+  vendorHash = "sha256-fiMtPG9aev15oH99xrTtEKj5xo679xLcXYVd5SAHaPc=";
 
   subPackages = [ "cmd/caddy" ];
 
