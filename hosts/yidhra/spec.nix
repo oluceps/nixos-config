@@ -168,7 +168,7 @@
         hostName = "ctos.magicb.uk";
         extraConfig = ''
            tls mn1.674927211@gmail.com
-           reverse_proxy 127.0.0.1:8080
+           reverse_proxy 10.0.1.2:10002
         '';
       };
     };

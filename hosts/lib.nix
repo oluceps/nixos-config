@@ -6,7 +6,7 @@
   sharedModules = [
     # ../age.nix
   ] ++ (genModules [ "agenix-rekey" "ragenix" "impermanence" "lanzaboote" "nix-ld" "self" ])
-  ++ (with inputs.dae.nixosModules;[ daed ]);
+  ++ (with inputs.dae.nixosModules;[ dae daed ]);
 
   data = {
     keys = {
