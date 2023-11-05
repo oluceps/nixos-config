@@ -74,17 +74,17 @@
             };
           }
 
-          # {
-          #   wireguardPeerConfig = {
-          #     PublicKey = "ANd++mjV7kYu/eKOEz17mf65bg8BeJ/ozBmuZxRT3w0=";
-          #     AllowedIPs = [
-          #       "10.0.0.0/24"
-          #       "10.0.1.0/24"
-          #     ];
-          #     Endpoint = "111.229.162.99:51820";
-          #     PersistentKeepalive = 15;
-          #   };
-          # }
+          {
+            wireguardPeerConfig = {
+              PublicKey = "ANd++mjV7kYu/eKOEz17mf65bg8BeJ/ozBmuZxRT3w0=";
+              AllowedIPs = [
+                "10.0.0.0/24"
+                "10.0.1.0/24"
+              ];
+              Endpoint = "111.229.162.99:51820";
+              PersistentKeepalive = 15;
+            };
+          }
         ];
       };
     };
@@ -105,9 +105,6 @@
 
       "20-eth0" = {
         matchConfig.Name = "eth0";
-        # DHCP = "yes";
-        # dhcpV4Config.RouteMetric = 2046;
-        # dhcpV6Config.RouteMetric = 2046;
         address = [
           "144.126.208.183/20"
           "10.48.0.5/16"
@@ -120,8 +117,6 @@
           { routeConfig.Gateway = "2604:a880:4:1d0::1"; }
         ];
         networkConfig = {
-          # Bond = "bond1";
-          # PrimarySlave = true;
           DNSSEC = true;
           MulticastDNS = true;
           DNSOverTLS = true;
@@ -133,9 +128,6 @@
 
       "30-eth1" = {
         matchConfig.Name = "eth1";
-        # DHCP = "yes";
-        # dhcpV4Config.RouteMetric = 2046;
-        # dhcpV6Config.RouteMetric = 2046;
         address = [
           "10.124.0.2/20"
           "fe80::2048:a2ff:fe5b:bf0/64"
