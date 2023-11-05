@@ -74,17 +74,17 @@
             };
           }
 
-          {
-            wireguardPeerConfig = {
-              PublicKey = "ANd++mjV7kYu/eKOEz17mf65bg8BeJ/ozBmuZxRT3w0=";
-              AllowedIPs = [
-                "10.0.0.0/24"
-                "10.0.1.0/24"
-              ];
-              Endpoint = "111.229.162.99:51820";
-              PersistentKeepalive = 15;
-            };
-          }
+          # {
+          #   wireguardPeerConfig = {
+          #     PublicKey = "ANd++mjV7kYu/eKOEz17mf65bg8BeJ/ozBmuZxRT3w0=";
+          #     AllowedIPs = [
+          #       "10.0.0.0/24"
+          #       "10.0.1.0/24"
+          #     ];
+          #     Endpoint = "111.229.162.99:51820";
+          #     PersistentKeepalive = 15;
+          #   };
+          # }
         ];
       };
     };
@@ -115,8 +115,10 @@
           "fe80::6016:bfff:fe7c:57a3/64"
         ];
 
-        gateway = [ "144.126.208.1" "2604:a880:4:1d0::1" ];
-
+        routes = [
+          { routeConfig.Gateway = "144.126.208.1"; }
+          { routeConfig.Gateway = "2604:a880:4:1d0::1"; }
+        ];
         networkConfig = {
           # Bond = "bond1";
           # PrimarySlave = true;
