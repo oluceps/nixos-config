@@ -60,6 +60,43 @@ let share = { inherit genOverlays sharedModules base lib; }; in [
                       config = nodes.yidhra.config;
                     })
                   ))
+                  # (import ../misc.nix (
+                  #   ({
+                  #     inherit pkgs inputs data user;
+                  #     inherit (base) self lib;
+                  #     config = nodes.yidhra.config;
+                  #   })
+                  # ))
+                ]
+              )
+              ++ sharedModules;
+          };
+
+        nodens = { pkgs, nodes, ... }:
+          let user = "elen"; in {
+            deployment = {
+              targetHost = "dgs";
+            };
+
+            imports =
+              (map (n: ./nodens + ("/" + n)) [
+                "hardware.nix"
+                "network.nix"
+                "spec.nix"
+              ]) ++
+
+              (
+                let a = { inherit data lib user; }; in [
+                  (import ./nodens/rekey.nix data)
+                  (import ../age.nix a)
+                  (import ../users.nix ({ inherit pkgs; } // a))
+                  (import ../packages.nix (
+                    ({
+                      inherit pkgs;
+                      inherit (base) self lib;
+                      config = nodes.nodens.config;
+                    })
+                  ))
                 ]
               )
               ++ sharedModules;
