@@ -162,7 +162,7 @@ in
       }
       )
     ] ++
-    (if (!(lib.elem config.networking.hostName (builtins.attrNames self.colmena))) then
+    (if (!(lib.elem config.networking.hostName ([ "azasos" "nodens" "yidhra" ]))) then
       (lib.flatten
         (lib.attrValues e)) ++
       [
