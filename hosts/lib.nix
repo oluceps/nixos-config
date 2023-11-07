@@ -24,7 +24,5 @@ inputs: rec {
     withoutHeads = [ "azasos" "nodens" "yidhra" ];
   };
 
-  lib = inputs.nixpkgs.lib;
-
-  base = { inherit inputs lib data; inherit (inputs) self; };
+  base = let lib = inputs.nixpkgs.lib; in { inherit inputs lib data; inherit (inputs) self; };
 }

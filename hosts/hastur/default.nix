@@ -14,7 +14,7 @@
                 allowBroken = false;
                 segger-jlink.acceptLicense = true;
                 allowUnsupportedSystem = true;
-                permittedInsecurePackages = inputs.nixpkgs.lib.mkForce [ "electron-24.8.6" ];
+                permittedInsecurePackages = lib.mkForce [ "electron-24.8.6" ];
               };
               overlays = (import ../../overlays.nix { inherit inputs; })
                 ++
