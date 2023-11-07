@@ -1,21 +1,6 @@
 { self, inputs, genOverlays, sharedModules, base, lib, data, ... }:
-let share = { inherit genOverlays sharedModules base lib; }; in [
-  (import
+let share = { inherit genOverlays sharedModules base lib; }; in (map (x: import x share)
+  ([
     ./hastur
-    share)
-  (import
     ./kaambl
-    share)
-  (import
-    ./yidhra
-    share)
-  (import
-    ./azasos
-    share)
-  (import
-    ./nodens
-    share)
-
-  ./livecd
-
-]
+  ] ++ map (x: ./. + x) ((map (x: "/" + x) data.withoutHeads)))) ++ [ ./livecd ]
