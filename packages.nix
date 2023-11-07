@@ -1,4 +1,4 @@
-{ self, config, pkgs, lib, ... }:
+{ self, config, pkgs, lib, data, ... }:
 let
   p = with pkgs; {
 
@@ -162,7 +162,7 @@ in
       }
       )
     ] ++
-    (if (!(lib.elem config.networking.hostName ([ "azasos" "nodens" "yidhra" ]))) then
+    (if (!(lib.elem config.networking.hostName (data.withoutHeads))) then
       (lib.flatten
         (lib.attrValues e)) ++
       [

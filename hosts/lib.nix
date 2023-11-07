@@ -19,6 +19,8 @@
       ageKey = "age1jr2x2m85wtte9p0s7d833e0ug8xf3cf8a33l9kjprc9vlxmvjycq05p2qq";
       sshPubKey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIEv3S53gBU3Hqvr5o5g+yrn1B7eiaE5Y/OIFlTwU+NEG";
     };
+
+    withoutHeads = [ "azasos" "nodens" "yidhra" ];
   };
 
   lib = inputs.nixpkgs.lib;
