@@ -159,7 +159,7 @@
   #
   #
 
-  (lib.mkIf (!(lib.elem config.networking.hostName ([ "yidhra" "azasos" "nodens" ]))) {
+  (lib.mkIf (!(lib.elem config.networking.hostName (data.withoutHeads))) {
     xdg = {
       mime = {
         enable = true;

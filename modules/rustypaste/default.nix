@@ -32,7 +32,7 @@ in
 
         serviceConfig = {
           Type = "simple";
-          ExecStart = "${lib.getExe cfg.package}";
+          ExecStart = "${cfg.package}/bin/rustypaste";
           StateDirectory = "paste";
           Environment = "CONFIG=${settingsFormat.generate "config.toml" cfg.settings}";
           Restart = "on-failure";

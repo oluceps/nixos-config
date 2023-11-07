@@ -37,8 +37,10 @@
 
         agenix-rekey = inputs.agenix-rekey.configure {
           userFlake = inputs.self;
-          nodes = { inherit (inputs.self.nixosConfigurations) hastur kaambl yidhra; }
-            // ((with inputs;(colmena.lib.makeHive self.colmena).introspect (x: x)).nodes);
+          nodes = {
+            inherit (inputs.self.nixosConfigurations)
+              hastur kaambl yidhra azasos nodens;
+          };
         };
 
         overlays.default =
