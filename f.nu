@@ -8,7 +8,7 @@ def copy_secrets [a: string, h: string] {
 }
 
 def prepare_configuration [x: string] {
-  nix build $".#nixosConfigurations.($x).config.system.build.toplevel --log-format internal-json -v 2>&1 | nom --json"
+  nom build $'.#nixosConfigurations.($x).config.system.build.toplevel'
 }
 
 def rekey [x, y, z] {
@@ -47,7 +47,6 @@ def main [x: string = "", y: string = "", z: string = "", a: string = "switch"] 
   if $x == 'y' {
     $general_set | each { |i| deploy $i $z $a }
   }
-
 
   if $x == 'help' or $x == "" {
     print 'cp <ssh alias>' 'cp <ssh alias> all' 'pre <hostname>' 'd <ssh alias> <build host alias> <switch>' 'y <build host alias> <switch> # build and deploy all'
