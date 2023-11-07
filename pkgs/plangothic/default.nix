@@ -3,7 +3,7 @@
 , lib
 }:
 
-stdenv.mkDerivation rec {
+stdenv.mkDerivation {
   pname = "plangothic-font";
   version = "0.5.5694";
   #srcs = [

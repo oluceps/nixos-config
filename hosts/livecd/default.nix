@@ -6,7 +6,7 @@
     {
       nixosConfigurations = {
         nixos = inputs.nixpkgs.lib.nixosSystem
-          rec {
+          {
             pkgs = import inputs.nixpkgs {
               system = "x86_64-linux";
             };
