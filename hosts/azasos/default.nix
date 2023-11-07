@@ -1,13 +1,12 @@
 { sharedModules
 , base
 , genOverlays
-, lib
 }:
 { inputs, ... }: {
   flake = { pkgs, ... }:
     {
       nixosConfigurations = {
-        azasos = lib.nixosSystem
+        azasos = inputs.nixpkgs.lib.nixosSystem
           {
             pkgs = import inputs.nixpkgs {
               system = "x86_64-linux";

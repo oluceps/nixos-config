@@ -4,7 +4,7 @@
     flake-parts.lib.mkFlake { inherit inputs; } {
       imports = import ./hosts {
         inherit inputs;
-        inherit (import ./hosts/lib.nix { inherit inputs; })
+        inherit (import ./hosts/lib.nix inputs)
           genOverlays sharedModules base lib data self;
       };
       systems = [ "x86_64-linux" "aarch64-linux" ];
@@ -41,13 +41,17 @@
           ;
         };
 
-        overlays.default =
-          final: prev: prev.lib.genAttrs
-            (with builtins;
-            (with prev.lib; attrNames (
-              filterAttrs (n: _: !elem n [ "ubt-rv-run" ]) # temporary disable pkg
-                (readDir ./pkgs))))
-            (name: final.callPackage (./pkgs + "/${name}") { });
+        overlays = {
+          default =
+            final: prev: prev.lib.genAttrs
+              (with builtins;
+              (with prev.lib; attrNames (
+                filterAttrs (n: _: !elem n [ "ubt-rv-run" ]) # temporary disable pkg
+                  (readDir ./pkgs))))
+              (name: final.callPackage (./pkgs + "/${name}") { });
+
+          lib = final: prev: (import ./hosts/lib.nix inputs);
+        };
 
         nixosModules = import ./modules { lib = inputs.nixpkgs.lib; };
       };

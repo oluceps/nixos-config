@@ -1,11 +1,7 @@
-{ sharedModules
-, base
-, genOverlays
-, lib
-}:
-{ inputs, ... }: {
-  flake = { pkgs, ... }:
+{ self, inputs, ... }: {
 
+  flake = { ... }:
+    let lib = inputs.nixpkgs.lib.extend self.overlays.lib; in
     {
       nixosConfigurations = {
         hastur = inputs.nixpkgs.lib.nixosSystem
@@ -22,7 +18,7 @@
               };
               overlays = (import ../../overlays.nix { inherit inputs; })
                 ++
-                (genOverlays [
+                (lib.genOverlays [
                   "self"
                   # "clansty"
                   "fenix"
@@ -38,7 +34,7 @@
                 ])
                 ++ (with inputs;[ nur.overlay ]); #（>﹏<）
             };
-            specialArgs = base // { user = "riro"; };
+            specialArgs = lib.base // { user = "riro"; };
             modules = [
               ./hardware.nix
               ./network.nix
@@ -61,7 +57,7 @@
               inputs.misskey.nixosModules.default
               ./misskey.nix
 
-            ] ++ sharedModules ++ [ inputs.home-manager.nixosModules.default ];
+            ] ++ lib.sharedModules ++ [ inputs.home-manager.nixosModules.default ];
           };
       };
     };
