@@ -1,4 +1,4 @@
-{ self, inputs, ... }:
+inputs:
 let data = (import ./lib.nix inputs).data; in
 ([
   ./hastur

@@ -2,11 +2,7 @@
   description = "oluceps' flake";
   outputs = inputs@{ flake-parts, ... }:
     flake-parts.lib.mkFlake { inherit inputs; } {
-      imports = import ./hosts {
-        inherit inputs;
-        inherit (import ./hosts/lib.nix inputs)
-          genOverlays sharedModules base lib data self;
-      };
+      imports = import ./hosts inputs;
       systems = [ "x86_64-linux" "aarch64-linux" ];
       perSystem = { pkgs, system, inputs', ... }: {
 
