@@ -1,11 +1,11 @@
 { inputs, ... }: {
   flake = { pkgs, ... }:
     let
-      inherit (import ../lib.nix { inherit inputs; }) lib base;
+      inherit (import ../lib.nix inputs) base;
     in
     {
       nixosConfigurations = {
-        nixos = lib.nixosSystem
+        nixos = inputs.nixpkgs.lib.nixosSystem
           rec {
             pkgs = import inputs.nixpkgs {
               system = "x86_64-linux";

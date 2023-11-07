@@ -3,8 +3,8 @@ inputs: rec {
   # I don't like this
   genModules = map (let m = i: inputs.${i}.nixosModules; in (i: (m i).default or (m i).${i}));
 
-  genOverlays = map (let m = i: inputs.${i}.overlays; in (i: (m i).default or (m i).${i}));
-
+  genOverlays = map (let m = i: inputs.${i}.overlays; in (i: (m i).default));
+  # or (m i).${i}
   sharedModules = [
   ] ++ (genModules [ "agenix-rekey" "ragenix" "impermanence" "lanzaboote" "nix-ld" "self" ])
   ++ (with inputs.dae.nixosModules;[ dae daed ]);
