@@ -14,7 +14,6 @@
           inherit system;
           overlays = with inputs;[
             agenix-rekey.overlays.default
-            colmena.overlays.default
           ];
         };
 
@@ -28,7 +27,7 @@
           };
 
         devShells.default = with pkgs; mkShell {
-          packages = [ agenix-rekey colmena ];
+          packages = [ agenix-rekey ];
         };
 
       };
@@ -37,10 +36,9 @@
 
         agenix-rekey = inputs.agenix-rekey.configure {
           userFlake = inputs.self;
-          nodes = {
-            inherit (inputs.self.nixosConfigurations)
-              hastur kaambl yidhra azasos nodens;
-          };
+          nodes = with inputs.nixpkgs.lib;
+            filterAttrs (n: _: !elem n [ "nixos" ]) inputs.self.nixosConfigurations
+          ;
         };
 
         overlays.default =
@@ -63,11 +61,6 @@
     nixpkgs-rebuild.url = "github:SuperSandro2000/nixpkgs?rev=449114c6240520433a650079c0b5440d9ecf6156";
     nixpkgs-wayland = {
       url = "github:nix-community/nixpkgs-wayland";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-    colmena = {
-      url = "github:zhaofengli/colmena";
-      inputs.stable.follows = "nixpkgs";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     conduit = {
