@@ -159,7 +159,7 @@
   #
   #
 
-  (lib.mkIf (!(lib.elem config.networking.hostName (builtins.attrNames self.colmena))) {
+  (lib.mkIf (!(lib.elem config.networking.hostName ([ "yidhra" "azasos" "nodens" ]))) {
     xdg = {
       mime = {
         enable = true;

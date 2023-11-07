@@ -9,6 +9,9 @@ let share = { inherit genOverlays sharedModules base lib; }; in [
   (import
     ./yidhra
     share)
+  (import
+    ./azasos
+    share)
 
   ./livecd
 
