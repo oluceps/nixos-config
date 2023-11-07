@@ -26,6 +26,7 @@ in
   config =
     mkIf cfg.enable {
       systemd.services.rustypaste = {
+        wantedBy = [ "multi-user.target" ];
         after = [ "network-online.target" ];
         description = "pastebin";
 

@@ -78,6 +78,7 @@ let
       inotify-tools
       rustup
       minio-client
+      tmux
       awscli2
       trunk
       cargo-expand
