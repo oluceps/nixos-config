@@ -23,7 +23,7 @@
           };
 
         devShells.default = with pkgs; mkShell {
-          packages = [ agenix-rekey ];
+          packages = [ agenix-rekey home-manager ];
         };
 
       };
