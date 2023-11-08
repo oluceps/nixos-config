@@ -1,9 +1,9 @@
-{ config
-, pkgs
-, lib
-, inputs
-, ...
-}:
+user: { config
+      , pkgs
+      , lib
+      , inputs
+      , ...
+      }:
 {
 
   imports =
@@ -14,6 +14,8 @@
             (readDir ./programs))));
 
   home.stateVersion = "22.11";
+  home.username = user;
+  home.homeDirectory = "/home/${user}";
 
   home.sessionVariables = {
     EDITOR = "hx";

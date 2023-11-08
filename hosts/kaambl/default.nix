@@ -41,7 +41,7 @@
               ../persist.nix
               ../secureboot.nix
               ../../services.nix
-              ../../home
+              # ../../home
               ../../boot.nix
               ../../age.nix
               ../../packages.nix
@@ -49,9 +49,9 @@
               ../../users.nix
               ../../sysvars.nix
             ]
-            ++ lib.sharedModules
-            ++
-            [ inputs.home-manager.nixosModules.default ];
+            ++ lib.sharedModules;
+            # ++
+            # [ inputs.home-manager.nixosModules.default ];
           };
       };
     };

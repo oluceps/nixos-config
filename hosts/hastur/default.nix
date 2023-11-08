@@ -51,13 +51,14 @@
               ../../age.nix
 
               ../../boot.nix
-              ../../home
+              # ../../home
               ../../users.nix
 
               inputs.misskey.nixosModules.default
               ./misskey.nix
 
-            ] ++ lib.sharedModules ++ [ inputs.home-manager.nixosModules.default ];
+            ] ++ lib.sharedModules;
+             # ++ [ inputs.home-manager.nixosModules.default ];
           };
       };
     };
