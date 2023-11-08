@@ -128,7 +128,12 @@
       package = pkgs.dae-unstable;
       disableTxChecksumIpGeneric = false;
       configFile = config.age.secrets.dae.path;
-      assets = with pkgs; [ v2ray-geoip v2ray-domain-list-community ];
+      # assets = with pkgs; [ v2ray-geoip v2ray-domain-list-community ];
+      assetsPath = "${pkgs.symlinkJoin {
+        name = "dae-assets-nixy";
+        paths = [ pkgs.nixy-domains.src "${pkgs.v2ray-geoip}/share/v2ray" ];
+      }}";
+
       openFirewall = {
         enable = true;
         port = 12345;

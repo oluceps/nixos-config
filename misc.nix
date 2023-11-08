@@ -1,6 +1,5 @@
 # original configuration.nix w
 { inputs
-, self
 , config
 , pkgs
 , lib
