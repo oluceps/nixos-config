@@ -279,7 +279,7 @@ user: { config
     };
 
     zsh = {
-      enable = true;
+      enable = false;
       shellAliases = {
         nd = "cd /etc/nixos";
         n = "neovide";
