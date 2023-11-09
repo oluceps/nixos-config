@@ -233,8 +233,6 @@ user: { config
   programs = {
     yazi.enable = true;
     zoxide.enable = true;
-    # swww.enable = false;
-    bash.enable = true;
     vscode = {
       enable = true;
       package = pkgs.vscode.fhsWithPackages (ps: with ps; [ rustup zlib ]);
