@@ -143,11 +143,14 @@
       format = "$username$hostname$directory$git_branch$git_commit$git_status$nix_shell$cmd_duration$line_break$python$character";
     };
   };
-  # system.activationScripts = {
-  #   stdio.text =
-  #     ''
-  #     '';
-  # };
+  system.activationScripts = {
+    # workaround with tmpfs as home and home-manager, since it not preserve
+    # ~/.nix-profile symlink after reboot.
+    profile-init.text =
+      ''
+        ln -sfn /home/${user}/.local/state/nix/profiles/profile /home/${user}/.nix-profile
+      '';
+  };
 
 }
 
