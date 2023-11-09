@@ -2,11 +2,7 @@
   description = "oluceps' flake";
   outputs = inputs@{ flake-parts, ... }:
     flake-parts.lib.mkFlake { inherit inputs; } {
-      imports = import ./hosts {
-        inherit inputs;
-        inherit (import ./hosts/lib.nix { inherit inputs; })
-          genOverlays sharedModules base lib data self;
-      };
+      imports = import ./hosts inputs ++ [ ./home ];
       systems = [ "x86_64-linux" "aarch64-linux" ];
       perSystem = { pkgs, system, inputs', ... }: {
 
@@ -14,7 +10,6 @@
           inherit system;
           overlays = with inputs;[
             agenix-rekey.overlays.default
-            colmena.overlays.default
           ];
         };
 
@@ -28,7 +23,7 @@
           };
 
         devShells.default = with pkgs; mkShell {
-          packages = [ agenix-rekey colmena ];
+          packages = [ agenix-rekey home-manager ];
         };
 
       };
@@ -37,19 +32,22 @@
 
         agenix-rekey = inputs.agenix-rekey.configure {
           userFlake = inputs.self;
-          nodes = {
-            inherit (inputs.self.nixosConfigurations)
-              hastur kaambl yidhra azasos nodens;
-          };
+          nodes = with inputs.nixpkgs.lib;
+            filterAttrs (n: _: !elem n [ "nixos" ]) inputs.self.nixosConfigurations
+          ;
         };
 
-        overlays.default =
-          final: prev: prev.lib.genAttrs
-            (with builtins;
-            (with prev.lib; attrNames (
-              filterAttrs (n: _: !elem n [ "ubt-rv-run" ]) # temporary disable pkg
-                (readDir ./pkgs))))
-            (name: final.callPackage (./pkgs + "/${name}") { });
+        overlays = {
+          default =
+            final: prev: prev.lib.genAttrs
+              (with builtins;
+              (with prev.lib; attrNames (
+                filterAttrs (n: _: !elem n [ "ubt-rv-run" ]) # temporary disable pkg
+                  (readDir ./pkgs))))
+              (name: final.callPackage (./pkgs + "/${name}") { });
+
+          lib = final: prev: (import ./hosts/lib.nix inputs);
+        };
 
         nixosModules = import ./modules { lib = inputs.nixpkgs.lib; };
       };
@@ -63,11 +61,6 @@
     nixpkgs-rebuild.url = "github:SuperSandro2000/nixpkgs?rev=449114c6240520433a650079c0b5440d9ecf6156";
     nixpkgs-wayland = {
       url = "github:nix-community/nixpkgs-wayland";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-    colmena = {
-      url = "github:zhaofengli/colmena";
-      inputs.stable.follows = "nixpkgs";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     conduit = {

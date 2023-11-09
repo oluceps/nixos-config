@@ -29,7 +29,7 @@ jobs:
         shell: bash
     strategy:
       matrix:
-        hosts: [ hastur, kaambl, nixos ]
+        hosts: [ hastur, kaambl, azasos, yidhra, nodens, nixos ]
 name: eval
 on: 
   pull_request:

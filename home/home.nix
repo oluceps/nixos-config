@@ -1,9 +1,9 @@
-{ config
-, pkgs
-, lib
-, inputs
-, ...
-}:
+user: { config
+      , pkgs
+      , lib
+      , inputs
+      , ...
+      }:
 {
 
   imports =
@@ -14,6 +14,8 @@
             (readDir ./programs))));
 
   home.stateVersion = "22.11";
+  home.username = user;
+  home.homeDirectory = "/home/${user}";
 
   home.sessionVariables = {
     EDITOR = "hx";
@@ -231,8 +233,6 @@
   programs = {
     yazi.enable = true;
     zoxide.enable = true;
-    # swww.enable = false;
-    bash.enable = true;
     vscode = {
       enable = true;
       package = pkgs.vscode.fhsWithPackages (ps: with ps; [ rustup zlib ]);
@@ -277,7 +277,7 @@
     };
 
     zsh = {
-      enable = true;
+      enable = false;
       shellAliases = {
         nd = "cd /etc/nixos";
         n = "neovide";

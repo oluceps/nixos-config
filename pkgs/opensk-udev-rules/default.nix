@@ -6,7 +6,7 @@
 ## Usage
 # In NixOS, simply add this package to services.udev.packages:
 #   services.udev.packages = [ pkgs.opensk-udev-rules ];
-stdenv.mkDerivation rec {
+stdenv.mkDerivation (finalAttrs: {
   pname = "opensk-udev-rules";
 
   version = "2.0";
@@ -14,7 +14,7 @@ stdenv.mkDerivation rec {
   src = fetchFromGitHub {
     owner = "google";
     repo = "OpenSK";
-    rev = "ctap${version}";
+    rev = "ctap${finalAttrs.version}";
     sha256 = "sha256-JeBaSS6XzFOC22beWA3F9o1AJFzg5i346xU34LY9efk=";
   };
 
@@ -33,4 +33,4 @@ stdenv.mkDerivation rec {
     license = licenses.asl20;
     maintainers = with maintainers; [ oluceps ];
   };
-}
+})

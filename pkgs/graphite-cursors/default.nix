@@ -3,14 +3,14 @@
 , fetchFromGitHub
 }:
 
-stdenv.mkDerivation rec {
+stdenv.mkDerivation (finalAttrs: {
   pname = "graphite-cursors";
   version = "2021-11-26";
 
   src = fetchFromGitHub {
     owner = "vinceliuice";
-    repo = pname;
-    rev = "${version}";
+    repo = finalAttrs.pname;
+    rev = "${finalAttrs.version}";
     sha256 = "sha256-Kopl2NweYrq9rhw+0EUMhY/pfGo4g387927TZAhI5/A=";
   };
 
@@ -29,4 +29,4 @@ stdenv.mkDerivation rec {
     platforms = platforms.all;
     # maintainers = with maintainers; [ oluceps ];
   };
-}
+})

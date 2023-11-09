@@ -6,7 +6,7 @@
 ## Usage
 # In NixOS, simply add this package to services.udev.packages:
 #   services.udev.packages = [ pkgs.opensk-udev-rules ];
-stdenv.mkDerivation rec {
+stdenv.mkDerivation (finalAttrs: {
   pname = "nrf-udev";
 
   version = "1.0.1";
@@ -14,7 +14,7 @@ stdenv.mkDerivation rec {
   src = fetchFromGitHub {
     owner = "NordicSemiconductor";
     repo = "nrf-udev";
-    rev = "v${version}";
+    rev = "v${finalAttrs.version}";
     sha256 = "sha256-bEIAsz9ZwX6RTzhv5/waFZ5a3KlnwX4kQs29+475zN0=";
   };
 
@@ -33,4 +33,4 @@ stdenv.mkDerivation rec {
     maintainers = with maintainers; [ oluceps ];
   };
 }
-
+)
