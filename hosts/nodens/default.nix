@@ -1,22 +1,16 @@
-{ sharedModules
-, base
-, genOverlays
-, lib
-}:
-{ inputs, ... }: {
-  flake = { pkgs, ... }:
+{ self, inputs, ... }: {
+  flake = { ... }:
+    let lib = inputs.nixpkgs.lib.extend self.overlays.lib; in
     {
       nixosConfigurations = {
         nodens = lib.nixosSystem
           {
             pkgs = import inputs.nixpkgs {
               system = "x86_64-linux";
-              config = {
-                # contentAddressedByDefault = true;
-              };
-              overlays = (import ../../overlays.nix { inherit inputs; })
+              config = { };
+              overlays = (import ../../overlays.nix inputs)
                 ++
-                (genOverlays [
+                (lib.genOverlays [
                   "self"
                   "fenix"
                   "EHfive"
@@ -26,7 +20,7 @@
                   "nixpkgs-wayland"
                 ]);
             };
-            specialArgs = base // { user = "elen"; };
+            specialArgs = lib.base // { user = "elen"; };
             modules = [
               ./hardware.nix
               ./network.nix
@@ -37,7 +31,7 @@
               ../../misc.nix
               ../../users.nix
             ]
-            ++ sharedModules;
+            ++ lib.sharedModules;
           };
       };
     };

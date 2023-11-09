@@ -1,13 +1,5 @@
-{ inputs, ... }: rec {
-
-  # I don't like this
-  genModules = map (let m = i: inputs.${i}.nixosModules; in (i: (m i).default or (m i).${i}));
-
-  sharedModules = [
-    # ../age.nix
-  ] ++ (genModules [ "agenix-rekey" "ragenix" "impermanence" "lanzaboote" "nix-ld" "self" ])
-  ++ (with inputs.dae.nixosModules;[ dae daed ]);
-
+inputs:
+let
   data = {
     keys = {
       hashedPasswd = "$y$j9T$dQkjYyrZxZn1GnoZLRRLE1$nvNuCnEvJr9235CX.VXabEUve/Bx00YB5E8Kz/ewZW0";
@@ -23,9 +15,17 @@
     withoutHeads = [ "azasos" "nodens" "yidhra" ];
   };
 
-  lib = inputs.nixpkgs.lib;
+  genModules = map (let m = i: inputs.${i}.nixosModules; in (i: (m i).default or (m i).${i}));
+in
+{
+  inherit data genModules;
 
-  base = { inherit inputs lib data; inherit (inputs) self; };
+  genOverlays = map (i: inputs.${i}.overlays.default);
 
-  genOverlays = map (let m = i: inputs.${i}.overlays; in (i: (m i).default or (m i).${i}));
+  sharedModules = [
+  ] ++ (genModules [ "agenix-rekey" "ragenix" "impermanence" "lanzaboote" "nix-ld" "self" ])
+  ++ (with inputs.dae.nixosModules;[ dae daed ]);
+
+
+  base = let lib = inputs.nixpkgs.lib; in { inherit inputs lib data; inherit (inputs) self; };
 }
