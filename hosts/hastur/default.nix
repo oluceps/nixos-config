@@ -58,7 +58,6 @@
               ./misskey.nix
 
             ] ++ lib.sharedModules;
-            # ++ [ inputs.home-manager.nixosModules.default ];
           };
       };
     };
