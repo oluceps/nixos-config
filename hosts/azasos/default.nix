@@ -10,7 +10,7 @@
               config = {
                 # contentAddressedByDefault = true;
               };
-              overlays = (import ../../overlays.nix { inherit inputs; })
+              overlays = (import ../../overlays.nix inputs)
                 ++
                 (lib.genOverlays [
                   "self"

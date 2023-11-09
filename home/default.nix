@@ -13,7 +13,7 @@
                   permittedInsecurePackages = lib.mkForce [ "electron-24.8.6" ];
                   allowUnfree = true;
                 };
-                overlays = (import ../overlays.nix { inherit inputs; })
+                overlays = (import ../overlays.nix inputs)
                   ++
                   (lib.genOverlays [
                     "self"

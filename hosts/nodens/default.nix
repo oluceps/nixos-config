@@ -8,7 +8,7 @@
             pkgs = import inputs.nixpkgs {
               system = "x86_64-linux";
               config = { };
-              overlays = (import ../../overlays.nix { inherit inputs; })
+              overlays = (import ../../overlays.nix inputs)
                 ++
                 (lib.genOverlays [
                   "self"
