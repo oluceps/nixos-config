@@ -1,56 +1,108 @@
-#!/usr/bin/env -S nu --stdin
+#!/usr/bin/env nu
 
-const general_set = ["hastur" "azasos" "kaambl" "yidhra" "nodens"]
- 
-def copy_secrets [a: string, h: string] {
- (nix copy --substitute-on-destination --to $'ssh://($a)'
-   (nix eval --raw $'.#nixosConfigurations.($h).config.age.rekey.derivation') -vvv)
+const map_path = "/run/agenix/addr-map"
+
+export-env {
+  $env.get_addr = { |map, per| $map | where name == $per | $in.addr.0 }
 }
 
-def prepare_configuration [x: string] {
-  nom build $'.#nixosConfigurations.($x).config.system.build.toplevel'
+export def b [
+  nodes?: list<string>
+  --builder (-b): string = "hastur"
+] {
+
+  let map = (open $map_path | lines | split column ":" name addr)
+
+  let target_addr = do $env.get_addr ($map) $builder
+
+  let h = hostname | str trim
+
+  let job = if $h != $builder {
+    ["--max-jobs" "0"]
+  } else { [] }
+
+  let machine_spec = "x86_64-linux - - - big-parallel"
+
+  $nodes | par-each {|| 
+    (nix build $'.#nixosConfigurations.($in).config.system.build.toplevel'
+      --builders $"($target_addr) ($machine_spec)"
+      ...($job) -vvv) 
+  }
+
 }
 
-def rekey [x, y, z] {
-  if $x == 'cp' {
-    if $z == 'all' {
-      $general_set | each { |i| copy_secrets $y $i }
-      return
+export def d [
+  nodes?: list<string>
+  mode?: string = "switch"
+  --builder (-b): string = "hastur"
+] {
+
+  let map = (open $map_path | lines | split column ":" name addr)
+
+  let get_addr = {|x| do $env.get_addr ($map) ($x)}
+
+  let builder_addr = do $get_addr $builder
+
+  $nodes | par-each {||
+    (nixos-rebuild $mode
+      --flake $'.#($in)'
+      --target-host (do $get_addr $in)
+      --build-host $"($builder_addr)"
+      --use-remote-sudo)
+  }
+
+}
+
+const age_pub = /run/agenix/age
+
+export def en [name: string] {
+  rage -e $name -i $age_pub -i ./sec/age-yubikey-identity-7d5d5540.txt.pub -o $'./($name).age'
+  srm $name
+}
+
+export def de [path: string] {
+  let tmp_path = (mktemp -t)
+  rage -d $path -i $age_pub -o $tmp_path # -i ./age-yubikey-identity-7d5d5540.txt.pub
+  let mime_type = (xdg-mime query filetype $tmp_path)
+  if ($mime_type | str contains "image") {
+    cat $tmp_path | img2sixel
+  } else {
+    cat $tmp_path
+  }
+
+  srm -C $tmp_path
+}
+
+export def dump [path?: string = "./sec/decrypted"] {
+  srm -frC $path
+  mkdir $path
+  ls ./sec/*.age | par-each {|i| 
+    de $i.name | save $'($path)/($i.name | path parse | $in.stem)' 
+  }
+}
+
+export def chk [] {
+  let allow = ["f" "age-yubikey-identity-7d5d5540.txt.pub" "rekeyed"]
+  ls sec |
+    filter {|i|
+      not ($in.name | path basename | str ends-with "age")
+    } |
+    filter {|i|
+      not ($i.name | path basename | $in in $allow)
     }
-    (ssh $y hostname) | copy_secrets $y $in
-    print completed.
-  }
 }
 
-def pre [x, y, z] {
-  if $x == 'pre' {
-    if $y == 'all' {
-      $general_set | each { |i| prepare_configuration $i }
-    }
-  }
-}
+export def rswc [
+  --builder (-b): string = "hastur"
+] {
 
-def deploy [t: string, b: string = "", m: string = ""] {
-  let hostname = (ssh $t hostname)
-  nixos-rebuild --target-host $t $m --use-remote-sudo --flake $'.#($hostname)'
-}
-def main [x: string = "", y: string = "", z: string = "", a: string = "switch"] {
-  cd '/etc/nixos'
-  
-  rekey $x $y $z
+  let job = ["--max-jobs" "0"]
 
-  pre $x $y $z
+  let map = (open $map_path | lines | split column ":" name addr)
 
-  if $x == 'd' {
-    deploy $y $z $a
-  } 
+  let target_addr = do $env.get_addr ($map) $builder
 
-  if $x == 'y' {
-    $general_set | each { |i| deploy $i $z $a }
-  }
+  let machine_spec = "x86_64-linux - - -"
 
-  if $x == 'help' or $x == "" {
-    print 'cp <ssh alias>' 'cp <ssh alias> all' 'pre <hostname>' 'd <ssh alias> <build host alias> <switch>' 'y <build host alias> <switch> # build and deploy all'
-  }
-  cd -
+  nh os switch --no-nom -- --builders $"($target_addr)"
 }

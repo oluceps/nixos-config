@@ -1,19 +1,16 @@
 { user, ... }: {
 
   environment.persistence."/persist" = {
-    hideMounts = true;
     directories = [
-      "/etc/nixos"
-      "/etc/ssh"
-      "/etc/NetworkManager"
-      # "/var/log"
-      # "/var/lib"
+      "/root/.ssh"
     ];
+    files = [ "/root/.bash_history" ];
     users.${user} = {
       files = [
         ".npmrc"
         ".mongoshrc.js"
         ".gitconfig"
+        ".bash_history"
       ];
       directories = [
         "Src"

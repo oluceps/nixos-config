@@ -14,7 +14,7 @@
 
       root = {
         initialHashedPassword = lib.mkForce data.keys.hashedPasswd;
-        openssh.authorizedKeys.keys = with data.keys;[ sshPubKey ];
+        openssh.authorizedKeys.keys = with data.keys;[ sshPubKey skSshPubKey ];
       };
 
       ${user} = {
@@ -26,21 +26,18 @@
           "kvm"
           "adbusers"
           "docker"
+          "wireshark"
+          "tss"
+          "podman"
         ];
-        shell = pkgs.bash;
+        shell = pkgs.fish;
 
-        openssh.authorizedKeys.keys = with data.keys;[ sshPubKey ];
+        openssh.authorizedKeys.keys = with data.keys;[ sshPubKey skSshPubKey ];
       };
-      root.shell = pkgs.bash;
-
-      proxy = {
-        isSystemUser = true;
-        group = "nogroup";
-      };
+      root.shell = pkgs.fish;
 
     };
     groups.nixosvmtest = { };
-    groups.caddy = { };
 
     mutableUsers = lib.mkForce false;
 

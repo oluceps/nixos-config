@@ -1,9 +1,9 @@
-{ ... }:
+_:
 {
 
   programs =
     let
-      commandLineArgs = [ "--enable-wayland-ime" "--ozone-platform=wayland" ];
+      commandLineArgs = [ "--enable-wayland-ime" "--ozone-platform=wayland" "--gtk-version=4" ];
       # let commandLineArgs = [ "--gtk-version=4" "--ozone-platform=wayland" "--disable-features=WaylandFractionalScaleV1" ];
     in
     {
@@ -12,6 +12,11 @@
         inherit commandLineArgs;
       };
       google-chrome = {
+        enable = true;
+        inherit commandLineArgs;
+      };
+
+      brave = {
         enable = true;
         inherit commandLineArgs;
       };

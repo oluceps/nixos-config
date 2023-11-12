@@ -1,35 +1,53 @@
-{ pkgs, config, user, ... }: {
+{ pkgs, config, user, lib, inputs, ... }: {
   # This headless machine uses to perform heavy task.
   # Running database and web services.
 
   system.stateVersion = "22.11"; # Did you read the comment?
 
   zramSwap = {
-    enable = true;
+    enable = false;
     swapDevices = 1;
     memoryPercent = 80;
     algorithm = "zstd";
   };
 
-  services.gvfs.enable = true;
-
-  hardware = {
-    #   nvidia = {
-    #     package = config.boot.kernelPackages.nvidiaPackages.latest;
-    #     modesetting.enable = true;
-    #     powerManagement.enable = false;
-    #   };
-
-    # opengl = {
-    #   enable = true;
-    #   extraPackages = with pkgs; [
-    #     rocm-opencl-icd
-    #     rocm-opencl-runtime
-    #   ];
-    #   driSupport = true;
-    #   driSupport32Bit = true;
-    # };
+  programs = {
+    anime-game-launcher.enable = true; # Adds launcher and /etc/hosts rules
+    niri.enable = true;
+    sway.enable = true;
   };
+  systemd.services.atuin.serviceConfig.Environment = [ "RUST_LOG=debug" ];
+  systemd.services.restic-backups-persist = {
+    serviceConfig.Environment = [ "GOGC=20" ];
+  };
+
+  # systemd.services.tester = {
+  #   serviceConfig = {
+  #     Type = "simple";
+  #     ExecStart = "exit 3";
+  #     ExecStopPost = lib.genNtfyMsgScriptPath "tags warning prio high" "info" "test";
+  #   };
+  #   wantedBy = [ "multi-user.target" ];
+  # };
+
+  # hardware = {
+  #   nvidia = {
+  #     package = config.boot.kernelPackages.nvidiaPackages.latest;
+  #     modesetting.enable = true;
+  #     powerManagement.enable = false;
+  #     open = true;
+  #   };
+
+  #   opengl = {
+  #     enable = true;
+  #     # extraPackages = with pkgs; [
+  #     #   rocm-opencl-icd
+  #     #   rocm-opencl-runtime
+  #     # ];
+  #     driSupport = true;
+  #     driSupport32Bit = true;
+  #   };
+  # };
 
   systemd = {
     # Given that our systems are headless, emergency mode is useless.
@@ -60,14 +78,120 @@
 
   # photoprism minio
   networking.firewall.allowedTCPPorts =
-    [ 9000 9001 ] ++ [ config.services.photoprism.port ];
+    [ 9000 9001 6622 ] ++ [ config.services.photoprism.port ];
 
   xdg.portal.wlr.enable = true;
+  xdg.portal.enable = true;
 
   programs.dconf.enable = true;
 
-  services = {
+  services = (
+    let importService = n: import ../../services/${n}.nix { inherit pkgs config inputs; }; in lib.genAttrs [
+      "openssh"
+      "mosdns"
+      "fail2ban"
+      "dae"
+      "scrutiny"
+      "ddns-go"
+    ]
+      (n: importService n)
+  ) // {
 
+    prom-ntfy-bridge.enable = true;
+    # xserver.videoDrivers = [ "nvidia" ];
+
+    # xserver.enable = true;
+    # xserver.displayManager.gdm.enable = true;
+    # xserver.desktopManager.gnome.enable = true;
+
+    copilot-gpt4.enable = true;
+    # nextchat.enable = true;
+
+    snapy.instances = [
+      {
+        name = "persist";
+        source = "/persist";
+        keep = "2day";
+        timerConfig.onCalendar = "*:0/10";
+      }
+      {
+        name = "var";
+        source = "/var";
+        keep = "7day";
+        timerConfig.onCalendar = "daily";
+      }
+    ];
+
+    tailscale = { enable = true; openFirewall = true; };
+
+    sing-box.enable = false;
+    # beesd.filesystems = {
+    #   os = {
+    #     spec = "LABEL=nixos";
+    #     hashTableSizeMB = 1024; # 256 *2 *2
+    #     verbosity = "crit";
+    #     extraOptions = [
+    #       "--loadavg-target"
+    #       "5.0"
+    #     ];
+    #   };
+    # };
+    restic.backups.solid = {
+      passwordFile = config.age.secrets.wg.path;
+      repositoryFile = config.age.secrets.restic-repo.path;
+      environmentFile = config.age.secrets.restic-envs.path;
+      paths = [ "/persist" "/var" ];
+      extraBackupArgs = [
+        "--one-file-system"
+        "--exclude-caches"
+        "--no-scan"
+        "--retry-lock 2h"
+      ];
+      timerConfig = {
+        OnCalendar = "daily";
+        RandomizedDelaySec = "4h";
+        FixedRandomDelay = true;
+        Persistent = true;
+      };
+    };
+    # cloudflared = {
+    #   enable = true;
+    #   environmentFile = config.age.secrets.cloudflare-garden-00.path;
+    # };
+    compose-up.instances = [
+      {
+        name = "misskey";
+        workingDirectory = "/home/${user}/Src/misskey";
+      }
+      {
+        name = "nextchat";
+        workingDirectory = "/home/${user}/Src/ChatGPT-Next-Web";
+        extraArgs = "chatgpt-next-web";
+        environmentFile = config.age.secrets.nextchat.path;
+      }
+    ];
+
+    hysteria.instances = [{
+      name = "nodens";
+      configFile = config.age.secrets.hyst-us-cli-has.path;
+    }
+      {
+        name = "colour";
+        configFile = config.age.secrets.hyst-az-cli-has.path;
+      }];
+
+    shadowsocks.instances = [
+      {
+        name = "rha";
+        configFile = config.age.secrets.ss-az.path;
+        serve = {
+          enable = true;
+          port = 6059;
+        };
+      }
+    ];
+
+    gvfs.enable = true;
     greetd = {
       enable = true;
       settings = {
@@ -83,8 +207,6 @@
       };
     };
 
-    btrbk.enable = true;
-
     keycloak = {
       enable = false;
       settings = {
@@ -96,6 +218,11 @@
         cache = "local";
       };
       database.passwordFile = toString (pkgs.writeText "password" "keycloak");
+    };
+
+    surrealdb = {
+      enable = true;
+      port = 8713;
     };
 
     postgresqlBackup = {
@@ -136,6 +263,7 @@
         #type database DBuser origin-address auth-method
         # ipv4
         host  all      all     127.0.0.1/32   trust
+        host  all      all     10.0.2.1/24   trust
         host  all      all     10.0.1.1/24   trust
         host  all      all     10.0.0.1/24   trust
         # ipv6
@@ -143,13 +271,27 @@
       '';
 
       ensureDatabases = [ "misskey" ];
-      ensureUsers = [{
-        name = "misskey";
-        ensurePermissions."DATABASE misskey" = "ALL PRIVILEGES";
-      }];
+      ensureUsers = [
+        {
+          name = "misskey";
+          ensureDBOwnership = true;
+        }
+      ];
       identMap = ''
         misskey misskey misskey
       '';
+    };
+
+
+
+    atuin = {
+      enable = true;
+      host = "0.0.0.0";
+      port = 8888;
+      openFirewall = true;
+      openRegistration = false;
+      maxHistoryLength = 65536;
+      database.uri = "postgresql://atuin@127.0.0.1:5432/atuin";
     };
 
     pipewire = {
@@ -205,18 +347,22 @@
       ];
     };
     xmrig = {
-      enable = false;
+      enable = true;
       settings = {
         autosave = true;
-        cpu = true;
         opencl = false;
         cuda = false;
+        cpu = {
+          enable = true;
+          max-threads-hint = 90;
+        };
         pools = [
           {
             url = "pool.supportxmr.com:443";
             user = "43WvF2Vv5e2Dpte5w44gHzWbZeLZm9PNNEsxCMRRc66GNVPmNoAaxwPFPurR1hQtNzP4NgY1dtjEohh9LyWLKAvqJUErReS";
             keepalive = true;
             tls = true;
+            pass = "rha";
           }
         ];
       };

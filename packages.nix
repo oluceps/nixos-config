@@ -1,46 +1,53 @@
-{ config, pkgs, lib, data, ... }:
+{ config, pkgs, lib, data, inputs, ... }:
 let
   p = with pkgs; {
 
-    crypt = [ minisign rage age-plugin-yubikey yubico-piv-tool yubikey-manager yubikey-manager-qt cryptsetup ];
 
     net = [
       # anti-censor
-      [ sing-box rathole tor arti nur-pkgs.tuic ]
+      [ sing-box rathole tor arti tuic phantomsocks ]
 
-      [ bandwhich fscan iperf3 i2p ethtool dnsutils autossh tcpdump netcat dog wget mtr-gui socat miniserve mtr wakelan q nali lynx nethogs restic w3m whois dig wireguard-tools curlHTTP3 xh ngrep gping knot-dns tcping-go httping ]
+      [ stun bandwhich fscan iperf3 i2p ethtool dnsutils autossh tcpdump netcat dog wget mtr-gui socat miniserve mtr wakelan q nali lynx nethogs restic w3m whois dig wireguard-tools curlHTTP3 xh ngrep gping knot-dns tcping-go httping iftop ]
     ];
     # graph = [
     #   vulkan-validation-layers
     # ];
 
     cmd = [
-      # (ragenix.override { plugins = [ age-plugin-yubikey ]; })
-      linuxKernel.packages.linux_latest_libre.cpupower
-      clean-home
-      typst
+      deno
+      ntfy-sh
+      _7zz
+      yazi
+      rclone
+
+      distrobox
+      dmidecode
+
       helix
       srm
-      onagre
+      # onagre
       libsixel
       ouch
       nix-output-monitor
-      linuxKernel.packages.linux_latest_libre.cpupower
-
       kitty
 
       # common
       [ killall hexyl jq fx bottom lsd fd choose duf tokei procs lsof tree bat ]
-      [ broot powertop ranger ripgrep qrencode lazygit b3sum unzip zip coreutils inetutils pciutils usbutils pinentry ]
+      [ broot powertop ranger ripgrep qrencode lazygit b3sum unzip zip coreutils inetutils pciutils usbutils ]
     ];
-    # ripgrep-all 
+    # # ripgrep-all 
 
 
-    info = [ freshfetch htop bottom onefetch hardinfo qjournalctl hyprpicker imgcat nix-index ccze ];
+    info = [ freshfetch htop onefetch hardinfo qjournalctl hyprpicker imgcat nix-index ccze ];
 
   };
 
+  # extra
   e = with pkgs;{
+    crypt = [ minisign rage age-plugin-yubikey cryptsetup tpm2-tss tpm2-tools yubikey-manager yubikey-manager-qt monero-cli ];
+
+    python = [ (python311.withPackages (ps: with ps; [ pandas requests absl-py tldextract bleak matplotlib ])) ];
+
     lang = [
       [
         editorconfig-checker
@@ -49,54 +56,18 @@ let
         yaml-language-server
         tree-sitter
         stylua
+        biome
         # black
       ]
       # languages related
       [ zig lldb haskell-language-server gopls cmake-language-server zls android-file-transfer nixpkgs-review shfmt ]
     ];
-
-    dev = [
-      friture
-      qemu-utils
-      yubikey-personalization
-      racket
-      resign
-      pv
-      gnome.dconf-editor
-      [ pinentry-curses swagger-codegen3 bump2version openssl linuxPackages_latest.perf cloud-utils ]
-      [ bpf-linker gdb gcc gnumake cmake ] # clang-tools_15 llvmPackages_latest.clang ]
-      # [ openocd ]
-      lua
-      delta
-      # nodejs-18_x
-      switch-mute
-      yarn
-      go
-      nix-tree
-      kotlin
-      jre17_minimal
-      inotify-tools
-      rustup
-      minio-client
-      tmux
-      awscli2
-      trunk
-      cargo-expand
-      wasmer
-      wasmtime
-      comma
-      nix-update
-      nodejs_latest.pkgs.pnpm
-    ];
-
     wine = [
-      # ...
-
-      # support both 32- and 64-bit applications
+      # bottles
       wineWowPackages.stable
 
       # support 32-bit only
-      wine
+      # wine
 
       # support 64-bit only
       (wine.override { wineBuild = "wine64"; })
@@ -110,34 +81,86 @@ let
       # native wayland support (unstable)
       wineWowPackages.waylandFull
     ];
+    dev = [
+      friture
+      qemu-utils
+      yubikey-personalization
+      racket
+      resign
+      pv
+      devenv
+      gnome.dconf-editor
+      [ swagger-codegen3 bump2version openssl linuxPackages_latest.perf cloud-utils ]
+      [ bpf-linker gdb gcc gnumake cmake ] # clang-tools_15 llvmPackages_latest.clang ]
+      # [ openocd ]
+      lua
+      delta
+      # nodejs-18_x
+      switch-mute
+      go
 
+
+      nix-tree
+      kotlin
+      jre17_minimal
+      inotify-tools
+      rustup
+      minio-client
+      tmux
+      # awscli2
+
+
+      trunk
+      cargo-expand
+      wasmer
+      wasmtime
+      comma
+      nix-update
+      nodejs_latest.pkgs.pnpm
+    ];
     db = [ mongosh ];
 
     web = [ hugo ];
 
-    de = with gnomeExtensions;[ simple-net-speed blur-my-shell ];
+    de = with gnomeExtensions;[ simple-net-speed paperwm ];
 
     virt = [
       # virt-manager
       virtiofsd
       runwin
+      guix-run
       runbkworm
       bkworm
       arch-run
       # ubt-rv-run
-      opulr-a-run
+      #opulr-a-run
       lunar-run
       virt-viewer
     ];
     fs = [ gparted e2fsprogs fscrypt-experimental f2fs-tools compsize ];
 
+    cmd =
+      [
+        metasploit
+        # linuxKernel.packages.linux_latest_libre.cpupower
+        clean-home
+        just
+        typst
+        cosmic-term
+      ];
     bluetooth = [ bluetuith ];
+
+    sound = [ pulseaudio pwvucontrol ];
+
+    display = [ cage ];
 
   };
 in
 {
-  environment.systemPackages = lib.flatten (lib.attrValues p)
-    ++ (with pkgs; [ unar texlab edk2 xmrig docker-compose ]) ++
+  environment.systemPackages =
+    lib.flatten (lib.attrValues p)
+    ++
+    (with pkgs; [ unar podman-compose docker-compose ]) ++
     [
       ((pkgs.vim_configurable.override { }).customize {
         name = "vim";
@@ -152,7 +175,7 @@ in
           set backspace=indent,eol,start
           " Turn on syntax highlighting by default
           syntax on
-        
+
           :let mapleader = " "
           :map <leader>s :w<cr>
           :map <leader>q :q<cr>
@@ -161,28 +184,11 @@ in
         '';
       }
       )
-    ] ++
-    (if (!(lib.elem config.networking.hostName (data.withoutHeads))) then
-      (lib.flatten
-        (lib.attrValues e)) ++
-      [
-        (with pkgs; (
-          python3.withPackages
-            (p: with p;[
-              torch
-              fire
-              sentencepiece
-              gensim
-              numpy
-              tqdm
-
-              python-lsp-server
-              mkdocs
-              # mkdocs-static-i18n
-              mkdocs-material
-            ])
-        ))
-      ]
+    ]
+    ++
+    lib.optionals (!(lib.elem config.networking.hostName data.withoutHeads))
+      ((lib.flatten
+        (lib.attrValues e))
       ++
       (with pkgs.nodePackages; [
         vscode-json-languageserver
@@ -191,8 +197,8 @@ in
         node2nix
         markdownlint-cli2
         prettier
-      ]) else [ ]
-    )
+      ])
+      )
   ;
 }
 

@@ -3,7 +3,7 @@
   programs.alacritty = {
     enable = true;
     settings = {
-      import = [ ./alacritty.yml ];
+      import = [ ./alacritty.toml ];
       font = { size = 13.5; };
       shell = {
         program = lib.getExe pkgs.fish;

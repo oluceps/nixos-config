@@ -2,19 +2,26 @@
 , lib
 , ...
 }: {
-  services.udev.extraRules = ''
-    ATTR{address}=="62:16:bf:7c:57:a3", NAME="eth0"
-    ATTR{address}=="22:48:a2:5b:0b:f0", NAME="eth1"
-  '';
-
   networking = {
+    domain = "nyaw.xyz";
     resolvconf.useLocalResolver = true;
     firewall = {
       checkReversePath = false;
       enable = true;
       trustedInterfaces = [ "virbr0" "wg0" "wg1" ];
-      allowedUDPPorts = [ 80 443 8080 5173 23180 4444 51820 ];
-      allowedTCPPorts = [ 80 443 8080 9900 2222 5173 8448 ];
+      allowedUDPPorts = [
+        80
+        443
+        8080
+        5173
+        23180
+        4444
+        51820
+        3330
+        8880
+        34197 # factorio
+      ];
+      allowedTCPPorts = [ 80 443 8080 9900 2222 5173 8448 3330 8880 ];
     };
 
     useNetworkd = true;
@@ -23,7 +30,24 @@
     hostName = "nodens";
     enableIPv6 = true;
 
-    nftables.enable = true;
+    nftables = {
+      enable = true;
+      # for hysteria port hopping
+      ruleset = ''
+        table ip nat {
+        	chain prerouting {
+        		type nat hook prerouting priority filter; policy accept;
+        		iifname "eth0" udp dport 40000-50000 counter packets 0 bytes 0 dnat to :4432
+        	}
+        }
+        table ip6 nat {
+        	chain prerouting {
+        		type nat hook prerouting priority filter; policy accept;
+        		iifname "eth0" udp dport 40000-50000 counter packets 0 bytes 0 dnat to :4432
+        	}
+        }
+      '';
+    };
     networkmanager.enable = lib.mkForce false;
     networkmanager.dns = "none";
 
@@ -32,7 +56,7 @@
     enable = true;
 
     wait-online = {
-      enable = true;
+      enable = false;
       anyInterface = true;
       ignoredInterfaces = [ "wg0" "wg1" ];
     };
@@ -62,7 +86,7 @@
           {
             wireguardPeerConfig = {
               PublicKey = "BCbrvvMIoHATydMkZtF8c+CHlCpKUy1NW+aP0GnYfRM=";
-              AllowedIPs = [ "10.0.1.2/32" ];
+              AllowedIPs = [ "10.0.1.2/24" ];
               PersistentKeepalive = 15;
             };
           }
@@ -76,15 +100,23 @@
 
           {
             wireguardPeerConfig = {
-              PublicKey = "ANd++mjV7kYu/eKOEz17mf65bg8BeJ/ozBmuZxRT3w0=";
-              AllowedIPs = [
-                "10.0.0.0/24"
-                "10.0.1.0/24"
-              ];
-              Endpoint = "111.229.162.99:51820";
+              PublicKey = "0wLrznvd32gloUHwgFqv+vlybBtEYQaUOwgqyfa3Fl4=";
+              AllowedIPs = [ "10.0.1.4/32" ];
               PersistentKeepalive = 15;
             };
           }
+
+          # {
+          #   wireguardPeerConfig = {
+          #     PublicKey = "ANd++mjV7kYu/eKOEz17mf65bg8BeJ/ozBmuZxRT3w0=";
+          #     AllowedIPs = [
+          #       "10.0.0.0/24"
+          #       "10.0.1.0/24"
+          #     ];
+          #     Endpoint = "111.229.162.99:51820";
+          #     PersistentKeepalive = 15;
+          #   };
+          # }
         ];
       };
     };
@@ -95,7 +127,7 @@
         matchConfig.Name = "wg1";
         address = [
           "10.0.1.1/24"
-          "10.0.0.5/24"
+          "10.0.2.5/24"
         ];
         networkConfig = {
           IPMasquerade = "ipv4";
@@ -107,9 +139,7 @@
         matchConfig.Name = "eth0";
         address = [
           "144.126.208.183/20"
-          "10.48.0.5/16"
           "2604:a880:4:1d0::5b:6000/64"
-          "fe80::6016:bfff:fe7c:57a3/64"
         ];
 
         routes = [
@@ -126,22 +156,22 @@
         dhcpV6Config.UseDNS = false;
       };
 
-      "30-eth1" = {
-        matchConfig.Name = "eth1";
-        address = [
-          "10.124.0.2/20"
-          "fe80::2048:a2ff:fe5b:bf0/64"
-        ];
+      # "30-eth1" = {
+      #   matchConfig.Name = "eth1";
+      #   address = [
+      #     "10.124.0.2/20"
+      #     "fe80::2048:a2ff:fe5b:bf0/64"
+      #   ];
 
-        networkConfig = {
-          DNSSEC = true;
-          MulticastDNS = true;
-          DNSOverTLS = true;
-        };
-        # # REALLY IMPORTANT
-        dhcpV4Config.UseDNS = false;
-        dhcpV6Config.UseDNS = false;
-      };
+      #   networkConfig = {
+      #     DNSSEC = true;
+      #     MulticastDNS = true;
+      #     DNSOverTLS = true;
+      #   };
+      #   # # REALLY IMPORTANT
+      #   dhcpV4Config.UseDNS = false;
+      #   dhcpV6Config.UseDNS = false;
+      # };
     };
   };
 }

@@ -1,4 +1,4 @@
-{ pkgs, config, lib, ... }:
+{ pkgs, config, lib, inputs, ... }:
 {
   # server inside the cage.
 
@@ -12,16 +12,28 @@
 
   boot = {
     supportedFilesystems = [ "tcp_bbr" ];
-    inherit ((import ../../boot.nix { inherit lib; }).boot) kernel;
+    inherit ((import ../sysctl.nix { inherit lib; }).boot) kernel;
   };
 
-  services = {
-    inherit ((import ../../services.nix { inherit pkgs lib config; }).services)
-      openssh
-      mosdns
-      fail2ban
-      juicity;
+  services =
+    (
+      let importService = n: import ../../services/${n}.nix { inherit pkgs config inputs; }; in lib.genAttrs [
+        "openssh"
+        "mosdns"
+        "fail2ban"
+        "dae"
+      ]
+        (n: importService n)
+    ) // {
+      dae.enable = true;
+      sing-box.enable = true;
+    };
+
+  networking.firewall = {
+    allowedUDPPorts = [ 6059 ];
+    allowedTCPPorts = [ 6059 ];
   };
+
 
   programs = {
     git.enable = true;
@@ -53,17 +65,4 @@
 
   systemd.tmpfiles.rules = [
   ];
-  services = {
-    dae = {
-      enable = true;
-      package = pkgs.dae-unstable;
-      disableTxChecksumIpGeneric = false;
-      configFile = config.age.secrets.dae.path;
-      assets = with pkgs; [ v2ray-geoip v2ray-domain-list-community ];
-      openFirewall = {
-        enable = true;
-        port = 12345;
-      };
-    };
-  };
 }

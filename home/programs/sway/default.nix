@@ -1,7 +1,8 @@
 { config
 , pkgs
-, user
 , lib
+, osConfig
+, user
 , ...
 }: {
 
@@ -32,6 +33,7 @@
     {
 
       package = null;
+      # enable = if osConfig.networking.hostName == "hastur" then false else true;
       enable = true;
       extraSessionCommands = ''
         export SDL_VIDEODRIVER=wayland
@@ -51,14 +53,23 @@
             ${modifier}+button4 workspace prev
             ${modifier}+button5 workspace next
         }
+
+        for_window [app_id="org.gnome.Nautilus"] floating enable
+        for_window [title="^Open File$"] floating enable
+        for_window [title="^Media viewer$"] floating enable, resize set 800 600
+
+        # blur enable
+        # blur_passes 2
+        # corner_radius 2
+        # shadows enable
       '';
       config = {
 
         inherit modifier;
         assigns = {
           # "1" = [{ app_id = "Alacritty"; }];
-          "2" = [{ app_id = "firefox"; }];
-          "3" = [{ app_id = "org.telegram.desktop"; }];
+          # "2" = [{ app_id = "firefox"; }];
+          # "3" = [{ app_id = "org.telegram.desktop"; }];
         };
         window.commands = [
           {
@@ -68,7 +79,7 @@
         ];
         startup = [
           { command = "fcitx5 -d"; }
-          { command = with pkgs; "${lib.getExe systemd-run-app} ${lib.getExe firefox}"; }
+          { command = with pkgs; "${lib.getExe systemd-run-app} ${firefox}"; }
           { command = with pkgs; "${lib.getExe systemd-run-app} ${lib.getExe tdesktop}"; }
           { command = with deps; "${wl-paste} --type text --watch ${cliphist} store"; } #Stores only text data
           { command = with deps; "${wl-paste} --type image --watch ${cliphist} store"; } #Stores image data
@@ -119,23 +130,29 @@
         ];
 
         output =
-          if user == "riro" then {
-            HDMI-A-1 = {
-              bg = "/etc/nixos/.attachs/wall.jpg fill";
-              mode = "1920x1080";
-              scale = "1";
-            };
-          } else if user == "elen" then {
-
+          if osConfig.networking.hostName == "hastur" then
+            {
+              HDMI-A-1 = {
+                bg = "/home/${user}/Src/nixos/.attachs/wall.jpg fill";
+                mode = "1920x1080";
+                scale = "1.25";
+              };
+            }
+          else if osConfig.networking.hostName == "kaambl" then {
             eDP-1 = {
-              bg = "/etc/nixos/.attachs/wall.jpg fill";
-              mode = "1260x1440";
+              bg = "/home/${user}/Src/nixos/.attachs/wall.jpg fill";
+              mode = "2160x1440";
+              scale = "2";
+            };
+            HDMI-A-1 = {
+              bg = "/home/${user}/Src/nixos/.attachs/wall.jpg fill";
+              mode = "2560x1660";
               scale = "2";
             };
           } else {
 
             eDP-1 = {
-              bg = "/etc/nixos/.attachs/wall.jpg fill";
+              bg = "/home/${user}/Src/nixos/.attachs/wall.jpg fill";
               mode = "1366x768";
               scale = "1";
             };
@@ -144,7 +161,7 @@
         window.hideEdgeBorders = "smart";
         keybindings =
           let
-            modifier = config.wayland.windowManager.sway.config.modifier;
+            inherit (config.wayland.windowManager.sway.config) modifier;
             fuzzelArgs = "-I -l 7 -x 8 -y 7 -P 9 -b ede3e7d9 -r 3 -t 8b614db3 -C ede3e7d9 -f 'Maple Mono SC NF:style=Regular:size=15' -P 10 -B 7";
           in
           with pkgs; lib.mkOptionDefault
@@ -170,7 +187,7 @@
               "XF86AudioLowerVolume" = "exec pamixer -d 5";
               "XF86MonBrightnessUp" = "exec brightnessctl set +3%";
               "XF86MonBrightnessdown" = "exec brightnessctl set 3%-";
-              "${modifier}+Return" = "exec ${lib.getExe systemd-run-app} ${lib.getExe alacritty}";
+              "${modifier}+Return" = "exec ${lib.getExe systemd-run-app} ${lib.getExe foot}";
               "${modifier}+d" = "exec ${lib.getExe fuzzel} ${fuzzelArgs}";
               "${modifier}+space" = "floating toggle";
               "${modifier}+Shift+space" = null;

@@ -1,4 +1,4 @@
-{ ... }:
+_:
 {
   xdg.configFile."hyfetch.json".text = builtins.toJSON {
     backend = "neofetch";
