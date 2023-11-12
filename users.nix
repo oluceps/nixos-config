@@ -14,7 +14,7 @@
 
       root = {
         initialHashedPassword = lib.mkForce data.keys.hashedPasswd;
-        openssh.authorizedKeys.keys = with data.keys;[ sshPubKey ];
+        openssh.authorizedKeys.keys = with data.keys;[ sshPubKey skSshPubKey ];
       };
 
       ${user} = {
@@ -29,7 +29,7 @@
         ];
         shell = pkgs.bash;
 
-        openssh.authorizedKeys.keys = with data.keys;[ sshPubKey ];
+        openssh.authorizedKeys.keys = with data.keys;[ sshPubKey skSshPubKey ];
       };
       root.shell = pkgs.bash;
 
