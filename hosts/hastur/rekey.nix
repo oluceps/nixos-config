@@ -1,9 +1,9 @@
 { data, ... }:
-{
-  age.identityPaths = [ "/persist/keys/ssh_host_ed25519_key" ];
+let hostPrivKey = "/persist/keys/ssh_host_ed25519_key"; in {
+  age.identityPaths = [ hostPrivKey ];
   age.rekey.hostPubkey = data.keys.hasturHostPubKey;
   services.openssh.hostKeys = [{
-    path = "/persist/keys/ssh_host_ed25519_key";
+    path = hostPrivKey;
     type = "ed25519";
   }];
 }
