@@ -312,7 +312,7 @@
         hinting.enable = false;
         defaultFonts = lib.mkForce {
           serif = [ "Glow Sans SC" "Glow Sans TC" "Glow Sans J" "Noto Serif" "Noto Serif CJK SC" "Noto Serif CJK TC" "Noto Serif CJK JP" ];
-          monospace = [ "Maple Mono" "SF Mono" "Fantasque Sans Mono" ];
+          monospace = [ "Monaspace Neon" "Maple Mono" "SF Mono" "Fantasque Sans Mono" ];
           sansSerif = [ "Hanken Grotesk" "Glow Sans SC" ];
           emoji = [ "twemoji-color-font" "noto-fonts-emoji" ];
         };
