@@ -16,6 +16,7 @@ user: { config
   home.stateVersion = "22.11";
   home.username = user;
   home.homeDirectory = "/home/${user}";
+  home.file.".ssh/config".source = config.lib.file.mkOutOfStoreSymlink "/run/agenix/ssh-cfg";
 
   home.sessionVariables = {
     EDITOR = "hx";
@@ -433,7 +434,6 @@ user: { config
     #
   };
   #xdg.configFile."sway/config".text = import ./dotfiles/sway/config.nix {inherit config pkgs;};
-  #xdg.configFile."ss/config".text = import ./programs/ss.nix {inherit config pkgs;};
   gtk = {
     enable = true;
     theme = {
