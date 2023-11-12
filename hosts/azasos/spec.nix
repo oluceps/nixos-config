@@ -19,7 +19,8 @@
     inherit ((import ../../services.nix { inherit pkgs lib config; }).services)
       openssh
       mosdns
-      fail2ban;
+      fail2ban
+      juicity;
   };
 
   programs = {
