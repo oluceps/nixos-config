@@ -12,32 +12,32 @@
       height.absolute = 0;
       hideIcons = false;
       ignoreExclusiveZones = false;
-      layer = "Overlay";
+      layer = "overlay";
       hidePluginInfo = true;
       closeOnClick = false;
       showResultsImmediately = true;
-      maxEntries = "None";
+      maxEntries = null;
     };
     extraCss = ''
-          #window {
+      #window {
         background-color: rgba(0, 0, 0, 0);
         font-size: 20px;
         color: rgba(255,255,255,1.000);
       }
 
       #entry {
-        background-color: rgba(0, 0, 0, 0.1);
+        background-color: rgba(0, 0, 0, 0.7);
         color: rgba(255,255,255,1.000);
         padding-top: 10px;
         padding-bottom: 10px;
         border-radius: 0px;
-        box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.1);  
+        box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.7);  
         caret-color: rgba(0, 0, 0, 0);
         border-width: 1px;
         border-style: solid;
         border-top-style: solid;
         border-bottom-style: solid;
-        border-color: rgba(0, 0, 0, 0.1);
+        border-color: rgba(0, 0, 0, 0.7);
         margin: 10px;
         margin-bottom: -10px;
         padding: 20px;
@@ -55,14 +55,14 @@
       }
 
       list#main {
-        background-color: rgba(0, 0, 0, 0.1);
+        background-color: rgba(0, 0, 0, 0.7);
         border-color: rgba(0, 0, 0, 0);
-        box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.1);  
+        box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.7);  
         margin: 10px;
       }
 
       list#main row:selected {
-        background-color: rgba(255, 255, 255, 0.1);
+        background-color: rgba(255, 255, 255, 0.7);
       }
 
 
