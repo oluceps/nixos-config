@@ -49,7 +49,7 @@ def main [x: string = "", y: string = "", z: string = "", a: string = "switch"] 
     $general_set | each { |i| deploy $i $z $a }
   }
 
-  if $x == 'help' or $x == "" {
+  if $x == 'help' or $x == 'h' or $x == "" {
     print 'cp <ssh alias>' 'cp <ssh alias> all' 'pre <hostname>' 'd <ssh alias> <build host alias> <switch>' 'y <build host alias> <switch> # build and deploy all'
   }
   cd -

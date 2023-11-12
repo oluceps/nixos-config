@@ -2,7 +2,7 @@
 let
   p = with pkgs; {
 
-    crypt = [ minisign rage age-plugin-yubikey yubico-piv-tool yubikey-manager yubikey-manager-qt cryptsetup ];
+    crypt = [ minisign rage age-plugin-yubikey yubikey-manager yubikey-manager-qt cryptsetup ];
 
     net = [
       # anti-censor
