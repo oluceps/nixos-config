@@ -35,6 +35,7 @@ def deploy [t: string, b: string = "", m: string = ""] {
   nixos-rebuild --target-host $t $m --use-remote-sudo --flake $'.#($hostname)'
 }
 def main [x: string = "", y: string = "", z: string = "", a: string = "switch"] {
+  cd '/etc/nixos'
   
   rekey $x $y $z
 
@@ -51,4 +52,5 @@ def main [x: string = "", y: string = "", z: string = "", a: string = "switch"] 
   if $x == 'help' or $x == "" {
     print 'cp <ssh alias>' 'cp <ssh alias> all' 'pre <hostname>' 'd <ssh alias> <build host alias> <switch>' 'y <build host alias> <switch> # build and deploy all'
   }
+  cd -
 }
