@@ -19,7 +19,7 @@
   services = {
     gvfs.enable = false;
     blueman.enable = true;
-    # btrbk.enable = true;
+    btrbk.enable = true;
     pipewire = {
       enable = true;
       alsa.enable = true;
