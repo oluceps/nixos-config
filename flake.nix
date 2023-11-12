@@ -1,66 +1,121 @@
 {
   description = "oluceps' flake";
   outputs = inputs@{ flake-parts, ... }:
-    flake-parts.lib.mkFlake { inherit inputs; } {
-      imports = import ./hosts inputs ++ [ ./home ];
-      systems = [ "x86_64-linux" "aarch64-linux" ];
+    let extraLibs = (import ./hosts/lib.nix inputs);
+    in
+    flake-parts.lib.mkFlake { inherit inputs; } ({ withSystem, ... }: {
+      imports = (import ./hosts inputs) ++ (with inputs;[
+        pre-commit-hooks.flakeModule
+        devshell.flakeModule
+      ]);
+      debug = false;
+      systems = [ "x86_64-linux" "aarch64-linux" "riscv64-linux" ];
       perSystem = { pkgs, system, inputs', ... }: {
 
         _module.args.pkgs = import inputs.nixpkgs {
           inherit system;
           overlays = with inputs;[
             agenix-rekey.overlays.default
+            fenix.overlays.default
+            self.overlays.default
           ];
         };
 
-        checks = with pkgs;
-          {
-            pre-commit-check = inputs.pre-commit-hooks.lib.${system}.run
-              {
-                src = lib.cleanSource ./.;
-                hooks = { nixpkgs-fmt.enable = true; };
-              };
+        pre-commit = {
+          check.enable = true;
+          settings.hooks = {
+            nixpkgs-fmt.enable = true;
           };
-
-        devShells.default = with pkgs; mkShell {
-          packages = [ agenix-rekey home-manager ];
         };
 
+        devshells.default.devshell = {
+          packages = with pkgs;[ agenix-rekey just rage ];
+        };
+
+        packages =
+          let
+            shadowedPkgs = [
+              "glowsans" # multi pkgs
+              "opulr-a-run" # ?
+              "tcp-brutal" # kernelModule
+              "shufflecake"
+            ];
+          in
+          (extraLibs.genFilteredDirAttrsV2 ./pkgs shadowedPkgs (n: pkgs.${n}));
+        formatter = pkgs.nixpkgs-fmt;
       };
 
       flake = {
+        lib = inputs.nixpkgs.lib.extend inputs.self.overlays.lib;
 
         agenix-rekey = inputs.agenix-rekey.configure {
           userFlake = inputs.self;
           nodes = with inputs.nixpkgs.lib;
-            filterAttrs (n: _: !elem n [ "nixos" ]) inputs.self.nixosConfigurations
-          ;
+            filterAttrs (n: _: !elem n [ "livecd" "bootstrap" ]) inputs.self.nixosConfigurations;
         };
 
-        overlays = {
-          default =
-            final: prev: prev.lib.genAttrs
-              (with builtins;
-              (with prev.lib; attrNames (
-                filterAttrs (n: _: !elem n [ "ubt-rv-run" ]) # temporary disable pkg
-                  (readDir ./pkgs))))
-              (name: final.callPackage (./pkgs + "/${name}") { });
+        overlays =
+          {
+            default = final: prev:
+              let
+                shadowedPkgs = [
+                  "tcp-brutal"
+                  "shufflecake"
+                ];
+              in
+              extraLibs.genFilteredDirAttrsV2 ./pkgs shadowedPkgs
+                (name: final.callPackage (./pkgs + "/${name}.nix") { });
 
-          lib = final: prev: (import ./hosts/lib.nix inputs);
-        };
+            lib = final: prev: extraLibs;
+          };
 
-        nixosModules = import ./modules { lib = inputs.nixpkgs.lib; };
+        nixosModules =
+          let
+            shadowedModules = [ "sundial" ];
+            modules =
+              extraLibs.genFilteredDirAttrsV2 ./modules shadowedModules
+                (n: import (./modules + "/${n}.nix"));
+
+            default = { ... }: {
+              imports = builtins.attrValues modules;
+            };
+          in
+          modules // { inherit default; };
+
       };
-    };
+
+    });
+
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
-    nixpkgs-pin.url = "github:NixOS/nixpkgs?rev=e7f38be3775bab9659575f192ece011c033655f0";
     nixpkgs-master.url = "github:NixOS/nixpkgs/master";
-    nixpkgs-gui.url = "github:NixOS/nixpkgs?rev=954a801cbe128e24e78230f711df17da01a5d98c";
     nixpkgs-22.url = "github:NixOS/nixpkgs?rev=c91d0713ac476dfb367bbe12a7a048f6162f039c";
     nixpkgs-rebuild.url = "github:SuperSandro2000/nixpkgs?rev=449114c6240520433a650079c0b5440d9ecf6156";
+    niri.url = "github:sodiboo/niri-flake";
+    nh = {
+      url = "github:viperML/nh";
+      inputs.nixpkgs.follows = "nixpkgs"; # override this repo's nixpkgs snapshot
+    };
+    # niri.inputs.niri-src.url = "github:YaLTeR/niri";
+    devshell.url = "github:numtide/devshell";
     nixpkgs-wayland = {
       url = "github:nix-community/nixpkgs-wayland";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    tg-online-keeper.url = "github:oluceps/TelegramOnlineKeeper";
+    # tg-online-keeper.url = "/home/elen/Src/tg-online-keeper";
+    RyanGibb = {
+      url = "github:RyanGibb/nixos";
+    };
+    disko = {
+      url = "github:nix-community/disko";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    atuin = {
+      url = "github:atuinsh/atuin";
+    };
+    swayfx = {
+      url = "github:WillPower3309/swayfx";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     conduit = {
@@ -68,20 +123,36 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    nyx = {
+      # url = "/home/elen/Src/nyx";
+      url = "github:oluceps/nyx";
+    };
+    factorio-manager = {
+      url = "github:asoul-rec/factorio-manager/x";
+      # url = "/home/elen/Src/factorio-manager";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     anyrun = {
       url = "github:Kirottu/anyrun";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    j-link.url = "github:liff/j-link-flake";
+    devenv.url = "github:cachix/devenv";
+    aagl = {
+      url = "github:ezKEa/aagl-gtk-on-nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     android-nixpkgs = {
       url = "github:tadfisher/android-nixpkgs";
     };
     # path:/home/riro/Src/flake.nix
-    dae.url = "github:daeuniverse/flake.nix?rev=e16931c97e18eddd6a36b182687701cd6d03b284";
-    # nixyDomains.url = "/home/elen/nixyDomains";
+    dae.url = "github:daeuniverse/flake.nix/exp";
+    # dae.url = "/home/elen/Src/flake.nix";
+    # nixyDomains.url = "";
     nixyDomains.url = "github:oluceps/nixyDomains";
-    nvfetcher.url = "github:berberman/nvfetcher";
+    nixyDomains.flake = false;
     nuenv.url = "github:DeterminateSystems/nuenv";
-    EHfive.url = "github:EHfive/flakes";
     agenix-rekey = {
       url = "github:oddlama/agenix-rekey";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -106,8 +177,6 @@
       url = "github:yaxitech/ragenix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    nur.url = "github:nix-community/NUR";
-    typst-lsp.url = "github:nvarner/typst-lsp";
     nur-pkgs = {
       url = "github:oluceps/nur-pkgs";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -125,7 +194,7 @@
     alejandra.url = "github:kamadorueda/alejandra";
     prismlauncher = {
       url = "github:PrismLauncher/PrismLauncher";
-      # inputs.nixpkgs.follows = "nixpkgs";
+      inputs.nixpkgs.follows = "nixpkgs";
     };
     home-manager.url = "github:nix-community/home-manager";
     helix.url = "github:helix-editor/helix";

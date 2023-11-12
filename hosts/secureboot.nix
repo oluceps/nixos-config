@@ -1,4 +1,4 @@
-{ ... }: {
+_: {
   boot = {
     bootspec.enable = true;
     lanzaboote = {

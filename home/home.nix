@@ -1,9 +1,10 @@
-user: { config
-      , pkgs
-      , lib
-      , inputs
-      , ...
-      }:
+{ config
+, pkgs
+, lib
+, inputs
+, user
+, ...
+}:
 {
 
   imports =
@@ -17,6 +18,25 @@ user: { config
   home.username = user;
   home.homeDirectory = "/home/${user}";
   home.file.".ssh/config".source = config.lib.file.mkOutOfStoreSymlink "/run/agenix/ssh-cfg";
+
+  home.file.".blerc".text = ''
+    bleopt term_true_colors=none
+    bleopt prompt_ruler=empty-line
+    ble-face -s command_builtin_dot       fg=yellow,bold
+    ble-face -s command_builtin           fg=yellow
+    ble-face -s filename_directory        underline,fg=magenta
+    ble-face -s filename_directory_sticky underline,fg=white,bg=magenta
+    ble-face -s command_function          fg=blue
+
+    function ble/prompt/backslash:my/starship-right {
+      local right
+      ble/util/assign right '${pkgs.starship}/bin/starship prompt --right'
+      ble/prompt/process-prompt-string "$right"
+    }
+    bleopt prompt_rps1="\n\n\q{my/starship-right}"
+    bleopt prompt_ps1_final="\033[1m=>\033[0m "
+    bleopt prompt_rps1_transient="same-dir"
+  '';
 
   home.sessionVariables = {
     EDITOR = "hx";
@@ -51,12 +71,25 @@ user: { config
   home.packages = with pkgs;
 
     [
+      qq
+      gtkcord4
+      celeste
+      stellarium
+      celluloid
+      thiefmd
+      wpsoffice
+      fractal
+      mari0
       anyrun
       # factorio
+      loupe
+      gedit
       logseq
       jetbrains.pycharm-professional
       jetbrains.idea-ultimate
       jetbrains.clion
+      # jetbrains.rust-rover
+      (pkgs.callPackage "${inputs.nixpkgs}/pkgs/development/embedded/openocd" { extraHardwareSupport = [ "cmsis-dap" "jlink" ]; })
 
       # bottles
 
@@ -66,9 +99,9 @@ user: { config
       blender-hip
       ruffle
 
-      fractal
+      # fractal
 
-      yuzu-mainline
+      # yuzu-mainline
       photoprism
 
       virt-manager
@@ -81,8 +114,6 @@ user: { config
       dosbox-staging
       meld
       # yubioath-flutter
-      libsForQt5.qtbase
-      libsForQt5.qtwayland
       openapi-generator-cli
 
       gimp
@@ -135,7 +166,7 @@ user: { config
 
       # reader
       calibre
-      obsidian
+      # obsidian
       mdbook
       sioyek
       zathura
@@ -148,9 +179,9 @@ user: { config
       kate
       # cinnamon.nemo
       gnome.nautilus
-      gnome.eog
       gnome.dconf-editor
       gnome.gnome-boxes
+      gnome.evince
       # zathura
 
       # social
@@ -168,7 +199,7 @@ user: { config
       appimage-run
       lutris
       tofi
-      zoom-us
+      # zoom-us
       # gnomecast
       tetrio-desktop
 
@@ -220,8 +251,8 @@ user: { config
     # xddxdd.dingtalk
     # ]) ++
     (with nur-pkgs;[
-      techmino
-      rustplayer
+      # techmino
+      # rustplayer
     ]);
   home.pointerCursor = {
     gtk.enable = true;
@@ -232,8 +263,19 @@ user: { config
   };
 
   programs = {
+    # bash =
+    #   {
+    #     enable = true;
+    #     bashrcExtra = ''
+    #       [[ $- == *i* ]] && source ${pkgs.blesh}/share/blesh/ble.sh --noattach
+    #     '';
+    #     initExtra = ''
+    #       eval "$(${pkgs.starship}/bin/starship init bash)"
+    #       [[ ''${BLE_VERSION-} ]] && ble-attach
+    #     '';
+    #   };
+
     yazi.enable = true;
-    zoxide.enable = true;
     vscode = {
       enable = true;
       package = pkgs.vscode.fhsWithPackages (ps: with ps; [ rustup zlib ]);
@@ -266,7 +308,8 @@ user: { config
         };
         pull.rebase = true;
         fetch.prune = true;
-
+        http.postBuffer = 524288000;
+        ssh.postBuffer = 524288000;
         sendemail = {
           smtpserver = "smtp.gmail.com";
           smtpencryption = "tls";
@@ -299,7 +342,7 @@ user: { config
         path = "${config.xdg.dataHome}/zsh_history";
       };
 
-      enableAutosuggestions = true;
+      autosuggestion.enable = true;
       enableCompletion = true;
       # syntaxHighlighting.enable = true;
       autocd = true;
@@ -434,17 +477,55 @@ user: { config
     #
   };
   #xdg.configFile."sway/config".text = import ./dotfiles/sway/config.nix {inherit config pkgs;};
+  xdg.mimeApps = {
+    enable = true;
+    defaultApplications = {
+      "tg" = [ "org.telegram.desktop.desktop" ];
+
+      "application/pdf" = [ "sioyek.desktop" ];
+      "ppt/pptx" = [ "wps-office-wpp.desktop" ];
+      "doc/docx" = [ "wps-office-wps.desktop" ];
+      "xls/xlsx" = [ "wps-office-et.desktop" ];
+    }
+    //
+    lib.genAttrs [
+      "x-scheme-handler/unknown"
+      "x-scheme-handler/about"
+      "x-scheme-handler/http"
+      "x-scheme-handler/https"
+      "x-scheme-handler/mailto"
+      "text/html"
+    ]
+      # (_: "brave-browser.desktop")
+      (_: "firefox.desktop")
+    //
+    lib.genAttrs [
+      "image/gif"
+      "image/webp"
+      "image/png"
+      "image/jpeg"
+    ]
+      (_: "org.gnome.Loupe.desktop")
+    //
+    lib.genAttrs [
+      "inode/directory"
+      "inode/mount-point"
+    ]
+      (_: "org.gnome.Nautilus")
+    ;
+
+  };
   gtk = {
     enable = true;
-    theme = {
-      package = pkgs.callPackage
-        "${inputs.nixpkgs}/pkgs/data/themes/fluent-gtk-theme"
-        {
-          themeVariants = [ "purple" ];
-          tweaks = [ "blur" ];
-        };
-      name = "Fluent-purple";
-    };
+    # theme = {
+    #   package =
+    #     pkgs.fluent-gtk-theme.override
+    #       {
+    #         themeVariants = [ "purple" ];
+    #         # tweaks = [ "blur" ];
+    #       };
+    #   name = "Fluent-purple";
+    # };
 
     iconTheme = {
       package = pkgs.fluent-icon-theme;

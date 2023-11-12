@@ -2,8 +2,8 @@
 {
   language-server = {
 
-    vscode-css-language-server = { command = "css-language-server"; args = [ "--stdio" ]; config = { provideFormatter = true; }; };
-    vscode-html-language-server = { command = "html-language-server"; args = [ "--stdio" ]; config = { provideFormatter = true; }; };
+    vscode-css-language-server = { command = "css-languageserver"; args = [ "--stdio" ]; config = { provideFormatter = true; }; };
+    vscode-html-language-server = { command = "html-languageserver"; args = [ "--stdio" ]; config = { provideFormatter = true; }; };
     vscode-json-language-server = { command = "vscode-json-languageserver"; args = [ "--stdio" ]; config = { provideFormatter = true; }; };
     clangd = { command = "clangd"; };
     docker-langserver = { command = "docker-langserver"; args = [ "--stdio" ]; };
