@@ -15,16 +15,19 @@
     inherit ((import ../../boot.nix { inherit lib; }).boot) kernel;
   };
 
-  services = {
-    dae.enable = true;
-  } // {
-    inherit ((import ../../services.nix { inherit pkgs lib config; }).services)
-      openssh
-      mosdns
-      fail2ban
-      juicity
-      dae;
-  };
+  services = lib.mkMerge [
+    {
+      inherit ((import ../../services.nix { inherit pkgs lib config; }).services)
+        openssh
+        mosdns
+        fail2ban
+        juicity
+        dae;
+    }
+    {
+      dae.enable = true;
+    }
+  ];
 
   programs = {
     git.enable = true;

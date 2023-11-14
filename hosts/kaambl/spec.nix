@@ -17,52 +17,55 @@
   };
 
   services =
-    {
-      dae.enable = true;
-      gvfs.enable = false;
-      blueman.enable = true;
-      btrbk.enable = true;
-      pipewire = {
-        enable = true;
-        alsa.enable = true;
-        alsa.support32Bit = true;
-        pulse.enable = true;
-        jack.enable = true;
-      };
+    lib.mkMerge [
+      {
+        inherit ((import ../../services.nix { inherit pkgs lib config; }).services) dae;
+      }
+      {
+        dae.enable = true;
+        gvfs.enable = false;
+        blueman.enable = true;
+        btrbk.enable = true;
+        pipewire = {
+          enable = true;
+          alsa.enable = true;
+          alsa.support32Bit = true;
+          pulse.enable = true;
+          jack.enable = true;
+        };
 
-      greetd = {
-        enable = true;
-        settings = {
-          default_session = {
-            command =
-              "${pkgs.greetd.tuigreet}/bin/tuigreet --time --remember --cmd ${pkgs.writeShellScript "sway" ''
+        greetd = {
+          enable = true;
+          settings = {
+            default_session = {
+              command =
+                "${pkgs.greetd.tuigreet}/bin/tuigreet --time --remember --cmd ${pkgs.writeShellScript "sway" ''
           export $(/run/current-system/systemd/lib/systemd/user-environment-generators/30-systemd-environment-d-generator)
           exec sway
         ''}";
-            user = "greeter";
+              user = "greeter";
+            };
           };
         };
-      };
 
-      # xserver = {
-      #   videoDrivers = [ "amdgpu" ];
-      #   enable = true;
-      #   displayManager = {
-      #     # sddm.enable = true;
-      #     gdm = {
-      #       enable = false;
-      #     };
+        # xserver = {
+        #   videoDrivers = [ "amdgpu" ];
+        #   enable = true;
+        #   displayManager = {
+        #     # sddm.enable = true;
+        #     gdm = {
+        #       enable = false;
+        #     };
 
-      #   };
-      #   desktopManager = {
-      #     # plasma5.enable = true;
-      #     gnome.enable = false;
-      #   };
-      # };
-    }
-    // {
-      inherit ((import ../../services.nix { inherit pkgs lib config; }).services) dae;
-    };
+        #   };
+        #   desktopManager = {
+        #     # plasma5.enable = true;
+        #     gnome.enable = false;
+        #   };
+        # };
+      }
+    ]
+  ;
 
 
 
