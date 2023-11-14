@@ -129,7 +129,7 @@
     ''
     Host ${name}
       HostName ${addr}
-      User riro
+      User ${u}
       Port 22
       IdentityFile ${config.age.secrets.id.path}
     ''; 
