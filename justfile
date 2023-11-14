@@ -1,5 +1,7 @@
 set shell := ["nu", "-c"]
-general_set := "[\"hastur\", \"azasos\", \"kaambl\", \"yidhra\", \"nodens\"]"
+general_set := ```
+	[hastur, azasos, kaambl, yidhra, nodens]
+	```
 
 alias cp := copy
 alias b := build
