@@ -72,6 +72,10 @@
       url = "github:Kirottu/anyrun";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    aagl = {
+      url = "github:ezKEa/aagl-gtk-on-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     android-nixpkgs = {
       url = "github:tadfisher/android-nixpkgs";
     };

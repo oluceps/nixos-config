@@ -29,9 +29,10 @@
           "helix.cachix.org-1:ejp9KQpR1FBI2onstMQ34yogDm4OgU2ru6lIwPvuCVs="
           "nixpkgs-wayland.cachix.org-1:3lwxaILxMRkVhehr5StQprHdEo4IrE8sRho9R9HOLYA="
           "anyrun.cachix.org-1:pqBobmOjI7nKlsUMV25u9QHa9btJK65/C8vnO3p346s="
+          "ezkea.cachix.org-1:ioBmUbJTZIKsHmWWXPe1FSFbeVe+afhfgqgTSNd34eI="
         ];
         substituters = (map (n: "https://${n}.cachix.org")
-          [ "nix-community" "nur-pkgs" "hyprland" "helix" "nixpkgs-wayland" "anyrun" ])
+          [ "nix-community" "nur-pkgs" "hyprland" "helix" "nixpkgs-wayland" "anyrun" "ezkea" ])
         ++
         [
           "https://cache.nixos.org"
@@ -232,8 +233,8 @@
       platformTheme = "gnome";
       style = "adwaita";
     };
-
     programs = {
+
 
       neovim = {
         enable = false;
@@ -266,6 +267,7 @@
           enableSSHSupport = true;
         };
       };
+
 
     };
 

@@ -49,9 +49,9 @@
               ../../users.nix
               ../../sysvars.nix
             ]
-            ++ lib.sharedModules;
-            # ++
-            # [ inputs.home-manager.nixosModules.default ];
+            ++ lib.sharedModules
+            ++
+            [ inputs.aagl.nixosModules.default ];
           };
       };
     };

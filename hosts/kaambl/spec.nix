@@ -85,7 +85,12 @@
 
   };
   programs.dconf.enable = true;
-
+  programs = {
+    anime-game-launcher.enable = true; # Adds launcher and /etc/hosts rules
+    anime-borb-launcher.enable = true;
+    honkers-railway-launcher.enable = true;
+    honkers-launcher.enable = true;
+  };
   systemd.tmpfiles.rules = [
     # "L+    /opt/rocm/hip   -    -    -     -    ${pkgs.rocmPackages.clr}"
     "L+ /run/gdm/.config/monitors.xml - - - - ${pkgs.writeText "gdm-monitors.xml" ''
