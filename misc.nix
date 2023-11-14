@@ -128,15 +128,15 @@
     pkgs.writeText "ssh-config" (let genHost = name: addr: 
     ''
     Host ${name}
-    HostName ${addr}
-    User riro
-    Port 22
-    IdentityFile ${config.age.secrets.id.path}
+      HostName ${addr}
+      User riro
+      Port 22
+      IdentityFile ${config.age.secrets.id.path}
     ''; in
     (genHost "rha" "10.0.0.2")
      + (genHost "rha0" "10.0.1.2")
      + (genHost "builder" "10.0.1.2")
-     + "ProxyCommand nc -X 5 -x 127.0.0.1:1088 %h %p"
+     + "ProxyCommand nc -X 5 -x 127.0.0.1:1088 %h %p\n"
      + (genHost "kaambl" "10.0.1.3")
      + (genHost "hastur" "10.0.1.2")
      + (genHost "azasos" "10.0.0.5")
