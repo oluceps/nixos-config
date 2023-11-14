@@ -124,7 +124,6 @@
 
     daed.enable = false;
     dae = {
-      enable = true;
       package = pkgs.dae-unstable;
       disableTxChecksumIpGeneric = false;
       configFile = config.age.secrets.dae.path;

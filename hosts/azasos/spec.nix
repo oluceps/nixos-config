@@ -20,7 +20,10 @@
       openssh
       mosdns
       fail2ban
-      juicity;
+      juicity
+      dae;
+  } // {
+    dae.enable = true;
   };
 
   programs = {
@@ -53,17 +56,4 @@
 
   systemd.tmpfiles.rules = [
   ];
-  services = {
-    dae = {
-      enable = true;
-      package = pkgs.dae-unstable;
-      disableTxChecksumIpGeneric = false;
-      configFile = config.age.secrets.dae.path;
-      assets = with pkgs; [ v2ray-geoip v2ray-domain-list-community ];
-      openFirewall = {
-        enable = true;
-        port = 12345;
-      };
-    };
-  };
 }

@@ -1,4 +1,4 @@
-{ pkgs, config, user, ... }: {
+{ pkgs, config, user, lib, ... }: {
   # This headless machine uses to perform heavy task.
   # Running database and web services.
 
@@ -10,8 +10,6 @@
     memoryPercent = 80;
     algorithm = "zstd";
   };
-
-  services.gvfs.enable = true;
 
   hardware = {
     #   nvidia = {
@@ -66,161 +64,168 @@
 
   programs.dconf.enable = true;
 
-  services = {
+  services =
+    {
+      inherit ((import ../../services.nix { inherit pkgs lib config; }).services) dae;
+    } //
+    {
 
-    greetd = {
-      enable = true;
-      settings = {
-        default_session = {
-          command =
-            "${pkgs.greetd.tuigreet}/bin/tuigreet --time --remember --cmd ${pkgs.writeShellScript "sway" ''
+      dae.enable = true;
+
+      gvfs.enable = true;
+      greetd = {
+        enable = true;
+        settings = {
+          default_session = {
+            command =
+              "${pkgs.greetd.tuigreet}/bin/tuigreet --time --remember --cmd ${pkgs.writeShellScript "sway" ''
           export $(/run/current-system/systemd/lib/systemd/user-environment-generators/30-systemd-environment-d-generator)
           exec sway
         ''}";
-          user = "greeter";
+            user = "greeter";
+          };
+
+        };
+      };
+
+      btrbk.enable = true;
+
+      keycloak = {
+        enable = false;
+        settings = {
+          http-host = "10.0.1.2";
+          http-port = 8125;
+          proxy = "edge";
+          hostname-strict-backchannel = true;
+          hostname = "id.nyaw.xyz";
+          cache = "local";
+        };
+        database.passwordFile = toString (pkgs.writeText "password" "keycloak");
+      };
+
+      postgresqlBackup = {
+        enable = true;
+        location = "/var/lib/backup/postgresql";
+        compression = "zstd";
+        startAt = "weekly";
+      };
+
+      postgresql = {
+        enable = true;
+        package = pkgs.postgresql_16;
+        enableTCPIP = true;
+        port = 5432;
+        settings = {
+          max_connections = 100;
+          shared_buffers = "2GB";
+          effective_cache_size = "6GB";
+          maintenance_work_mem = "512MB";
+          checkpoint_completion_target = 0.9;
+          wal_buffers = "16MB";
+          default_statistics_target = 100;
+          random_page_cost = 1.1;
+          effective_io_concurrency = 200;
+          work_mem = "5242kB";
+          min_wal_size = "1GB";
+          max_wal_size = "4GB";
+          max_worker_processes = 4;
+          max_parallel_workers_per_gather = 2;
+          max_parallel_workers = 4;
+          max_parallel_maintenance_workers = 2;
+        };
+        authentication = pkgs.lib.mkOverride 10 ''
+          #type database  DBuser  auth-method
+          local all       all     trust
+          local misskey misskey peer map=misskey
+
+          #type database DBuser origin-address auth-method
+          # ipv4
+          host  all      all     127.0.0.1/32   trust
+          host  all      all     10.0.1.1/24   trust
+          host  all      all     10.0.0.1/24   trust
+          # ipv6
+          host all       all     ::1/128        trust
+        '';
+
+        ensureDatabases = [ "misskey" ];
+        ensureUsers = [{
+          name = "misskey";
+          ensurePermissions."DATABASE misskey" = "ALL PRIVILEGES";
+        }];
+        identMap = ''
+          misskey misskey misskey
+        '';
+      };
+
+      pipewire = {
+        enable = true;
+        alsa.enable = true;
+        alsa.support32Bit = true;
+        pulse.enable = true;
+        jack.enable = true;
+      };
+
+      photoprism = {
+        enable = true;
+        originalsPath = "/var/lib/private/photoprism/originals";
+        address = "[::]";
+        passwordFile = config.age.secrets.prism.path;
+        settings = {
+          PHOTOPRISM_ADMIN_USER = "${user}";
+          PHOTOPRISM_DEFAULT_LOCALE = "en";
+          PHOTOPRISM_DATABASE_NAME = "photoprism";
+          PHOTOPRISM_DATABASE_SERVER = "/run/mysqld/mysqld.sock";
+          PHOTOPRISM_DATABASE_USER = "photoprism";
+          PHOTOPRISM_DATABASE_DRIVER = "mysql";
+        };
+        port = 20800;
+      };
+
+
+      minio = {
+        enable = true;
+        region = "ap-east-1";
+        rootCredentialsFile = config.age.secrets.minio.path;
+      };
+
+
+      mysql = {
+        enable = true;
+        package = pkgs.mariadb_1011;
+        dataDir = "/var/lib/mysql";
+        ensureDatabases = [ "photoprism" ];
+        ensureUsers = [
+          {
+            name = "riro";
+            ensurePermissions = {
+              "*.*" = "ALL PRIVILEGES";
+            };
+          }
+          {
+            name = "photoprism";
+            ensurePermissions = {
+              "photoprism.*" = "ALL PRIVILEGES";
+            };
+          }
+        ];
+      };
+      xmrig = {
+        enable = false;
+        settings = {
+          autosave = true;
+          cpu = true;
+          opencl = false;
+          cuda = false;
+          pools = [
+            {
+              url = "pool.supportxmr.com:443";
+              user = "43WvF2Vv5e2Dpte5w44gHzWbZeLZm9PNNEsxCMRRc66GNVPmNoAaxwPFPurR1hQtNzP4NgY1dtjEohh9LyWLKAvqJUErReS";
+              keepalive = true;
+              tls = true;
+            }
+          ];
         };
 
       };
     };
-
-    btrbk.enable = true;
-
-    keycloak = {
-      enable = false;
-      settings = {
-        http-host = "10.0.1.2";
-        http-port = 8125;
-        proxy = "edge";
-        hostname-strict-backchannel = true;
-        hostname = "id.nyaw.xyz";
-        cache = "local";
-      };
-      database.passwordFile = toString (pkgs.writeText "password" "keycloak");
-    };
-
-    postgresqlBackup = {
-      enable = true;
-      location = "/var/lib/backup/postgresql";
-      compression = "zstd";
-      startAt = "weekly";
-    };
-
-    postgresql = {
-      enable = true;
-      package = pkgs.postgresql_16;
-      enableTCPIP = true;
-      port = 5432;
-      settings = {
-        max_connections = 100;
-        shared_buffers = "2GB";
-        effective_cache_size = "6GB";
-        maintenance_work_mem = "512MB";
-        checkpoint_completion_target = 0.9;
-        wal_buffers = "16MB";
-        default_statistics_target = 100;
-        random_page_cost = 1.1;
-        effective_io_concurrency = 200;
-        work_mem = "5242kB";
-        min_wal_size = "1GB";
-        max_wal_size = "4GB";
-        max_worker_processes = 4;
-        max_parallel_workers_per_gather = 2;
-        max_parallel_workers = 4;
-        max_parallel_maintenance_workers = 2;
-      };
-      authentication = pkgs.lib.mkOverride 10 ''
-        #type database  DBuser  auth-method
-        local all       all     trust
-        local misskey misskey peer map=misskey
-
-        #type database DBuser origin-address auth-method
-        # ipv4
-        host  all      all     127.0.0.1/32   trust
-        host  all      all     10.0.1.1/24   trust
-        host  all      all     10.0.0.1/24   trust
-        # ipv6
-        host all       all     ::1/128        trust
-      '';
-
-      ensureDatabases = [ "misskey" ];
-      ensureUsers = [{
-        name = "misskey";
-        ensurePermissions."DATABASE misskey" = "ALL PRIVILEGES";
-      }];
-      identMap = ''
-        misskey misskey misskey
-      '';
-    };
-
-    pipewire = {
-      enable = true;
-      alsa.enable = true;
-      alsa.support32Bit = true;
-      pulse.enable = true;
-      jack.enable = true;
-    };
-
-    photoprism = {
-      enable = true;
-      originalsPath = "/var/lib/private/photoprism/originals";
-      address = "[::]";
-      passwordFile = config.age.secrets.prism.path;
-      settings = {
-        PHOTOPRISM_ADMIN_USER = "${user}";
-        PHOTOPRISM_DEFAULT_LOCALE = "en";
-        PHOTOPRISM_DATABASE_NAME = "photoprism";
-        PHOTOPRISM_DATABASE_SERVER = "/run/mysqld/mysqld.sock";
-        PHOTOPRISM_DATABASE_USER = "photoprism";
-        PHOTOPRISM_DATABASE_DRIVER = "mysql";
-      };
-      port = 20800;
-    };
-
-
-    minio = {
-      enable = true;
-      region = "ap-east-1";
-      rootCredentialsFile = config.age.secrets.minio.path;
-    };
-
-
-    mysql = {
-      enable = true;
-      package = pkgs.mariadb_1011;
-      dataDir = "/var/lib/mysql";
-      ensureDatabases = [ "photoprism" ];
-      ensureUsers = [
-        {
-          name = "riro";
-          ensurePermissions = {
-            "*.*" = "ALL PRIVILEGES";
-          };
-        }
-        {
-          name = "photoprism";
-          ensurePermissions = {
-            "photoprism.*" = "ALL PRIVILEGES";
-          };
-        }
-      ];
-    };
-    xmrig = {
-      enable = false;
-      settings = {
-        autosave = true;
-        cpu = true;
-        opencl = false;
-        cuda = false;
-        pools = [
-          {
-            url = "pool.supportxmr.com:443";
-            user = "43WvF2Vv5e2Dpte5w44gHzWbZeLZm9PNNEsxCMRRc66GNVPmNoAaxwPFPurR1hQtNzP4NgY1dtjEohh9LyWLKAvqJUErReS";
-            keepalive = true;
-            tls = true;
-          }
-        ];
-      };
-
-    };
-  };
 }
