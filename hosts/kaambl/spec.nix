@@ -18,9 +18,6 @@
 
   services =
     {
-      inherit ((import ../../services.nix { inherit pkgs lib config; }).services) dae;
-    } //
-    {
       dae.enable = true;
       gvfs.enable = false;
       blueman.enable = true;
@@ -62,6 +59,9 @@
       #     gnome.enable = false;
       #   };
       # };
+    }
+    // {
+      inherit ((import ../../services.nix { inherit pkgs lib config; }).services) dae;
     };
 
 

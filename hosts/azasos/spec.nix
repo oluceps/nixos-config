@@ -16,14 +16,14 @@
   };
 
   services = {
+    dae.enable = true;
+  } // {
     inherit ((import ../../services.nix { inherit pkgs lib config; }).services)
       openssh
       mosdns
       fail2ban
       juicity
       dae;
-  } // {
-    dae.enable = true;
   };
 
   programs = {
