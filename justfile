@@ -9,8 +9,15 @@ alias d := deploy
 
 host := `hostname`
 
-copy target data:
-	{{general_set}} | each { |i| if ($i in {{data}}) { (nix copy --substitute-on-destination --to 'ssh://{{target}}' (nix eval --raw $'.#nixosConfigurations.($i).config.age.rekey.derivation') -vvv) }}
+default:
+	@echo "\
+	cp target [data,]         # copy agenix encrypted files\n\
+	b [host,]                 # build nixosConfigurations toplevel\n\
+	d [target,] builder mode  # deploy into target\n\
+	"
+
+copy target datas:
+	{{general_set}} | each { |i| if ($i in {{datas}}) { (nix copy --substitute-on-destination --to 'ssh://{{target}}' (nix eval --raw $'.#nixosConfigurations.($i).config.age.rekey.derivation') -vvv) }}
 
 build hosts:
 	{{hosts}} | each { |i| nom build $'.#nixosConfigurations.(ssh $i hostname).config.system.build.toplevel' }
