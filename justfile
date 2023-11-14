@@ -28,7 +28,7 @@ build hosts=nodes:
 	{{hosts}} | each { |i| nom build $'.#nixosConfigurations.($i).config.system.build.toplevel' }
 
 deploy targets=nodes builder="localhost" mode="switch":
-	{{targets}} | each { |target| nixos-rebuild --target-host $target --build-host {{builder}} {{mode}} --use-remote-sudo --flake $'.#(ssh $target hostname)' }
+	{{targets}} | each { |target| nixos-rebuild --target-host $target --build-host {{builder}} {{mode}} --use-remote-sudo --flake $'.#($target)' }
 
 home-active builder="rha0":
 	if {{host}} == "kaambl" { just build-home-remotely (`whoami`) {{builder}} } else { just build-home (`whoami`) }
