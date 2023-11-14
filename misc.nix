@@ -128,11 +128,9 @@
     HostName ${addr}
     User riro
     Port 22
-    AddKeysToAgent yes
-    ForwardAgent yes
     IdentityFile ${config.age.secrets.id.path}
     ''; in
-    (genHost "rha" "10.0.0.2") + (genHost "rha0" "10.0.1.2"))}"
+    (genHost "rha" "10.0.0.2") + (genHost "rha0" "10.0.1.2") + (genHost "builder" "10.0.1.2") + "ProxyCommand nc -X 5 -x 127.0.0.1:1088 %h %p")}"
   ];
 
   environment.etc = {
