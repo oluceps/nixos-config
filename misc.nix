@@ -120,6 +120,9 @@
     "C /root/.ssh/known_hosts - - - - ${pkgs.writeText "known_hosts" ''
     10.0.1.2 ${data.keys.hasturHostPubKey}
     10.0.0.2 ${data.keys.hasturHostPubKey}
+    10.0.1.3 ${data.keys.kaamblHostPubKey}
+    10.0.1.1 ${data.keys.nodensHostPubKey}
+    10.0.0.5 ${data.keys.azasosHostPubKey}
     ''}"
     "C /root/.ssh/config - - - - ${
     pkgs.writeText "ssh-config" (let genHost = name: addr: 
@@ -130,7 +133,15 @@
     Port 22
     IdentityFile ${config.age.secrets.id.path}
     ''; in
-    (genHost "rha" "10.0.0.2") + (genHost "rha0" "10.0.1.2") + (genHost "builder" "10.0.1.2") + "ProxyCommand nc -X 5 -x 127.0.0.1:1088 %h %p")}"
+    (genHost "rha" "10.0.0.2")
+     + (genHost "rha0" "10.0.1.2")
+     + (genHost "builder" "10.0.1.2")
+     + "ProxyCommand nc -X 5 -x 127.0.0.1:1088 %h %p"
+     + (genHost "kaambl" "10.0.1.3")
+     + (genHost "hastur" "10.0.1.2")
+     + (genHost "azasos" "10.0.0.5")
+     + (genHost "nodens" "10.0.1.1")
+    )}"
   ];
 
   environment.etc = {
