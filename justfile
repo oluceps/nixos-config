@@ -23,11 +23,11 @@ build hosts:
 deploy targets builder="localhost" mode="switch":
 	{{targets}} | each { |target| nixos-rebuild --target-host $target --build-host {{builder}} {{mode}} --use-remote-sudo --flake $'.#(ssh $target hostname)' }
 
-home-active:
-	if {{host}} == "kaambl" { just build-home-remotely (`whoami`) } else { just build-home (`whoami`) }
+home-active builder="rha0":
+	if {{host}} == "kaambl" { just build-home-remotely (`whoami`) {{builder}} } else { just build-home (`whoami`) }
 	./result/activate
 
-build-home-remotely user:
-	nom build '.#homeConfigurations.{{user}}.activationPackage' --builders 'ssh://rha0 x86_64-linux'
+build-home-remotely user builder:
+	nom build '.#homeConfigurations.{{user}}.activationPackage' --builders 'ssh://{{builder}} x86_64-linux'
 build-home user:
 	nom build '.#homeConfigurations.{{user}}.activationPackage'
