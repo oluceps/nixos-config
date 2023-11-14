@@ -3,6 +3,7 @@ set shell := ["nu", "-c"]
 alias cp := copy
 alias b := build
 alias d := deploy
+alias h := home-active
 
 host := `hostname`
 
@@ -20,3 +21,7 @@ build hosts:
 
 deploy targets builder="localhost" mode="switch":
 	{{targets}} | each { |target| nixos-rebuild --target-host $target {{mode}} --use-remote-sudo --flake $'.#(ssh $target hostname)' }
+
+home-active:
+	if {{host}} == "kaambl" { nom build '.#homeConfigurations.elen.activationPackage' --builders 'ssh://rha x86_64-linux' }
+	./result/activate
