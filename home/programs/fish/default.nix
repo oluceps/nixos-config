@@ -3,6 +3,7 @@
     enable = true;
     plugins = [ ];
     shellAliases = {
+      j = "just";
       nd = "cd /etc/nixos";
       swc = let mode = if user == "riro" then "test" else "switch"; in
         "sudo nixos-rebuild ${mode} --flake /etc/nixos";
