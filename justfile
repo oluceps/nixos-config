@@ -8,7 +8,7 @@ alias h := home-active
 
 host := `hostname`
 
-nodes := "[hastur,azasos,kaambl,yidhra,nodens]"
+nodes := "[hastur,azasos,kaambl,nodens]"
 
 default:
 	@echo "\
@@ -27,7 +27,7 @@ fetch source="kmb" datas=nodes:
 build hosts=nodes:
 	{{hosts}} | each { |i| nom build $'.#nixosConfigurations.($i).config.system.build.toplevel' }
 
-deploy targets builder="localhost" mode="switch":
+deploy targets=nodes builder="localhost" mode="switch":
 	{{targets}} | each { |target| nixos-rebuild --target-host $target --build-host {{builder}} {{mode}} --use-remote-sudo --flake $'.#(ssh $target hostname)' }
 
 home-active builder="rha0":
