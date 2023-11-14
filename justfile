@@ -22,7 +22,7 @@ copy target datas=nodes:
 	{{datas}} | each { |i| (nix copy --substitute-on-destination --to 'ssh://{{target}}' (nix eval --raw $'.#nixosConfigurations.($i).config.age.rekey.derivation') -vvv) }
 
 fetch source="kmb" datas=nodes:
-	{{datas}} | each { |i| (ssh kmb -t $"nix eval --raw /etc/nixos#nixosConfigurations.($i).config.age.rekey.derivation") | (nix copy --substitute-on-destination --from 'ssh://{{source}}' $in -vvv )}
+	{{datas}} | each { |i| (ssh {{source}} -t $"nix eval --raw /etc/nixos#nixosConfigurations.($i).config.age.rekey.derivation") | (nix copy --substitute-on-destination --from 'ssh://{{source}}' $in -vvv )}
 
 build hosts=nodes:
 	{{hosts}} | each { |i| nom build $'.#nixosConfigurations.($i).config.system.build.toplevel' }
