@@ -125,22 +125,25 @@
     10.0.0.5 ${data.keys.azasosHostPubKey}
     ''}"
     "C /root/.ssh/config - - - - ${
-    pkgs.writeText "ssh-config" (let genHost = name: addr: 
+    pkgs.writeText "ssh-config" (let genGenHost = u: name: addr: 
     ''
     Host ${name}
       HostName ${addr}
       User riro
       Port 22
       IdentityFile ${config.age.secrets.id.path}
-    ''; in
+    ''; 
+    genHost = genGenHost "riro";
+    genHostE = genGenHost "elen";
+    in
     (genHost "rha" "10.0.0.2")
      + (genHost "rha0" "10.0.1.2")
      + (genHost "builder" "10.0.1.2")
      + "ProxyCommand nc -X 5 -x 127.0.0.1:1088 %h %p\n"
-     + (genHost "kaambl" "10.0.1.3")
      + (genHost "hastur" "10.0.1.2")
-     + (genHost "azasos" "10.0.0.5")
-     + (genHost "nodens" "10.0.1.1")
+     + (genHostE "kaambl" "10.0.1.3")
+     + (genHostE "azasos" "10.0.0.5")
+     + (genHostE "nodens" "10.0.1.1")
     )}"
   ];
 
