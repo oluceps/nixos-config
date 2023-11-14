@@ -18,6 +18,7 @@ let
       # (ragenix.override { plugins = [ age-plugin-yubikey ]; })
       linuxKernel.packages.linux_latest_libre.cpupower
       clean-home
+      just
       typst
       helix
       srm
