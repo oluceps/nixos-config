@@ -434,6 +434,36 @@ user: { config
     #
   };
   #xdg.configFile."sway/config".text = import ./dotfiles/sway/config.nix {inherit config pkgs;};
+  xdg.mimeApps = {
+    enable = true;
+    defaultApplications = {
+      "tg" = [ "org.telegram.desktop.desktop" ];
+
+      "application/pdf" = [ "sioyek.desktop" ];
+      "ppt/pptx" = [ "wps-office-wpp.desktop" ];
+      "doc/docx" = [ "wps-office-wps.desktop" ];
+      "xls/xlsx" = [ "wps-office-et.desktop" ];
+    }
+    //
+    lib.genAttrs [
+      "x-scheme-handler/unknown"
+      "x-scheme-handler/about"
+      "x-scheme-handler/http"
+      "x-scheme-handler/https"
+      "text/html"
+    ]
+      (_: "firefox.desktop")
+    //
+    lib.genAttrs [
+      "image/gif"
+      "image/webp"
+      "image/png"
+      "image/jpeg"
+    ]
+      (_: "org.gnome.eog.desktop")
+    ;
+
+  };
   gtk = {
     enable = true;
     theme = {
