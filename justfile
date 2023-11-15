@@ -1,6 +1,6 @@
 set shell := ["nu", "-c"]
 
-alias cp := copy
+alias p := push
 alias f := fetch
 alias b := build
 alias d := deploy
@@ -12,13 +12,13 @@ nodes := "[hastur,azasos,kaambl,nodens]"
 
 default:
 	@echo "\
-	cp target [data,]         # copy agenix encrypted files\n\
+	p target [data,]          # push agenix encrypted files\n\
 	f source [data,]          # fetch agenix encrypts from remote\n\
 	b [host,]                 # build nixosConfigurations toplevel\n\
 	d [target,] builder mode  # deploy into target\n\
 	h                         # build and activate home\n\
 	"
-copy target datas=nodes:
+push target datas=nodes:
 	{{datas}} | each { |i| (nix copy --substitute-on-destination --to 'ssh://{{target}}' (nix eval --raw $'.#nixosConfigurations.($i).config.age.rekey.derivation') -vvv) }
 
 fetch source="kmb" datas=nodes:
