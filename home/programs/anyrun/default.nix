@@ -2,80 +2,96 @@
   programs.anyrun = {
     enable = true;
     config = {
-      plugins = [
-        inputs.anyrun.packages.${pkgs.system}.applications
-        # "libapplications.so"
+      plugins = with inputs.anyrun.packages.${pkgs.system}; [
+        applications
+        # randr
+        rink
+        shell
+        symbols
+        dictionary
       ];
-      x.fraction = 0.5;
+
+      width.fraction = 0.3;
       y.absolute = 200;
-      width.absolute = 800;
-      height.absolute = 0;
-      hideIcons = false;
-      ignoreExclusiveZones = false;
-      layer = "overlay";
       hidePluginInfo = true;
-      closeOnClick = false;
-      showResultsImmediately = true;
-      maxEntries = null;
+      closeOnClick = true;
+      hideIcons = true;
+      showResultsImmediately= false;
     };
     extraCss = ''
-      #window {
-        background-color: rgba(0, 0, 0, 0);
-        font-size: 20px;
-        color: rgba(255,255,255,1.000);
+      * {
+        all: unset;
+        font-size: 1.3rem;
+        color: black;
+      }
+
+      #window,
+      #match,
+      #entry,
+      #plugin,
+      #main {
+        background: transparent;
+      }
+
+      #match.activatable {
+        border-radius: 16px;
+        padding: 0.3rem 0.9rem;
+        margin-top: 0.01rem;
+      }
+      #match.activatable:first-child {
+        margin-top: 0.7rem;
+      }
+      #match.activatable:last-child {
+        margin-bottom: 0.6rem;
+      }
+
+      #plugin:hover #match.activatable {
+        border-radius: 10px;
+        padding: 0.3rem;
+        margin-top: 0.01rem;
+        margin-bottom: 0;
+      }
+
+      #match:selected,
+      #match:hover,
+      #plugin:hover {
+        background: rgba(255, 255, 255, 0.3);
       }
 
       #entry {
-        background-color: rgba(0, 0, 0, 0.7);
-        color: rgba(255,255,255,1.000);
-        padding-top: 10px;
-        padding-bottom: 10px;
-        border-radius: 0px;
-        box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.7);  
-        caret-color: rgba(0, 0, 0, 0);
-        border-width: 1px;
-        border-style: solid;
-        border-top-style: solid;
-        border-bottom-style: solid;
-        border-color: rgba(0, 0, 0, 0.7);
-        margin: 10px;
-        margin-bottom: -10px;
-        padding: 20px;
-        border-bottom-color: rgba(255,255,255,1);
+        background: rgba(255, 255, 255, 0.3);
+        border: 1px solid rgba(0, 0, 0, 0.1);
+        border-radius: 16px;
+        margin: 0.5rem;
+        padding: 0.3rem 1rem;
       }
 
-      #match {
-        color: rgba(255,255,255,1.000);
+      #match:selected,
+      #match:hover {
+        box-shadow: 0 1px 5px -5px rgba(0, 0, 0, 0.5);
+      }
+
+      list > #plugin {
+        border-radius: 16px;
+        margin: 0 0.3rem;
+      }
+      list > #plugin:first-child {
+        margin-top: 0.3rem;
+      }
+      list > #plugin:last-child {
+        margin-bottom: 0.3rem;
+      }
+      list > #plugin:hover {
+        padding: 0.6rem;
       }
 
       box#main {
-        border-radius: 10px;
-        background-color: rgba(0, 0, 0, 0);
-
-      }
-
-      list#main {
-        background-color: rgba(0, 0, 0, 0.7);
-        border-color: rgba(0, 0, 0, 0);
-        box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.7);  
-        margin: 10px;
-      }
-
-      list#main row:selected {
-        background-color: rgba(255, 255, 255, 0.7);
-      }
-
-
-      list#plugin {
-        background-color: rgba(0, 0, 0, 0);
-      }
-
-      label#match-desc {
-        font-size: 10px;
-      }
-
-      label#plugin {
-        font-size: 14px;
+        background: rgba(255, 255, 255, 0.5);
+        box-shadow:
+          0 0 0 1px rgba(0, 0, 0, 0.1),
+          inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+        border-radius: 24px;
+        padding: 0.3rem;
       }
     '';
   };
