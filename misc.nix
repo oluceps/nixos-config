@@ -179,36 +179,10 @@
     xdg = {
       mime = {
         enable = true;
-        defaultApplications = {
-          "tg" = [ "org.telegram.desktop.desktop" ];
-
-          "application/pdf" = [ "sioyek.desktop" ];
-          "ppt/pptx" = [ "wps-office-wpp.desktop" ];
-          "doc/docx" = [ "wps-office-wps.desktop" ];
-          "xls/xlsx" = [ "wps-office-et.desktop" ];
-        }
-        //
-        lib.genAttrs [
-          "x-scheme-handler/unknown"
-          "x-scheme-handler/about"
-          "x-scheme-handler/http"
-          "x-scheme-handler/https"
-          "text/html"
-        ]
-          (_: "firefox.desktop")
-        //
-        lib.genAttrs [
-          "image/gif"
-          "image/webp"
-          "image/png"
-          "image/jpeg"
-        ]
-          (_: "org.gnome.eog.desktop")
-        ;
+        inherit ((import ./home/home.nix user { inherit config pkgs lib inputs; }).xdg.mimeApps) defaultApplications;
       };
     };
 
-    networking.firewall.trustedInterfaces = [ "virbr0" ];
     virtualisation = {
       vmVariant = {
         virtualisation = {
@@ -216,7 +190,7 @@
           cores = 6;
         };
       };
-      docker.enable = false;
+      docker. enable = false;
       podman.enable = true;
       libvirtd = {
         enable = false;
@@ -319,7 +293,7 @@
         monaspace
       ]
       ++ (with (pkgs.glowsans); [ glowsansSC glowsansTC glowsansJ ])
-      ++ (with nur-pkgs;[ san-francisco plangothic maoken-tangyuan hk-grotesk lxgw-neo-xihei ]);
+      ++ (with nur-pkgs; [ san-francisco plangothic maoken-tangyuan hk-grotesk lxgw-neo-xihei ]);
       #"HarmonyOS Sans SC" "HarmonyOS Sans TC"
       fontconfig = {
         subpixel.rgba = "none";
