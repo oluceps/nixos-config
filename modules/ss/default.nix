@@ -7,43 +7,39 @@
 with lib;
 let
   cfg = config.services.ss;
-  plugin = pkgs.callPackage ../../pkgs/v2ray-plugin/default.nix { };
 in
 {
   options.services.ss = {
-    enable = mkOption {
-      type = types.bool;
-      default = false;
-    };
+    enable = mkEnableOption (lib.mdDoc "shadowsocks service");
 
     package = mkOption {
       type = types.package;
       default = pkgs.shadowsocks-rust;
     };
 
+    serve = mkEnableOption (lib.mdDoc "server");
+
+    configFile = mkOption {
+      type = types.str;
+      default = config.age.secrets.ss.path;
+    };
+
   };
 
-  config =
-    let
-      configFile = config.age.secrets.ss.path;
-    in
-    mkIf cfg.enable {
-      systemd.services.ss = {
-        wantedBy = [ "multi-user.target" ];
-        after = [ "network.target" ];
-        description = "shadowsocks-rust";
-        serviceConfig = {
+  config = mkIf cfg.enable {
+    systemd.services.ss = {
+      wantedBy = [ "multi-user.target" ];
+      after = [ "network.target" ];
+      description = "shadowsocks-rust";
+      serviceConfig =
+        let binSuffix = if cfg.serve then "server" else "local"; in {
           Type = "simple";
           User = "proxy";
-          ExecStart = "${cfg.package}/bin/sslocal -c ${configFile}";
+          ExecStart = "${cfg.package}/bin/ss${binSuffix} -c ${cfg.configFile}";
           AmbientCapabilities = [ "CAP_NET_ADMIN" "CAP_NET_BIND_SERVICE" ];
           Restart = "on-failure";
         };
-
-      };
-
     };
-
-
+  };
 }
 
