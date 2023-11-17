@@ -57,6 +57,8 @@
               inputs.misskey.nixosModules.default
               ./misskey.nix
 
+              ./vaultwarden.nix
+
             ] ++ lib.sharedModules;
           };
       };

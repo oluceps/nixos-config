@@ -164,6 +164,12 @@
           	reverse_proxy /_matrix/* 10.0.1.2:6167
         '';
       };
+      "vault.nyaw.xyz" = {
+        hostName = "vault.nyaw.xyz";
+        extraConfig = ''
+          	reverse_proxy 10.0.1.2:8003
+        '';
+      };
       "ctos.magicb.uk" = {
         hostName = "ctos.magicb.uk";
         extraConfig = ''
