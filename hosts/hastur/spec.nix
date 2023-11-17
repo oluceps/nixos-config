@@ -148,15 +148,11 @@
             host all       all     ::1/128        trust
           '';
 
-          ensureDatabases = [ "misskey" "vaultwarden" ];
+          ensureDatabases = [ "misskey" ];
           ensureUsers = [
             {
               name = "misskey";
               ensurePermissions."DATABASE misskey" = "ALL PRIVILEGES";
-            }
-            {
-              name = "vault";
-              ensurePermissions."DATABASE vaultwarden" = "ALL PRIVILEGES";
             }
           ];
           identMap = ''
