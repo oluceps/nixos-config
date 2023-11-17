@@ -18,14 +18,6 @@ with:
 
 ---
 
-![screenshot](./.attachs/shot_1.png)
-
-
-<details><summary>misc</summary>
-
-![screenshot](./.attachs/shot_2.png)
-
-</details>
 
 |Type|Program|
 |---|---|
