@@ -10,22 +10,31 @@
           inherit system;
           overlays = with inputs;[
             agenix-rekey.overlays.default
+            self.overlays.default
           ];
         };
 
-        checks = with pkgs;
-          {
-            pre-commit-check = inputs.pre-commit-hooks.lib.${system}.run
-              {
-                src = lib.cleanSource ./.;
-                hooks = { nixpkgs-fmt.enable = true; };
-              };
-          };
+        checks = with pkgs; {
+          pre-commit-check =
+            inputs.pre-commit-hooks.lib.${system}.run {
+              src = lib.cleanSource ./.;
+              hooks = { nixpkgs-fmt.enable = true; };
+            };
+        };
 
         devShells.default = with pkgs; mkShell {
           packages = [ agenix-rekey home-manager just ];
         };
 
+        packages = with pkgs.lib; genAttrs
+          (with builtins; (attrNames (
+            filterAttrs
+              (n: _: !elem n [
+                "glowsans"
+                "opulr-a-run"
+              ])
+              (readDir ./pkgs))))
+          (n: pkgs.${n});
       };
 
       flake = {
@@ -42,7 +51,10 @@
             final: prev: prev.lib.genAttrs
               (with builtins;
               (with prev.lib; attrNames (
-                filterAttrs (n: _: !elem n [ "ubt-rv-run" ]) # temporary disable pkg
+                filterAttrs
+                  (n: _: !elem n [
+                    "nobody"
+                  ])
                   (readDir ./pkgs))))
               (name: final.callPackage (./pkgs + "/${name}") { });
 

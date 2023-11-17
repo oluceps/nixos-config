@@ -13,7 +13,7 @@ buildGo120Module rec {
     hash = "sha256-7qWaEJ6hlmUCW8x0Rqi9oQPCDtRENNapgVVukrNO50A=";
   };
 
-  vendorHash = "sha256-fiMtPG9aev15oH99xrTtEKj5xo679xLcXYVd5SAHaPc=";
+  vendorHash = "";
 
   subPackages = [ "cmd/caddy" ];
 
