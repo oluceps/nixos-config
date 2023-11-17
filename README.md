@@ -5,15 +5,15 @@
 
 # Nix flake
 
-This repo contains declaritive configuration of few NixOS system, with ~100% config Nixfied.
+This repo contains declaritive configurations, with ~100% config Nixfied.
 
-> NOTICE: Contains public credential in `hosts/lib.nix`. 
+> NOTICE: Public credentials in `hosts/lib.nix`. 
 
 with:
 
 + [flake-parts](https://github.com/hercules-ci/flake-parts) for layout.
 + [agenix](https://github.com/ryantm/agenix) & [rekey](https://github.com/oddlama/agenix-rekey), keys are not stored on disk, dec & enc with yubikey.
-+ [lanzaboote](https://github.com/nix-community/lanzaboote) implements secure boot.
++ [lanzaboote](https://github.com/nix-community/lanzaboote) for secure boot.
 + root on tmpfs, keep states with [impermanence](https://github.com/nix-community/impermanence).
 + Standalone installed [home-manager](https://github.com/nix-community/home-manager).
 + [Just](https://github.com/casey/just) as command runner.
