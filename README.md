@@ -50,10 +50,11 @@ Applying:
         # packages in `pkgs` dir of this repo,
         # with pname consist with dir name
         environment.systemPackages = 
-          [ pkgs.shadow-tls inputs.oluceps.packages.${system}.foliate ];
+          [ pkgs.<?>
+            inputs.oluceps.packages.${system}.foliate ];
       }
 
-      inputs.oluceps.nixosModules.default # (you won't wanna do that)
+      inputs.oluceps.nixosModules.default
       # or any standalone module (see `nix flake show`)
     ];
   };
