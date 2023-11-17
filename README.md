@@ -11,10 +11,12 @@ This repo contains declaritive configuration of few NixOS system, with ~100% con
 
 with:
 
++ [flake-parts](https://github.com/hercules-ci/flake-parts) for layout.
 + [agenix](https://github.com/ryantm/agenix) & [rekey](https://github.com/oddlama/agenix-rekey), keys are not stored on disk, dec & enc with yubikey.
 + [lanzaboote](https://github.com/nix-community/lanzaboote) implements secure boot.
 + root on tmpfs, keep states with [impermanence](https://github.com/nix-community/impermanence).
-+ [home-manager](https://github.com/nix-community/home-manager) configurations as flake module.
++ Standalone installed [home-manager](https://github.com/nix-community/home-manager).
++ [Just](https://github.com/casey/just) as command runner.
 
 ---
 
@@ -68,13 +70,3 @@ Excellent configurations that I've learned and copied:
 + [Clansty/flake](https://github.com/Clansty/flake)  
 + [fufexan/dotfiles](https://github.com/fufexan/dotfiles)  
 + [gvolpe/nix-config](https://github.com/gvolpe/nix-config)
-
----
-
-+ [Erase your darlings](https://grahamc.com/blog/erase-your-darlings)  
-+ [NixOS: tmpfs as root](https://elis.nu/blog/2020/05/nixos-tmpfs-as-root/)  
-+ [How to Learn Nix](https://ianthehenry.com/posts/how-to-learn-nix/)  
-+ [Attrset functions](https://ryantm.github.io/nixpkgs/functions/library/attrsets/)  
-+ [Way to search function](http://noogle.dev)  
- 
-[NixOS-CN-telegram](https://github.com/nixos-cn/NixOS-CN-telegram)
