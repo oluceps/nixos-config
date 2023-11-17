@@ -13,9 +13,10 @@
 
   xdg.portal = {
     enable = true;
-    extraPortals = with pkgs; [ xdg-desktop-portal-gtk ];
-    xdgOpenUsePortal = true;
+    wlr.enable = true;
+    # xdgOpenUsePortal = true;
   };
+
 
   services = {
     # bpftune.enable = false;
