@@ -37,5 +37,9 @@ home-active builder="rha0":
 
 build-home-remotely user builder:
 	nom build '.#homeConfigurations.{{user}}.activationPackage' --builders 'ssh://{{builder}} x86_64-linux'
+
 build-home user:
 	nom build '.#homeConfigurations.{{user}}.activationPackage'
+
+clean:
+	git clean -f
