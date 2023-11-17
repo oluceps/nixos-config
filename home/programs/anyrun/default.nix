@@ -16,7 +16,7 @@
       hidePluginInfo = true;
       closeOnClick = true;
       hideIcons = true;
-      showResultsImmediately= false;
+      showResultsImmediately = false;
     };
     extraCss = ''
       * {
