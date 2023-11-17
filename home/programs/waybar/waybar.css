@@ -12,7 +12,7 @@
 
 window {
 	color: rgba(217, 216, 216, 1);
-	background: rgba(83, 89, 83, 0.4);
+	background: rgba(83, 89, 83, 0);
 }
 
 window#waybar.solo {
@@ -25,6 +25,8 @@ window#waybar.solo {
 	color: rgba(217, 216, 216, 0.6);
 	padding-left: 10px;
 	padding-right: 10px;
+  margin: 2px 0px 2px 0px;
+	border-radius: 4px;
 }
 
 #workspaces button.urgent {
@@ -46,8 +48,9 @@ window#waybar.solo {
 
 #tray, #mode, #battery, #cpu, #memory, #network,  #backlight, #custom-storage, #custom-spotify, #custom-weather, #custom-mail, #temperature, #idle_inhibitor {
 	color: rgba(217, 216, 216, 1);
-	padding: 3px 3px 3px 3px;
-	margin: 0px 4px 0px 4px;
+	padding: 3px 6px 3px 6px;
+	margin: 2px 4px 2px 4px;
+	background: rgba(35, 31, 32, 0.1);
 	border-radius: 6px;
 }
 
@@ -57,9 +60,9 @@ window#waybar.solo {
 }
 
 #pulseaudio {
-	color: rgba(217, 216, 216, 1);
-	padding: 3px 7px 3px 7px;
-	margin: 0px 0px 0px 0px;
+	padding: 3px 6px 3px 6px;
+	margin: 2px 4px 2px 4px;
+	background: rgba(35, 31, 32, 0.1);
 	border-radius: 6px;
 }
 
@@ -70,10 +73,11 @@ window#waybar.solo {
 }
 
 #clock {
-	padding: 5px 18px 3px 0px;
-	margin: 0px 0px 0px 0px;
 	color: rgba(217, 216, 216, 1);
-	border-radius: 6px;
+	border-radius: 2px;
+	padding: 3px 9px 3px 9px;
+	margin: 1px 0px 1px 0px;
+	background: rgba(35, 31, 32, 0.1);
 }
 
 #battery.warning {
