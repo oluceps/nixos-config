@@ -23,6 +23,7 @@
       }
       {
         dae.enable = true;
+        ss.enable = true;
         gvfs.enable = false;
         blueman.enable = true;
         btrbk.enable = true;

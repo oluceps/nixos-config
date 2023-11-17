@@ -26,8 +26,20 @@
     }
     {
       dae.enable = true;
+
+      ss = {
+        enable = true;
+        configFile = config.age.secrets.ss-az.path;
+        serve = true;
+      };
     }
   ];
+
+  networking.firewall = {
+    allowedUDPPorts = [ 6059 ];
+    allowedTCPPorts = [ 6059 ];
+  };
+
 
   programs = {
     git.enable = true;
