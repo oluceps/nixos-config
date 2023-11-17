@@ -49,7 +49,8 @@ Applying:
         nixpkgs.overlays = [ inputs.oluceps.overlay ];
         # packages in `pkgs` dir of this repo,
         # with pname consist with dir name
-        environment.systemPackages = [ pkgs.shadow-tls ];
+        environment.systemPackages = 
+          [ pkgs.shadow-tls inputs.oluceps.packages.${system}.foliate ];
       }
 
       inputs.oluceps.nixosModules.default # (you won't wanna do that)
