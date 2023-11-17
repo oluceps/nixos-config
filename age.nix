@@ -17,7 +17,7 @@
         genWg = i: gen i "systemd-network" "root" "600";
       in
       (genProxys [ "rat" "ss" "sing" "hyst-az" "hyst-am" "hyst-do" "tuic" "naive" "dae.sub" "by.sub" "jc-do" "tinc-k-ed" "tinc-k-rsa" "juic-san" "tuic-san" "caddy-lsa" ]) //
-      (genMaterial [ "minisign.key" "ssh-cfg" "gh-eu" "riro.u2f" "elen.u2f" "gh-token" "age" "pub" "id" "id_sk" "minio" "prism" "aws-s3-cred" ]) //
+      (genMaterial [ "minisign.key" "ssh-cfg" "gh-eu" "riro.u2f" "elen.u2f" "gh-token" "age" "pub" "id" "id_sk" "minio" "prism" "aws-s3-cred" "vault" ]) //
       (genBoot [ "db.key" "db.pem" ]) //
       (genWg [ "wg" "wgk" "wgy" "wga" ]) //
       {
