@@ -6,8 +6,7 @@
       "/etc/nixos"
       "/etc/ssh"
       "/etc/NetworkManager"
-      # "/var/log"
-      # "/var/lib"
+      "/etc/secureboot"
     ];
     users.${user} = {
       files = [
