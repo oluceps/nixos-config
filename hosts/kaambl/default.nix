@@ -22,7 +22,6 @@
                   # "clansty"
                   "fenix"
                   "berberman"
-                  "nvfetcher"
                   "EHfive"
                   "nuenv"
                   "android-nixpkgs"
@@ -30,7 +29,6 @@
                   "nixyDomains"
                   "nixpkgs-wayland"
                 ]);
-              # ++ (with inputs;[ nur.overlay ]); #（>﹏<）
             };
             specialArgs = lib.base // { user = "elen"; };
             modules = [

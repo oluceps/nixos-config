@@ -95,7 +95,6 @@
     dae.url = "github:daeuniverse/flake.nix?rev=e16931c97e18eddd6a36b182687701cd6d03b284";
     # nixyDomains.url = "/home/elen/nixyDomains";
     nixyDomains.url = "github:oluceps/nixyDomains";
-    nvfetcher.url = "github:berberman/nvfetcher";
     nuenv.url = "github:DeterminateSystems/nuenv";
     EHfive.url = "github:EHfive/flakes";
     agenix-rekey = {
@@ -122,7 +121,6 @@
       url = "github:yaxitech/ragenix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    nur.url = "github:nix-community/NUR";
     typst-lsp.url = "github:nvarner/typst-lsp";
     nur-pkgs = {
       url = "github:oluceps/nur-pkgs";
@@ -141,7 +139,7 @@
     alejandra.url = "github:kamadorueda/alejandra";
     prismlauncher = {
       url = "github:PrismLauncher/PrismLauncher";
-      # inputs.nixpkgs.follows = "nixpkgs";
+      inputs.nixpkgs.follows = "nixpkgs";
     };
     home-manager.url = "github:nix-community/home-manager";
     helix.url = "github:helix-editor/helix";
