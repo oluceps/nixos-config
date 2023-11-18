@@ -151,6 +151,7 @@ user: { config
       gnome.eog
       gnome.dconf-editor
       gnome.gnome-boxes
+      gnome.evince
       # zathura
 
       # social
