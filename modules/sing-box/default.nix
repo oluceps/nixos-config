@@ -14,9 +14,21 @@ in
       type = types.bool;
       default = false;
     };
+    webPanel = mkOption {
+      type = with types; submodule {
+        options = {
+          enable = mkEnableOption (mdDoc "enable");
+          package = mkPackageOptionMD pkgs "metacubexd" { };
+        };
+      };
+      default = {
+        enable = true;
+        package = pkgs.metacubexd;
+      };
+    };
     package = mkOption {
       type = types.package;
-      default = pkgs.nur-pkgs.sing-box;
+      default = pkgs.sing-box;
     };
 
   };
@@ -52,7 +64,11 @@ in
           Restart = "on-failure";
         };
 
-      };
+      }
+      // lib.optionalAttrs cfg.webPanel.enable {
+        preStart = "ln -sfT ${cfg.webPanel.package} $STATE_DIRECTORY/web";
+      }
+      ;
 
     };
 

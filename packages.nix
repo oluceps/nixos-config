@@ -34,7 +34,7 @@ let
       [ killall hexyl jq fx bottom lsd fd choose duf tokei procs lsof tree bat ]
       [ broot powertop ranger ripgrep qrencode lazygit b3sum unzip zip coreutils inetutils pciutils usbutils pinentry ]
     ];
-    # ripgrep-all 
+    # # ripgrep-all 
 
 
     info = [ freshfetch htop bottom onefetch hardinfo qjournalctl hyprpicker imgcat nix-index ccze ];
@@ -63,6 +63,7 @@ let
       racket
       resign
       pv
+      devenv
       gnome.dconf-editor
       [ pinentry-curses swagger-codegen3 bump2version openssl linuxPackages_latest.perf cloud-utils ]
       [ bpf-linker gdb gcc gnumake cmake ] # clang-tools_15 llvmPackages_latest.clang ]
@@ -73,6 +74,8 @@ let
       switch-mute
       yarn
       go
+
+
       nix-tree
       kotlin
       jre17_minimal
@@ -80,7 +83,9 @@ let
       rustup
       minio-client
       tmux
-      awscli2
+      # awscli2
+
+
       trunk
       cargo-expand
       wasmer
@@ -89,29 +94,6 @@ let
       nix-update
       nodejs_latest.pkgs.pnpm
     ];
-
-    # wine = [
-    #   # ...
-
-    #   # support both 32- and 64-bit applications
-    #   wineWowPackages.stable
-
-    #   # support 32-bit only
-    #   wine
-
-    #   # support 64-bit only
-    #   (wine.override { wineBuild = "wine64"; })
-
-    #   # wine-staging (version with experimental features)
-    #   wineWowPackages.staging
-
-    #   # winetricks (all versions)
-    #   winetricks
-
-    #   # native wayland support (unstable)
-    #   wineWowPackages.waylandFull
-    # ];
-
     db = [ mongosh ];
 
     web = [ hugo ];
@@ -137,8 +119,10 @@ let
   };
 in
 {
-  environment.systemPackages = lib.flatten (lib.attrValues p)
-    ++ (with pkgs; [ unar texlab edk2 xmrig docker-compose ]) ++
+  environment.systemPackages =
+    lib.flatten (lib.attrValues p)
+    ++
+    (with pkgs; [ unar texlab edk2 xmrig docker-compose ]) ++
     [
       ((pkgs.vim_configurable.override { }).customize {
         name = "vim";
@@ -153,7 +137,7 @@ in
           set backspace=indent,eol,start
           " Turn on syntax highlighting by default
           syntax on
-        
+
           :let mapleader = " "
           :map <leader>s :w<cr>
           :map <leader>q :q<cr>
@@ -162,28 +146,11 @@ in
         '';
       }
       )
-    ] ++
-    (if (!(lib.elem config.networking.hostName (data.withoutHeads))) then
-      (lib.flatten
-        (lib.attrValues e)) ++
-      [
-        (with pkgs; (
-          python3.withPackages
-            (p: with p;[
-              torch
-              fire
-              sentencepiece
-              gensim
-              numpy
-              tqdm
-
-              python-lsp-server
-              mkdocs
-              # mkdocs-static-i18n
-              mkdocs-material
-            ])
-        ))
-      ]
+    ]
+    ++
+    lib.optionals (!(lib.elem config.networking.hostName (data.withoutHeads)))
+      ((lib.flatten
+        (lib.attrValues e))
       ++
       (with pkgs.nodePackages; [
         vscode-json-languageserver
@@ -192,8 +159,8 @@ in
         node2nix
         markdownlint-cli2
         prettier
-      ]) else [ ]
-    )
+      ])
+      )
   ;
 }
 

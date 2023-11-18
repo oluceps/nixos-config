@@ -53,10 +53,12 @@ user: { config
     [
       anyrun
       # factorio
+      gedit
       logseq
       jetbrains.pycharm-professional
       jetbrains.idea-ultimate
       jetbrains.clion
+      (pkgs.callPackage "${inputs.nixpkgs}/pkgs/development/embedded/openocd" { extraHardwareSupport = [ "cmsis-dap" "jlink" ]; })
 
       # bottles
 
@@ -151,6 +153,7 @@ user: { config
       gnome.eog
       gnome.dconf-editor
       gnome.gnome-boxes
+      gnome.evince
       # zathura
 
       # social
@@ -221,7 +224,7 @@ user: { config
     # ]) ++
     (with nur-pkgs;[
       techmino
-      rustplayer
+      # rustplayer
     ]);
   home.pointerCursor = {
     gtk.enable = true;
@@ -266,7 +269,8 @@ user: { config
         };
         pull.rebase = true;
         fetch.prune = true;
-
+        http.postBuffer = 524288000;
+        ssh.postBuffer = 524288000;
         sendemail = {
           smtpserver = "smtp.gmail.com";
           smtpencryption = "tls";
@@ -435,7 +439,7 @@ user: { config
   };
   #xdg.configFile."sway/config".text = import ./dotfiles/sway/config.nix {inherit config pkgs;};
   xdg.mimeApps = {
-    enable = true;
+    enable = false;
     defaultApplications = {
       "tg" = [ "org.telegram.desktop.desktop" ];
 
@@ -450,6 +454,7 @@ user: { config
       "x-scheme-handler/about"
       "x-scheme-handler/http"
       "x-scheme-handler/https"
+      "x-scheme-handler/mailto"
       "text/html"
     ]
       (_: "firefox.desktop")
@@ -467,12 +472,12 @@ user: { config
   gtk = {
     enable = true;
     theme = {
-      package = pkgs.callPackage
-        "${inputs.nixpkgs}/pkgs/data/themes/fluent-gtk-theme"
-        {
-          themeVariants = [ "purple" ];
-          tweaks = [ "blur" ];
-        };
+      package =
+        pkgs.fluent-gtk-theme.override
+          {
+            themeVariants = [ "purple" ];
+            tweaks = [ "blur" ];
+          };
       name = "Fluent-purple";
     };
 

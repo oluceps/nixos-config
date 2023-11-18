@@ -95,10 +95,11 @@
       packages = with pkgs;[
         android-udev-rules
         # qmk-udev-rules
+        jlink-udev-rules
         yubikey-personalization
         libu2f-host
         via
-        # opensk-udev-rules
+        opensk-udev-rules
         nrf-udev-rules
       ];
     };
@@ -119,7 +120,6 @@
           false;
       };
 
-    sing-box.enable = false;
     rathole.enable = false;
 
     daed.enable = false;

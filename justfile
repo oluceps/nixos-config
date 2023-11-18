@@ -46,7 +46,7 @@ home-active builder="rha0":
 	./result/activate
 
 build-home-remotely user builder:
-	nom build '.#homeConfigurations.{{user}}.activationPackage' --builders 'ssh://{{builder}} x86_64-linux'
+	nom build '.#homeConfigurations.{{user}}.activationPackage' --builders 'ssh://{{builder}} x86_64-linux - 24' --max-jobs 0
 
 build-home user:
 	nom build '.#homeConfigurations.{{user}}.activationPackage'
@@ -54,9 +54,16 @@ build-home user:
 build-livecd:
 	nom build .#nixosConfigurations.nixos.config.system.build.isoImage
 
-check:
-	nix flake check
+check +args="":
+	nix flake check {{args}}
 	{{nodes}} | each { |x| nix eval --raw $'.#nixosConfigurations.($x).config.system.build.toplevel' --show-trace }
+
+overwrite-s3:
+	mc mirror --overwrite --remove /home/{{me}}/Sec/ r2/sec/Sec
+	mc mirror --overwrite --remove /etc/nixos/sec/ r2/sec/credentials
+
+overwrite-local:
+	mc mirror --overwrite --remove r2/sec/Sec /home/{{me}}/Sec/
 
 clean:
 	git clean -f

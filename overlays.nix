@@ -12,6 +12,7 @@ let system = "x86_64-linux"; in [
         "resign"
         "anyrun"
         "typst-lsp"
+        "devenv"
       ]
       (n: inputs.${n}.packages.${system}.default)
     # //

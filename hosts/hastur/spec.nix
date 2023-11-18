@@ -5,7 +5,7 @@
   system.stateVersion = "22.11"; # Did you read the comment?
 
   zramSwap = {
-    enable = true;
+    enable = false;
     swapDevices = 1;
     memoryPercent = 80;
     algorithm = "zstd";
@@ -72,6 +72,7 @@
       {
 
         dae.enable = true;
+        sing-box.enable = true;
 
         gvfs.enable = true;
         greetd = {
@@ -152,7 +153,7 @@
           ensureUsers = [
             {
               name = "misskey";
-              ensurePermissions."DATABASE misskey" = "ALL PRIVILEGES";
+              ensureDBOwnership = true;
             }
           ];
           identMap = ''

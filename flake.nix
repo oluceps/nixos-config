@@ -30,8 +30,9 @@
           (with builtins; (attrNames (
             filterAttrs
               (n: _: !elem n [
-                "glowsans"
-                "opulr-a-run"
+                "glowsans" # multi pkgs
+                "opulr-a-run" # ?
+                "tcp-brutal" # kernelModule
               ])
               (readDir ./pkgs))))
           (n: pkgs.${n});
@@ -54,6 +55,7 @@
                 filterAttrs
                   (n: _: !elem n [
                     "nobody"
+                    "tcp-brutal"
                   ])
                   (readDir ./pkgs))))
               (name: final.callPackage (./pkgs + "/${name}") { });
@@ -64,6 +66,7 @@
         nixosModules = import ./modules { lib = inputs.nixpkgs.lib; };
       };
     };
+
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     nixpkgs-pin.url = "github:NixOS/nixpkgs?rev=e7f38be3775bab9659575f192ece011c033655f0";
@@ -84,6 +87,7 @@
       url = "github:Kirottu/anyrun";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    devenv.url = "github:cachix/devenv";
     aagl = {
       url = "github:ezKEa/aagl-gtk-on-nix";
       inputs.nixpkgs.follows = "nixpkgs";
