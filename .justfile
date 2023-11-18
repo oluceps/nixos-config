@@ -29,7 +29,7 @@ help:
 	h                         # build and activate home\n\
 	c                         # check and eval\n\
 	"
-push-secret target datas=nodes:
+push-secret target="rha" datas=nodes:
 	{{datas}} | {{filter}} | each { |i| (nix copy --substitute-on-destination --to 'ssh://{{target}}' (nix eval --raw $'.#nixosConfigurations.($i).config.age.rekey.derivation') -vvv) }
 
 fetch-secret source="kmb" datas=nodes:
