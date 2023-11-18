@@ -52,7 +52,7 @@ build-home user:
 	nom build '.#homeConfigurations.{{user}}.activationPackage'
 
 build-livecd:
-	nom build .#nixosConfigurations.livecd.config.system.build.isoImage
+	nom build .#nixosConfigurations.nixos.config.system.build.isoImage
 
 check:
 	nix flake check
