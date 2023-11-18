@@ -90,17 +90,17 @@
             };
           }
 
-          {
-            wireguardPeerConfig = {
-              PublicKey = "+fuA9nUmFVKy2Ijfh5xfcnO9tpA/SkIL4ttiWKsxyXI=";
-              AllowedIPs = [
-                "10.0.1.0/24"
-                "10.0.0.0/24"
-              ];
-              Endpoint = "144.126.208.183:51820";
-              PersistentKeepalive = 15;
-            };
-          }
+          # {
+          #   wireguardPeerConfig = {
+          #     PublicKey = "+fuA9nUmFVKy2Ijfh5xfcnO9tpA/SkIL4ttiWKsxyXI=";
+          #     AllowedIPs = [
+          #       "10.0.1.0/24"
+          #       "10.0.0.0/24"
+          #     ];
+          #     Endpoint = "144.126.208.183:51820";
+          #     PersistentKeepalive = 15;
+          #   };
+          # }
 
           {
             wireguardPeerConfig = {

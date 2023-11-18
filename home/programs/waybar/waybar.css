@@ -1,7 +1,7 @@
 * {
 	border: none;
 	border-radius: 0px;
-	font-family: FiraCode Nerd Font Mono;
+	font-family: Monaspace Neon;
 	font-weight: bold;
 	font-size: 15px;
 	box-shadow: none;
@@ -12,7 +12,7 @@
 
 window {
 	color: rgba(217, 216, 216, 1);
-	background: rgba(83, 89, 83, 0.4);
+	background: rgba(83, 89, 83, 0);
 }
 
 window#waybar.solo {
@@ -21,45 +21,54 @@ window#waybar.solo {
 }
 
 #workspaces button {
-	padding: 0px 4px 0px 4px;
+	padding: 0px 8px 0px 8px;
 	color: rgba(217, 216, 216, 0.6);
-	padding-left: 10px;
-	padding-right: 10px;
+  margin: 0px 0px 0px 0px;
+	border-radius: 2px;
 }
 
 #workspaces button.urgent {
-	color: rgba(227, 180, 184, 0.8);
+	color: rgba(217, 216, 216, 0.8);
+	background: rgba(227, 180, 184, 0.3);
 }
 
 #workspaces button:hover {
-	background-color: rgba(230, 210, 213, 0.2);
 	color: rgba(217, 216, 216, 0.8);
+	background: rgba(35, 31, 32, 0.2);
 }
 
 #workspaces button.focused {
-	background-color: rgba(233, 215, 223, 0.2);
-	color: rgba(230, 210, 213, 0.6);
+	color: rgba(217, 216, 216, 1);
+	background: rgba(35, 31, 32, 0.1);
 }
 
 /*
 */
 
-#tray, #mode, #battery, #cpu, #memory, #network,  #backlight, #custom-storage, #custom-spotify, #custom-weather, #custom-mail, #temperature, #idle_inhibitor {
+#tray, #mode, #battery, #cpu, #memory, #backlight, #custom-storage, #custom-spotify, #custom-weather, #custom-mail, #temperature, #idle_inhibitor {
 	color: rgba(217, 216, 216, 1);
-	padding: 3px 3px 3px 3px;
-	margin: 0px 4px 0px 4px;
+	padding: 3px 6px 3px 6px;
+	margin: 2px 4px 2px 4px;
+	background: rgba(35, 31, 32, 0.1);
 	border-radius: 6px;
 }
-
+#network {
+	padding: 5px 6px 3px 6px;
+	margin: 2px 4px 2px 4px;
+	background: rgba(35, 31, 32, 0.1);
+	border-radius: 6px;
+	font-weight: 600;
+	font-size: 13px;
+} 
 #tray {
   padding-right:9px;
   padding-left: 10px;
 }
 
 #pulseaudio {
-	color: rgba(217, 216, 216, 1);
-	padding: 3px 7px 3px 7px;
-	margin: 0px 0px 0px 0px;
+	padding: 3px 6px 3px 6px;
+	margin: 2px 4px 2px 4px;
+	background: rgba(35, 31, 32, 0.1);
 	border-radius: 6px;
 }
 
@@ -70,10 +79,11 @@ window#waybar.solo {
 }
 
 #clock {
-	padding: 5px 18px 3px 0px;
-	margin: 0px 0px 0px 0px;
 	color: rgba(217, 216, 216, 1);
-	border-radius: 6px;
+	border-radius: 2px;
+	padding: 3px 9px 3px 9px;
+	margin: 1px 0px 1px 0px;
+	background: rgba(35, 31, 32, 0);
 }
 
 #battery.warning {

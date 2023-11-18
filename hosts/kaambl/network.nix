@@ -8,8 +8,6 @@
     resolvconf.useLocalResolver = true;
     firewall = {
       checkReversePath = false;
-      # wireless.iwd.enable = true;
-
       enable = true;
       trustedInterfaces = [ "virbr0" "wg0" "wg1" ];
       allowedUDPPorts = [ 8080 5173 ];

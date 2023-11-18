@@ -2,7 +2,7 @@
 let
   p = with pkgs; {
 
-    crypt = [ minisign rage age-plugin-yubikey yubico-piv-tool yubikey-manager yubikey-manager-qt cryptsetup ];
+    crypt = [ minisign rage age-plugin-yubikey yubikey-manager yubikey-manager-qt cryptsetup ];
 
     net = [
       # anti-censor
@@ -18,6 +18,7 @@ let
       # (ragenix.override { plugins = [ age-plugin-yubikey ]; })
       linuxKernel.packages.linux_latest_libre.cpupower
       clean-home
+      just
       typst
       helix
       srm
@@ -89,27 +90,27 @@ let
       nodejs_latest.pkgs.pnpm
     ];
 
-    wine = [
-      # ...
+    # wine = [
+    #   # ...
 
-      # support both 32- and 64-bit applications
-      wineWowPackages.stable
+    #   # support both 32- and 64-bit applications
+    #   wineWowPackages.stable
 
-      # support 32-bit only
-      wine
+    #   # support 32-bit only
+    #   wine
 
-      # support 64-bit only
-      (wine.override { wineBuild = "wine64"; })
+    #   # support 64-bit only
+    #   (wine.override { wineBuild = "wine64"; })
 
-      # wine-staging (version with experimental features)
-      wineWowPackages.staging
+    #   # wine-staging (version with experimental features)
+    #   wineWowPackages.staging
 
-      # winetricks (all versions)
-      winetricks
+    #   # winetricks (all versions)
+    #   winetricks
 
-      # native wayland support (unstable)
-      wineWowPackages.waylandFull
-    ];
+    #   # native wayland support (unstable)
+    #   wineWowPackages.waylandFull
+    # ];
 
     db = [ mongosh ];
 

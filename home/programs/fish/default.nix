@@ -1,10 +1,12 @@
-{ lib, ... }: {
+{ lib, user, ... }: {
   programs.fish = {
     enable = true;
     plugins = [ ];
     shellAliases = {
+      j = "just";
       nd = "cd /etc/nixos";
-      swc = "sudo nixos-rebuild switch --flake /etc/nixos";
+      swc = let mode = if user == "riro" then "test" else "switch"; in
+        "sudo nixos-rebuild ${mode} --flake /etc/nixos";
       #--log-format internal-json -v 2>&1 | nom --json";
       daso = "sudo";
       daos = "sudo";
@@ -23,8 +25,8 @@
       e = "exit";
       rp = "rustplayer";
       y = "yazi";
-      i = "kitty +kitten icat $argv";
-    } // lib.genAttrs [ "rha" "lsa" "tcs" "ubt" "rka" ] (n: "ssh ${n} -t fish");
+      i = "kitty +kitten icat";
+    } // lib.genAttrs [ "rha" "lsa" "tcs" "ubt" "rka" "dgs" "rt" ] (n: "ssh ${n} -t fish");
 
 
     shellInit = ''

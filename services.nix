@@ -13,9 +13,10 @@
 
   xdg.portal = {
     enable = true;
-    extraPortals = with pkgs; [ xdg-desktop-portal-gtk ];
-    xdgOpenUsePortal = true;
+    wlr.enable = true;
+    # xdgOpenUsePortal = true;
   };
+
 
   services = {
     # bpftune.enable = false;
@@ -108,7 +109,6 @@
     hyst-do.enable = false;
 
     # ss-tls cnt to router
-    ss.enable = false;
     tuic.enable = true;
     juicity.enable = true;
     naive.enable = false;
@@ -124,7 +124,6 @@
 
     daed.enable = false;
     dae = {
-      enable = true;
       package = pkgs.dae-unstable;
       disableTxChecksumIpGeneric = false;
       configFile = config.age.secrets.dae.path;

@@ -23,7 +23,6 @@
                   # "clansty"
                   "fenix"
                   "berberman"
-                  "nvfetcher"
                   "EHfive"
                   "nuenv"
                   "android-nixpkgs"
@@ -31,8 +30,7 @@
                   "agenix-rekey"
                   "misskey"
                   "nixyDomains"
-                ])
-                ++ (with inputs;[ nur.overlay ]); #（>﹏<）
+                ]);
             };
             specialArgs = lib.base // { user = "riro"; };
             modules = [
@@ -56,6 +54,8 @@
 
               inputs.misskey.nixosModules.default
               ./misskey.nix
+
+              ./vaultwarden.nix
 
             ] ++ lib.sharedModules;
           };

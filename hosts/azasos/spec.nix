@@ -15,12 +15,31 @@
     inherit ((import ../../boot.nix { inherit lib; }).boot) kernel;
   };
 
-  services = {
-    inherit ((import ../../services.nix { inherit pkgs lib config; }).services)
-      openssh
-      mosdns
-      fail2ban;
+  services = lib.mkMerge [
+    {
+      inherit ((import ../../services.nix { inherit pkgs lib config; }).services)
+        openssh
+        mosdns
+        fail2ban
+        juicity
+        dae;
+    }
+    {
+      dae.enable = true;
+
+      ss = {
+        enable = true;
+        configFile = config.age.secrets.ss-az.path;
+        serve = true;
+      };
+    }
+  ];
+
+  networking.firewall = {
+    allowedUDPPorts = [ 6059 ];
+    allowedTCPPorts = [ 6059 ];
   };
+
 
   programs = {
     git.enable = true;
@@ -52,17 +71,4 @@
 
   systemd.tmpfiles.rules = [
   ];
-  services = {
-    dae = {
-      enable = true;
-      package = pkgs.dae-unstable;
-      disableTxChecksumIpGeneric = false;
-      configFile = config.age.secrets.dae.path;
-      assets = with pkgs; [ v2ray-geoip v2ray-domain-list-community ];
-      openFirewall = {
-        enable = true;
-        port = 12345;
-      };
-    };
-  };
 }

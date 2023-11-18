@@ -28,9 +28,11 @@
           "hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc="
           "helix.cachix.org-1:ejp9KQpR1FBI2onstMQ34yogDm4OgU2ru6lIwPvuCVs="
           "nixpkgs-wayland.cachix.org-1:3lwxaILxMRkVhehr5StQprHdEo4IrE8sRho9R9HOLYA="
+          "anyrun.cachix.org-1:pqBobmOjI7nKlsUMV25u9QHa9btJK65/C8vnO3p346s="
+          "ezkea.cachix.org-1:ioBmUbJTZIKsHmWWXPe1FSFbeVe+afhfgqgTSNd34eI="
         ];
         substituters = (map (n: "https://${n}.cachix.org")
-          [ "nix-community" "nur-pkgs" "hyprland" "helix" "nixpkgs-wayland" ])
+          [ "nix-community" "nur-pkgs" "hyprland" "helix" "nixpkgs-wayland" "anyrun" "ezkea" ])
         ++
         [
           "https://cache.nixos.org"
@@ -118,19 +120,31 @@
     "C /root/.ssh/known_hosts - - - - ${pkgs.writeText "known_hosts" ''
     10.0.1.2 ${data.keys.hasturHostPubKey}
     10.0.0.2 ${data.keys.hasturHostPubKey}
+    10.0.1.3 ${data.keys.kaamblHostPubKey}
+    10.0.1.1 ${data.keys.nodensHostPubKey}
+    10.0.0.5 ${data.keys.azasosHostPubKey}
     ''}"
     "C /root/.ssh/config - - - - ${
-    pkgs.writeText "ssh-config" (let genHost = name: addr: 
+    pkgs.writeText "ssh-config" (let genGenHost = u: name: addr: 
     ''
     Host ${name}
-    HostName ${addr}
-    User riro
-    Port 22
-    AddKeysToAgent yes
-    ForwardAgent yes
-    IdentityFile ${config.age.secrets.id.path}
-    ''; in
-    (genHost "rha" "10.0.0.2") + (genHost "rha0" "10.0.1.2"))}"
+      HostName ${addr}
+      User ${u}
+      Port 22
+      IdentityFile ${config.age.secrets.id.path}
+    ''; 
+    genHost = genGenHost "riro";
+    genHostE = genGenHost "elen";
+    in
+    (genHost "rha" "10.0.0.2")
+     + (genHost "rha0" "10.0.1.2")
+     + (genHost "builder" "10.0.1.2")
+     + "ProxyCommand nc -X 5 -x 127.0.0.1:1088 %h %p\n"
+     + (genHost "hastur" "10.0.1.2")
+     + (genHostE "kaambl" "10.0.1.3")
+     + (genHostE "azasos" "10.0.0.5")
+     + (genHostE "nodens" "10.0.1.1")
+    )}"
   ];
 
   environment.etc = {
@@ -165,36 +179,10 @@
     xdg = {
       mime = {
         enable = true;
-        defaultApplications = {
-          "tg" = [ "org.telegram.desktop.desktop" ];
-
-          "application/pdf" = [ "sioyek.desktop" ];
-          "ppt/pptx" = [ "wps-office-wpp.desktop" ];
-          "doc/docx" = [ "wps-office-wps.desktop" ];
-          "xls/xlsx" = [ "wps-office-et.desktop" ];
-        }
-        //
-        lib.genAttrs [
-          "x-scheme-handler/unknown"
-          "x-scheme-handler/about"
-          "x-scheme-handler/http"
-          "x-scheme-handler/https"
-          "text/html"
-        ]
-          (_: "firefox.desktop")
-        //
-        lib.genAttrs [
-          "image/gif"
-          "image/webp"
-          "image/png"
-          "image/jpeg"
-        ]
-          (_: "org.gnome.eog.desktop")
-        ;
+        inherit ((import ./home/home.nix user { inherit config pkgs lib inputs; }).xdg.mimeApps) defaultApplications;
       };
     };
 
-    networking.firewall.trustedInterfaces = [ "virbr0" ];
     virtualisation = {
       vmVariant = {
         virtualisation = {
@@ -202,7 +190,7 @@
           cores = 6;
         };
       };
-      docker.enable = false;
+      docker. enable = false;
       podman.enable = true;
       libvirtd = {
         enable = false;
@@ -231,8 +219,8 @@
       platformTheme = "gnome";
       style = "adwaita";
     };
-
     programs = {
+
 
       neovim = {
         enable = false;
@@ -265,6 +253,7 @@
           enableSSHSupport = true;
         };
       };
+
 
     };
 
@@ -301,9 +290,10 @@
         maple-mono-autohint
         cascadia-code
         intel-one-mono
+        monaspace
       ]
       ++ (with (pkgs.glowsans); [ glowsansSC glowsansTC glowsansJ ])
-      ++ (with nur-pkgs;[ san-francisco plangothic maoken-tangyuan hk-grotesk lxgw-neo-xihei ]);
+      ++ (with nur-pkgs; [ san-francisco plangothic maoken-tangyuan hk-grotesk lxgw-neo-xihei ]);
       #"HarmonyOS Sans SC" "HarmonyOS Sans TC"
       fontconfig = {
         subpixel.rgba = "none";
@@ -311,7 +301,7 @@
         hinting.enable = false;
         defaultFonts = lib.mkForce {
           serif = [ "Glow Sans SC" "Glow Sans TC" "Glow Sans J" "Noto Serif" "Noto Serif CJK SC" "Noto Serif CJK TC" "Noto Serif CJK JP" ];
-          monospace = [ "Maple Mono" "SF Mono" "Fantasque Sans Mono" ];
+          monospace = [ "Monaspace Neon" "Maple Mono" "SF Mono" "Fantasque Sans Mono" ];
           sansSerif = [ "Hanken Grotesk" "Glow Sans SC" ];
           emoji = [ "twemoji-color-font" "noto-fonts-emoji" ];
         };

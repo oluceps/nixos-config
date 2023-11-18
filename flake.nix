@@ -10,22 +10,31 @@
           inherit system;
           overlays = with inputs;[
             agenix-rekey.overlays.default
+            self.overlays.default
           ];
         };
 
-        checks = with pkgs;
-          {
-            pre-commit-check = inputs.pre-commit-hooks.lib.${system}.run
-              {
-                src = lib.cleanSource ./.;
-                hooks = { nixpkgs-fmt.enable = true; };
-              };
-          };
-
-        devShells.default = with pkgs; mkShell {
-          packages = [ agenix-rekey home-manager ];
+        checks = with pkgs; {
+          pre-commit-check =
+            inputs.pre-commit-hooks.lib.${system}.run {
+              src = lib.cleanSource ./.;
+              hooks = { nixpkgs-fmt.enable = true; };
+            };
         };
 
+        devShells.default = with pkgs; mkShell {
+          packages = [ agenix-rekey home-manager just ];
+        };
+
+        packages = with pkgs.lib; genAttrs
+          (with builtins; (attrNames (
+            filterAttrs
+              (n: _: !elem n [
+                "glowsans"
+                "opulr-a-run"
+              ])
+              (readDir ./pkgs))))
+          (n: pkgs.${n});
       };
 
       flake = {
@@ -42,7 +51,10 @@
             final: prev: prev.lib.genAttrs
               (with builtins;
               (with prev.lib; attrNames (
-                filterAttrs (n: _: !elem n [ "ubt-rv-run" ]) # temporary disable pkg
+                filterAttrs
+                  (n: _: !elem n [
+                    "nobody"
+                  ])
                   (readDir ./pkgs))))
               (name: final.callPackage (./pkgs + "/${name}") { });
 
@@ -68,7 +80,14 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    anyrun.url = "github:Kirottu/anyrun";
+    anyrun = {
+      url = "github:Kirottu/anyrun";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    aagl = {
+      url = "github:ezKEa/aagl-gtk-on-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     android-nixpkgs = {
       url = "github:tadfisher/android-nixpkgs";
     };
@@ -76,7 +95,6 @@
     dae.url = "github:daeuniverse/flake.nix?rev=e16931c97e18eddd6a36b182687701cd6d03b284";
     # nixyDomains.url = "/home/elen/nixyDomains";
     nixyDomains.url = "github:oluceps/nixyDomains";
-    nvfetcher.url = "github:berberman/nvfetcher";
     nuenv.url = "github:DeterminateSystems/nuenv";
     EHfive.url = "github:EHfive/flakes";
     agenix-rekey = {
@@ -103,7 +121,6 @@
       url = "github:yaxitech/ragenix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    nur.url = "github:nix-community/NUR";
     typst-lsp.url = "github:nvarner/typst-lsp";
     nur-pkgs = {
       url = "github:oluceps/nur-pkgs";
@@ -122,7 +139,7 @@
     alejandra.url = "github:kamadorueda/alejandra";
     prismlauncher = {
       url = "github:PrismLauncher/PrismLauncher";
-      # inputs.nixpkgs.follows = "nixpkgs";
+      inputs.nixpkgs.follows = "nixpkgs";
     };
     home-manager.url = "github:nix-community/home-manager";
     helix.url = "github:helix-editor/helix";

@@ -28,6 +28,7 @@
               modules = [
                 (import ./home.nix user)
                 inputs.hyprland.homeManagerModules.default
+                inputs.anyrun.homeManagerModules.default
                 inputs.android-nixpkgs.hmModule
               ];
               extraSpecialArgs = { inherit inputs user; system = "x86_64-linux"; };

@@ -7,10 +7,10 @@
     font = {
       name = "Maple Mono";
       size =
-        if user == "elen" then 12.5 else 15;
+        if user == "elen" then 13.0 else 15;
     };
     settings = {
-      background_opacity = "0.94";
+      background_opacity = "0.92";
       confirm_os_window_close = "0";
     };
 
@@ -29,7 +29,7 @@
       # The basic colors
       window_padding_width 4
       foreground              #CAD3F5
-      background              #35333C
+      background              #0F0D0E
       #24273A
       selection_foreground    #24273A
       selection_background    #F4DBD6

@@ -57,8 +57,8 @@
         inherit modifier;
         assigns = {
           # "1" = [{ app_id = "Alacritty"; }];
-          "2" = [{ app_id = "firefox"; }];
-          "3" = [{ app_id = "org.telegram.desktop"; }];
+          # "2" = [{ app_id = "firefox"; }];
+          # "3" = [{ app_id = "org.telegram.desktop"; }];
         };
         window.commands = [
           {
@@ -170,7 +170,7 @@
               "XF86AudioLowerVolume" = "exec pamixer -d 5";
               "XF86MonBrightnessUp" = "exec brightnessctl set +3%";
               "XF86MonBrightnessdown" = "exec brightnessctl set 3%-";
-              "${modifier}+Return" = "exec ${lib.getExe systemd-run-app} ${lib.getExe alacritty}";
+              "${modifier}+Return" = "exec ${lib.getExe systemd-run-app} ${lib.getExe kitty}";
               "${modifier}+d" = "exec ${lib.getExe fuzzel} ${fuzzelArgs}";
               "${modifier}+space" = "floating toggle";
               "${modifier}+Shift+space" = null;
