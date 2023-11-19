@@ -267,6 +267,7 @@ user: { config
         };
         pull.rebase = true;
         fetch.prune = true;
+        http.postBuffer = 524288000;
 
         sendemail = {
           smtpserver = "smtp.gmail.com";
