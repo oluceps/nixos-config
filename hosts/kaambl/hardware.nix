@@ -14,12 +14,13 @@
       availableKernelModules = [ "nvme" "xhci_pci" "ahci" "usb_storage" "usbhid" "sd_mod" ];
       kernelModules = [ "tpm" "tpm_tis" "tpm_crb" "kvm-amd" "amdgpu" ];
     };
-    kernelModules = [ "ec_sys" "uhid" "kvm-amd" ];
+    kernelModules = [ "ec_sys" "uhid" "kvm-amd" "brutal" ];
     kernelParams = [
       "amd_pstate=active"
     ];
     extraModulePackages = with config.boot.kernelPackages; [
       v4l2loopback
+      (callPackage "${inputs.self}/pkgs/tcp-brutal" { })
     ];
     kernelPackages =
       # (import inputs.nixpkgs-pin {

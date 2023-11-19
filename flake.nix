@@ -30,8 +30,9 @@
           (with builtins; (attrNames (
             filterAttrs
               (n: _: !elem n [
-                "glowsans"
-                "opulr-a-run"
+                "glowsans" # multi pkgs
+                "opulr-a-run" # ?
+                "tcp-brutal" # kernelModule
               ])
               (readDir ./pkgs))))
           (n: pkgs.${n});
@@ -54,6 +55,7 @@
                 filterAttrs
                   (n: _: !elem n [
                     "nobody"
+                    "tcp-brutal"
                   ])
                   (readDir ./pkgs))))
               (name: final.callPackage (./pkgs + "/${name}") { });
