@@ -30,9 +30,10 @@
           "nixpkgs-wayland.cachix.org-1:3lwxaILxMRkVhehr5StQprHdEo4IrE8sRho9R9HOLYA="
           "anyrun.cachix.org-1:pqBobmOjI7nKlsUMV25u9QHa9btJK65/C8vnO3p346s="
           "ezkea.cachix.org-1:ioBmUbJTZIKsHmWWXPe1FSFbeVe+afhfgqgTSNd34eI="
+          "devenv.cachix.org-1:w1cLUi8dv3hnoSPGAuibQv+f9TZLr6cv/Hm9XgU50cw="
         ];
         substituters = (map (n: "https://${n}.cachix.org")
-          [ "nix-community" "nur-pkgs" "hyprland" "helix" "nixpkgs-wayland" "anyrun" "ezkea" ])
+          [ "nix-community" "nur-pkgs" "hyprland" "helix" "nixpkgs-wayland" "anyrun" "ezkea" "devenv" ])
         ++
         [
           "https://cache.nixos.org"

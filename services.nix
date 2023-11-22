@@ -98,7 +98,7 @@
         yubikey-personalization
         libu2f-host
         via
-        # opensk-udev-rules
+        opensk-udev-rules
         nrf-udev-rules
       ];
     };

@@ -57,6 +57,7 @@ user: { config
       jetbrains.pycharm-professional
       jetbrains.idea-ultimate
       jetbrains.clion
+      (pkgs.callPackage "${inputs.nixpkgs}/pkgs/development/embedded/openocd" { extraHardwareSupport = [ "cmsis-dap" "jlink" ]; })
 
       # bottles
 
@@ -437,7 +438,7 @@ user: { config
   };
   #xdg.configFile."sway/config".text = import ./dotfiles/sway/config.nix {inherit config pkgs;};
   xdg.mimeApps = {
-    enable = true;
+    enable = false;
     defaultApplications = {
       "tg" = [ "org.telegram.desktop.desktop" ];
 
@@ -452,6 +453,7 @@ user: { config
       "x-scheme-handler/about"
       "x-scheme-handler/http"
       "x-scheme-handler/https"
+      "x-scheme-handler/mailto"
       "text/html"
     ]
       (_: "firefox.desktop")
