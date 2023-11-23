@@ -14,7 +14,7 @@
   boot = {
     initrd = {
       systemd.enable = true;
-      availableKernelModules = [ "nvme" "xhci_pci" "ahci" "usb_storage" "usbhid" "sd_mod" ];
+      availableKernelModules = [ "nvme" "xhci_pci" "ahci" "usb_storage" "usbhid" "sd_mod" "lz4" "zsmalloc" ];
       kernelModules = [ "tpm" "tpm_tis" "tpm_crb" "kvm-amd" ];
     };
     kernelModules = [ "ec_sys" "uhid" "kvm-amd" ];
