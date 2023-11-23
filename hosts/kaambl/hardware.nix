@@ -17,6 +17,9 @@
     kernelModules = [ "ec_sys" "uhid" "kvm-amd" "brutal" ];
     kernelParams = [
       "amd_pstate=active"
+      "zswap.enabled=1"
+      "zswap.compressor=lz4"
+      "zswap.zpool=zsmalloc"
     ];
     extraModulePackages = with config.boot.kernelPackages; [
       v4l2loopback

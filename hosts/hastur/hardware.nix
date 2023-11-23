@@ -31,6 +31,10 @@
       "amd_iommu=on"
       # "iommu=pt"
       "random.trust_cpu=off"
+      "zswap.enabled=1"
+      "zswap.compressor=lz4"
+      "zswap.zpool=zsmalloc"
+
       # "amdgpu.noretry=0"
       # "amdgpu.lockup_timeout=1000"
       # "amdgpu.gpu_recovery=1"
