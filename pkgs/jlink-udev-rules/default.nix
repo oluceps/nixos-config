@@ -13,7 +13,7 @@ stdenv.mkDerivation (finalAttrs: {
 
   installPhase = ''
     runHook preInstall
-    install -D rule $out/lib/udev/rules.d/99-jlink.rules
+    install -D ${finalAttrs.src}/rule $out/lib/udev/rules.d/99-jlink.rules
     runHook postInstall
   '';
 
