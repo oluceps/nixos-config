@@ -95,6 +95,7 @@
       packages = with pkgs;[
         android-udev-rules
         # qmk-udev-rules
+        jlink-udev-rules
         yubikey-personalization
         libu2f-host
         via
