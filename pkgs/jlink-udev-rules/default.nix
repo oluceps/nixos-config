@@ -1,9 +1,8 @@
-{ lib
-, stdenv
+{ stdenv
 }:
 ## Usage
-  # In NixOS, simply add this package to services.udev.packages:
-  #   services.udev.packages = [ pkgs.opensk-udev-rules ];
+# In NixOS, simply add this package to services.udev.packages:
+#   services.udev.packages = [ pkgs.opensk-udev-rules ];
 stdenv.mkDerivation (finalAttrs: {
   pname = "jlink-udev-rules";
 
