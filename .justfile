@@ -54,8 +54,8 @@ build-home user:
 build-livecd:
 	nom build .#nixosConfigurations.nixos.config.system.build.isoImage
 
-check:
-	nix flake check
+check +args:
+	nix flake check {{args}}
 	{{nodes}} | each { |x| nix eval --raw $'.#nixosConfigurations.($x).config.system.build.toplevel' --show-trace }
 
 clean:
