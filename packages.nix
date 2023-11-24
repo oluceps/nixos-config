@@ -167,25 +167,25 @@ in
     (if (!(lib.elem config.networking.hostName (data.withoutHeads))) then
       (lib.flatten
         (lib.attrValues e)) ++
-      [
-        (with pkgs; (
-          python3.withPackages
-            (p: with p;[
-              torch
-              fire
-              sentencepiece
-              gensim
-              numpy
-              tqdm
+      # [
+      #   (with pkgs; (
+      #     python3.withPackages
+      #       (p: with p;[
+      #         torch
+      #         fire
+      #         sentencepiece
+      #         gensim
+      #         numpy
+      #         tqdm
 
-              python-lsp-server
-              mkdocs
-              # mkdocs-static-i18n
-              mkdocs-material
-            ])
-        ))
-      ]
-      ++
+      #         python-lsp-server
+      #         mkdocs
+      #         # mkdocs-static-i18n
+      #         mkdocs-material
+      #       ])
+      #   ))
+      # ]
+      # ++
       (with pkgs.nodePackages; [
         vscode-json-languageserver
         typescript-language-server

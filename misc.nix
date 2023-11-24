@@ -6,126 +6,128 @@
 , user
 , data
 , ...
-}: lib.mkMerge [{
+}:
+lib.mkMerge [
+  {
 
-  systemd.services.nix-daemon.serviceConfig.LimitNOFILE = lib.mkForce 500000000;
-  nix =
-    {
-      package = pkgs.nixVersions.stable;
-      registry = {
-        nixpkgs.flake = inputs.nixpkgs;
-        self.flake = inputs.self;
+    systemd.services.nix-daemon.serviceConfig.LimitNOFILE = lib.mkForce 500000000;
+    nix =
+      {
+        package = pkgs.nixVersions.stable;
+        registry = {
+          nixpkgs.flake = inputs.nixpkgs;
+          self.flake = inputs.self;
+        };
+        settings = {
+
+          keep-outputs = true;
+          keep-derivations = true;
+          trusted-public-keys = [
+            "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY="
+            "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
+            "cache.ngi0.nixos.org-1:KqH5CBLNSyX184S9BKZJo1LxrxJ9ltnY2uAs5c/f1MA="
+            "nur-pkgs.cachix.org-1:PAvPHVwmEBklQPwyNZfy4VQqQjzVIaFOkYYnmnKco78="
+            "hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc="
+            "helix.cachix.org-1:ejp9KQpR1FBI2onstMQ34yogDm4OgU2ru6lIwPvuCVs="
+            "nixpkgs-wayland.cachix.org-1:3lwxaILxMRkVhehr5StQprHdEo4IrE8sRho9R9HOLYA="
+            "anyrun.cachix.org-1:pqBobmOjI7nKlsUMV25u9QHa9btJK65/C8vnO3p346s="
+            "ezkea.cachix.org-1:ioBmUbJTZIKsHmWWXPe1FSFbeVe+afhfgqgTSNd34eI="
+            "devenv.cachix.org-1:w1cLUi8dv3hnoSPGAuibQv+f9TZLr6cv/Hm9XgU50cw="
+          ];
+          substituters = (map (n: "https://${n}.cachix.org")
+            [ "nix-community" "nur-pkgs" "hyprland" "helix" "nixpkgs-wayland" "anyrun" "ezkea" "devenv" ])
+          ++
+          [
+            "https://cache.nixos.org"
+            "https://cache.ngi0.nixos.org"
+            "https://mirror.sjtu.edu.cn/nix-channels/store"
+          ];
+          auto-optimise-store = true;
+          experimental-features = [
+            "nix-command"
+            "flakes"
+            "auto-allocate-uids"
+            "cgroups"
+            "repl-flake"
+            "recursive-nix"
+            "ca-derivations"
+          ];
+          auto-allocate-uids = true;
+          use-cgroups = true;
+
+          trusted-users = [ "root" "${user}" ];
+          # Avoid disk full
+          max-free = lib.mkDefault (1000 * 1000 * 1000);
+          min-free = lib.mkDefault (128 * 1000 * 1000);
+          builders-use-substitutes = true;
+        };
+
+        daemonCPUSchedPolicy = lib.mkDefault "batch";
+        daemonIOSchedClass = lib.mkDefault "idle";
+        daemonIOSchedPriority = lib.mkDefault 7;
+
+
+        extraOptions = ''
+          !include ${config.age.secrets.gh-token.path}
+        '';
       };
-      settings = {
 
-        keep-outputs = true;
-        keep-derivations = true;
-        trusted-public-keys = [
-          "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY="
-          "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
-          "cache.ngi0.nixos.org-1:KqH5CBLNSyX184S9BKZJo1LxrxJ9ltnY2uAs5c/f1MA="
-          "nur-pkgs.cachix.org-1:PAvPHVwmEBklQPwyNZfy4VQqQjzVIaFOkYYnmnKco78="
-          "hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc="
-          "helix.cachix.org-1:ejp9KQpR1FBI2onstMQ34yogDm4OgU2ru6lIwPvuCVs="
-          "nixpkgs-wayland.cachix.org-1:3lwxaILxMRkVhehr5StQprHdEo4IrE8sRho9R9HOLYA="
-          "anyrun.cachix.org-1:pqBobmOjI7nKlsUMV25u9QHa9btJK65/C8vnO3p346s="
-          "ezkea.cachix.org-1:ioBmUbJTZIKsHmWWXPe1FSFbeVe+afhfgqgTSNd34eI="
-          "devenv.cachix.org-1:w1cLUi8dv3hnoSPGAuibQv+f9TZLr6cv/Hm9XgU50cw="
-        ];
-        substituters = (map (n: "https://${n}.cachix.org")
-          [ "nix-community" "nur-pkgs" "hyprland" "helix" "nixpkgs-wayland" "anyrun" "ezkea" "devenv" ])
-        ++
-        [
-          "https://cache.nixos.org"
-          "https://cache.ngi0.nixos.org"
-          "https://mirror.sjtu.edu.cn/nix-channels/store"
-        ];
-        auto-optimise-store = true;
-        experimental-features = [
-          "nix-command"
-          "flakes"
-          "auto-allocate-uids"
-          "cgroups"
-          "repl-flake"
-          "recursive-nix"
-          "ca-derivations"
-        ];
-        auto-allocate-uids = true;
-        use-cgroups = true;
+    time.timeZone = "Asia/Singapore";
 
-        trusted-users = [ "root" "${user}" ];
-        # Avoid disk full
-        max-free = lib.mkDefault (1000 * 1000 * 1000);
-        min-free = lib.mkDefault (128 * 1000 * 1000);
-        builders-use-substitutes = true;
-      };
-
-      daemonCPUSchedPolicy = lib.mkDefault "batch";
-      daemonIOSchedClass = lib.mkDefault "idle";
-      daemonIOSchedPriority = lib.mkDefault 7;
-
-
-      extraOptions = ''
-        !include ${config.age.secrets.gh-token.path}
-      '';
+    console = {
+      # font = "LatArCyrHeb-16";
+      keyMap = "us";
     };
 
-  time.timeZone = "Asia/Singapore";
 
-  console = {
-    # font = "LatArCyrHeb-16";
-    keyMap = "us";
-  };
+    security = {
 
+      pam = {
 
-  security = {
+        u2f = {
+          enable = true;
+          authFile = config.age.secrets."${user}.u2f".path;
+          control = "sufficient";
+          cue = true;
+        };
 
-    pam = {
-
-      u2f = {
-        enable = true;
-        authFile = config.age.secrets."${user}.u2f".path;
-        control = "sufficient";
-        cue = true;
+        loginLimits = [
+          {
+            domain = "*";
+            type = "-";
+            item = "memlock";
+            value = "unlimited";
+          }
+        ];
+        services = {
+          swaylock = { };
+          sudo.u2fAuth = true;
+        };
       };
 
-      loginLimits = [
-        {
-          domain = "*";
-          type = "-";
-          item = "memlock";
-          value = "unlimited";
-        }
-      ];
-      services = {
-        swaylock = { };
-        sudo.u2fAuth = true;
-      };
+      polkit.enable = true;
+
+      # Enable sound.
+      rtkit.enable = true;
     };
 
-    polkit.enable = true;
 
-    # Enable sound.
-    rtkit.enable = true;
-  };
+    documentation = {
+      enable = true;
+      nixos.enable = false;
+      man.enable = false;
+    };
 
-
-  documentation = {
-    enable = true;
-    nixos.enable = false;
-    man.enable = false;
-  };
-
-  systemd.tmpfiles.rules = [
-    "C /var/cache/tuigreet/lastuser - - - - ${pkgs.writeText "lastuser" "${user}"}"
-    "C /root/.ssh/known_hosts - - - - ${pkgs.writeText "known_hosts" ''
+    systemd.tmpfiles.rules = [
+      "C /var/cache/tuigreet/lastuser - - - - ${pkgs.writeText "lastuser" "${user}"}"
+      "C /root/.ssh/known_hosts - - - - ${pkgs.writeText "known_hosts" ''
     10.0.1.2 ${data.keys.hasturHostPubKey}
     10.0.0.2 ${data.keys.hasturHostPubKey}
     10.0.1.3 ${data.keys.kaamblHostPubKey}
     10.0.1.1 ${data.keys.nodensHostPubKey}
     10.0.0.5 ${data.keys.azasosHostPubKey}
     ''}"
-    "C /root/.ssh/config - - - - ${
+      "C /root/.ssh/config - - - - ${
     pkgs.writeText "ssh-config" (let genGenHost = u: name: addr: 
     ''
     Host ${name}
@@ -146,28 +148,28 @@
      + (genHostE "azasos" "10.0.0.5")
      + (genHostE "nodens" "10.0.1.1")
     )}"
-  ];
+    ];
 
-  environment.etc = {
-    "machine-id".text = "b08dfa6083e7567a1921a715000001fb";
-  };
-
-  programs.starship = {
-    enable = true;
-    settings = (import ./home/programs/starship { }).programs.starship.settings // {
-      format = "$username$hostname$directory$git_branch$git_commit$git_status$nix_shell$cmd_duration$line_break$python$character";
+    environment.etc = {
+      "machine-id".text = "b08dfa6083e7567a1921a715000001fb";
     };
-  };
-  system.activationScripts = {
-    # workaround with tmpfs as home and home-manager, since it not preserve
-    # ~/.nix-profile symlink after reboot.
-    profile-init.text =
-      ''
-        ln -sfn /home/${user}/.local/state/nix/profiles/profile /home/${user}/.nix-profile
-      '';
-  };
 
-}
+    programs.starship = {
+      enable = true;
+      settings = (import ./home/programs/starship { }).programs.starship.settings // {
+        format = "$username$hostname$directory$git_branch$git_commit$git_status$nix_shell$cmd_duration$line_break$python$character";
+      };
+    };
+    system.activationScripts = {
+      # workaround with tmpfs as home and home-manager, since it not preserve
+      # ~/.nix-profile symlink after reboot.
+      profile-init.text =
+        ''
+          ln -sfn /home/${user}/.local/state/nix/profiles/profile /home/${user}/.nix-profile
+        '';
+    };
+
+  }
 
 
   #
@@ -328,4 +330,5 @@
       };
     };
 
-  })]
+  })
+]
