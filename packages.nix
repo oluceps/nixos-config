@@ -34,7 +34,7 @@ let
       [ killall hexyl jq fx bottom lsd fd choose duf tokei procs lsof tree bat ]
       [ broot powertop ranger ripgrep qrencode lazygit b3sum unzip zip coreutils inetutils pciutils usbutils pinentry ]
     ];
-    # ripgrep-all 
+    # # ripgrep-all 
 
 
     info = [ freshfetch htop bottom onefetch hardinfo qjournalctl hyprpicker imgcat nix-index ccze ];
@@ -138,8 +138,10 @@ let
   };
 in
 {
-  environment.systemPackages = lib.flatten (lib.attrValues p)
-    ++ (with pkgs; [ unar texlab edk2 xmrig docker-compose ]) ++
+  environment.systemPackages =
+    lib.flatten (lib.attrValues p)
+    ++
+    (with pkgs; [ unar texlab edk2 xmrig docker-compose ]) ++
     [
       ((pkgs.vim_configurable.override { }).customize {
         name = "vim";
@@ -154,7 +156,7 @@ in
           set backspace=indent,eol,start
           " Turn on syntax highlighting by default
           syntax on
-        
+
           :let mapleader = " "
           :map <leader>s :w<cr>
           :map <leader>q :q<cr>
@@ -163,38 +165,20 @@ in
         '';
       }
       )
-    ] ++
-    (if (!(lib.elem config.networking.hostName (data.withoutHeads))) then
-      (lib.flatten
-        (lib.attrValues e)) ++
-      # [
-      #   (with pkgs; (
-      #     python3.withPackages
-      #       (p: with p;[
-      #         torch
-      #         fire
-      #         sentencepiece
-      #         gensim
-      #         numpy
-      #         tqdm
-
-      #         python-lsp-server
-      #         mkdocs
-      #         # mkdocs-static-i18n
-      #         mkdocs-material
-      #       ])
-      #   ))
-      # ]
-      # ++
-      (with pkgs.nodePackages; [
-        vscode-json-languageserver
-        typescript-language-server
-        vscode-css-languageserver-bin
-        node2nix
-        markdownlint-cli2
-        prettier
-      ]) else [ ]
-    )
+    ]
+    #  ++
+    # (if (!(lib.elem config.networking.hostName (data.withoutHeads))) then
+    #   (lib.flatten
+    #     (lib.attrValues e)) ++
+    #   (with pkgs.nodePackages; [
+    #     vscode-json-languageserver
+    #     typescript-language-server
+    #     vscode-css-languageserver-bin
+    #     node2nix
+    #     markdownlint-cli2
+    #     prettier
+    #   ]) else [ ]
+    # )
   ;
 }
 
