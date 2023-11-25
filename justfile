@@ -7,6 +7,7 @@ alias d := deploy
 alias h := home-active
 alias c := check
 alias p := push-secret
+alias s := sync
 
 host := `hostname`
 me   := `whoami`
@@ -27,6 +28,7 @@ help:
 	b [host,]                 # build nixosConfigurations toplevel\n\
 	d [target,] builder mode  # deploy into target\n\
 	h                         # build and activate home\n\
+	s                         # sync secrets
 	c                         # check and eval\n\
 	"
 push-secret target="rha" datas=nodes:
@@ -57,6 +59,10 @@ build-livecd:
 check +args="":
 	nix flake check {{args}}
 	{{nodes}} | each { |x| nix eval --raw $'.#nixosConfigurations.($x).config.system.build.toplevel' --show-trace }
+
+sync:
+	mc mirror --overwrite --remove /home/{{me}}/Sec/ r2/sec/Sec
+	mc mirror --overwrite --remove /etc/nixos/sec/ r2/sec/credentials
 
 clean:
 	git clean -f
