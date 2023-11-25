@@ -166,19 +166,19 @@ in
       }
       )
     ]
-    #  ++
-    # (if (!(lib.elem config.networking.hostName (data.withoutHeads))) then
-    #   (lib.flatten
-    #     (lib.attrValues e)) ++
-    #   (with pkgs.nodePackages; [
-    #     vscode-json-languageserver
-    #     typescript-language-server
-    #     vscode-css-languageserver-bin
-    #     node2nix
-    #     markdownlint-cli2
-    #     prettier
-    #   ]) else [ ]
-    # )
+     ++
+    (if (!(lib.elem config.networking.hostName (data.withoutHeads))) then
+      (lib.flatten
+        (lib.attrValues e)) ++
+      (with pkgs.nodePackages; [
+        vscode-json-languageserver
+        typescript-language-server
+        vscode-css-languageserver-bin
+        node2nix
+        markdownlint-cli2
+        prettier
+      ]) else [ ]
+    )
   ;
 }
 
