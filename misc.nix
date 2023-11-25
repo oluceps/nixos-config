@@ -10,7 +10,10 @@
 lib.mkMerge [
   {
 
-    systemd.services.nix-daemon.serviceConfig.LimitNOFILE = lib.mkForce 500000000;
+    systemd.services.nix-daemon = {
+      serviceConfig.LimitNOFILE = lib.mkForce 500000000;
+      path = [ pkgs.netcat-openbsd ];
+    };
     nix =
       {
         package = pkgs.nixVersions.stable;
@@ -141,8 +144,8 @@ lib.mkMerge [
     in
     (genHost "rha" "10.0.0.2")
      + (genHost "rha0" "10.0.1.2")
-     + (genHost "builder" "10.0.1.2")
-     + "ProxyCommand nc -X 5 -x 127.0.0.1:1088 %h %p\n"
+     # + (genHost "builder" "10.0.1.2")
+     # + "ProxyCommand nc -X 5 -x 127.0.0.1:1088 %h %p\n"
      + (genHost "hastur" "10.0.1.2")
      + (genHostE "kaambl" "10.0.1.3")
      + (genHostE "azasos" "10.0.0.5")

@@ -223,7 +223,7 @@ user: { config
     # ]) ++
     (with nur-pkgs;[
       techmino
-      rustplayer
+      # rustplayer
     ]);
   home.pointerCursor = {
     gtk.enable = true;
@@ -471,12 +471,12 @@ user: { config
   gtk = {
     enable = true;
     theme = {
-      package = pkgs.callPackage
-        "${inputs.nixpkgs}/pkgs/data/themes/fluent-gtk-theme"
-        {
-          themeVariants = [ "purple" ];
-          tweaks = [ "blur" ];
-        };
+      package =
+        pkgs.fluent-gtk-theme.override
+          {
+            themeVariants = [ "purple" ];
+            tweaks = [ "blur" ];
+          };
       name = "Fluent-purple";
     };
 
