@@ -74,6 +74,8 @@ let
       switch-mute
       yarn
       go
+
+
       nix-tree
       kotlin
       jre17_minimal
@@ -81,7 +83,9 @@ let
       rustup
       minio-client
       tmux
-      awscli2
+      # awscli2
+
+
       trunk
       cargo-expand
       wasmer
@@ -90,29 +94,6 @@ let
       nix-update
       nodejs_latest.pkgs.pnpm
     ];
-
-    # wine = [
-    #   # ...
-
-    #   # support both 32- and 64-bit applications
-    #   wineWowPackages.stable
-
-    #   # support 32-bit only
-    #   wine
-
-    #   # support 64-bit only
-    #   (wine.override { wineBuild = "wine64"; })
-
-    #   # wine-staging (version with experimental features)
-    #   wineWowPackages.staging
-
-    #   # winetricks (all versions)
-    #   winetricks
-
-    #   # native wayland support (unstable)
-    #   wineWowPackages.waylandFull
-    # ];
-
     db = [ mongosh ];
 
     web = [ hugo ];
@@ -166,10 +147,11 @@ in
       }
       )
     ]
-     ++
-    (if (!(lib.elem config.networking.hostName (data.withoutHeads))) then
-      (lib.flatten
-        (lib.attrValues e)) ++
+    ++
+    lib.optionals (!(lib.elem config.networking.hostName (data.withoutHeads)))
+      ((lib.flatten
+        (lib.attrValues e))
+      ++
       (with pkgs.nodePackages; [
         vscode-json-languageserver
         typescript-language-server
@@ -177,8 +159,8 @@ in
         node2nix
         markdownlint-cli2
         prettier
-      ]) else [ ]
-    )
+      ])
+      )
   ;
 }
 
