@@ -46,7 +46,7 @@ home-active builder="rha0":
 	./result/activate
 
 build-home-remotely user builder:
-	nom build '.#homeConfigurations.{{user}}.activationPackage' --builders 'ssh://{{builder}} x86_64-linux' --max-jobs 0
+	nom build '.#homeConfigurations.{{user}}.activationPackage' --builders 'ssh://{{builder}} x86_64-linux - 24' --max-jobs 0
 
 build-home user:
 	nom build '.#homeConfigurations.{{user}}.activationPackage'
