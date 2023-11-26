@@ -21,6 +21,10 @@ in
           package = mkPackageOptionMD pkgs "metacubexd" { };
         };
       };
+      default = {
+        enable = true;
+        package = pkgs.metacubexd;
+      };
     };
     package = mkOption {
       type = types.package;
@@ -58,9 +62,11 @@ in
             "CAP_NET_BIND_SERVICE"
           ];
           Restart = "on-failure";
-        } // lib.optionalAttrs cfg.webPanel.enable {
+        }
+        // lib.optionalAttrs cfg.webPanel.enable {
           preStart = "ln -sf ${cfg.webPanel.package} $STATE_DIRECTORY/web";
-        };
+        }
+        ;
 
       };
 

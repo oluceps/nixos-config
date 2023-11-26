@@ -120,7 +120,6 @@
           false;
       };
 
-    sing-box.enable = false;
     rathole.enable = false;
 
     daed.enable = false;

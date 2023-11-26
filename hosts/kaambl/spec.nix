@@ -23,7 +23,9 @@
       }
       {
         dae.enable = true;
-        sing-box.enable = true;
+        sing-box = {
+          enable = true;
+        };
         ss.enable = true;
         gvfs.enable = false;
         blueman.enable = true;
