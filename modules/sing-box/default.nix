@@ -62,13 +62,13 @@ in
             "CAP_NET_BIND_SERVICE"
           ];
           Restart = "on-failure";
-        }
-        // lib.optionalAttrs cfg.webPanel.enable {
-          preStart = "ln -sf ${cfg.webPanel.package} $STATE_DIRECTORY/web";
-        }
-        ;
+        };
 
-      };
+      }
+      // lib.optionalAttrs cfg.webPanel.enable {
+        preStart = "ln -sfT ${cfg.webPanel.package} $STATE_DIRECTORY/web";
+      }
+      ;
 
     };
 
