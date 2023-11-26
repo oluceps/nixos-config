@@ -3,7 +3,7 @@
     let lib = inputs.nixpkgs.lib.extend self.overlays.lib; in
     {
       nixosConfigurations = {
-        azasos = lib.nixosSystem
+        abhoth = lib.nixosSystem
           {
             pkgs = import inputs.nixpkgs {
               system = "x86_64-linux";

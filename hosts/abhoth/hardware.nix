@@ -9,9 +9,7 @@
         canTouchEfiVariables = true;
         efiSysMountPoint = "/efi";
       };
-      systemd-boot = {
-        enable = true;
-      };
+      systemd-boot.enable = true;
     };
 
     initrd.availableKernelModules = [ "virtio_net" "virtio_pci" "virtio_mmio" "virtio_blk" "virtio_scsi" "9p" "9pnet_virtio" "ata_piix" "uhci_hcd" "xen_blkfront" "vmw_pvscsi" ];
