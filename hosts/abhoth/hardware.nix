@@ -1,10 +1,18 @@
 { pkgs, config, ... }:
 {
-  fileSystems."/" = { device = "/dev/vda1"; fsType = "ext4"; };
-  boot = {
-    loader.grub.device = "/dev/vda";
+  fileSystems."/" = { device = "/dev/vda3"; fsType = "ext4"; };
+  fileSystems."/efi" = { device = "/dev/disk/by-uuid/F023-2342"; fsType = "vfat"; };
 
-    tmp.cleanOnBoot = true;
+  boot = {
+    loader = {
+      efi = {
+        canTouchEfiVariables = true;
+        efiSysMountPoint = "/efi";
+      };
+      systemd-boot = {
+        enable = true;
+      };
+    };
 
     initrd.availableKernelModules = [ "virtio_net" "virtio_pci" "virtio_mmio" "virtio_blk" "virtio_scsi" "9p" "9pnet_virtio" "ata_piix" "uhci_hcd" "xen_blkfront" "vmw_pvscsi" ];
     initrd.kernelModules = [ "virtio_balloon" "virtio_console" "virtio_rng" "nvme" ];

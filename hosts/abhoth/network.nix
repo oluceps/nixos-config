@@ -49,7 +49,7 @@
     };
 
     links."10-ens5" = {
-      matchConfig.MACAddress = "52:54:00:99:b9:31";
+      matchConfig.MACAddress = "00:16:3e:09:b7:46";
       linkConfig.Name = "ens5";
     };
 
