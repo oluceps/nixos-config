@@ -72,6 +72,7 @@
       {
 
         dae.enable = true;
+        sing-box.enable = true;
 
         gvfs.enable = true;
         greetd = {
