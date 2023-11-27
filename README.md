@@ -7,16 +7,16 @@
 
 This repo contains declaritive configurations, with ~100% config Nixfied.
 
-> NOTICE: Public credentials in `hosts/lib.nix`. 
+> NOTICE: Public auth/encryption credentials in `hosts/lib.nix`. 
 
 with:
 
-+ [flake-parts](https://github.com/hercules-ci/flake-parts) for layout.
-+ [agenix](https://github.com/ryantm/agenix) & [rekey](https://github.com/oddlama/agenix-rekey), keys are not stored on disk, dec & enc with yubikey.
-+ [lanzaboote](https://github.com/nix-community/lanzaboote) for secure boot.
-+ root on tmpfs, keep states with [impermanence](https://github.com/nix-community/impermanence).
-+ Standalone installed [home-manager](https://github.com/nix-community/home-manager).
-+ [Just](https://github.com/casey/just) as command runner.
++ layout: [flake-parts](https://github.com/hercules-ci/flake-parts)
++ secret management with hardware key: [agenix](https://github.com/ryantm/agenix) [rekey](https://github.com/oddlama/agenix-rekey)
++ secure boot: [lanzaboote](https://github.com/nix-community/lanzaboote)
++ root on tmpfs states keeping: [impermanence](https://github.com/nix-community/impermanence)
++ Standalone [home-manager](https://github.com/nix-community/home-manager)
++ command runner: [Just](https://github.com/casey/just) 
 
 ---
 
@@ -32,7 +32,7 @@ with:
 
 __Overlay & nixosModules__  
 
-This flake contains overlay and modules of few packages,
+Contains overlay and modules of few packages,
 
 Applying:  
 
