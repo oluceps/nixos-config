@@ -51,6 +51,7 @@ user: { config
   home.packages = with pkgs;
 
     [
+      mari0
       anyrun
       # factorio
       gedit
