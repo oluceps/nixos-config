@@ -53,6 +53,7 @@ user: { config
     [
       anyrun
       # factorio
+      gedit
       logseq
       jetbrains.pycharm-professional
       jetbrains.idea-ultimate
