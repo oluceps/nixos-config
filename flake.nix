@@ -1,8 +1,10 @@
 {
   description = "oluceps' flake";
   outputs = inputs@{ flake-parts, ... }:
+    let extraLibs = (import ./hosts/lib.nix inputs); /* f = excludes: valueFunc: */
+    in
     flake-parts.lib.mkFlake { inherit inputs; } {
-      imports = import ./hosts inputs ++ [ ./home ];
+      imports = import ./hosts inputs;
       systems = [ "x86_64-linux" "aarch64-linux" ];
       perSystem = { pkgs, system, inputs', ... }: {
 
@@ -26,16 +28,16 @@
           packages = [ agenix-rekey home-manager just ];
         };
 
-        packages = with pkgs.lib; genAttrs
-          (with builtins; (attrNames (
-            filterAttrs
-              (n: _: !elem n [
-                "glowsans" # multi pkgs
-                "opulr-a-run" # ?
-                "tcp-brutal" # kernelModule
-              ])
-              (readDir ./pkgs))))
-          (n: pkgs.${n});
+        packages =
+          let
+            shadowedPkgs = [
+              "glowsans" # multi pkgs
+              "opulr-a-run" # ?
+              "tcp-brutal" # kernelModule
+              "shufflecake"
+            ];
+          in
+          extraLibs.genFilteredDirAttrs ./pkgs shadowedPkgs (n: pkgs.${n});
       };
 
       flake = {
@@ -43,43 +45,66 @@
         agenix-rekey = inputs.agenix-rekey.configure {
           userFlake = inputs.self;
           nodes = with inputs.nixpkgs.lib;
-            filterAttrs (n: _: !elem n [ "nixos" ]) inputs.self.nixosConfigurations
-          ;
+            filterAttrs (n: _: !elem n [ "nixos" "bootstrap" ]) inputs.self.nixosConfigurations;
         };
 
-        overlays = {
-          default =
-            final: prev: prev.lib.genAttrs
-              (with builtins;
-              (with prev.lib; attrNames (
-                filterAttrs
-                  (n: _: !elem n [
-                    "nobody"
-                    "tcp-brutal"
-                  ])
-                  (readDir ./pkgs))))
-              (name: final.callPackage (./pkgs + "/${name}") { });
+        overlays =
+          {
+            default = final: prev:
+              let
+                shadowedPkgs = [
+                  "tcp-brutal"
+                  "shufflecake"
+                ];
+              in
+              extraLibs.genFilteredDirAttrs ./pkgs shadowedPkgs
+                (name: final.callPackage (./pkgs + "/${name}") { });
 
-          lib = final: prev: (import ./hosts/lib.nix inputs);
-        };
+            lib = final: prev: extraLibs;
+          };
 
-        nixosModules = import ./modules { lib = inputs.nixpkgs.lib; };
+        nixosModules =
+          let
+            shadowedModules = [ ];
+            modules =
+              extraLibs.genFilteredDirAttrs ./modules shadowedModules
+                (n: import (./modules + ("/" + n)));
+
+            default = { ... }: {
+              imports = builtins.attrValues modules;
+            };
+          in
+          modules // { inherit default; };
       };
+
     };
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
-    nixpkgs-pin.url = "github:NixOS/nixpkgs?rev=e7f38be3775bab9659575f192ece011c033655f0";
     nixpkgs-master.url = "github:NixOS/nixpkgs/master";
-    nixpkgs-gui.url = "github:NixOS/nixpkgs?rev=954a801cbe128e24e78230f711df17da01a5d98c";
     nixpkgs-22.url = "github:NixOS/nixpkgs?rev=c91d0713ac476dfb367bbe12a7a048f6162f039c";
+    nixpkgs-dae.url = "github:NixOS/nixpkgs?rev=c43c81954dee4f0b383a6c4ee3f3c66384146d42";
     nixpkgs-rebuild.url = "github:SuperSandro2000/nixpkgs?rev=449114c6240520433a650079c0b5440d9ecf6156";
     nixpkgs-wayland = {
       url = "github:nix-community/nixpkgs-wayland";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    disko = {
+      url = "github:nix-community/disko";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     conduit = {
       url = "gitlab:famedly/conduit";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    nyx = {
+      # url = "/home/elen/Src/nyx";
+      url = "github:oluceps/nyx";
+    };
+    factorio-manager = {
+      url = "/home/elen/Src/factorio-manager";
+      # url = "github:oluceps/nyx";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 

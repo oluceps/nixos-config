@@ -20,12 +20,15 @@
 
   services = {
     # bpftune.enable = false;
-    # kubo = {
-    #   enable = true;
-    #   settings.Addresses.API = [
-    #     "/ip4/127.0.0.1/tcp/5001"
-    #   ];
-    # };
+    kubo = {
+      enable = false;
+      settings.Addresses.API = [
+        "/ip4/127.0.0.1/tcp/5001"
+      ];
+    };
+    hysteria.instances = [
+    ];
+
     btrbk = {
       config = ''
         ssh_identity /persist/keys/ssh_host_ed25519_key
@@ -106,13 +109,10 @@
 
     gnome.gnome-keyring.enable = true;
 
-    hyst-az.enable = false;
-    hyst-do.enable = false;
+    # hyst-az.enable = false;
+    # hyst-do.enable = false;
 
     # ss-tls cnt to router
-    tuic.enable = true;
-    juicity.enable = true;
-    naive.enable = false;
 
     clash =
       {
@@ -124,10 +124,10 @@
 
     daed.enable = false;
     dae = {
-      package = pkgs.dae-unstable;
       disableTxChecksumIpGeneric = false;
       configFile = config.age.secrets.dae.path;
       # assets = with pkgs; [ v2ray-geoip v2ray-domain-list-community ];
+      package = pkgs.dae;
       assetsPath = "${pkgs.symlinkJoin {
         name = "dae-assets-nixy";
         paths = [ pkgs.nixy-domains.src "${pkgs.v2ray-geoip}/share/v2ray" ];

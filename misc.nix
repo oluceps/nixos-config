@@ -14,6 +14,14 @@ lib.mkMerge [
       serviceConfig.LimitNOFILE = lib.mkForce 500000000;
       path = [ pkgs.netcat-openbsd ];
     };
+    nix.buildMachines = [{
+      hostName = "rha0";
+      systems = [ "x86_64-linux" ];
+      protocol = "ssh-ng";
+      maxJobs = 24;
+      speedFactor = 2;
+      supportedFeatures = [ "big-parallel" ];
+    }];
     nix =
       {
         package = pkgs.nixVersions.stable;
@@ -123,34 +131,6 @@ lib.mkMerge [
 
     systemd.tmpfiles.rules = [
       "C /var/cache/tuigreet/lastuser - - - - ${pkgs.writeText "lastuser" "${user}"}"
-      "C /root/.ssh/known_hosts - - - - ${pkgs.writeText "known_hosts" ''
-    10.0.1.2 ${data.keys.hasturHostPubKey}
-    10.0.0.2 ${data.keys.hasturHostPubKey}
-    10.0.1.3 ${data.keys.kaamblHostPubKey}
-    10.0.1.1 ${data.keys.nodensHostPubKey}
-    10.0.0.5 ${data.keys.azasosHostPubKey}
-    ''}"
-      "C /root/.ssh/config - - - - ${
-    pkgs.writeText "ssh-config" (let genGenHost = u: name: addr: 
-    ''
-    Host ${name}
-      HostName ${addr}
-      User ${u}
-      Port 22
-      IdentityFile ${config.age.secrets.id.path}
-    ''; 
-    genHost = genGenHost "riro";
-    genHostE = genGenHost "elen";
-    in
-    (genHost "rha" "10.0.0.2")
-     + (genHost "rha0" "10.0.1.2")
-     # + (genHost "builder" "10.0.1.2")
-     # + "ProxyCommand nc -X 5 -x 127.0.0.1:1088 %h %p\n"
-     + (genHost "hastur" "10.0.1.2")
-     + (genHostE "kaambl" "10.0.1.3")
-     + (genHostE "azasos" "10.0.0.5")
-     + (genHostE "nodens" "10.0.1.1")
-    )}"
     ];
 
     environment.etc = {
@@ -166,10 +146,10 @@ lib.mkMerge [
     system.activationScripts = {
       # workaround with tmpfs as home and home-manager, since it not preserve
       # ~/.nix-profile symlink after reboot.
-      profile-init.text =
-        ''
-          ln -sfn /home/${user}/.local/state/nix/profiles/profile /home/${user}/.nix-profile
-        '';
+      # profile-init.text =
+      #   ''
+      #     ln -sfn /home/${user}/.local/state/nix/profiles/profile /home/${user}/.nix-profile
+      #   '';
     };
 
   }
@@ -181,11 +161,11 @@ lib.mkMerge [
   #
   #
 
-  (lib.mkIf (!(lib.elem config.networking.hostName (data.withoutHeads))) {
+  (lib.mkIf (!(lib.elem config.networking.hostName data.withoutHeads)) {
     xdg = {
       mime = {
         enable = true;
-        inherit ((import ./home/home.nix user { inherit config pkgs lib inputs; }).xdg.mimeApps) defaultApplications;
+        inherit ((import ./home/home.nix { inherit config pkgs lib inputs user; }).xdg.mimeApps) defaultApplications;
       };
     };
 
@@ -197,7 +177,11 @@ lib.mkMerge [
         };
       };
       docker. enable = false;
-      podman.enable = true;
+      podman = {
+        enable = true;
+        dockerSocket.enable = true;
+        dockerCompat = true;
+      };
       libvirtd = {
         enable = false;
         qemu = {
@@ -226,8 +210,93 @@ lib.mkMerge [
       style = "adwaita";
     };
     programs = {
+      fish = {
+        enable = true;
+        shellAliases = {
+          j = "just";
+          nd = "cd /etc/nixos";
+          swc = "sudo nixos-rebuild switch --flake /etc/nixos";
+          #--log-format internal-json -v 2>&1 | nom --json";
+          daso = "sudo";
+          daos = "sudo";
+          off = "poweroff";
+          mg = "kitty +kitten hyperlinked_grep --smart-case $argv .";
+          kls = "lsd --icon never --hyperlink auto";
+          lks = "lsd --icon never --hyperlink auto";
+          sl = "lsd --icon never --hyperlink auto";
+          ls = "lsd --icon never --hyperlink auto";
+          l = "lsd --icon never --hyperlink auto -lh";
+          la = "lsd --icon never --hyperlink auto -la";
+          g = "lazygit";
+          "cd.." = "cd ..";
+          up = "nix flake update --commit-lock-file /etc/nixos && swc";
+          fp = "fish --private";
+          e = "exit";
+          rp = "rustplayer";
+          y = "yazi";
+          i = "kitty +kitten icat";
+          ".." = "cd ..";
+          "。。" = "cd ..";
+          "..." = "cd ../..";
+          "。。。" = "cd ../..";
+          "...." = "cd ../../..";
+          "。。。。" = "cd ../../..";
+        } // lib.genAttrs [ "rha" "lsa" "tcs" "ubt" "rka" "dgs" "rt" ] (n: "ssh ${n} -t fish");
 
 
+        shellInit = ''
+          fish_vi_key_bindings
+          set -g direnv_fish_mode eval_on_arrow
+          set -U fish_greeting
+          set fish_color_normal normal
+          set fish_color_command blue
+          set fish_color_quote yellow
+          set fish_color_redirection cyan --bold
+          set fish_color_end green
+          set fish_color_error brred
+          set fish_color_param cyan
+          set fish_color_comment red
+          set fish_color_match --background=brblue
+          set fish_color_selection white --bold --background=brblack
+          set fish_color_search_match bryellow --background=brblack
+          set fish_color_history_current --bold
+          set fish_color_operator brcyan
+          set fish_color_escape brcyan
+          set fish_color_cwd green
+          set fish_color_cwd_root red
+          set fish_color_valid_path --underline
+          set fish_color_autosuggestion white
+          set fish_color_user brgreen
+          set fish_color_host normal
+          set fish_color_cancel --reverse
+          set fish_pager_color_prefix normal --bold --underline
+          set fish_pager_color_progress brwhite --background=cyan
+          set fish_pager_color_completion normal
+          set fish_pager_color_description B3A06D --italics
+          set fish_pager_color_selected_background --reverse
+          set fish_cursor_default block blink
+          set fish_cursor_insert line blink
+          set fish_cursor_replace_one underscore blink
+        '';
+        interactiveShellInit = ''
+          # Need to declare here, since something buggy.
+          # For foot `jump between prompt` function
+          function mark_prompt_start --on-event fish_prompt
+              echo -en "\e]133;A\e\\"
+          end
+
+          function fish_user_key_bindings
+              for mode in insert default visual
+                bind -M $mode \cf forward-char
+              end
+          end
+
+          # ${pkgs.zoxide}/bin/zoxide init fish --no-aliases | source
+        '';
+      };
+
+
+      wireshark = { enable = true; package = pkgs.wireshark; };
       neovim = {
         enable = false;
         configure = {
@@ -235,10 +304,11 @@ lib.mkMerge [
         };
       };
       git.enable = true;
-      fish.enable = true;
       bash = {
         interactiveShellInit = ''
+          eval "$(${pkgs.zoxide}/bin/zoxide init bash)"
         '';
+        blesh.enable = true;
       };
       sway = { enable = true; };
       kdeconnect.enable = true;
@@ -298,8 +368,8 @@ lib.mkMerge [
         intel-one-mono
         monaspace
       ]
-      ++ (with (pkgs.glowsans); [ glowsansSC glowsansTC glowsansJ ])
-      ++ (with nur-pkgs; [ san-francisco plangothic maoken-tangyuan hk-grotesk lxgw-neo-xihei ]);
+      ++ (with pkgs.glowsans; [ glowsansSC glowsansTC glowsansJ ])
+      ++ (with nur-pkgs; [ san-francisco plangothic maoken-tangyuan lxgw-neo-xihei ]);
       #"HarmonyOS Sans SC" "HarmonyOS Sans TC"
       fontconfig = {
         subpixel.rgba = "none";

@@ -26,11 +26,16 @@ let system = "x86_64-linux"; in [
       #     {
       #       inherit system;
       #     }).lazygit;
-      monaspace =
-        (import inputs.nixpkgs-master { inherit system; }).monaspace;
+      inherit ((import inputs.nixpkgs-master {
+        inherit system; config.allowUnfree = true;
+      })) monaspace factorio-headless-experimental;
+      inherit ((import inputs.nixpkgs-dae {
+        inherit system; config.allowUnfree = true;
+      })) dae;
+
 
       # inputs.hyprland.packages.${system}.default;
-      nixos-rebuild = (import inputs.nixpkgs-rebuild { inherit system; }).nixos-rebuild;
+      inherit ((import inputs.nixpkgs-rebuild { inherit system; })) nixos-rebuild;
       helix = inputs.helix.packages.${system}.default.override {
         includeGrammarIf = grammar:
           prev.lib.any
@@ -67,7 +72,6 @@ let system = "x86_64-linux"; in [
             ];
       };
 
-
       # sha256 = "0000000000000000000000000000000000000000000000000000";
 
       nur-pkgs = inputs.nur-pkgs.packages.${system};
@@ -78,6 +82,13 @@ let system = "x86_64-linux"; in [
       #     allowUnfree = true;
       #   };
       #   }).linuxPackages_latest;
+
+      blesh = prev.blesh.overrideAttrs (old: {
+        src = prev.fetchzip {
+          url = "https://github.com/akinomyoga/ble.sh/releases/download/v0.4.0-devel3/ble-0.4.0-devel3.tar.xz";
+          sha256 = "kGLp8RaInYSrJEi3h5kWEOMAbZV/gEPFUjOLgBuMhCI=";
+        };
+      });
 
       # BUGGY
       # swaylock = prev.swaylock.overrideAttrs (old: {
@@ -103,12 +114,13 @@ let system = "x86_64-linux"; in [
           system = "x86_64-linux";
         }).pkgsCross.aarch64-multiplatform.OVMF.fd;
 
-      fishPlugins.foreign-env = prev.fishPlugins.foreign-env.overrideAttrs
-        (old: {
-          preInstall = old.preInstall + (with prev; ''
-            sed -e "s|'env'|'${coreutils}/bin/env'|" -i functions/*
-          '');
-        });
+      scx = inputs.nyx.packages.${prev.system}.scx;
+      # fishPlugins.foreign-env = prev.fishPlugins.foreign-env.overrideAttrs
+      #   (old: {
+      #     preInstall = old.preInstall + (with prev; ''
+      #       sed -e "s|'env'|'${coreutils}/bin/env'|" -i functions/*
+      #     '');
+      #   });
 
       picom = prev.picom.overrideAttrs
         (old: {
@@ -119,59 +131,71 @@ let system = "x86_64-linux"; in [
             sha256 = "sha256-daLb7ebMVeL+f8WydH4DONkUA+0D6d+v+pohJb2qjOo=";
           };
         });
+      phantomsocks = with prev;
+        buildGoModule rec {
+          pname = "phantomsocks";
+          version = "unstable-2023-11-30";
+
+          src = fetchFromGitHub {
+            owner = "macronut";
+            repo = pname;
+            rev = "b1b13c5b88cf3bac54f39c37c0ffcb0b46e31049";
+            hash = "sha256-ptCzd2/8dNHjAkhwA2xpZH8Ki/9DnblHI2gAIpgM+8E=";
+          };
+
+          vendorHash = "sha256-0MJlz7HAhRThn8O42yhvU3p5HgTG8AkPM0ksSjWYAC4=";
+
+          ldflags = [
+            "-s"
+            "-w"
+          ];
+          buildInputs = [ libpcap ];
+          tags = [ "pcap" ];
+        };
 
       dae-unstable =
-        (with prev;
-        buildGoModule
-          rec {
-            pname = "dae";
-            version = "0.3.0";
+        with prev;
+        buildGoModule rec {
+          pname = "dae";
+          version = "unstable";
 
-            src = fetchFromGitHub {
-              owner = "daeuniverse";
-              repo = "dae";
-              rev = "1f50506b10ac6f2b4ae6e320e9b69e7beb81a604";
-              hash = "sha256-pV7Mvs3B7v7A5ymNTkRoM52XShrkvwIstX5pjARGU/0=";
-              fetchSubmodules = true;
-            };
+          src = fetchFromGitHub {
+            owner = "daeuniverse";
+            repo = "dae";
+            rev = "32ea550ba670f16029cf4684e37a472e895c23ec";
+            hash = "sha256-wsCVKSidiJ9aADfcAygHXwi7v/ctrG/fnJW4/G8KtN0=";
+            fetchSubmodules = true;
+          };
 
-            vendorHash = "sha256-OD6Ztjw2O+2bf8DYDEptp9YfMpsma/Ag1/s5rKyCTmQ=";
+          vendorHash = "sha256-UQRM3/JSsPDAGqYZ43bVYVvSLvqqZ/BJE6hwx5wzfcQ=";
 
-            proxyVendor = true;
+          proxyVendor = true;
 
-            nativeBuildInputs = [ clang ];
+          nativeBuildInputs = [ clang ];
 
-            ldflags = [
-              "-s"
-              "-w"
-              "-X github.com/daeuniverse/dae/cmd.Version=${version}"
-              "-X github.com/daeuniverse/dae/common/consts.MaxMatchSetLen_=64"
-            ];
+          ldflags = [
+            "-s"
+            "-w"
+            "-X github.com/daeuniverse/dae/cmd.Version=${version}"
+            "-X github.com/daeuniverse/dae/common/consts.MaxMatchSetLen_=64"
+          ];
 
-            preBuild = ''
-              make CFLAGS="-D__REMOVE_BPF_PRINTK -fno-stack-protector -Wno-unused-command-line-argument" \
-              NOSTRIP=y \
-              ebpf
-            '';
+          preBuild = ''
+            make CFLAGS="-D__REMOVE_BPF_PRINTK -fno-stack-protector -Wno-unused-command-line-argument" \
+            NOSTRIP=y \
+            ebpf
+          '';
 
-            # network required
-            doCheck = false;
+          # network required
+          doCheck = false;
 
-            postInstall = ''
-              install -Dm444 install/dae.service $out/lib/systemd/system/dae.service
-              substituteInPlace $out/lib/systemd/system/dae.service \
-                --replace /usr/bin/dae $out/bin/dae
-            '';
-
-            meta = with lib; {
-              description = "A Linux high-performance transparent proxy solution based on eBPF";
-              homepage = "https://github.com/daeuniverse/dae";
-              license = licenses.agpl3Only;
-              maintainers = with maintainers; [ oluceps pokon548 ];
-              platforms = platforms.linux;
-              mainProgram = "dae";
-            };
-          });
+          postInstall = ''
+            install -Dm444 install/dae.service $out/lib/systemd/system/dae.service
+            substituteInPlace $out/lib/systemd/system/dae.service \
+              --replace /usr/bin/dae $out/bin/dae
+          '';
+          meta.mainProgram = "dae";
+        };
 
 
 
@@ -307,13 +331,13 @@ let system = "x86_64-linux"; in [
       screen-recorder-toggle = prev.writeShellScriptBin
         "screen-recorder-toggle"
         ''
-          pid=`${prev.procps}/bin/pgrep wf-recorder`
+          pid=`${prev.procps}/bin/pgrep wl-screenrec`
           status=$?
           if [ $status != 0 ]
           then
-            ${prev.wf-recorder}/bin/wf-recorder -g "$(${prev.slurp}/bin/slurp)" -f $HOME/Videos/record/$(date +'recording_%Y-%m-%d-%H%M%S.mp4') --pixel-format yuv420p -t;
+            ${prev.wl-screenrec}/bin/wl-screenrec -g "$(${prev.slurp}/bin/slurp)" -f $HOME/Videos/record/$(date +'recording_%Y-%m-%d-%H%M%S.mp4');
           else
-            ${prev.procps}/bin/pkill --signal SIGINT wf-recorder
+            ${prev.procps}/bin/pkill --signal SIGINT wl-screenrec
           fi;
         '';
 

@@ -1,5 +1,5 @@
 { self, inputs, ... }: {
-  flake = { ... }:
+  flake =
     let lib = inputs.nixpkgs.lib.extend self.overlays.lib; in
     {
       nixosConfigurations = {
@@ -7,7 +7,7 @@
           {
             pkgs = import inputs.nixpkgs {
               system = "x86_64-linux";
-              config = { };
+              config = { allowUnfree = true; };
               overlays = (import ../../overlays.nix inputs)
                 ++
                 (lib.genOverlays [
@@ -31,7 +31,10 @@
               ../../misc.nix
               ../../users.nix
             ]
-            ++ lib.sharedModules;
+            ++ lib.sharedModules ++ [
+              inputs.factorio-manager.nixosModules.default
+            ];
+
           };
       };
     };

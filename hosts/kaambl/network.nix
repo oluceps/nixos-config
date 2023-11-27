@@ -1,5 +1,4 @@
 { config
-, pkgs
 , lib
 , ...
 }: {
@@ -10,9 +9,8 @@
       checkReversePath = false;
       enable = true;
       trustedInterfaces = [ "virbr0" "wg0" "wg1" ];
-      allowedUDPPorts = [ 8080 5173 ];
-      allowedTCPPorts = [ 8080 9900 2222 5173 ];
-
+      allowedUDPPorts = [ 8080 5173 3330 8880 ];
+      allowedTCPPorts = [ 8080 9900 2222 5173 3330 8880 ];
     };
 
     wireless.iwd.enable = true;
@@ -76,11 +74,12 @@
           {
             wireguardPeerConfig = {
               PublicKey = "ANd++mjV7kYu/eKOEz17mf65bg8BeJ/ozBmuZxRT3w0=";
-              AllowedIPs = [ "10.0.0.0/24" ];
-              Endpoint = "111.229.162.99:51820";
+              AllowedIPs = [ "10.0.2.0/24" ];
+              Endpoint = "20.40.97.137:51820";
               PersistentKeepalive = 15;
             };
           }
+
         ];
       };
 
@@ -98,7 +97,7 @@
             wireguardPeerConfig = {
               PublicKey = "+fuA9nUmFVKy2Ijfh5xfcnO9tpA/SkIL4ttiWKsxyXI=";
               AllowedIPs = [ "10.0.1.0/24" ];
-              Endpoint = "144.126.208.183:51820";
+              Endpoint = "127.0.0.1:41820";
               PersistentKeepalive = 15;
             };
           }
@@ -112,7 +111,7 @@
         matchConfig.Name = "wg0";
         # IP addresses the client interface will have
         address = [
-          "10.0.0.3/24"
+          "10.0.2.3/24"
         ];
         DHCP = "no";
       };

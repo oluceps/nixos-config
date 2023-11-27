@@ -1,42 +1,11 @@
-{ lib
-, ...
+{ ...
 }: {
   boot = {
-    # Use the systemd-boot EFI boot loader.
-    tmp = {
-      useTmpfs = true;
-      tmpfsSize = "80%";
+    loader.efi = {
+      canTouchEfiVariables = true;
+      efiSysMountPoint = "/efi";
     };
 
-    loader = {
-      systemd-boot.enable = lib.mkForce false;
-      # grub2-theme = {
-      #   enable = true;
-      #   theme = "whitesur";
-      #   screen = "1080p";
-      #   splashImage =
-      #     let
-      #       img = pkgs.fetchurl {
-      #         url = "https://pbs.twimg.com/media/Fch6xMNacAM-EJS?format=jpg";
-      #         name = "background.jpg";
-      #         hash = "sha256-gw8PT8PSr9Gz0cflx2EOqjTsxHeJIJeCawrz9l7kvFI=";
-      #       };
-      #       img-resized = pkgs.runCommand "background.jpg"
-      #         {
-      #           nativeBuildInputs = with pkgs; [ imagemagick ];
-      #         } "convert -resize 1920x1080 ${img} $out";
-      #     in
-      #     "${img-resized}";
-      # };
-      grub = {
-        enable = false;
-        device = "nodev";
-        useOSProber = true;
-        efiSupport = true;
-      };
-      efi.canTouchEfiVariables = true;
-      efi.efiSysMountPoint = "/efi";
-    };
     supportedFilesystems = [ "ntfs" "tcp_bbr" ];
     kernel.sysctl = {
       "kernel.panic" = 10;
@@ -62,6 +31,7 @@
       "net.ipv4.conf.wan.rp_filter" = 0;
       # SYN flood protection
       "net.ipv4.tcp_syncookies" = 0;
+      "net.ipv4.tcp_syn_retries" = 2;
       # Do not accept ICMP redirects (prevent MITM attacks)
       "net.ipv4.conf.all.accept_redirects" = 1;
       "net.ipv4.conf.default.accept_redirects" = 1;

@@ -18,7 +18,7 @@ in
       description = "The absolute path to the configuration file.";
     };
     config = mkOption {
-      type = configFormat.type;
+      inherit (configFormat) type;
       default = { };
       description = "The configuration attribute set.";
     };

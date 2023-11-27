@@ -107,16 +107,14 @@
   systemd.tmpfiles.rules = [
   ];
   services = {
-    tuic = {
-      enable = true;
-      serve = true;
-      configFile = config.age.secrets.tuic-san.path;
-    };
-    juicity = {
-      enable = true;
-      serve = true;
+    juicity.instances = [{
+      name = "only";
+      serve = {
+        enable = true;
+        port = 23180;
+      };
       configFile = config.age.secrets.juic-san.path;
-    };
+    }];
   };
   services.caddy = {
     enable = true;

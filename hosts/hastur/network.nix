@@ -14,7 +14,7 @@
       enable = true;
       trustedInterfaces = [ "virbr0" "wg0" "wg1" ];
       allowedUDPPorts = [ 8080 5173 51820 9918 ];
-      allowedTCPPorts = [ 8080 9900 2222 5173 ];
+      allowedTCPPorts = [ 8080 9900 2222 5173 1900 ];
     };
     nftables.enable = true;
     networkmanager.enable = lib.mkForce false;
@@ -62,8 +62,8 @@
           {
             wireguardPeerConfig = {
               PublicKey = "ANd++mjV7kYu/eKOEz17mf65bg8BeJ/ozBmuZxRT3w0=";
-              AllowedIPs = [ "10.0.0.0/24" ];
-              Endpoint = "111.229.162.99:51820";
+              AllowedIPs = [ "10.0.2.0/24" ];
+              Endpoint = "20.40.97.137:51820";
               PersistentKeepalive = 15;
             };
           }
@@ -84,7 +84,7 @@
             wireguardPeerConfig = {
               PublicKey = "+fuA9nUmFVKy2Ijfh5xfcnO9tpA/SkIL4ttiWKsxyXI=";
               AllowedIPs = [ "10.0.1.0/24" ];
-              Endpoint = "2604:a880:4:1d0::5b:6000:51820";
+              Endpoint = "127.0.0.1:41820";
               PersistentKeepalive = 15;
             };
           }
@@ -98,7 +98,7 @@
         matchConfig.Name = "wg0";
         # IP addresses the client interface will have
         address = [
-          "10.0.0.2/24"
+          "10.0.2.2/24"
         ];
         DHCP = "no";
       };

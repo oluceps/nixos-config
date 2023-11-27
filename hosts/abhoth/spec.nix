@@ -15,22 +15,51 @@
     inherit ((import ../../boot.nix { inherit lib; }).boot) kernel;
   };
 
+  environment.systemPackages = with pkgs;[
+    factorio-headless
+  ];
+
   services = lib.mkMerge [
     {
       inherit ((import ../../services.nix { inherit pkgs lib config; }).services)
         openssh
         mosdns
         fail2ban
-        juicity
         dae;
     }
     {
       dae.enable = true;
+      sing-box.enable = true;
 
-      ss = {
+      juicity.instances = [
+        {
+          name = "only-cli";
+          configFile = config.age.secrets.jc-do.path;
+        }
+      ];
+
+      realm = {
         enable = true;
-        configFile = config.age.secrets.ss-az.path;
-        serve = true;
+        settings = {
+          endpoints = [
+            { local = "0.0.0.0:5000"; remote = "nyaw.xyz:4432"; }
+          ];
+        };
+      };
+      shadowsocks.instances = [
+        {
+          name = "abh";
+          configFile = config.age.secrets.ss-az.path;
+          serve = {
+            enable = true;
+            port = 6059;
+          };
+        }
+      ];
+
+      factorio = {
+        enable = false;
+        openFirewall = false;
       };
     }
   ];

@@ -1,7 +1,5 @@
 alias nd = cd /etc/nixos
-alias swc = doas nixos-rebuild switch --flake /etc/nixos --verbose
-alias daso = doas
-alias daos = doas
+alias swc = sudo nixos-rebuild switch --flake /etc/nixos --verbose
 alias off = poweroff
 alias kls = ls
 alias lks = ls
@@ -10,7 +8,6 @@ alias l = ls
 alias la = ls -la
 alias g = lazygit
 alias cd.. = cd ..
-alias rekey = nix run ".#rekey"
 alias e = exit
 
 

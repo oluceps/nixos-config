@@ -1,10 +1,12 @@
-{ config, lib, ... }:
+{ config, lib, inputs, pkgs, ... }:
 {
   boot.loader.grub.device = "/dev/vda";
   boot.initrd.availableKernelModules = [ "ata_piix" "uhci_hcd" "xen_blkfront" "vmw_pvscsi" "virtio_net" "virtio_pci" "virtio_mmio" "virtio_blk" "virtio_scsi" "9p" "9pnet_virtio" ];
   boot.initrd.kernelModules = [ "virtio_balloon" "virtio_console" "virtio_rng" ];
   fileSystems."/" = { device = "/dev/vda1"; fsType = "ext4"; };
 
+  boot.kernelPackages =
+    inputs.nyx.packages.${pkgs.system}.linuxPackages_cachyos-server-lto;
 
   boot.initrd.postDeviceCommands = lib.mkIf (!config.boot.initrd.systemd.enable)
     ''

@@ -1,5 +1,5 @@
 { inputs, ... }: {
-  flake = { ... }:
+  flake =
     let
       inherit (import ../lib.nix inputs) base;
     in

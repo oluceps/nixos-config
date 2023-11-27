@@ -21,17 +21,11 @@
         openssh
         mosdns
         fail2ban
-        juicity
         dae;
     }
     {
       dae.enable = true;
-
-      ss = {
-        enable = true;
-        configFile = config.age.secrets.ss-az.path;
-        serve = true;
-      };
+      sing-box.enable = true;
     }
   ];
 

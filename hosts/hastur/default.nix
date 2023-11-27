@@ -1,6 +1,6 @@
 { self, inputs, ... }: {
 
-  flake = { ... }:
+  flake =
     let lib = inputs.nixpkgs.lib.extend self.overlays.lib; in
     {
       nixosConfigurations = {
@@ -14,7 +14,7 @@
                 allowBroken = false;
                 segger-jlink.acceptLicense = true;
                 allowUnsupportedSystem = true;
-                permittedInsecurePackages = lib.mkForce [ "electron-24.8.6" ];
+                permittedInsecurePackages = lib.mkForce [ "electron-25.9.0" ];
               };
               overlays = (import ../../overlays.nix inputs)
                 ++
@@ -26,7 +26,6 @@
                   "EHfive"
                   "nuenv"
                   "android-nixpkgs"
-                  "dae"
                   "agenix-rekey"
                   "misskey"
                   "nixyDomains"
@@ -49,7 +48,10 @@
               ../../age.nix
 
               ../../boot.nix
-              # ../../home
+
+              inputs.home-manager.nixosModules.default
+              ../../home
+
               ../../users.nix
 
               inputs.misskey.nixosModules.default
@@ -57,7 +59,11 @@
 
               ./vaultwarden.nix
 
-            ] ++ lib.sharedModules;
+            ] ++ lib.sharedModules
+            ++
+            [
+              inputs.aagl.nixosModules.default
+            ];
           };
       };
     };

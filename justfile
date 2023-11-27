@@ -13,9 +13,23 @@ me   := `whoami`
 
 nodes := `nix eval --impure --expr "with builtins; attrNames (getFlake \"/etc/nixos\").nixosConfigurations"`
 
+# now `all` produces false while which in list.
 filter := '''
-		where $it != "nixos"
+		filter {|o| [ nixos ] | all { |i| $o != $i } }
 		'''
+
+map := '''
+	{
+		hastur: rha0,
+		kaambl: localhost,
+		nodens: dgs,
+		azasos: tcs,
+		abhoth: abh,
+		colour: col
+	}
+'''
+
+loc := "/etc/nixos"
 
 default:
   @just --choose
@@ -29,27 +43,23 @@ help:
 	h                         # build and activate home\n\
 	c                         # check and eval\n\
 	"
-push-secret target="rha" datas=nodes:
-	{{datas}} | {{filter}} | each { |i| (nix copy --substitute-on-destination --to 'ssh://{{target}}' (nix eval --raw $'.#nixosConfigurations.($i).config.age.rekey.derivation') -vvv) }
+push-secret target="hastur" datas=nodes:
+	{{datas}} | {{filter}} | each { |i| {{map}} | (nix copy --substitute-on-destination --to $'ssh://(($in).{{target}})' (nix eval --raw $'{{loc}}#nixosConfigurations.($i).config.age.rekey.derivation') -vvv) }
 
-fetch-secret source="kmb" datas=nodes:
-	{{datas}} | {{filter}} | each { |i| (ssh {{source}} -t $"nix eval --raw /etc/nixos#nixosConfigurations.($i).config.age.rekey.derivation") | (nix copy --substitute-on-destination --from 'ssh://{{source}}' $in -vvv )}
+fetch-secret source="kaambl" datas=nodes:
+	{{datas}} | {{filter}} | each { |i| {{map}} | (ssh {{source}} -t $"nix eval --raw {{loc}}#nixosConfigurations.($i).config.age.rekey.derivation") | (nix copy --substitute-on-destination --from 'ssh://{{source}}' $in -vvv )}
 
 build-host hosts=nodes:
-	{{hosts}} | {{filter}} | each { |i| nom build $'.#nixosConfigurations.($i).config.system.build.toplevel' }
+	{{hosts}} | {{filter}} | each { |i| nom build $'{{loc}}#nixosConfigurations.($i).config.system.build.toplevel' }
 
-deploy targets=nodes builder="localhost" mode="switch":
-	{{targets}} | {{filter}} | each { |target| nixos-rebuild --target-host $target --build-host {{builder}} {{mode}} --use-remote-sudo --flake $'.#($target)' }
+deploy targets=nodes builder="kaambl" mode="switch":
+	#!/usr/bin/env nu
+	def get_map [ k: string ] { {{map}} | get $k }
+	{{targets}} | {{filter}} | each { |target| nixos-rebuild --target-host (get_map $target) --build-host (get_map {{builder}}) {{mode}} --use-remote-sudo --flake $'{{loc}}#($target)' }
 
-home-active builder="rha0":
-	if {{host}} == "kaambl" { just build-home-remotely {{me}} {{builder}} } else { just build-home {{me}} }
+home-active +args="":
+	nom build '.#homeConfigurations.{{me}}.activationPackage' {{args}}
 	./result/activate
-
-build-home-remotely user builder:
-	nom build '.#homeConfigurations.{{user}}.activationPackage' --builders 'ssh://{{builder}} x86_64-linux - 24' --max-jobs 0
-
-build-home user:
-	nom build '.#homeConfigurations.{{user}}.activationPackage'
 
 build-livecd:
 	nom build .#nixosConfigurations.nixos.config.system.build.isoImage
@@ -57,6 +67,16 @@ build-livecd:
 check +args="":
 	nix flake check {{args}}
 	{{nodes}} | each { |x| nix eval --raw $'.#nixosConfigurations.($x).config.system.build.toplevel' --show-trace }
+
+slow-action +args="": rekey check overwrite-s3
+	sudo nixos-rebuild switch
+
+upgrade: rekey
+	nix flake update --commit-lock-file
+	sudo nixos-rebuild switch
+
+rekey:
+	agenix rekey
 
 overwrite-s3:
 	mc mirror --overwrite --remove /home/{{me}}/Sec/ r2/sec/Sec

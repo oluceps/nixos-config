@@ -6,8 +6,9 @@
 # Nix flake
 
 This repo contains declaritive configurations, with ~100% config Nixfied.
+> [!IMPORTANT]
+> Authentication credentials placing in `hosts/lib.nix`. Make sure to replace'em if deploying with this repo.
 
-> NOTICE: Public auth/encryption credentials in `hosts/lib.nix`. 
 
 with:
 
@@ -16,6 +17,7 @@ with:
 + secure boot: [lanzaboote](https://github.com/nix-community/lanzaboote)
 + root on tmpfs states keeping: [impermanence](https://github.com/nix-community/impermanence)
 + Standalone [home-manager](https://github.com/nix-community/home-manager)
++ Partition declare with [disko](https://github.com/nix-community/disko)
 + command runner: [Just](https://github.com/casey/just) 
 
 ---
@@ -23,11 +25,12 @@ with:
 
 |Type|Program|
 |---|---|
+|Kernel|[cachyos-kernel](https://github.com/CachyOS/linux-cachyos)|
 |Editor|[helix](https://github.com/oluceps/nixos-config/tree/main/home/programs/helix)|
 |WM|[sway](https://github.com/oluceps/nixos-config/tree/main/home/programs/sway)|
 |Bar|[waybar](https://github.com/oluceps/nixos-config/tree/main/home/programs/waybar)|
 |Shell|[fish](https://github.com/oluceps/nixos-config/tree/main/home/programs/fish)|
-|Terminal|[foot](https://github.com/oluceps/nixos-config/tree/main/home/programs/foot)|
+|Terminal|[alacritty](https://github.com/oluceps/nixos-config/tree/main/home/programs/alacritty)|
 |backup|[btrbk](https://github.com/oluceps/nixos-config/tree/main/modules/btrbk)|  
 
 __Overlay & nixosModules__  

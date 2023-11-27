@@ -8,59 +8,169 @@
     [
       (modulesPath + "/installer/scan/not-detected.nix")
     ];
+  disko.devices = {
+    disk = {
+      nvme = {
+        type = "disk";
+        device = "/dev/disk/by-id/nvme-KBG50ZNV512G_KIOXIA_436C75TAECJX";
+        content = {
+          type = "gpt";
+          partitions = {
+            esp = {
+              label = "ESP";
+              size = "2G";
+              type = "EF00";
+              content = {
+                type = "filesystem";
+                format = "vfat";
+                mountpoint = "/efi";
+              };
+            };
+            cryptroot = {
+              label = "CRYPTROOT";
+              end = "-16G";
+              content = {
+                type = "luks";
+                name = "cryptroot";
+                settings = {
+                  allowDiscards = true;
+                  bypassWorkqueues = true;
+                  crypttabExtraOpts = [
+                    "same-cpu-crypt"
+                    "submit-from-crypt-cpus"
+                    "fido2-device=auto"
+                  ];
+                };
+                content = {
+                  type = "btrfs";
+                  extraArgs = [ "-f" "--csum xxhash64" ];
+                  subvolumes = {
+                    "/persist" = {
+                      mountpoint = "/persist";
+                      mountOptions = [ "compress-force=lzo" "noatime" "discard=async" "space_cache=v2" ];
+                    };
+                    "/nix" = {
+                      mountpoint = "/nix";
+                      mountOptions = [ "compress-force=lzo" "noatime" "discard=async" "space_cache=v2" "nodev" "nosuid" ];
+                    };
+                    "/var" = {
+                      mountpoint = "/var";
+                      mountOptions = [ "compress-force=lzo" "noatime" "discard=async" "space_cache=v2" ];
+                    };
+                    "/persist/tmp" = {
+                      mountpoint = "/tmp";
+                      mountOptions = [ "relatime" "nodev" "nosuid" "discard=async" "space_cache=v2" ];
+                    };
+                  };
+                };
+              };
+            };
+
+            encryptedSwap = {
+              size = "100%";
+              content = {
+                type = "swap";
+                randomEncryption = true;
+              };
+            };
+
+          };
+        };
+      };
+    };
+    nodev = {
+      "/" = {
+        fsType = "tmpfs";
+        mountOptions = [ "relatime" "nosuid" "nodev" "size=2G" "mode=755" ];
+      };
+    };
+  };
+
+  fileSystems."/persist".neededForBoot = true;
+
+
+  security.tpm2.enable = true;
+  security.tpm2.pkcs11.enable = true;
+  security.tpm2.tctiEnvironment.enable = true;
+
+  services.scx = {
+    enable = true;
+    scheduler = "scx_rusty";
+  };
   boot = {
     initrd = {
       systemd.enable = true;
       availableKernelModules = [ "nvme" "xhci_pci" "ahci" "usb_storage" "usbhid" "sd_mod" "lz4" "zsmalloc" ];
       kernelModules = [ "tpm" "tpm_tis" "tpm_crb" "kvm-amd" "amdgpu" ];
     };
-    kernelModules = [ "ec_sys" "uhid" "kvm-amd" "brutal" ];
+    kernelModules = [
+      "ec_sys"
+      "uhid"
+      "kvm-amd"
+      # "brutal"
+      # "dm_sflc"
+    ];
     kernelParams = [
       "amd_pstate=active"
       "zswap.enabled=1"
       "zswap.compressor=lz4"
       "zswap.zpool=zsmalloc"
+      "systemd.gpt_auto=0"
     ];
-    extraModulePackages = with config.boot.kernelPackages; [
-      v4l2loopback
-      (callPackage "${inputs.self}/pkgs/tcp-brutal" { })
-    ];
+    # extraModulePackages = with config.boot.kernelPackages; [
+    #   v4l2loopback
+    #   (callPackage "${inputs.self}/pkgs/tcp-brutal" { })
+    #   (callPackage "${inputs.self}/pkgs/shufflecake" { }).kernelModule
+    # ];
     kernelPackages =
       # (import inputs.nixpkgs-pin {
       #   system = "x86_64-linux";
       # })
-      pkgs.linuxPackages_latest;
+      # pkgs.linuxPackages_6_6;
+      inputs.nyx.packages.${pkgs.system}.linuxPackages_cachyos-sched-ext-lto-zen4;
+
+    # kernelPatches =
+    #   let patchPath = ../../.attachs/cachyos-kernel;
+    #   in map (name: { inherit name; patch = patchPath + ("/" + name); })
+    #     (with builtins;attrNames (readDir patchPath));
   };
 
-  fileSystems."/" =
-    {
-      device = "none";
-      fsType = "tmpfs";
-      options = [ "defaults" "size=2G" "mode=755" ];
-    };
+  # fileSystems."/" =
+  #   {
+  #     device = "none";
+  #     fsType = "tmpfs";
+  #     options = [ "defaults" "size=2G" "mode=755" ];
+  #   };
 
 
-  fileSystems."/persist" =
-    {
-      device = "/dev/disk/by-uuid/3a718c71-9404-45ea-8435-2fbd31f46d53";
-      fsType = "btrfs";
-      options = [ "subvol=/persist" "compress-force=zstd" "noatime" "discard=async" "space_cache=v2" ];
-      neededForBoot = true;
-    };
+  # fileSystems."/persist" =
+  #   {
+  #     device = "/dev/disk/by-uuid/3a718c71-9404-45ea-8435-2fbd31f46d53";
+  #     fsType = "btrfs";
+  #     options = [ "subvol=/persist" "compress-force=zstd:1" "noatime" "discard=async" "space_cache=v2" ];
+  #     neededForBoot = true;
+  #   };
 
-  fileSystems."/nix" =
-    {
-      device = "/dev/disk/by-uuid/3a718c71-9404-45ea-8435-2fbd31f46d53";
-      fsType = "btrfs";
-      options = [ "subvol=/nix" "compress-force=zstd" "noatime" "discard=async" "space_cache=v2" ];
-    };
+  # fileSystems."/nix" =
+  #   {
+  #     device = "/dev/disk/by-uuid/3a718c71-9404-45ea-8435-2fbd31f46d53";
+  #     fsType = "btrfs";
+  #     options = [ "subvol=/nix" "compress-force=zstd:1" "noatime" "discard=async" "space_cache=v2" ];
+  #   };
 
-  fileSystems."/var" =
-    {
-      device = "/dev/disk/by-uuid/3a718c71-9404-45ea-8435-2fbd31f46d53";
-      fsType = "btrfs";
-      options = [ "subvol=/var" "compress-force=zstd" "noatime" "discard=async" "space_cache=v2" ];
-    };
+  # fileSystems."/nix/var" =
+  #   {
+  #     device = "/dev/disk/by-uuid/a3df5e05-7a19-4734-89d7-c9bcfd4c2d70";
+  #     fsType = "xfs";
+  #     options = [ "noatime" ];
+  #   };
+
+  # fileSystems."/var" =
+  #   {
+  #     device = "/dev/disk/by-uuid/3a718c71-9404-45ea-8435-2fbd31f46d53";
+  #     fsType = "btrfs";
+  #     options = [ "subvol=/var" "compress-force=zstd:1" "noatime" "discard=async" "space_cache=v2" ];
+  #   };
 
   # fileSystems."/tmp" = {
   #   device = "/dev/disk/by-uuid/3a718c71-9404-45ea-8435-2fbd31f46d53";
@@ -68,14 +178,14 @@
   #   options = [ "subvol=/tmp" "noatime" "discard=async" "space_cache=v2" ];
   # };
 
-  fileSystems."/efi" =
-    {
-      device = "/dev/disk/by-partuuid/fe3e996f-7962-1f4b-8bac-e2c8bc420501";
-      fsType = "vfat";
-    };
+  # fileSystems."/efi" =
+  #   {
+  #     device = "/dev/disk/by-partuuid/fe3e996f-7962-1f4b-8bac-e2c8bc420501";
+  #     fsType = "vfat";
+  #   };
 
-  swapDevices =
-    [{ device = "/dev/disk/by-uuid/1bbdbdd0-3527-4de2-95c4-3bc316c90968"; }];
+  # swapDevices =
+  #   [{ device = "/dev/disk/by-uuid/1bbdbdd0-3527-4de2-95c4-3bc316c90968"; }];
 
   # Enables DHCP on each ethernet and wireless interface. In case of scripted networking
   # (the default) this is the recommended approach. When using systemd-networkd it's

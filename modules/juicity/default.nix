@@ -8,41 +8,69 @@ let
   cfg = config.services.juicity;
 in
 {
+  disabledModules = [ "services/networking/juicity.nix" ];
   options.services.juicity = {
-    enable = mkOption {
-      type = types.bool;
-      default = false;
-    };
-    package = mkOption {
-      type = types.package;
-      default = pkgs.juicity;
-    };
-    configFile = mkOption {
-      type = types.str;
-      default = config.age.secrets.jc-do.path;
-    };
-    serve = mkOption {
-      type = types.bool;
-      default = false;
+    instances = mkOption {
+      type = types.listOf (types.submodule {
+        options = {
+          name = mkOption { type = types.str; };
+          package = mkPackageOption pkgs "juicity" { };
+          serve = mkOption {
+            type = types.submodule {
+              options = {
+                enable = mkEnableOption (lib.mdDoc "server");
+                port = mkOption { type = types.port; };
+              };
+            };
+            default = {
+              enable = false;
+              port = 0;
+            };
+          };
+          configFile = mkOption {
+            type = types.str;
+            default = "/none";
+          };
+        };
+      });
+      default = [ ];
     };
   };
 
   config =
-    mkIf
-      cfg.enable
-      (
-        let binSuffix = if cfg.serve then "server" else "client"; in {
-          systemd.services.juicity = {
-            wantedBy = [ "multi-user.target" ];
-            after = [ "network.target" ];
-            description = "juicity daemon";
-            serviceConfig = {
-              Type = "simple";
-              User = "proxy";
-              ExecStart = "${cfg.package}/bin/juicity-${binSuffix} run -c ${cfg.configFile}";
-              Restart = "on-failure";
+    mkIf (cfg.instances != [ ])
+      {
+
+        environment.systemPackages = lib.unique (lib.foldr
+          (s: acc: acc ++ [ s.package ]) [ ]
+          cfg.instances);
+
+
+        networking.firewall =
+          (lib.foldr
+            (s: acc: acc // {
+              allowedUDPPorts = mkIf s.serve.enable [ s.serve.port ];
+            })
+            { }
+            cfg.instances);
+
+        systemd.services = lib.foldr
+          (s: acc: acc // {
+            "juicity-${s.name}" = {
+              wantedBy = [ "multi-user.target" ];
+              after = [ "network.target" ];
+              description = "juicity daemon";
+              serviceConfig =
+                let binSuffix = if s.serve.enable then "server" else "client"; in {
+                  Type = "simple";
+                  User = "proxy";
+                  ExecStart = "${s.package}/bin/juicity-${binSuffix} run -c ${s.configFile}";
+                  AmbientCapabilities = [ "CAP_NET_ADMIN" "CAP_NET_BIND_SERVICE" ];
+                  Restart = "on-failure";
+                };
             };
-          };
-        }
-      );
+          })
+          { }
+          cfg.instances;
+      };
 }

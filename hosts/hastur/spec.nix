@@ -58,7 +58,7 @@
 
   # photoprism minio
   networking.firewall.allowedTCPPorts =
-    [ 9000 9001 ] ++ [ config.services.photoprism.port ];
+    [ 9000 9001 6622 ] ++ [ config.services.photoprism.port ];
 
   xdg.portal.wlr.enable = true;
 
@@ -73,6 +73,27 @@
 
         dae.enable = true;
         sing-box.enable = true;
+
+        cloudflared = {
+          enable = true;
+          environmentFile = config.age.secrets.cloudflare-garden-00.path;
+        };
+
+        hysteria.instances = [{
+          name = "hastur";
+          configFile = config.age.secrets.hyst-us-cli-has.path;
+        }];
+
+        shadowsocks.instances = [
+          {
+            name = "rha";
+            configFile = config.age.secrets.ss-az.path;
+            serve = {
+              enable = true;
+              port = 6059;
+            };
+          }
+        ];
 
         gvfs.enable = true;
         greetd = {
@@ -217,15 +238,19 @@
           enable = false;
           settings = {
             autosave = true;
-            cpu = true;
             opencl = false;
             cuda = false;
+            cpu = {
+              enable = true;
+              max-threads-hint = 95;
+            };
             pools = [
               {
                 url = "pool.supportxmr.com:443";
                 user = "43WvF2Vv5e2Dpte5w44gHzWbZeLZm9PNNEsxCMRRc66GNVPmNoAaxwPFPurR1hQtNzP4NgY1dtjEohh9LyWLKAvqJUErReS";
                 keepalive = true;
                 tls = true;
+                pass = "rha";
               }
             ];
           };

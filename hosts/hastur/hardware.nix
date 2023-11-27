@@ -5,6 +5,7 @@
 , lib
 , pkgs
 , modulesPath
+, inputs
 , ...
 }: {
   imports = [
@@ -18,8 +19,9 @@
       kernelModules = [ "tpm" "tpm_tis" "tpm_crb" "kvm-amd" ];
     };
     kernelModules = [ "ec_sys" "uhid" "kvm-amd" ];
-    extraModulePackages = with config.boot.kernelPackages; [ v4l2loopback ];
-    kernelPackages = pkgs.linuxPackages_latest;
+    # extraModulePackages = with config.boot.kernelPackages; [ v4l2loopback ];
+    kernelPackages = #pkgs.linuxPackages_latest;
+      inputs.nyx.packages.${pkgs.system}.linuxPackages_cachyos-server-lto-zen3;
     # binfmt.emulatedSystems = [
     #   "riscv64-linux"
     #   "aarch64-linux"
@@ -29,16 +31,11 @@
     kernelParams = [
       "amd_pstate=active"
       "amd_iommu=on"
-      # "iommu=pt"
       "random.trust_cpu=off"
       "zswap.enabled=1"
       "zswap.compressor=lz4"
       "zswap.zpool=zsmalloc"
-
-      # "amdgpu.noretry=0"
-      # "amdgpu.lockup_timeout=1000"
-      # "amdgpu.gpu_recovery=1"
-      # "amdgpu.audio=0"
+      "systemd.gpt_auto=0"
     ];
   };
 
@@ -52,28 +49,28 @@
   fileSystems."/persist" = {
     device = "/dev/disk/by-uuid/e86a6cfa-39cc-4dd9-b5d3-fee5e2613578";
     fsType = "btrfs";
-    options = [ "subvol=/persist" "compress-force=zstd" "noatime" "discard=async" "space_cache=v2" ];
+    options = [ "subvol=/persist" "compress-force=zstd:1" "noatime" "discard=async" "space_cache=v2" ];
     neededForBoot = true;
   };
 
   fileSystems."/nix" = {
     device = "/dev/disk/by-uuid/e86a6cfa-39cc-4dd9-b5d3-fee5e2613578";
     fsType = "btrfs";
-    options = [ "subvol=/nix" "compress-force=zstd" "noatime" "discard=async" "space_cache=v2" ];
+    options = [ "subvol=/nix" "compress-force=zstd:1" "noatime" "discard=async" "space_cache=v2" ];
   };
 
 
   fileSystems."/var" = {
     device = "/dev/disk/by-uuid/e86a6cfa-39cc-4dd9-b5d3-fee5e2613578";
     fsType = "btrfs";
-    options = [ "subvol=/var" "compress-force=zstd" "noatime" "discard=async" "space_cache=v2" ];
+    options = [ "subvol=/var" "compress-force=zstd:1" "noatime" "discard=async" "space_cache=v2" ];
   };
 
-  # fileSystems."/tmp" = {
-  #   device = "/dev/disk/by-uuid/e86a6cfa-39cc-4dd9-b5d3-fee5e2613578";
-  #   fsType = "btrfs";
-  #   options = [ "subvolid=28831" "compress-force=zstd" "noatime" "discard=async" "space_cache=v2" ];
-  # };
+  fileSystems."/tmp" = {
+    device = "/dev/disk/by-uuid/e86a6cfa-39cc-4dd9-b5d3-fee5e2613578";
+    fsType = "btrfs";
+    options = [ "subvolid=28831" "compress-force=zstd:1" "nosuid" "nodev" "noatime" "discard=async" "space_cache=v2" ];
+  };
 
   fileSystems."/efi" = {
     device = "/dev/disk/by-uuid/3418-1C5E";

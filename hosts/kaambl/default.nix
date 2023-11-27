@@ -1,5 +1,5 @@
 { self, inputs, ... }: {
-  flake = { ... }:
+  flake =
     let lib = inputs.nixpkgs.lib.extend self.overlays.lib; in
     {
       nixosConfigurations = {
@@ -13,7 +13,7 @@
                 allowBroken = false;
                 segger-jlink.acceptLicense = true;
                 allowUnsupportedSystem = true;
-                permittedInsecurePackages = lib.mkForce [ "electron-24.8.6" ];
+                permittedInsecurePackages = lib.mkForce [ "electron-25.9.0" ];
               };
               overlays = (import ../../overlays.nix inputs)
                 ++
@@ -39,7 +39,8 @@
               ../persist.nix
               ../secureboot.nix
               ../../services.nix
-              # ../../home
+              inputs.home-manager.nixosModules.default
+              ../../home
               ../../boot.nix
               ../../age.nix
               ../../packages.nix
@@ -49,7 +50,11 @@
             ]
             ++ lib.sharedModules
             ++
-            [ inputs.aagl.nixosModules.default ];
+            [
+              inputs.aagl.nixosModules.default
+              inputs.disko.nixosModules.default
+              inputs.factorio-manager.nixosModules.default
+            ];
           };
       };
     };

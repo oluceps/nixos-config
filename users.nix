@@ -26,6 +26,9 @@
           "kvm"
           "adbusers"
           "docker"
+          "wireshark"
+          "tss"
+          "podman"
         ];
         shell = pkgs.bash;
 

@@ -15,8 +15,48 @@
     inherit ((import ../../boot.nix { inherit lib; }).boot) kernel;
   };
 
+  environment.systemPackages = with pkgs;[
+    factorio-headless
+  ];
+
   services = {
     inherit ((import ../../services.nix { inherit pkgs lib config inputs; }).services) openssh fail2ban;
+
+
+    factorio-manager = {
+      enable = true;
+      factorioPackage = pkgs.factorio-headless-experimental;
+      botConfigPath = config.age.secrets.factorio-manager-bot.path;
+      serverSettingsFile = config.age.secrets.factorio-server.path;
+      serverAdminsFile = config.age.secrets.factorio-server.path;
+    };
+
+    factorio = {
+      enable = false;
+      package = pkgs.factorio-headless;
+      openFirewall = true;
+      serverSettingsFile = config.age.secrets.factorio-server.path;
+      serverAdminsFile = config.age.secrets.factorio-server.path;
+      mods =
+        [
+          ((pkgs.stdenvNoCC.mkDerivation (finalAttrs: {
+            name = "helmod";
+            version = "0.12.19";
+            src = pkgs.requireFile {
+              name = "helmod_${finalAttrs.version}.zip";
+              url = "https://mods.factorio.com/download/helmod";
+              sha256 = "b54319590f2c9eddf2f1652bb8837eb24be8f4cd55f1984cec7f503589002d84";
+            };
+            dontUnpack = true;
+            installPhase = ''
+              runHook preInstall
+              install -m 0644 $src -D $out/helmod_${finalAttrs.version}.zip
+              runHook postInstall
+            '';
+          })) // { deps = [ ]; })
+        ];
+    };
+
     rustypaste = {
       enable = true;
       settings = {
@@ -24,25 +64,56 @@
         landing_page = {
           content_type = "text/plain; charset=utf-8";
           text = ''
-            ┬─┐┬ ┬┌─┐┌┬┐┬ ┬┌─┐┌─┐┌─┐┌┬┐┌─┐
-            ├┬┘│ │└─┐ │ └┬┘├─┘├─┤└─┐ │ ├┤
-            ┴└─└─┘└─┘ ┴  ┴ ┴  ┴ ┴└─┘ ┴ └─┘
-            Submit files via HTTP POST here:
-                curl -F 'file=@example.txt' <server>
-            This will return the URL of the uploaded file nya.
-            The server administrator might remove any pastes that they do not personally
-            want to host.
-            If you are the server administrator and want to change this page, just go
-            into your config file and change it! If you change the expiry time, it is
-            recommended that you do.
-            By default, pastes expire every hour. The server admin may or may not have
-            changed this.
-            Check out the GitHub repository at https://github.com/orhun/rustypaste
-            Command line tool is available  at https://github.com/orhun/rustypaste-cli
+                        ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠄⡐⠠⠀⠄⡀⠀
+            ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+            ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣀⣀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+            ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣀⣠⣾⢿⡏⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+            ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣾⣛⣫⣿⡿⣧⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+            ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣤⣴⡶⠞⠛⠛⠛⠛⠛⠛⠓⠶⣶⣤⣀⣼⣿⣿⣿⣷⣽⣧⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+            ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣸⡟⠉⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢹⡇⢩⡿⢹⡿⠿⠋⠀⣀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+            ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣿⡇⠀⠀⢠⣤⣤⣶⣶⣶⣶⣶⣶⣶⣶⣾⣧⣼⢣⣿⣀⣴⡾⠟⠛⠿⢶⣦⣄⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+            ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠸⣿⣤⡀⠈⠀⠙⠻⢶⣤⣄⣀⣀⠀⢠⣶⣿⡟⣼⡟⠛⠛⠛⠷⣦⣄⡀⠀⠉⠛⠿⣦⣄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+            ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠙⠛⢷⣦⣤⣤⣤⣬⣭⣽⣟⣛⣛⣿⡟⣿⣾⣿⣀⠀⠀⠀⠈⠙⠻⢦⣄⡀⠀⠈⠙⢷⣄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+            ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣀⣤⡶⠞⠛⠋⠉⠉⠉⠀⠀⠉⠉⠉⠙⣿⣶⠿⠻⠿⢿⣿⣶⣶⣤⣤⣤⣤⣽⣿⣦⡀⠀⠀⠙⣷⡄⠀⠀⠀⠀⠀⠀⠀⠀⠀
+            ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣀⣴⡿⠋⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠉⠁⠀⠀⠀⠀⠀⠉⠉⠛⠷⣦⣌⡉⠁⠈⠻⠀⠀⠀⠈⣷⠀⠀⠀⠀⠀⠀⠀⠀⠀
+            ⠀⠀⢀⡀⠀⠀⠀⠀⠀⠀⠀⣀⣠⡾⠟⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠙⢿⣷⡶⠶⢶⡶⠶⠾⠏⠀⠀⠀⠀⠀⠀⠀⠀⠀
+            ⠀⠀⢻⡛⠛⠿⠿⠿⠿⠛⠛⠛⠉⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠻⣦⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+            ⠀⠀⠸⣷⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣀⣤⣶⣾⣶⣶⡶⠶⢶⣿⠃⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⢿⣤⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+            ⠀⠀⠀⠻⣷⣄⠀⠀⠀⠀⠀⠀⢀⣴⡿⣋⣭⣷⠶⠶⠶⢶⣤⣸⡇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣴⠟⠋⠀⠀⠀⠀⠀⠀⠀⡀⠀⠀⠀⠹⣷⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+            ⠀⠀⠀⠀⠈⢙⣿⠆⠀⠀⠀⢰⣿⢯⣾⣿⣧⣄⠀⠀⠀⠀⠈⠻⣧⡀⠀⠀⠀⠀⠀⠀⠀⣠⣾⢿⣿⠀⠀⠀⠀⠀⠀⠀⠀⢀⣿⡀⠀⠀⠀⠘⣷⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+            ⠀⠀⠀⠀⣰⡿⠃⠀⠀⠀⣴⡟⢁⣿⣿⣿⣿⣿⡇⠀⠀⠀⠀⠀⠸⣷⠀⠀⠀⠀⠀⢀⣴⠟⠁⠈⣿⣀⣀⠀⠀⠀⠀⠀⢀⣼⣿⣷⣀⠀⠀⠀⠘⣷⡄⠀⠀⠀⠀⠀⠀⠀⠀
+            ⠀⠀⠀⣴⡟⠀⠀⠀⢠⣾⠋⠀⢸⣿⣿⣿⣿⡿⠃⠀⠀⠀⠀⠀⠀⢹⡆⠀⠀⠀⣠⡿⠁⣠⣶⠿⠛⠛⠛⠛⠷⣦⡀⣠⣿⣿⠅⢙⣿⣦⣤⣀⡀⠹⣷⣄⠀⠀⠀⠀⠀⠀⠀
+            ⠀⠀⣸⡟⠀⠀⠀⢠⡿⠃⠀⠀⠘⣷⡈⠉⠉⠀⠀⠀⠀⠀⠀⠀⢠⣿⡆⠀⠀⢰⡿⠁⣼⣯⣥⣤⣄⠀⠀⠀⠀⠈⢿⣿⣿⣅⡀⠀⢀⣿⡿⠛⠁⠀⠀⠙⢷⣦⣀⠀⠀⠀⠀
+            ⠀⢠⡿⠀⠀⢀⣠⡾⠁⠀⠀⠀⠀⠘⢿⣦⡀⠀⠀⠀⠀⠀⣀⣴⠟⠉⣿⡄⠀⣿⠀⢸⣿⣿⣿⣿⣿⡧⠀⠀⠀⠀⠘⣿⠉⠻⣿⣿⣿⡟⠀⠀⠀⠀⠀⠀⠀⠊⢻⣷⠀⠀⠀
+            ⠀⣿⠇⠀⠀⠏⣀⡀⠀⠀⠀⠀⠀⠀⠀⠈⠛⠷⠶⠶⠶⠟⠋⠁⠀⠀⠈⠻⣶⣏⠀⢸⡟⢿⣿⡿⠟⠁⠀⠀⠀⠀⠀⣿⣆⠀⠈⢿⡟⠀⠀⠀⠀⠀⢠⣀⣠⣶⠟⠁⠀⠀⠀
+            ⢀⣿⠀⠀⠀⢰⡟⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢾⣆⠀⠀⠀⠀⠀⠀⠈⠛⠂⠘⢿⣄⠀⠀⠀⠀⠀⠀⠀⠀⣼⡟⣿⡆⠀⠘⠃⠀⠀⢠⡄⠀⠘⣿⡉⠀⠀⠀⠀⠀⠀
+            ⠸⣿⠀⠀⠀⢸⡇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣼⣿⣷⣶⣶⣾⣷⣄⣀⠀⣀⣤⠈⠛⢷⣤⣄⣀⣀⣠⣴⠾⢿⣄⣹⡇⠀⠀⠀⠀⠀⠸⣿⠀⠀⠙⢷⣤⡀⠀⠀⠀⠀
+            ⠀⣿⡀⠀⠀⠘⣷⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣠⣿⠟⠛⠋⠉⠉⠉⠉⠙⠛⠻⣿⠉⠀⠀⠀⠈⠉⠉⠉⠉⠁⠀⠈⠻⣿⡧⠀⠀⠀⠀⠀⠀⣿⠀⠀⠀⠀⠉⠛⠷⣶⣤⡀
+            ⠀⠹⣷⡀⢀⡀⠙⢷⣄⠀⠀⠀⠀⠀⠀⠀⠀⣰⡿⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣿⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢼⡟⠀⠀⠀⠀⠀⠀⠀⢹⠀⠀⠀⠀⠀⠀⠀⣠⡾⠁
+            ⠀⠀⠙⢷⣿⣷⡀⠀⠙⢿⣦⣄⡀⠀⠀⠀⠀⣿⣁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣿⠇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣀⡿⠇⠀⠀⠀⠀⠀⠀⢸⡀⠀⠀⠀⠀⠀⣾⠛⠀⠀
+            ⠀⠀⠀⠀⠙⠛⠿⣦⣄⣸⣧⣿⣿⣷⣤⣄⡀⠀⠈⠛⠦⢤⣀⡀⠀⠀⠀⠀⠀⣰⣿⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣼⡟⠀⠀⠀⠀⠀⠀⠀⠀⢸⠀⣀⠀⠀⠀⠀⣿⠀⠀⠀
+            ⠀⠀⠀⠀⠀⠀⠀⠈⠙⠛⠿⢿⣿⣯⣋⢻⣿⢷⣶⣤⣄⣀⠈⠉⠙⠒⠒⠒⠺⠟⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣾⢏⡄⠀⠀⠀⠀⠀⠀⠀⠀⣿⢀⣿⣦⡀⠀⢠⣿⠀⠀⠀
+            ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣠⡾⣿⠟⠛⠿⢷⣶⣿⣿⡟⣿⣿⣷⣶⣦⣤⣤⣤⣀⡀⠀⠀⠀⠀⠀⠀⠀⠀⢠⣾⣯⡿⠃⠀⠀⠀⠀⠀⠀⠀⢸⣿⣾⡟⣿⡇⢀⣼⠇⠀⠀⠀
+            ⠀⠀⠀⠀⠀⠀⠀⠀⢀⣾⠏⢰⡟⢺⣶⣾⠿⠿⢛⢽⣵⣿⢿⣿⠀⢩⣿⣿⣿⣿⣿⠿⢷⣶⣶⣶⣶⣶⣶⣿⠟⠋⠀⠀⠀⠀⠀⠀⠀⠀⢠⣿⣿⣿⣾⣿⣷⠿⠃⠀⠀⠀⠀
+            ⠀⠀⠀⠀⢀⣀⡀⣠⡿⠁⠀⣿⠁⠈⠻⢿⣿⣧⣾⠿⠟⣁⣾⡏⠀⢈⣿⡇⠉⠛⠿⣿⡿⠿⠿⠻⣿⣟⠉⠀⠀⠀⠀⠀⣀⡀⠀⠀⠀⣰⡿⠿⠛⣋⣀⣽⣵⣾⣿⣿⡇⠀⠀
+            ⠀⠀⠀⠀⣿⠙⢿⣿⣤⣤⣼⡏⠀⠀⠀⠀⠀⠀⢀⠀⣼⣿⣿⠀⢠⣿⣟⠻⣾⣛⣛⠻⢿⣷⣤⣄⣀⡙⠻⠷⠶⠶⠿⣻⡟⠁⠀⣠⣾⣿⣿⣿⣿⣿⣟⣋⣡⣠⣄⣿⡇⠀⠀
+
+              Submit files via HTTP POST here:
+                  curl -F 'file=@example.txt' <server>
+              This will return the URL of the uploaded file nya.
+              The server administrator might remove any pastes that they do not personally
+              want to host.
+              If you are the server administrator and want to change this page, just go
+              into your config file and change it! If you change the expiry time, it is
+              recommended that you do.
+              By default, pastes expire every hour. The server admin may or may not have
+              changed this.
+              Check out the GitHub repository at https://github.com/orhun/rustypaste
+              Command line tool is available  at https://github.com/orhun/rustypaste-cli
           '';
         };
         paste = {
-          default_expiry = "64h";
+          default_expiry = "128h";
           default_extension = "txt";
           delete_expired_files = { enabled = true; interval = "1h"; };
           duplicate_files = true;
@@ -107,16 +178,34 @@
   systemd.tmpfiles.rules = [
   ];
   services = {
-    tuic = {
-      enable = true;
-      serve = true;
-      configFile = config.age.secrets.tuic-san.path;
-    };
-    juicity = {
-      enable = true;
-      serve = true;
+    juicity.instances = [{
+      name = "only";
+      serve = {
+        enable = true;
+        port = 23180;
+      };
       configFile = config.age.secrets.juic-san.path;
-    };
+    }
+      # {
+      #   name = "onl1";
+      #   serve = {
+      #     enable = true;
+      #     port = 23181;
+      #   };
+      #   configFile = config.age.secrets.juic-san.path;
+      # }
+    ];
+
+    hysteria.instances = [
+      {
+        name = "only";
+        serve = {
+          enable = true;
+          port = 4432;
+        };
+        configFile = config.age.secrets.hyst-us.path;
+      }
+    ];
   };
   services.caddy = {
     enable = true;

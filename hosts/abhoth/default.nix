@@ -1,5 +1,5 @@
 { self, inputs, ... }: {
-  flake = { ... }:
+  flake =
     let lib = inputs.nixpkgs.lib.extend self.overlays.lib; in
     {
       nixosConfigurations = {
@@ -9,6 +9,7 @@
               system = "x86_64-linux";
               config = {
                 # contentAddressedByDefault = true;
+                allowUnfree = true;
               };
               overlays = (import ../../overlays.nix inputs)
                 ++
