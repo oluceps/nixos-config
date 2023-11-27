@@ -41,15 +41,9 @@ build-host hosts=nodes:
 deploy targets=nodes builder="localhost" mode="switch":
 	{{targets}} | {{filter}} | each { |target| nixos-rebuild --target-host $target --build-host {{builder}} {{mode}} --use-remote-sudo --flake $'.#($target)' }
 
-home-active builder="rha0":
-	if {{host}} == "kaambl" { just build-home-remotely {{me}} {{builder}} } else { just build-home {{me}} }
+home-active +args="":
+	nom build '.#homeConfigurations.{{me}}.activationPackage' {{args}}
 	./result/activate
-
-build-home-remotely user builder:
-	nom build '.#homeConfigurations.{{user}}.activationPackage' --builders 'ssh://{{builder}} x86_64-linux - 24' --max-jobs 0
-
-build-home user:
-	nom build '.#homeConfigurations.{{user}}.activationPackage'
 
 build-livecd:
 	nom build .#nixosConfigurations.nixos.config.system.build.isoImage
@@ -57,6 +51,14 @@ build-livecd:
 check +args="":
 	nix flake check {{args}}
 	{{nodes}} | each { |x| nix eval --raw $'.#nixosConfigurations.($x).config.system.build.toplevel' --show-trace }
+
+slow-action +args="":
+	agenix rekey
+	just c
+	just overwrite-s3
+	sudo nixos-rebuild switch
+	just h
+
 
 overwrite-s3:
 	mc mirror --overwrite --remove /home/{{me}}/Sec/ r2/sec/Sec
