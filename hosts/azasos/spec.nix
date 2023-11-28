@@ -26,6 +26,7 @@
     }
     {
       dae.enable = true;
+      sing-box.enable = true;
 
       ss = {
         enable = true;
