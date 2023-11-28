@@ -13,6 +13,7 @@ me   := `whoami`
 
 nodes := `nix eval --impure --expr "with builtins; attrNames (getFlake \"/etc/nixos\").nixosConfigurations"`
 
+# now `all` produces false while which in list.
 filter := '''
 		filter {|o| [ nixos ] | all { |i| $o != $i } }
 		'''
