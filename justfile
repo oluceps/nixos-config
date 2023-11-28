@@ -14,8 +14,20 @@ me   := `whoami`
 nodes := `nix eval --impure --expr "with builtins; attrNames (getFlake \"/etc/nixos\").nixosConfigurations"`
 
 filter := '''
-		where $it != "nixos"
+		filter {|o| [ nixos ] | all { |i| $o != $i } }
 		'''
+
+map := '''
+	{
+		hastur: rha,
+		kaambl: kmb,
+		nodens: dgs,
+		azasos: tcs,
+		abhoth: abh
+	}
+'''
+
+loc := "/etc/nixos"
 
 default:
   @just --choose
@@ -29,17 +41,17 @@ help:
 	h                         # build and activate home\n\
 	c                         # check and eval\n\
 	"
-push-secret target="rha" datas=nodes:
-	{{datas}} | {{filter}} | each { |i| (nix copy --substitute-on-destination --to 'ssh://{{target}}' (nix eval --raw $'.#nixosConfigurations.($i).config.age.rekey.derivation') -vvv) }
+push-secret target="hastur" datas=nodes:
+	{{datas}} | {{filter}} | each { |i| {{map}} | (nix copy --substitute-on-destination --to $'ssh://(($in).{{target}})' (nix eval --raw $'{{loc}}#nixosConfigurations.($i).config.age.rekey.derivation') -vvv) }
 
-fetch-secret source="kmb" datas=nodes:
-	{{datas}} | {{filter}} | each { |i| (ssh {{source}} -t $"nix eval --raw /etc/nixos#nixosConfigurations.($i).config.age.rekey.derivation") | (nix copy --substitute-on-destination --from 'ssh://{{source}}' $in -vvv )}
+fetch-secret source="kaambl" datas=nodes:
+	{{datas}} | {{filter}} | each { |i| {{map}} | (ssh {{source}} -t $"nix eval --raw {{loc}}#nixosConfigurations.($i).config.age.rekey.derivation") | (nix copy --substitute-on-destination --from 'ssh://{{source}}' $in -vvv )}
 
 build-host hosts=nodes:
-	{{hosts}} | {{filter}} | each { |i| nom build $'.#nixosConfigurations.($i).config.system.build.toplevel' }
+	{{hosts}} | {{filter}} | each { |i| nom build $'{{loc}}#nixosConfigurations.($i).config.system.build.toplevel' }
 
 deploy targets=nodes builder="localhost" mode="switch":
-	{{targets}} | {{filter}} | each { |target| nixos-rebuild --target-host $target --build-host {{builder}} {{mode}} --use-remote-sudo --flake $'.#($target)' }
+	{{targets}} | {{filter}} | each { |target| {{map}} | get $target | nixos-rebuild --target-host $in --build-host {{builder}} {{mode}} --use-remote-sudo --flake $'{{loc}}#($target)' }
 
 home-active +args="":
 	nom build '.#homeConfigurations.{{me}}.activationPackage' {{args}}
