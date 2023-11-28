@@ -307,13 +307,13 @@ let system = "x86_64-linux"; in [
       screen-recorder-toggle = prev.writeShellScriptBin
         "screen-recorder-toggle"
         ''
-          pid=`${prev.procps}/bin/pgrep wf-recorder`
+          pid=`${prev.procps}/bin/pgrep wl-screenrec`
           status=$?
           if [ $status != 0 ]
           then
-            ${prev.wf-recorder}/bin/wf-recorder -g "$(${prev.slurp}/bin/slurp)" -f $HOME/Videos/record/$(date +'recording_%Y-%m-%d-%H%M%S.mp4') --pixel-format yuv420p -t;
+            ${prev.wl-screenrec}/bin/wl-screenrec -g "$(${prev.slurp}/bin/slurp)" -f $HOME/Videos/record/$(date +'recording_%Y-%m-%d-%H%M%S.mp4');
           else
-            ${prev.procps}/bin/pkill --signal SIGINT wf-recorder
+            ${prev.procps}/bin/pkill --signal SIGINT wl-screenrec
           fi;
         '';
 
