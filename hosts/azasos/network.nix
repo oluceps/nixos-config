@@ -131,17 +131,17 @@
 
 
     networks = {
-      "10-wg0" = {
-        matchConfig.Name = "wg0";
-        address = [
-          "10.0.0.5/24"
-          "10.0.1.5/24"
-        ];
-        networkConfig = {
-          IPMasquerade = "ipv4";
-          IPForward = true;
-        };
-      };
+      # "10-wg0" = {
+      #   matchConfig.Name = "wg0";
+      #   address = [
+      #     "10.0.0.5/24"
+      #     "10.0.1.5/24"
+      #   ];
+      #   networkConfig = {
+      #     IPMasquerade = "ipv4";
+      #     IPForward = true;
+      #   };
+      # };
 
       "20-wired" = {
         matchConfig.Name = "ens5";
