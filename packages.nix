@@ -16,6 +16,7 @@ let
 
     cmd = [
       # (ragenix.override { plugins = [ age-plugin-yubikey ]; })
+      dmidecode
       linuxKernel.packages.linux_latest_libre.cpupower
       clean-home
       just
