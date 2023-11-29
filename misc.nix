@@ -123,34 +123,6 @@ lib.mkMerge [
 
     systemd.tmpfiles.rules = [
       "C /var/cache/tuigreet/lastuser - - - - ${pkgs.writeText "lastuser" "${user}"}"
-      "C /root/.ssh/known_hosts - - - - ${pkgs.writeText "known_hosts" ''
-    10.0.1.2 ${data.keys.hasturHostPubKey}
-    10.0.0.2 ${data.keys.hasturHostPubKey}
-    10.0.1.3 ${data.keys.kaamblHostPubKey}
-    10.0.1.1 ${data.keys.nodensHostPubKey}
-    10.0.0.5 ${data.keys.azasosHostPubKey}
-    ''}"
-      "C /root/.ssh/config - - - - ${
-    pkgs.writeText "ssh-config" (let genGenHost = u: name: addr: 
-    ''
-    Host ${name}
-      HostName ${addr}
-      User ${u}
-      Port 22
-      IdentityFile ${config.age.secrets.id.path}
-    ''; 
-    genHost = genGenHost "riro";
-    genHostE = genGenHost "elen";
-    in
-    (genHost "rha" "10.0.0.2")
-     + (genHost "rha0" "10.0.1.2")
-     # + (genHost "builder" "10.0.1.2")
-     # + "ProxyCommand nc -X 5 -x 127.0.0.1:1088 %h %p\n"
-     + (genHost "hastur" "10.0.1.2")
-     + (genHostE "kaambl" "10.0.1.3")
-     + (genHostE "azasos" "10.0.0.5")
-     + (genHostE "nodens" "10.0.1.1")
-    )}"
     ];
 
     environment.etc = {

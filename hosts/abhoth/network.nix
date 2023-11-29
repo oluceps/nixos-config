@@ -12,8 +12,8 @@
       checkReversePath = false;
       enable = true;
       trustedInterfaces = [ "virbr0" "wg0" "wg1" ];
-      allowedUDPPorts = [ 80 443 8080 5173 23180 4444 51820 ];
-      allowedTCPPorts = [ 80 443 8080 9900 2222 5173 8448 ];
+      allowedUDPPorts = [ 80 443 8080 5173 23180 4444 51820 3330 8880 ];
+      allowedTCPPorts = [ 80 443 8080 9900 2222 5173 8448 3330 8880 ];
     };
 
     useNetworkd = true;

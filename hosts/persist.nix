@@ -7,6 +7,7 @@
       "/etc/ssh"
       "/etc/NetworkManager"
       "/etc/secureboot"
+      "/root/.ssh"
     ];
     users.${user} = {
       files = [
