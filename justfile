@@ -52,7 +52,9 @@ build-host hosts=nodes:
 	{{hosts}} | {{filter}} | each { |i| nom build $'{{loc}}#nixosConfigurations.($i).config.system.build.toplevel' }
 
 deploy targets=nodes builder="localhost" mode="switch":
-	{{targets}} | {{filter}} | each { |target| {{map}} | get $target | nixos-rebuild --target-host $in --build-host {{builder}} {{mode}} --use-remote-sudo --flake $'{{loc}}#($target)' }
+	#!/usr/bin/env nu
+	def get_map [ k: string ] { {{map}} | get $k }
+	{{targets}} | {{filter}} | each { |target| nixos-rebuild --target-host (get_map $target) --build-host (get_map {{builder}}) {{mode}} --use-remote-sudo --flake $'{{loc}}#($target)' }
 
 home-active +args="":
 	nom build '.#homeConfigurations.{{me}}.activationPackage' {{args}}
