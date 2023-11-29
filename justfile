@@ -67,13 +67,12 @@ check +args="":
 	nix flake check {{args}}
 	{{nodes}} | each { |x| nix eval --raw $'.#nixosConfigurations.($x).config.system.build.toplevel' --show-trace }
 
-slow-action +args="":
-	agenix rekey
-	just c
-	just overwrite-s3
+slow-action +args="": rekey check overwrite-s3
 	sudo nixos-rebuild switch
 	just h
 
+rekey:
+	agenix rekey
 
 overwrite-s3:
 	mc mirror --overwrite --remove /home/{{me}}/Sec/ r2/sec/Sec
