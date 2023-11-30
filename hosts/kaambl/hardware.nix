@@ -29,7 +29,7 @@
       # (import inputs.nixpkgs-pin {
       #   system = "x86_64-linux";
       # })
-      pkgs.linuxPackages_latest;
+      pkgs.linuxPackages_6_6;
   };
 
   fileSystems."/" =
