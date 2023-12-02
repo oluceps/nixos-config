@@ -23,19 +23,19 @@ in
       type = types.listOf types.str;
       default = [ "Sun-Thu 06:00:00" "Fri,Sat 06:00:00" ];
     };
-
-    warnAt = mkOption {
-      type = types.listOf types.str;
-      default = [ ];
-    };
   };
 
   config =
     mkIf cfg.enable
-      {
+      (
+        let
+          genMode = x: with builtins;
+            listToAttrs (map
+              x [ "performance" "powersave" ]);
 
-        systemd.timers = with builtins; listToAttrs (map
-          (mode: {
+        in
+        {
+          systemd.timers = genMode (mode: {
             name = "sundial-${mode}";
             value = {
               description = "intime switch power mode";
@@ -44,11 +44,8 @@ in
                 OnCalendar = cfg."${mode}-calendars";
               };
             };
-          }) [ "performance" "powersave" ]);
-
-
-        systemd.services = with builtins; listToAttrs (map
-          (mode: {
+          });
+          systemd.services = genMode (mode: {
             name = "sundial-${mode}";
             value = {
               wantedBy = [ "timer.target" ];
@@ -60,6 +57,7 @@ in
                 Restart = "on-failure";
               };
             };
-          }) [ "performance" "powersave" ]);
-      };
+          });
+        }
+      );
 }
