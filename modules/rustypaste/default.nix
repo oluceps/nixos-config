@@ -19,7 +19,7 @@ in
       default = pkgs.rustypaste;
     };
     settings = mkOption {
-      type = settingsFormat.type;
+      inherit (settingsFormat) type;
       default = { };
     };
   };

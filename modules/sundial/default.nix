@@ -16,12 +16,12 @@ in
     };
 
     calendars = mkOption {
-      type = types.listOf (types.str);
+      type = types.listOf types.str;
       default = [ "Sun-Thu 23:18:00" "Fri,Sat 23:48:00" ];
     };
 
     warnAt = mkOption {
-      type = types.listOf (types.str);
+      type = types.listOf types.str;
       default = [ ];
     };
   };

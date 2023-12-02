@@ -23,7 +23,7 @@ in
     };
   };
   networking.firewall =
-    let port = config.services.matrix-conduit.settings.global.port; in {
+    let inherit (config.services.matrix-conduit.settings.global) port; in {
       allowedTCPPorts = [ port ];
       allowedUDPPorts = [ port ];
     };

@@ -144,7 +144,7 @@
         window.hideEdgeBorders = "smart";
         keybindings =
           let
-            modifier = config.wayland.windowManager.sway.config.modifier;
+            inherit (config.wayland.windowManager.sway.config) modifier;
             fuzzelArgs = "-I -l 7 -x 8 -y 7 -P 9 -b ede3e7d9 -r 3 -t 8b614db3 -C ede3e7d9 -f 'Maple Mono SC NF:style=Regular:size=15' -P 10 -B 7";
           in
           with pkgs; lib.mkOptionDefault

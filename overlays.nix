@@ -26,11 +26,10 @@ let system = "x86_64-linux"; in [
       #     {
       #       inherit system;
       #     }).lazygit;
-      monaspace =
-        (import inputs.nixpkgs-master { inherit system; }).monaspace;
+      inherit ((import inputs.nixpkgs-master { inherit system; })) monaspace;
 
       # inputs.hyprland.packages.${system}.default;
-      nixos-rebuild = (import inputs.nixpkgs-rebuild { inherit system; }).nixos-rebuild;
+      inherit ((import inputs.nixpkgs-rebuild { inherit system; })) nixos-rebuild;
       helix = inputs.helix.packages.${system}.default.override {
         includeGrammarIf = grammar:
           prev.lib.any
@@ -121,7 +120,7 @@ let system = "x86_64-linux"; in [
         });
 
       dae-unstable =
-        (with prev;
+        with prev;
         buildGoModule
           rec {
             pname = "dae";
@@ -171,7 +170,7 @@ let system = "x86_64-linux"; in [
               platforms = platforms.linux;
               mainProgram = "dae";
             };
-          });
+          };
 
 
 

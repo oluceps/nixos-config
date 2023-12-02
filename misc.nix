@@ -153,7 +153,7 @@ lib.mkMerge [
   #
   #
 
-  (lib.mkIf (!(lib.elem config.networking.hostName (data.withoutHeads))) {
+  (lib.mkIf (!(lib.elem config.networking.hostName data.withoutHeads)) {
     xdg = {
       mime = {
         enable = true;
@@ -270,7 +270,7 @@ lib.mkMerge [
         intel-one-mono
         monaspace
       ]
-      ++ (with (pkgs.glowsans); [ glowsansSC glowsansTC glowsansJ ])
+      ++ (with pkgs.glowsans; [ glowsansSC glowsansTC glowsansJ ])
       ++ (with nur-pkgs; [ san-francisco plangothic maoken-tangyuan hk-grotesk lxgw-neo-xihei ]);
       #"HarmonyOS Sans SC" "HarmonyOS Sans TC"
       fontconfig = {

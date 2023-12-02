@@ -55,6 +55,7 @@
       mari0
       anyrun
       # factorio
+      loupe
       gedit
       logseq
       jetbrains.pycharm-professional
@@ -467,7 +468,7 @@
       "image/png"
       "image/jpeg"
     ]
-      (_: "org.gnome.eog.desktop")
+      (_: "org.gnome.Loupe.desktop")
     ;
 
   };

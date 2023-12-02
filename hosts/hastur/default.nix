@@ -1,6 +1,6 @@
 { self, inputs, ... }: {
 
-  flake = { ... }:
+  flake =
     let lib = inputs.nixpkgs.lib.extend self.overlays.lib; in
     {
       nixosConfigurations = {

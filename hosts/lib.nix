@@ -18,7 +18,7 @@ let
     withoutHeads = [ "azasos" "nodens" "yidhra" "abhoth" ];
   };
 
-  genModules = map (let m = i: inputs.${i}.nixosModules; in (i: (m i).default or (m i).${i}));
+  genModules = map (let m = i: inputs.${i}.nixosModules; in i: (m i).default or (m i).${i});
 in
 {
   inherit data genModules;
@@ -30,5 +30,7 @@ in
   ++ (with inputs.dae.nixosModules;[ dae daed ]);
 
 
-  base = let lib = inputs.nixpkgs.lib; in { inherit inputs lib data; inherit (inputs) self; };
+  base =
+    let inherit (inputs.nixpkgs) lib;
+    in { inherit inputs lib data; inherit (inputs) self; };
 }

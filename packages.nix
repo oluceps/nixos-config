@@ -149,7 +149,7 @@ in
       )
     ]
     ++
-    lib.optionals (!(lib.elem config.networking.hostName (data.withoutHeads)))
+    lib.optionals (!(lib.elem config.networking.hostName data.withoutHeads))
       ((lib.flatten
         (lib.attrValues e))
       ++

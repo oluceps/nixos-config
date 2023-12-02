@@ -63,7 +63,7 @@
           lib = final: prev: (import ./hosts/lib.nix inputs);
         };
 
-        nixosModules = import ./modules { lib = inputs.nixpkgs.lib; };
+        nixosModules = import ./modules { inherit (inputs.nixpkgs) lib; };
       };
     };
 
