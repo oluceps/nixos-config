@@ -103,6 +103,7 @@ let
       # virt-manager
       virtiofsd
       runwin
+      guix-run
       runbkworm
       bkworm
       arch-run
