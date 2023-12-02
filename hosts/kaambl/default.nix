@@ -39,7 +39,8 @@
               ../persist.nix
               ../secureboot.nix
               ../../services.nix
-              # ../../home
+              inputs.home-manager.nixosModules.default
+              ../../home
               ../../boot.nix
               ../../age.nix
               ../../packages.nix
@@ -49,7 +50,9 @@
             ]
             ++ lib.sharedModules
             ++
-            [ inputs.aagl.nixosModules.default ];
+            [
+              inputs.aagl.nixosModules.default
+            ];
           };
       };
     };

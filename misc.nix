@@ -157,7 +157,7 @@ lib.mkMerge [
     xdg = {
       mime = {
         enable = true;
-        inherit ((import ./home/home.nix user { inherit config pkgs lib inputs; }).xdg.mimeApps) defaultApplications;
+        inherit ((import ./home/home.nix { inherit config pkgs lib inputs user; }).xdg.mimeApps) defaultApplications;
       };
     };
 

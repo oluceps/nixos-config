@@ -1,5 +1,6 @@
 { inputs, pkgs, data, lib, ... }:
 [
+  inputs.home-manager.nixosModules.default
   (inputs.nixpkgs
   + "/nixos/modules/installer/cd-dvd/installation-cd-graphical-gnome.nix")
 ] ++ [
@@ -115,6 +116,5 @@
     ] ++
     [ rage age-plugin-yubikey yubikey-manager yubikey-manager-qt gnupg cryptsetup ];
   }
-  inputs.home-manager.nixosModules.home-manager
 
 ]

@@ -49,7 +49,10 @@
               ../../age.nix
 
               ../../boot.nix
-              # ../../home
+
+              inputs.home-manager.nixosModules.default
+              ../../home
+
               ../../users.nix
 
               inputs.misskey.nixosModules.default
@@ -57,7 +60,11 @@
 
               ./vaultwarden.nix
 
-            ] ++ lib.sharedModules;
+            ] ++ lib.sharedModules
+            ++
+            [
+              inputs.aagl.nixosModules.default
+            ];
           };
       };
     };
