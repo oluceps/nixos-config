@@ -43,6 +43,7 @@
           pulse.enable = true;
           jack.enable = true;
         };
+        sundial.enable = true;
 
         greetd = {
           enable = true;

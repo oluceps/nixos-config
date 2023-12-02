@@ -27,8 +27,6 @@ let
       libsixel
       ouch
       nix-output-monitor
-      linuxKernel.packages.linux_latest_libre.cpupower
-
       kitty
 
       # common

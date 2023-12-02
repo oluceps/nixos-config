@@ -1,7 +1,6 @@
 { pkgs
 , config
 , lib
-, user
 , ...
 }:
 with lib;
@@ -15,9 +14,14 @@ in
       default = false;
     };
 
-    calendars = mkOption {
+    powersave-calendars = mkOption {
       type = types.listOf types.str;
       default = [ "Sun-Thu 23:18:00" "Fri,Sat 23:48:00" ];
+    };
+
+    performance-calendars = mkOption {
+      type = types.listOf types.str;
+      default = [ "Sun-Thu 06:00:00" "Fri,Sat 06:00:00" ];
     };
 
     warnAt = mkOption {
@@ -30,43 +34,32 @@ in
     mkIf cfg.enable
       {
 
-        systemd.timers.sundial = {
-          description = "intime shutdown";
-          wantedBy = [ "timers.target" ];
-          timerConfig = {
-            OnCalendar = cfg.calendars;
-          };
-        };
+        systemd.timers = with builtins; listToAttrs (map
+          (mode: {
+            name = "sundial-${mode}";
+            value = {
+              description = "intime switch power mode";
+              wantedBy = [ "timers.target" ];
+              timerConfig = {
+                OnCalendar = cfg."${mode}-calendars";
+              };
+            };
+          }) [ "performance" "powersave" ]);
 
-        systemd.timers.sundial-warnner = {
-          description = "notify before shutdown";
-          wantedBy = [ "timers.target" ];
-          timerConfig = {
-            OnCalendar = cfg.warnAt;
-          };
-        };
 
-        systemd.services.sundial-warnner = {
-          wantedBy = [ "timer.target" ];
-          description = "notify before auto shutdown";
-          serviceConfig = {
-            Type = "simple";
-            User = user;
-            Environment = "DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/1000/bus";
-            ExecStart = "${pkgs.libnotify}/bin/notify-send -u critical SHUTDOWN INCOMMING";
-            Restart = "on-failure";
-          };
-        };
-
-        systemd.services.sundial = {
-          wantedBy = [ "timer.target" ];
-          description = "shutdown";
-          serviceConfig = {
-            Type = "simple";
-            User = "root";
-            ExecStart = "poweroff";
-            Restart = "on-failure";
-          };
-        };
+        systemd.services = with builtins; listToAttrs (map
+          (mode: {
+            name = "sundial-${mode}";
+            value = {
+              wantedBy = [ "timer.target" ];
+              description = "turn power mode to ${mode}";
+              serviceConfig = {
+                Type = "simple";
+                User = "root";
+                ExecStart = "${lib.getExe pkgs.linuxKernel.packages.linux_latest_libre.cpupower} frequency-set -g ${mode}";
+                Restart = "on-failure";
+              };
+            };
+          }) [ "performance" "powersave" ]);
       };
 }
