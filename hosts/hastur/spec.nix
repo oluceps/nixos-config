@@ -217,9 +217,12 @@
           enable = true;
           settings = {
             autosave = true;
-            cpu = true;
             opencl = false;
             cuda = false;
+            cpu = {
+              enable = true;
+              max-threads-hint= 95;
+            };
             pools = [
               {
                 url = "pool.supportxmr.com:443";
