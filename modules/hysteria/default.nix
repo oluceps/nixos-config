@@ -21,6 +21,7 @@ in
           };
         };
       });
+      default = [ ];
     };
   };
   config =

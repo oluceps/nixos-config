@@ -32,7 +32,10 @@
         sing-box = {
           enable = true;
         };
-        ss.enable = true;
+        shadowsocks.instances = [{
+          name = "kaambl-local";
+          configFile = config.age.secrets.ss.path;
+        }];
         gvfs.enable = false;
         blueman.enable = true;
         btrbk.enable = true;

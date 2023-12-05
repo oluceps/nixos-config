@@ -8,6 +8,7 @@ let
   cfg = config.services.shadowsocks;
 in
 {
+  disabledModules = [ "services/networking/shadowsocks.nix" ];
   options.services.shadowsocks = {
     instances = mkOption {
       type = types.listOf (types.submodule {
@@ -21,6 +22,7 @@ in
           };
         };
       });
+      default = [ ];
     };
   };
 

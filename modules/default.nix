@@ -3,7 +3,7 @@
 let
   modules = lib.genAttrs
     [
-      "ss"
+      "shadowsocks"
       "rathole"
       "clash-m"
       "tuic"

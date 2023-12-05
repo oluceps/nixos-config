@@ -221,7 +221,7 @@
             cuda = false;
             cpu = {
               enable = true;
-              max-threads-hint= 95;
+              max-threads-hint = 95;
             };
             pools = [
               {

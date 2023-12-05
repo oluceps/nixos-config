@@ -52,6 +52,8 @@
   home.packages = with pkgs;
 
     [
+      wpsoffice
+      fractal
       mari0
       anyrun
       # factorio
@@ -153,7 +155,6 @@
       kate
       # cinnamon.nemo
       gnome.nautilus
-      gnome.eog
       gnome.dconf-editor
       gnome.gnome-boxes
       gnome.evince

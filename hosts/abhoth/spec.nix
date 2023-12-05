@@ -28,11 +28,13 @@
       dae.enable = true;
       sing-box.enable = true;
 
-      ss = {
-        enable = true;
-        configFile = config.age.secrets.ss-az.path;
-        serve = true;
-      };
+      shadowsocks.instances = [
+        {
+          name = "abh";
+          configFile = config.age.secrets.ss-az.path;
+          serve = true;
+        }
+      ];
     }
   ];
 
