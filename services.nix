@@ -26,6 +26,13 @@
     #     "/ip4/127.0.0.1/tcp/5001"
     #   ];
     # };
+    hysteria.instances = [
+      # {
+      #   name = "test";
+      #   serve = true;
+      # }
+    ];
+
     btrbk = {
       config = ''
         ssh_identity /persist/keys/ssh_host_ed25519_key
@@ -106,8 +113,8 @@
 
     gnome.gnome-keyring.enable = true;
 
-    hyst-az.enable = false;
-    hyst-do.enable = false;
+    # hyst-az.enable = false;
+    # hyst-do.enable = false;
 
     # ss-tls cnt to router
     tuic.enable = true;

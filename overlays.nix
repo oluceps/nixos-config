@@ -66,7 +66,6 @@ let system = "x86_64-linux"; in [
             ];
       };
 
-
       # sha256 = "0000000000000000000000000000000000000000000000000000";
 
       nur-pkgs = inputs.nur-pkgs.packages.${system};
