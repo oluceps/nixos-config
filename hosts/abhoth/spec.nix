@@ -38,7 +38,10 @@
         {
           name = "abh";
           configFile = config.age.secrets.ss-az.path;
-          serve = true;
+          serve = {
+            enable = true;
+            port = 6059;
+          };
         }
       ];
     }

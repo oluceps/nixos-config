@@ -14,7 +14,18 @@ in
         options = {
           name = mkOption { type = types.str; };
           package = mkPackageOption pkgs "hysteria" { };
-          serve = mkEnableOption (lib.mdDoc "server");
+          serve = mkOption {
+            type = types.submodule {
+              options = {
+                enable = mkEnableOption (lib.mdDoc "server");
+                port = mkOption { type = types.port; };
+              };
+            };
+            default = {
+              enable = false;
+              port = 0;
+            };
+          };
           configFile = mkOption {
             type = types.str;
             default = "/none";
@@ -26,7 +37,16 @@ in
   };
   config =
     mkIf (cfg.instances != [ ])
+
       {
+        networking.firewall =
+          (lib.foldr
+            (s: acc: acc // {
+              allowedUDPPorts = mkIf s.serve.enable [ s.serve.port ];
+            })
+            { }
+            cfg.instances);
+
         systemd.services = lib.foldr
           (s: acc: acc // {
             "hysteria-${s.name}" = {
@@ -34,9 +54,9 @@ in
               after = [ "network-online.target" "dae.service" ];
               description = "hysteria daemon";
               serviceConfig =
-                let binSuffix = if s.serve then "server" else "client"; in {
+                let binSuffix = if s.serve.enable then "server" else "client"; in {
                   User = "proxy";
-                  ExecStart = "${lib.getExe s.package} ${binSuffix} --disable-update-check -c ${s.configFile}";
+                  ExecStart = "${lib.getExe' s.package "hysteria"} ${binSuffix} --disable-update-check -c ${s.configFile}";
                   AmbientCapabilities = [ "CAP_NET_ADMIN" "CAP_NET_BIND_SERVICE" ];
                   Restart = "on-failure";
                 };
@@ -44,5 +64,6 @@ in
           })
           { }
           cfg.instances;
-      };
+      }
+  ;
 }
