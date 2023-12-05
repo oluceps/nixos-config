@@ -9,7 +9,7 @@
 }:
 lib.mkMerge [
   {
-    
+
     systemd.services.nix-daemon = {
       serviceConfig.LimitNOFILE = lib.mkForce 500000000;
       path = [ pkgs.netcat-openbsd ];

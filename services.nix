@@ -117,9 +117,6 @@
     # hyst-do.enable = false;
 
     # ss-tls cnt to router
-    tuic.enable = true;
-    juicity.enable = true;
-    naive.enable = false;
 
     clash =
       {

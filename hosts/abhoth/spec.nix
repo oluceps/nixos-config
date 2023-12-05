@@ -21,12 +21,18 @@
         openssh
         mosdns
         fail2ban
-        juicity
         dae;
     }
     {
       dae.enable = true;
       sing-box.enable = true;
+
+      juicity.instances = [
+        {
+          name = "only-cli";
+          configFile = config.age.secrets.jc-do.path;
+        }
+      ];
 
       shadowsocks.instances = [
         {
