@@ -49,7 +49,7 @@ in
         description = "sing-box Daemon";
         serviceConfig = {
           User = "proxy";
-          ExecStart = "${lib.getExe cfg.package} run -c ${configFile} -D $STATE_DIRECTORY";
+          ExecStart = "${lib.getExe' cfg.package "sing-box"} run -c ${configFile} -D $STATE_DIRECTORY";
           StateDirectory = "sing";
           CapabilityBoundingSet = [
             "CAP_NET_RAW"

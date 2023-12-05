@@ -13,18 +13,10 @@ let
       "sundial"
       "rustypaste"
       # "dae"
+      "hysteria"
       "mosdns"
     ]
-    (n: import (./. + ("/" + n))) //
-  # Hysteria configs
-  lib.genAttrs
-
-    [
-      "hyst-az"
-      "hyst-do"
-      # "hyst-am"
-    ]
-    (import ./hysteria)
+    (n: import (./. + ("/" + n)))
   // { sing-box = import ./sing-box { }; };
 
   default = { ... }: {

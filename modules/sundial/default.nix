@@ -16,12 +16,12 @@ in
 
     powersave-calendars = mkOption {
       type = types.listOf types.str;
-      default = [ "Sun-Thu 23:18:00" "Fri,Sat 23:48:00" ];
+      default = [ "Sun..Thu 23:18:00" "Fri,Sat 23:48:00" ];
     };
 
     performance-calendars = mkOption {
       type = types.listOf types.str;
-      default = [ "Sun-Thu 06:00:00" "Fri,Sat 06:00:00" ];
+      default = [ "Sun..Thu 06:00:00" "Fri,Sat 06:00:00" ];
     };
   };
 
@@ -53,7 +53,7 @@ in
               serviceConfig = {
                 Type = "simple";
                 User = "root";
-                ExecStart = "${lib.getExe pkgs.linuxKernel.packages.linux_latest_libre.cpupower} frequency-set -g ${mode}";
+                ExecStart = "${lib.getExe' pkgs.linuxKernel.packages.linux_latest_libre.cpupower "cpupower"} frequency-set -g ${mode}";
                 Restart = "on-failure";
               };
             };
