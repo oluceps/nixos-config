@@ -8,44 +8,44 @@ let
   cfg = config.services.tuic;
 in
 {
+  disabledModules = [ "services/networking/tuic.nix" ];
   options.services.tuic = {
-    enable = mkOption {
-      type = types.bool;
-      default = false;
-    };
-    package = mkOption {
-      type = types.package;
-      default = pkgs.nur-pkgs.tuic;
-    };
-    configFile = mkOption {
-      type = types.str;
-      default = config.age.secrets.tuic.path;
-    };
-    serve = mkOption {
-      type = types.bool;
-      default = false;
+    instances = mkOption {
+      type = types.listOf (types.submodule {
+        options = {
+          name = mkOption { type = types.str; };
+          package = mkPackageOption pkgs "tuic" { };
+          serve = mkEnableOption (lib.mdDoc "server");
+          configFile = mkOption {
+            type = types.str;
+            default = "/none";
+          };
+        };
+      });
+      default = [ ];
     };
   };
 
   config =
-    mkIf cfg.enable
-      (
-        let binSuffix = if cfg.serve then "server" else "client"; in {
-          systemd.services.tuic = {
-            wantedBy = [ "multi-user.target" ];
-            after = [ "network.target" ];
-            description = "tuic daemon";
-            serviceConfig = {
-              Type = "simple";
-              User = "proxy";
-              ExecStart = "${cfg.package}/bin/tuic-${binSuffix} -c ${cfg.configFile}";
-              AmbientCapabilities = [ "CAP_NET_ADMIN" "CAP_NET_BIND_SERVICE" ];
-              Restart = "on-failure";
+    mkIf (cfg.instances != [ ])
+      {
+        systemd.services = lib.foldr
+          (s: acc: acc // {
+            "tuic-${s.name}" = {
+              wantedBy = [ "multi-user.target" ];
+              after = [ "network.target" ];
+              description = "tuic daemon";
+              serviceConfig =
+                let binSuffix = if s.serve then "server" else "client"; in {
+                  Type = "simple";
+                  User = "proxy";
+                  ExecStart = "${s.package}/bin/tuic-${binSuffix} -c ${s.configFile}";
+                  AmbientCapabilities = [ "CAP_NET_ADMIN" "CAP_NET_BIND_SERVICE" ];
+                  Restart = "on-failure";
+                };
             };
-          };
-        }
-      );
+          })
+          { }
+          cfg.instances;
+      };
 }
-
-
-
