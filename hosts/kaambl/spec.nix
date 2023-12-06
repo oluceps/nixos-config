@@ -36,6 +36,10 @@
           name = "kaambl-local";
           configFile = config.age.secrets.ss.path;
         }];
+        hysteria.instances = [{
+          name = "kaambl-local";
+          configFile = config.age.secrets.hyst-us-cli.path;
+        }];
         gvfs.enable = false;
         blueman.enable = true;
         btrbk.enable = true;
