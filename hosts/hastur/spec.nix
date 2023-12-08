@@ -214,7 +214,7 @@
           ];
         };
         xmrig = {
-          enable = true;
+          enable = false;
           settings = {
             autosave = true;
             opencl = false;
