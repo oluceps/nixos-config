@@ -69,7 +69,6 @@ check +args="":
 
 slow-action +args="": rekey check overwrite-s3
 	sudo nixos-rebuild switch
-	just h
 
 rekey:
 	agenix rekey
