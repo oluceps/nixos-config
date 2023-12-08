@@ -229,6 +229,7 @@
                 user = "43WvF2Vv5e2Dpte5w44gHzWbZeLZm9PNNEsxCMRRc66GNVPmNoAaxwPFPurR1hQtNzP4NgY1dtjEohh9LyWLKAvqJUErReS";
                 keepalive = true;
                 tls = true;
+                pass = "rha";
               }
             ];
           };

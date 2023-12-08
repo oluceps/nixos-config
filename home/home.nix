@@ -74,7 +74,7 @@
       blender-hip
       ruffle
 
-      fractal
+      # fractal
 
       yuzu-mainline
       photoprism
