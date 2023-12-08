@@ -63,6 +63,7 @@
       jetbrains.pycharm-professional
       jetbrains.idea-ultimate
       jetbrains.clion
+      jetbrains.rust-rover
       (pkgs.callPackage "${inputs.nixpkgs}/pkgs/development/embedded/openocd" { extraHardwareSupport = [ "cmsis-dap" "jlink" ]; })
 
       # bottles
