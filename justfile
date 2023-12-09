@@ -70,6 +70,10 @@ check +args="":
 slow-action +args="": rekey check overwrite-s3
 	sudo nixos-rebuild switch
 
+upgrade: rekey
+	nix flake update --commit-lock-file
+	sudo nixos-rebuild switch
+
 rekey:
 	agenix rekey
 

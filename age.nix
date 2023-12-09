@@ -26,6 +26,7 @@
         "nyaw.cert" = { rekeyFile = ./sec/nyaw.cert.age; mode = "640"; owner = "proxy"; group = "caddy"; };
         hyst-us = { rekeyFile = ./sec/hyst-us.age; mode = "640"; owner = "proxy"; group = "users"; name = "hyst-us.yaml";};
         hyst-us-cli = { rekeyFile = ./sec/hyst-us-cli.age; mode = "640"; owner = "proxy"; group = "users"; name = "hyst-us-cli.yaml";};
+        hyst-us-cli-has = { rekeyFile = ./sec/hyst-us-cli-has.age; mode = "640"; owner = "proxy"; group = "users"; name = "hyst-us-cli-has.yaml";};
       };
   };
 
