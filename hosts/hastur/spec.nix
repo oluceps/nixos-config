@@ -58,7 +58,7 @@
 
   # photoprism minio
   networking.firewall.allowedTCPPorts =
-    [ 9000 9001 ] ++ [ config.services.photoprism.port ];
+    [ 9000 9001 6622 ] ++ [ config.services.photoprism.port ];
 
   xdg.portal.wlr.enable = true;
 
@@ -73,6 +73,11 @@
 
         dae.enable = true;
         sing-box.enable = true;
+
+        hysteria.instances = [{
+          name = "hastur";
+          configFile = config.age.secrets.hyst-us-cli-has.path;
+        }];
 
         gvfs.enable = true;
         greetd = {
