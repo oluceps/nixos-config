@@ -55,6 +55,13 @@
       options = [ "subvol=/nix" "compress-force=zstd" "noatime" "discard=async" "space_cache=v2" ];
     };
 
+  fileSystems."/nix/var" =
+    {
+      device = "/dev/disk/by-uuid/a3df5e05-7a19-4734-89d7-c9bcfd4c2d70";
+      fsType = "xfs";
+      options = [ "noatime" ];
+    };
+
   fileSystems."/var" =
     {
       device = "/dev/disk/by-uuid/3a718c71-9404-45ea-8435-2fbd31f46d53";
