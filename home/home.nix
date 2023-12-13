@@ -52,6 +52,7 @@
   home.packages = with pkgs;
 
     [
+      thiefmd
       wpsoffice
       fractal
       mari0
