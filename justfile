@@ -21,7 +21,7 @@ filter := '''
 map := '''
 	{
 		hastur: rha-hys,
-		kaambl: localhost,
+		kaambl: kmb,
 		nodens: dgs,
 		azasos: tcs,
 		abhoth: abh

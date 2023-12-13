@@ -63,7 +63,7 @@
       jetbrains.pycharm-professional
       jetbrains.idea-ultimate
       jetbrains.clion
-      jetbrains.rust-rover
+      # jetbrains.rust-rover
       (pkgs.callPackage "${inputs.nixpkgs}/pkgs/development/embedded/openocd" { extraHardwareSupport = [ "cmsis-dap" "jlink" ]; })
 
       # bottles
@@ -481,7 +481,7 @@
         pkgs.fluent-gtk-theme.override
           {
             themeVariants = [ "purple" ];
-            tweaks = [ "blur" ];
+            # tweaks = [ "blur" ];
           };
       name = "Fluent-purple";
     };

@@ -28,6 +28,7 @@
     cmake-language-server
     typst-lsp
     delve
+    python311Packages.python-lsp-server
   ]
   ++ (with pkgs.nodePackages_latest; [
     vscode-json-languageserver-bin

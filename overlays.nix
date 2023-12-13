@@ -95,6 +95,12 @@ let system = "x86_64-linux"; in [
       #       inherit system;
       #     }).sway-unwrapped;
 
+      fscan = (import
+        inputs.nixpkgs-master
+        {
+          system = "x86_64-linux";
+        }).fscan;
+
       fd_iuBrGE = (import
         inputs.nixpkgs-22
         {
