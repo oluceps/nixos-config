@@ -143,7 +143,7 @@
 
       # reader
       calibre
-      obsidian
+      # obsidian
       mdbook
       sioyek
       zathura

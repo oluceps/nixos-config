@@ -25,6 +25,12 @@
       rp = "rustplayer";
       y = "yazi";
       i = "kitty +kitten icat";
+      ".." = "cd ..";
+      "。。" = "cd ..";
+      "..." = "cd ../..";
+      "。。。" = "cd ../..";
+      "...." = "cd ../../..";
+      "。。。。" = "cd ../../..";
     } // lib.genAttrs [ "rha" "lsa" "tcs" "ubt" "rka" "dgs" "rt" ] (n: "ssh ${n} -t fish");
 
 
