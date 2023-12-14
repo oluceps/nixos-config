@@ -50,8 +50,8 @@
       ];
 
       factorio = {
-        enable = true;
-        openFirewall = true;
+        enable = false;
+        openFirewall = false;
       };
     }
   ];
