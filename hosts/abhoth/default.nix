@@ -9,6 +9,12 @@
               system = "x86_64-linux";
               config = {
                 # contentAddressedByDefault = true;
+                allowUnfreePredicate = pkg: builtins.elem (lib.getName pkg) [
+                  "factorio-headless-1.1.94"
+                ];
+
+
+                allowUnfree = true;
               };
               overlays = (import ../../overlays.nix inputs)
                 ++
