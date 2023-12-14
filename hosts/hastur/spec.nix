@@ -79,6 +79,17 @@
           configFile = config.age.secrets.hyst-us-cli-has.path;
         }];
 
+        shadowsocks.instances = [
+          {
+            name = "rha";
+            configFile = config.age.secrets.ss-az.path;
+            serve = {
+              enable = true;
+              port = 6059;
+            };
+          }
+        ];
+
         gvfs.enable = true;
         greetd = {
           enable = true;
