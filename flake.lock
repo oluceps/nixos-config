@@ -1904,6 +1904,22 @@
         "type": "github"
       }
     },
+    "nixpkgs-factorio": {
+      "locked": {
+        "lastModified": 1702535413,
+        "narHash": "sha256-SdRZpF01Nfk/gln+3l80tqpXEL4f3JeLA+1IL45o+FE=",
+        "owner": "NixOS",
+        "repo": "nixpkgs",
+        "rev": "7c8f8a991be2cf2e3ef3bf197e7c27e7480aa6d8",
+        "type": "github"
+      },
+      "original": {
+        "owner": "NixOS",
+        "repo": "nixpkgs",
+        "rev": "7c8f8a991be2cf2e3ef3bf197e7c27e7480aa6d8",
+        "type": "github"
+      }
+    },
     "nixpkgs-gui": {
       "locked": {
         "lastModified": 1680960640,
@@ -2900,6 +2916,7 @@
         "nixified-ai": "nixified-ai",
         "nixpkgs": "nixpkgs_16",
         "nixpkgs-22": "nixpkgs-22",
+        "nixpkgs-factorio": "nixpkgs-factorio",
         "nixpkgs-gui": "nixpkgs-gui",
         "nixpkgs-master": "nixpkgs-master",
         "nixpkgs-pin": "nixpkgs-pin",

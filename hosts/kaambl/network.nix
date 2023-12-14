@@ -4,7 +4,6 @@
 , ...
 }: {
   services.mosdns.enable = true;
-  services.tailscale.enable = true;
   networking = {
     resolvconf.useLocalResolver = true;
     firewall = {

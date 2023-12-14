@@ -101,6 +101,8 @@ let system = "x86_64-linux"; in [
           system = "x86_64-linux";
         }).fscan;
 
+      factorio-headless = (import inputs.nixpkgs-factorio { system = "x86_64-linux"; }).factorio-headless;
+
       fd_iuBrGE = (import
         inputs.nixpkgs-22
         {
