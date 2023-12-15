@@ -177,7 +177,7 @@
       appimage-run
       lutris
       tofi
-      zoom-us
+      # zoom-us
       # gnomecast
       tetrio-desktop
 
