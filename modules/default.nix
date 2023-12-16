@@ -13,6 +13,7 @@ let
       "sundial"
       "rustypaste"
       # "dae"
+      "factorio"
       "hysteria"
       "mosdns"
       "realm"

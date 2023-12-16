@@ -32,9 +32,9 @@
         sing-box = {
           enable = true;
         };
-        realm = {
-          enable = true;
-        };
+        # realm = {
+        #   enable = true;
+        # };
         shadowsocks.instances = [{
           name = "kaambl-local";
           configFile = config.age.secrets.ss.path;
@@ -43,6 +43,13 @@
           name = "kaambl-local";
           configFile = config.age.secrets.hyst-us-cli.path;
         }];
+
+        factorio = {
+          enable = true;
+          openFirewall = true;
+          configFile = "/home/elen/a.json"; #config.age.secrets.factorio.path;
+        };
+
         gvfs.enable = false;
         blueman.enable = true;
         btrbk.enable = true;
