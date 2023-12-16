@@ -2,7 +2,7 @@
 let
   p = with pkgs; {
 
-    crypt = [ minisign rage age-plugin-yubikey yubikey-manager yubikey-manager-qt cryptsetup ];
+    crypt = [ minisign rage age-plugin-yubikey cryptsetup ];
 
     net = [
       # anti-censor
@@ -57,6 +57,8 @@ let
       # languages related
       [ zig lldb haskell-language-server gopls cmake-language-server zls android-file-transfer nixpkgs-review shfmt ]
     ];
+
+    crypt = [ yubikey-manager yubikey-manager-qt ];
 
     dev = [
       friture

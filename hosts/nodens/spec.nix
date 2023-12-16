@@ -15,8 +15,18 @@
     inherit ((import ../../boot.nix { inherit lib; }).boot) kernel;
   };
 
+  environment.systemPackages = with pkgs;[
+    factorio-headless
+  ];
+
   services = {
     inherit ((import ../../services.nix { inherit pkgs lib config inputs; }).services) openssh fail2ban;
+
+    factorio = {
+      enable = true;
+      openFirewall = true;
+    };
+
     rustypaste = {
       enable = true;
       settings = {
