@@ -32,6 +32,9 @@
         sing-box = {
           enable = true;
         };
+        realm = {
+          enable = true;
+        };
         shadowsocks.instances = [{
           name = "kaambl-local";
           configFile = config.age.secrets.ss.path;

@@ -10,6 +10,7 @@
           inherit system;
           overlays = with inputs;[
             agenix-rekey.overlays.default
+            fenix.overlays.default
             self.overlays.default
           ];
         };

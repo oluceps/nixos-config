@@ -15,6 +15,7 @@ let
       # "dae"
       "hysteria"
       "mosdns"
+      "realm"
     ]
     (n: import (./. + ("/" + n)))
   // { sing-box = import ./sing-box { }; };
