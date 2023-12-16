@@ -46,20 +46,20 @@ let
   modDir = pkgs.factorio-utils.mkModDirDrv cfg.mods cfg.mods-dat;
 in
 {
-  disabledModules = [ "services/game/factorio.nix" ];
+  disabledModules = [ "services/games/factorio.nix" ];
 
   options = {
     services.factorio = {
       enable = mkEnableOption (lib.mdDoc name);
       serverSettingsFile = mkOption {
-        type = types.path;
+        type = types.str;
         default = "";
         description = lib.mdDoc ''
           The server settings file.
         '';
       };
       serverAdminsFile = mkOption {
-        type = types.path;
+        type = types.str;
         default = "";
         description = lib.mdDoc ''
           The server admins file.
@@ -285,6 +285,8 @@ in
         KillSignal = "SIGINT";
         DynamicUser = true;
         StateDirectory = cfg.stateDirName;
+        LoadCredential = lib.optional (cfg.serverSettingsFile != "") "server-settings.json:${cfg.serverSettingsFile}"
+          ++ lib.optional (cfg.serverAdminsFile != "") "server-admins.json:${cfg.serverAdminsFile}";
         UMask = "0007";
         ExecStart = toString [
           "${cfg.package}/bin/factorio"
@@ -292,10 +294,10 @@ in
           "--port=${toString cfg.port}"
           "--bind=${cfg.bind}"
           (optionalString (!cfg.loadLatestSave) "--start-server=${mkSavePath cfg.saveName}")
-          "--server-settings=${serverSettingsFile}"
+          "--server-settings=${if cfg.serverSettingsFile == "" then serverSettingsFile else "$\{CREDENTIALS_DIRECTORY}/server-settings.json" }"
           (optionalString cfg.loadLatestSave "--start-server-load-latest")
           (optionalString (cfg.mods != [ ]) "--mod-directory=${modDir}")
-          (optionalString (cfg.admins != [ ] || cfg.serverAdminsFile != "") "--server-adminlist=${serverAdminsFile}")
+          (optionalString (cfg.admins != [ ] || cfg.serverAdminsFile != "") "--server-adminlist=${if cfg.serverAdminsFile == "" then serverAdminsFile else "$\{CREDENTIALS_DIRECTORY}/server-admins.json"}")
         ];
 
         # Sandboxing
