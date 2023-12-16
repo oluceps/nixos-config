@@ -17,16 +17,16 @@
         genWg = i: gen i "systemd-network" "root" "600";
       in
       (genProxys [ "rat" "ss" "sing" "hyst-us" "tuic" "naive" "dae.sub" "jc-do" "tinc-k-ed" "tinc-k-rsa" "juic-san" "tuic-san" "caddy-lsa" "ss-az" ]) //
-      (genMaterial [ "minisign.key" "ssh-cfg" "gh-eu" "riro.u2f" "elen.u2f" "gh-token" "age" "pub" "id" "id_sk" "minio" "prism" "aws-s3-cred" "vault" ]) //
+      (genMaterial [ "minisign.key" "ssh-cfg" "gh-eu" "riro.u2f" "elen.u2f" "gh-token" "age" "pub" "id" "id_sk" "minio" "prism" "aws-s3-cred" "vault" "factorio" ]) //
       (genBoot [ "db.key" "db.pem" ]) //
       (genWg [ "wg" "wgk" "wgy" "wga" ]) //
       {
         dae = { rekeyFile = ./sec/dae.age; mode = "640"; owner = "proxy"; group = "users"; name = "d.dae"; };
         "nyaw.key" = { rekeyFile = ./sec/nyaw.key.age; mode = "640"; owner = "proxy"; group = "caddy"; };
         "nyaw.cert" = { rekeyFile = ./sec/nyaw.cert.age; mode = "640"; owner = "proxy"; group = "caddy"; };
-        hyst-us = { rekeyFile = ./sec/hyst-us.age; mode = "640"; owner = "proxy"; group = "users"; name = "hyst-us.yaml";};
-        hyst-us-cli = { rekeyFile = ./sec/hyst-us-cli.age; mode = "640"; owner = "proxy"; group = "users"; name = "hyst-us-cli.yaml";};
-        hyst-us-cli-has = { rekeyFile = ./sec/hyst-us-cli-has.age; mode = "640"; owner = "proxy"; group = "users"; name = "hyst-us-cli-has.yaml";};
+        hyst-us = { rekeyFile = ./sec/hyst-us.age; mode = "640"; owner = "proxy"; group = "users"; name = "hyst-us.yaml"; };
+        hyst-us-cli = { rekeyFile = ./sec/hyst-us-cli.age; mode = "640"; owner = "proxy"; group = "users"; name = "hyst-us-cli.yaml"; };
+        hyst-us-cli-has = { rekeyFile = ./sec/hyst-us-cli-has.age; mode = "640"; owner = "proxy"; group = "users"; name = "hyst-us-cli-has.yaml"; };
       };
   };
 
