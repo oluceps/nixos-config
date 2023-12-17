@@ -25,7 +25,8 @@
     factorio = {
       enable = true;
       openFirewall = true;
-      # configFile = "/home/elen/a.json"; # config.age.secrets.factorio.path;
+      serverSettingsFile = config.age.secrets.factorio-server.path;
+      serverAdminsFile = config.age.secrets.factorio-server.path;
     };
 
     rustypaste = {
