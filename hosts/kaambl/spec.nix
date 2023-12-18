@@ -49,7 +49,26 @@
           openFirewall = true;
           serverSettingsFile = config.age.secrets.factorio-server.path;
           serverAdminsFile = config.age.secrets.factorio-server.path;
+          mods =
+            [
+              ((pkgs.stdenvNoCC.mkDerivation (finalAttrs: {
+                name = "helmod";
+                version = "0.12.19";
+                src = pkgs.fetchurl {
+                  url = "https://dl-mod.factorio.com/files/89/c9e3dfbb99555ba24b085c3228a95fc7a9ad6c?secure=kuZjLfCXoc9awR6dgncRrQ,1702896059";
+                  hash = "sha256-tUMZWQ8snt3y8WUruIN+skvo9M1V8ZhM7H9QNYkALYQ=";
+                };
+                dontUnpack = true;
+                installPhase = ''
+                  runHook preInstall
+                  install -m 0644 $src -D $out/helmod_${finalAttrs.version}.zip
+                  runHook postInstall
+                '';
+              })) // { deps = [ ]; })
+            ];
         };
+
+
 
         gvfs.enable = false;
         blueman.enable = true;
