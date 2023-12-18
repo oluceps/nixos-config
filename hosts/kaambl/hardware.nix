@@ -44,7 +44,7 @@
     {
       device = "/dev/disk/by-uuid/3a718c71-9404-45ea-8435-2fbd31f46d53";
       fsType = "btrfs";
-      options = [ "subvol=/persist" "compress-force=zstd" "noatime" "discard=async" "space_cache=v2" ];
+      options = [ "subvol=/persist" "compress-force=zstd:1" "noatime" "discard=async" "space_cache=v2" ];
       neededForBoot = true;
     };
 
@@ -52,7 +52,7 @@
     {
       device = "/dev/disk/by-uuid/3a718c71-9404-45ea-8435-2fbd31f46d53";
       fsType = "btrfs";
-      options = [ "subvol=/nix" "compress-force=zstd" "noatime" "discard=async" "space_cache=v2" ];
+      options = [ "subvol=/nix" "compress-force=zstd:1" "noatime" "discard=async" "space_cache=v2" ];
     };
 
   fileSystems."/nix/var" =
@@ -66,7 +66,7 @@
     {
       device = "/dev/disk/by-uuid/3a718c71-9404-45ea-8435-2fbd31f46d53";
       fsType = "btrfs";
-      options = [ "subvol=/var" "compress-force=zstd" "noatime" "discard=async" "space_cache=v2" ];
+      options = [ "subvol=/var" "compress-force=zstd:1" "noatime" "discard=async" "space_cache=v2" ];
     };
 
   # fileSystems."/tmp" = {
