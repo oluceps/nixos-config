@@ -102,7 +102,7 @@
           '';
         };
         paste = {
-          default_expiry = "64h";
+          default_expiry = "128h";
           default_extension = "txt";
           delete_expired_files = { enabled = true; interval = "1h"; };
           duplicate_files = true;

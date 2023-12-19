@@ -17,6 +17,7 @@ let
     cmd = [
       # (ragenix.override { plugins = [ age-plugin-yubikey ]; })
       metasploit
+      distrobox
       dmidecode
       linuxKernel.packages.linux_latest_libre.cpupower
       clean-home
