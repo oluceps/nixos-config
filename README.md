@@ -6,7 +6,7 @@
 # Nix flake
 
 This repo contains declaritive configurations, with ~100% config Nixfied.
-> [!CAUTION]
+> [!IMPORTANT]
 > Authentication credentials placing in `hosts/lib.nix`. Make sure to replace'em if deploying with this repo.
 
 
