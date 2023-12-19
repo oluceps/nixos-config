@@ -6,8 +6,8 @@
 # Nix flake
 
 This repo contains declaritive configurations, with ~100% config Nixfied.
-
-> NOTICE: Public auth/encryption credentials in `hosts/lib.nix`. 
+> [!NOTICE]
+> Public auth/encryption credentials in `hosts/lib.nix`. 
 
 with:
 
