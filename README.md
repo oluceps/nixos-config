@@ -6,7 +6,7 @@
 # Nix flake
 
 This repo contains declaritive configurations, with ~100% config Nixfied.
-> [!NOTICE]
+> [!CAUTION]
 > Public auth/encryption credentials in `hosts/lib.nix`. 
 
 with:
