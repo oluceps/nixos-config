@@ -57,6 +57,7 @@
                   (n: _: !elem n [
                     "nobody"
                     "tcp-brutal"
+                    "shufflecake"
                   ])
                   (readDir ./pkgs))))
               (name: final.callPackage (./pkgs + "/${name}") { });
@@ -78,6 +79,10 @@
     nixpkgs-rebuild.url = "github:SuperSandro2000/nixpkgs?rev=449114c6240520433a650079c0b5440d9ecf6156";
     nixpkgs-wayland = {
       url = "github:nix-community/nixpkgs-wayland";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    disko = {
+      url = "github:nix-community/disko";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     conduit = {
