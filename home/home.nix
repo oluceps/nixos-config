@@ -242,7 +242,10 @@
 
   programs = {
     yazi.enable = true;
-    zoxide.enable = true;
+    zoxide = {
+      enable = true;
+      enableNushellIntegration = false;
+    };
     vscode = {
       enable = true;
       package = pkgs.vscode.fhsWithPackages (ps: with ps; [ rustup zlib ]);
