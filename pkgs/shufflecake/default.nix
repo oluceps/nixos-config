@@ -1,7 +1,7 @@
-{ lib, kernel, stdenv, fetchFromGitea, libgcrypt, lvm2 }:
+{ kernel, stdenv, fetchFromGitea, libgcrypt, lvm2 }:
 let
-  genShufflecake = name: installPhase: {
-    ${name} = stdenv.mkDerivation (finalAttrs: {
+  genShufflecake = name: installPhase:
+    stdenv.mkDerivation (finalAttrs: {
       inherit name;
       version = "0.4.3";
       src = fetchFromGitea {
@@ -20,11 +20,10 @@ let
       ];
       inherit installPhase;
     });
-  };
 
 in
-builtins.mapAttrs (name: value: genShufflecake name value) {
+(builtins.mapAttrs (name: value: genShufflecake name value) {
   shufflecake-c = "install -D dm-sflc.ko $out/lib/modules/${kernel.modDirVersion}/misc/dm-sflc.ko";
   shufflecake = "install -D shufflecake $out/bin/shufflecake";
-}
+})
 
