@@ -12,7 +12,7 @@
     disk = {
       nvme = {
         type = "disk";
-        device = "nvme-KBG50ZNV512G_KIOXIA_436C75TAECJX";
+        device = "/dev/disk/by-id/nvme-KBG50ZNV512G_KIOXIA_436C75TAECJX";
         content = {
           type = "gpt";
           partitions = {
@@ -63,19 +63,13 @@
             };
 
             encryptedSwap = {
-              size = "10M";
+              size = "100%";
               content = {
                 type = "swap";
                 randomEncryption = true;
               };
             };
-            plainSwap = {
-              size = "100%";
-              content = {
-                type = "swap";
-                resumeDevice = true; # resume from hiberation from this device
-              };
-            };
+
           };
         };
       };
@@ -107,7 +101,7 @@
     extraModulePackages = with config.boot.kernelPackages; [
       v4l2loopback
       (callPackage "${inputs.self}/pkgs/tcp-brutal" { })
-      (callPackage "${inputs.self}/pkgs/shufflecake" { }).shufflecake-c
+      ((callPackage "${inputs.self}/pkgs/shufflecake" { }).shufflecake-c)
     ];
     kernelPackages =
       # (import inputs.nixpkgs-pin {
