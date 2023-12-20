@@ -28,7 +28,6 @@
             };
             cryptroot = {
               label = "CRYPTROOT";
-              # size = "100%";
               end = "-16G";
               content = {
                 type = "luks";
@@ -44,7 +43,7 @@
                 };
                 content = {
                   type = "btrfs";
-                  extraArgs = [ "-f" ];
+                  extraArgs = [ "-f" "--csum xxhash64" ];
                   subvolumes = {
                     "/persist" = {
                       mountpoint = "/persist";
@@ -98,7 +97,7 @@
       availableKernelModules = [ "nvme" "xhci_pci" "ahci" "usb_storage" "usbhid" "sd_mod" "lz4" "zsmalloc" ];
       kernelModules = [ "tpm" "tpm_tis" "tpm_crb" "kvm-amd" "amdgpu" ];
     };
-    kernelModules = [ "ec_sys" "uhid" "kvm-amd" "brutal" ];
+    kernelModules = [ "ec_sys" "uhid" "kvm-amd" "brutal" "dm-sflc" ];
     kernelParams = [
       "amd_pstate=active"
       "zswap.enabled=1"
