@@ -30,7 +30,7 @@
       {
         dae.enable = true;
         sing-box = {
-          enable = true;
+          enable = false;
         };
         # realm = {
         #   enable = true;
@@ -84,15 +84,16 @@
 
         greetd = {
           enable = true;
-          settings = {
-            default_session = {
+          settings = rec {
+            initial_session = {
               command =
                 "${pkgs.greetd.tuigreet}/bin/tuigreet --time --remember --cmd ${pkgs.writeShellScript "sway" ''
           export $(/run/current-system/systemd/lib/systemd/user-environment-generators/30-systemd-environment-d-generator)
           exec sway
         ''}";
-              user = "greeter";
+              inherit user;
             };
+            default_session = initial_session;
           };
         };
 

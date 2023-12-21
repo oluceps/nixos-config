@@ -1,4 +1,4 @@
-{ kernel, stdenv, fetchFromGitea, libgcrypt, lvm2 }:
+{ lib, kernel, stdenv, fetchFromGitea, libgcrypt, lvm2 }:
 let
   genShufflecake = name: installPhase:
     stdenv.mkDerivation (finalAttrs: {
@@ -19,6 +19,13 @@ let
         "INSTALL_MOD_PATH=$(out)"
       ];
       inherit installPhase;
+
+      meta = with lib; {
+        description = "A plausible deniability (hidden storage) layer for Linux";
+        homepage = "https://shufflecake.net";
+        license = licenses.gpl2Only;
+        maintainers = with maintainers; [ oluceps ];
+      };
     });
 
 in
@@ -26,4 +33,3 @@ in
   shufflecake-c = "install -D dm-sflc.ko $out/lib/modules/${kernel.modDirVersion}/misc/dm-sflc.ko";
   shufflecake = "install -D shufflecake $out/bin/shufflecake";
 })
-
