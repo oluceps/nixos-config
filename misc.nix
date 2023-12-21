@@ -235,6 +235,7 @@ lib.mkMerge [
         shellInit = ''
           fish_vi_key_bindings
           set -g direnv_fish_mode eval_on_arrow
+          set -U fish_greeting
           set fish_color_normal normal
           set fish_color_command blue
           set fish_color_quote yellow
@@ -289,10 +290,10 @@ lib.mkMerge [
         };
       };
       git.enable = true;
-      bash = {
-        interactiveShellInit = ''
-        '';
-      };
+      # bash = {
+      #   interactiveShellInit = ''
+      #   '';
+      # };
       sway = { enable = true; };
       kdeconnect.enable = true;
       adb.enable = true;

@@ -41,7 +41,7 @@ let
 
     info = [ freshfetch htop bottom onefetch hardinfo qjournalctl hyprpicker imgcat nix-index ccze ];
 
-    python = [ (python311.withPackages (ps: with ps; [ pandas requests absl-py ])) ];
+    python = [ (python311.withPackages (ps: with ps; [ pandas requests absl-py tldextract ])) ];
 
   };
 
