@@ -2,7 +2,7 @@
 let
   p = with pkgs; {
 
-    crypt = [ minisign rage age-plugin-yubikey cryptsetup ];
+    crypt = [ minisign rage age-plugin-yubikey cryptsetup tpm2-tss tpm2-tools ];
 
     net = [
       # anti-censor
@@ -16,7 +16,7 @@ let
 
     cmd = [
       # (ragenix.override { plugins = [ age-plugin-yubikey ]; })
-      (pkgs.linuxPackages_latest.callPackage ./pkgs/shufflecake { }).shufflecake
+      (pkgs.linuxPackages_latest.callPackage ./pkgs/shufflecake { }).userland
       metasploit
       distrobox
       dmidecode

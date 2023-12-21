@@ -34,6 +34,7 @@
                 "glowsans" # multi pkgs
                 "opulr-a-run" # ?
                 "tcp-brutal" # kernelModule
+                "shufflecake"
               ])
               (readDir ./pkgs))))
           (n: pkgs.${n});
