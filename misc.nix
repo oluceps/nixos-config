@@ -352,7 +352,7 @@ lib.mkMerge [
         monaspace
       ]
       ++ (with pkgs.glowsans; [ glowsansSC glowsansTC glowsansJ ])
-      ++ (with nur-pkgs; [ san-francisco plangothic maoken-tangyuan hk-grotesk lxgw-neo-xihei ]);
+      ++ (with nur-pkgs; [ san-francisco plangothic maoken-tangyuan lxgw-neo-xihei ]);
       #"HarmonyOS Sans SC" "HarmonyOS Sans TC"
       fontconfig = {
         subpixel.rgba = "none";
