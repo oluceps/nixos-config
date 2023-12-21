@@ -475,6 +475,12 @@
       "image/jpeg"
     ]
       (_: "org.gnome.Loupe.desktop")
+    //
+    lib.genAttrs [
+      "inode/directory"
+      "inode/mount-point"
+    ]
+      (_: "org.gnome.Nautilus")
     ;
 
   };

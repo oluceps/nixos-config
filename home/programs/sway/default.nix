@@ -51,6 +51,8 @@
             ${modifier}+button4 workspace prev
             ${modifier}+button5 workspace next
         }
+
+        for_window [app_id="org.gnome.Nautilus"] floating enable
       '';
       config = {
 
@@ -170,7 +172,7 @@
               "XF86AudioLowerVolume" = "exec pamixer -d 5";
               "XF86MonBrightnessUp" = "exec brightnessctl set +3%";
               "XF86MonBrightnessdown" = "exec brightnessctl set 3%-";
-              "${modifier}+Return" = "exec ${lib.getExe systemd-run-app} ${lib.getExe kitty}";
+              "${modifier}+Return" = "exec ${lib.getExe systemd-run-app} ${lib.getExe alacritty}";
               "${modifier}+d" = "exec ${lib.getExe fuzzel} ${fuzzelArgs}";
               "${modifier}+space" = "floating toggle";
               "${modifier}+Shift+space" = null;

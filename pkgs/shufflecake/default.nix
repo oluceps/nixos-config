@@ -16,7 +16,6 @@ let
       buildInputs = [ libgcrypt lvm2 ];
       makeFlags = kernel.makeFlags ++ [
         "KERNEL_DIR=${kernel.dev}/lib/modules/${kernel.modDirVersion}/build"
-        "INSTALL_MOD_PATH=$(out)"
       ];
       inherit installPhase;
 
@@ -25,11 +24,12 @@ let
         homepage = "https://shufflecake.net";
         license = licenses.gpl2Only;
         maintainers = with maintainers; [ oluceps ];
+        platforms = platforms.linux;
       };
     });
 
 in
 (builtins.mapAttrs (name: value: genShufflecake name value) {
-  shufflecake-c = "install -D dm-sflc.ko $out/lib/modules/${kernel.modDirVersion}/misc/dm-sflc.ko";
-  shufflecake = "install -D shufflecake $out/bin/shufflecake";
+  kernelModule = "install -D dm-sflc.ko $out/lib/modules/${kernel.modDirVersion}/drivers/md/dm-sflc.ko";
+  userland = "install -D shufflecake $out/bin/shufflecake";
 })
