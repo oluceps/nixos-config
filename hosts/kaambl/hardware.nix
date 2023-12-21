@@ -54,7 +54,7 @@
                       mountOptions = [ "compress-force=lzo" "noatime" "discard=async" "space_cache=v2" ];
                     };
                     "/var" = {
-                      mountpoint = "/nix";
+                      mountpoint = "/var";
                       mountOptions = [ "compress-force=lzo" "noatime" "discard=async" "space_cache=v2" ];
                     };
                   };
@@ -101,7 +101,7 @@
     extraModulePackages = with config.boot.kernelPackages; [
       v4l2loopback
       (callPackage "${inputs.self}/pkgs/tcp-brutal" { })
-      ((callPackage "${inputs.self}/pkgs/shufflecake" { }).shufflecake-c)
+      (callPackage "${inputs.self}/pkgs/shufflecake" { }).shufflecake-c
     ];
     kernelPackages =
       # (import inputs.nixpkgs-pin {

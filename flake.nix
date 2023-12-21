@@ -24,7 +24,7 @@
         };
 
         devShells.default = with pkgs; mkShell {
-          packages = [ agenix-rekey home-manager just ];
+          packages = [ agenix-rekey home-manager just nix];
         };
 
         packages = with pkgs.lib; genAttrs
