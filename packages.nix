@@ -115,7 +115,7 @@ let
       bkworm
       arch-run
       # ubt-rv-run
-      opulr-a-run
+      #opulr-a-run
       lunar-run
       virt-viewer
     ];

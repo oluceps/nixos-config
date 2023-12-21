@@ -7,7 +7,7 @@ let
       src = fetchFromGitea {
         domain = "codeberg.org";
         owner = "shufflecake";
-        repo = finalAttrs.name;
+        repo = "shufflecake-c";
         rev = "v${finalAttrs.version}";
         hash = "sha256-aBLa0puoOrrsJAFSFANtQr3oH/HXAZ809rQeBC4nHxs=";
       };
