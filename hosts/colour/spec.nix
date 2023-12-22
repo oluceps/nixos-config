@@ -16,6 +16,30 @@
 
   services = {
     inherit ((import ../../services.nix { inherit pkgs lib config inputs; }).services) openssh fail2ban;
+    factorio = {
+      enable = true;
+      openFirewall = true;
+      serverSettingsFile = config.age.secrets.factorio-server.path;
+      serverAdminsFile = config.age.secrets.factorio-server.path;
+      mods =
+        [
+          ((pkgs.stdenvNoCC.mkDerivation (finalAttrs: {
+            name = "helmod";
+            version = "0.12.19";
+            src = pkgs.requireFile {
+              name = "helmod_${finalAttrs.version}.zip";
+              url = "https://mods.factorio.com/download/helmod";
+              sha256 = "b54319590f2c9eddf2f1652bb8837eb24be8f4cd55f1984cec7f503589002d84";
+            };
+            dontUnpack = true;
+            installPhase = ''
+              runHook preInstall
+              install -m 0644 $src -D $out/helmod_${finalAttrs.version}.zip
+              runHook postInstall
+            '';
+          })) // { deps = [ ]; })
+        ];
+    };
     rustypaste = {
       enable = false;
       settings = {

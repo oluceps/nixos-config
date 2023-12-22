@@ -24,7 +24,8 @@ map := '''
 		kaambl: kmb,
 		nodens: dgs,
 		azasos: tcs,
-		abhoth: abh
+		abhoth: abh,
+		colour: col
 	}
 '''
 
