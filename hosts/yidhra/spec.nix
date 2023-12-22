@@ -109,7 +109,10 @@
   services = {
     juicity.instances = [{
       name = "only";
-      serve = true;
+      serve = {
+        enable = true;
+        port = 23180;
+      };
       configFile = config.age.secrets.juic-san.path;
     }];
   };
