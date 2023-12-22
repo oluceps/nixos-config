@@ -32,9 +32,8 @@
         sing-box = {
           enable = false;
         };
-        # realm = {
-        #   enable = true;
-        # };
+
+
         shadowsocks.instances = [{
           name = "kaambl-local";
           configFile = config.age.secrets.ss.path;
@@ -43,6 +42,10 @@
           name = "kaambl-local";
           configFile = config.age.secrets.hyst-us-cli.path;
         }];
+        # juicity.instances = [{
+        #   name = "kaambl-local";
+        #   configFile = config.age.secrets.hyst-us-cli.path;
+        # }];
 
         factorio = {
           enable = false;

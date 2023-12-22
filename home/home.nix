@@ -52,6 +52,7 @@
   home.packages = with pkgs;
 
     [
+      celluloid
       thiefmd
       wpsoffice
       fractal

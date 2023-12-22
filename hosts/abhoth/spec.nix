@@ -38,6 +38,14 @@
         }
       ];
 
+      realm = {
+        enable = true;
+        settings = {
+          endpoints = [
+            { local = "0.0.0.0:5000"; remote = "nyaw.xyz:4432"; }
+          ];
+        };
+      };
       shadowsocks.instances = [
         {
           name = "abh";

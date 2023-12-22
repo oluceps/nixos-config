@@ -40,6 +40,12 @@ in
   config =
     mkIf (cfg.instances != [ ])
       {
+
+        environment.systemPackages = lib.unique (lib.foldr
+          (s: acc: acc ++ [ s.package ]) [ ]
+          cfg.instances);
+
+
         networking.firewall =
           (lib.foldr
             (s: acc: acc // {
