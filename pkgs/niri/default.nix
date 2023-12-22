@@ -1,12 +1,15 @@
 { lib
 , rustPlatform
+, libglvnd
 , fetchFromGitHub
+, autoPatchelfHook
 , pkg-config
 , libxkbcommon
 , pipewire
 , seatd
 , udev
 , wayland
+, stdenv
 , libinput
 , mesa
 }:
@@ -18,38 +21,38 @@ rustPlatform.buildRustPackage {
   src = fetchFromGitHub {
     owner = "YaLTeR";
     repo = "niri";
-    rev = "d854c2d699b15c68c4715dc6be803065c01f2fe6";
-    hash = "sha256-QYH3sG1TKJbKBeZdI9FtmJuY5DFmMdOJviYPrPK8FHo=";
+    rev = "86c4c1368e3ca2e01d7179e5fb86f8c4bdbe2cc4";
+    hash = "sha256-sUKWPOQUgIyTGLQd02aFn8Ab6gOKfdoilS81S1mSwhY=";
   };
 
   cargoLock = {
     lockFile = ./Cargo.lock;
     outputHashes = {
-      "smithay-0.3.0" = "sha256-cRBJ8r2fQ8d97DADOxfmUF5JYcOHQ05u8tMhVXmbrbE=";
+      "smithay-0.3.0" = "sha256-Eqs4wqogdld6MHOXQ2NRFCgJH4RHf4mYWFdjRVUVxsk=";
     };
   };
-
   nativeBuildInputs = [
     pkg-config
+    autoPatchelfHook
     rustPlatform.bindgenHook
   ];
 
   buildInputs = [
-    libxkbcommon
-    pipewire
-    seatd
-    udev
     wayland
+    udev
+    seatd # For libseat
+    libxkbcommon
     libinput
-    mesa # libgbm
+    mesa # For libgbm
+    stdenv.cc.cc.lib
+    pipewire
   ];
 
-  meta = with lib; {
-    description = "A scrollable-tiling Wayland compositor";
-    homepage = "https://github.com/YaLTeR/niri";
-    license = licenses.gpl3Only;
-    maintainers = with maintainers; [ iogamaster ];
-    mainProgram = "niri";
-    inherit (wayland.meta) platforms;
-  };
+  runtimeDependencies = [
+    wayland
+    mesa
+    libglvnd # For libEGL
+  ];
+
+
 }
