@@ -131,7 +131,7 @@
 
             eDP-1 = {
               bg = "/etc/nixos/.attachs/wall.jpg fill";
-              mode = "1260x1440";
+              mode = "2160x1440";
               scale = "2";
             };
           } else {
