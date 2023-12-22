@@ -1,8 +1,6 @@
-{ config
-, lib
+{ lib
 , ...
 }: {
-  networking.domain = "ap-northeast-1.compute.internal";
   networking = {
     resolvconf.useLocalResolver = true;
     firewall = {
@@ -49,9 +47,7 @@
         matchConfig.Name = "ens18";
         DHCP = "yes";
         networkConfig = {
-          DNSSEC = true;
-          MulticastDNS = true;
-          DNSOverTLS = true;
+          # DNSOverTLS = true;
         };
       };
     };
