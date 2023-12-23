@@ -16,7 +16,13 @@ let
     };
 
     # azasos: in wall
-    withoutHeads = [ "azasos" "nodens" "yidhra" "abhoth" "colour" ];
+    withoutHeads = [
+      "azasos" # tencent cloud
+      "nodens" # digital ocean
+      "yidhra" # aws lightsail
+      "abhoth" # alicloud
+      "colour" # dogyun
+    ];
   };
 
   genModules = map (let m = i: inputs.${i}.nixosModules; in i: (m i).default or (m i).${i});
