@@ -17,6 +17,7 @@ with:
 + secure boot: [lanzaboote](https://github.com/nix-community/lanzaboote)
 + root on tmpfs states keeping: [impermanence](https://github.com/nix-community/impermanence)
 + Standalone [home-manager](https://github.com/nix-community/home-manager)
++ Partition declare with [disko](https://github.com/nix-community/disko)
 + command runner: [Just](https://github.com/casey/just) 
 
 ---
