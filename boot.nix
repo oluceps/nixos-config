@@ -62,6 +62,7 @@
       "net.ipv4.conf.wan.rp_filter" = 0;
       # SYN flood protection
       "net.ipv4.tcp_syncookies" = 0;
+      "net.ipv4.tcp_syn_retries" = 2;
       # Do not accept ICMP redirects (prevent MITM attacks)
       "net.ipv4.conf.all.accept_redirects" = 1;
       "net.ipv4.conf.default.accept_redirects" = 1;

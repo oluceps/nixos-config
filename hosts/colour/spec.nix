@@ -103,12 +103,6 @@
     git.enable = true;
     fish.enable = true;
   };
-  zramSwap = {
-    enable = true;
-    swapDevices = 1;
-    memoryPercent = 80;
-    algorithm = "zstd";
-  };
 
   systemd = {
     enableEmergencyMode = true;
