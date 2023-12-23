@@ -51,7 +51,7 @@
                     };
                     "/nix" = {
                       mountpoint = "/nix";
-                      mountOptions = [ "compress-force=lzo" "noatime" "discard=async" "space_cache=v2" ];
+                      mountOptions = [ "compress-force=lzo" "noatime" "discard=async" "space_cache=v2" "nodev" "nosuid" ];
                     };
                     "/var" = {
                       mountpoint = "/var";
@@ -77,7 +77,7 @@
     nodev = {
       "/" = {
         fsType = "tmpfs";
-        mountOptions = [ "defaults" "size=2G" "mode=755" ];
+        mountOptions = [ "relatime" "nosuid" "nodev" "size=2G" "mode=755" ];
       };
     };
   };

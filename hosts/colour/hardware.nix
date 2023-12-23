@@ -6,7 +6,15 @@
       (modulesPath + "/profiles/qemu-guest.nix")
     ];
 
-  boot.initrd.availableKernelModules = [ "ata_piix" "uhci_hcd" "virtio_pci" "virtio_scsi" "sd_mod" "sr_mod" "lz4" ];
+  boot.initrd.availableKernelModules = [
+    "ata_piix"
+    "uhci_hcd"
+    "virtio_pci"
+    "virtio_scsi"
+    "sd_mod"
+    "sr_mod"
+    "lz4"
+  ];
   boot.initrd.kernelModules = [ ];
   boot.kernelModules = [ "kvm-intel" ];
   boot.extraModulePackages = [ ];
@@ -15,6 +23,11 @@
     "zswap.compressor=lz4"
     "zswap.zpool=zsmalloc"
   ];
+  boot.initrd = {
+    compressor = "zstd";
+    compressorArgs = [ "-19" "-T0" ];
+    systemd.enable = true;
+  };
 
   networking.useDHCP = lib.mkDefault true;
 
