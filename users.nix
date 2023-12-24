@@ -27,6 +27,7 @@
           "adbusers"
           "docker"
           "wireshark"
+          "tss"
         ];
         shell = pkgs.bash;
 
