@@ -6,7 +6,7 @@ let
 
     net = [
       # anti-censor
-      [ sing-box rathole tor arti nur-pkgs.tuic ]
+      [ sing-box rathole tor arti nur-pkgs.tuic phantomsocks-mod ]
 
       [ bandwhich fscan iperf3 i2p ethtool dnsutils autossh tcpdump netcat dog wget mtr-gui socat miniserve mtr wakelan q nali lynx nethogs restic w3m whois dig wireguard-tools curlHTTP3 xh ngrep gping knot-dns tcping-go httping ]
     ];

@@ -128,6 +128,27 @@ let system = "x86_64-linux"; in [
             sha256 = "sha256-daLb7ebMVeL+f8WydH4DONkUA+0D6d+v+pohJb2qjOo=";
           };
         });
+      phantomsocks = with prev;
+        buildGoModule rec {
+          pname = "phantomsocks";
+          version = "unstable-2023-11-30";
+
+          src = fetchFromGitHub {
+            owner = "macronut";
+            repo = pname;
+            rev = "b1b13c5b88cf3bac54f39c37c0ffcb0b46e31049";
+            hash = "sha256-ptCzd2/8dNHjAkhwA2xpZH8Ki/9DnblHI2gAIpgM+8E=";
+          };
+
+          vendorHash = "sha256-0MJlz7HAhRThn8O42yhvU3p5HgTG8AkPM0ksSjWYAC4=";
+
+          ldflags = [
+            "-s"
+            "-w"
+          ];
+          buildInputs = [ libpcap ];
+          tags = [ "pcap" ];
+        };
 
       dae-unstable =
         with prev;
