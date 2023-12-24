@@ -33,11 +33,22 @@ in
       wantedBy = [ "multi-user.target" ];
       after = [ "network.target" ];
       description = "phantomsocks daemon";
+      restartTriggers = [ settingsFile ];
       serviceConfig = {
         Type = "simple";
         DynamicUser = true;
-        ExecStart = "${lib.getExe' cfg.package "phantomsocks"} -c ${settingsFile}";
-        AmbientCapabilities = [ "CAP_NET_ADMIN" "CAP_NET_BIND_SERVICE" ];
+        ExecStart = "${lib.getExe' cfg.package "phantomsocks"} -c ${settingsFile} -log 1";
+        CapabilityBoundingSet = [
+          "CAP_NET_RAW"
+          "CAP_NET_ADMIN"
+          "CAP_NET_BIND_SERVICE"
+        ];
+        AmbientCapabilities = [
+          "CAP_NET_RAW"
+          "CAP_NET_ADMIN"
+          "CAP_NET_BIND_SERVICE"
+        ];
+
         Restart = "on-failure";
       };
     };

@@ -53,7 +53,7 @@
       enable = false;
       wheelNeedsPassword = false;
     };
-    sudo-rs = {
+    sudo = {
       enable = lib.mkForce true;
       # package = pkgs.sudo-rs;
       extraRules = [

@@ -17,6 +17,7 @@ let
       "hysteria"
       "mosdns"
       "realm"
+      "phantomsocks"
     ]
     (n: import (./. + ("/" + n)))
   // { sing-box = import ./sing-box { }; };
