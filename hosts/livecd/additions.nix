@@ -100,13 +100,14 @@
       i2p
       ethtool
       dnsutils
-      autossh
       tcpdump
       sing-box
       netcat
       dog
       wget
       mtr-gui
+      hysteria
+      tuic
       socat
       arti
       miniserve
@@ -160,6 +161,7 @@
       inetutils
       pciutils
       usbutils
+      wezterm
     ] ++
     [ rage age-plugin-yubikey yubikey-manager yubikey-manager-qt gnupg cryptsetup ];
   }
