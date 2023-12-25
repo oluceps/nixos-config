@@ -290,10 +290,11 @@ lib.mkMerge [
         };
       };
       git.enable = true;
-      # bash = {
-      #   interactiveShellInit = ''
-      #   '';
-      # };
+      bash = {
+        # interactiveShellInit = ''
+        # '';
+        blesh.enable = true;
+      };
       sway = { enable = true; };
       kdeconnect.enable = true;
       adb.enable = true;

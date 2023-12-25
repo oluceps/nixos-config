@@ -8,11 +8,13 @@
       "/etc/secureboot"
       "/root/.ssh"
     ];
+    files = [ "/root/.bash_history" ];
     users.${user} = {
       files = [
         ".npmrc"
         ".mongoshrc.js"
         ".gitconfig"
+        ".bash_history"
       ];
       directories = [
         "Src"

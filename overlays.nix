@@ -77,6 +77,13 @@ let system = "x86_64-linux"; in [
       #   };
       #   }).linuxPackages_latest;
 
+      blesh = prev.blesh.overrideAttrs (old: {
+        src = prev.fetchzip {
+          url = "https://github.com/akinomyoga/ble.sh/releases/download/v0.4.0-devel3/ble-0.4.0-devel3.tar.xz";
+          sha256 = "kGLp8RaInYSrJEi3h5kWEOMAbZV/gEPFUjOLgBuMhCI=";
+        };
+      });
+
       # BUGGY
       # swaylock = prev.swaylock.overrideAttrs (old: {
       #   src = prev.fetchFromGitHub {
