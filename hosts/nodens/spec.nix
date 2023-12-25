@@ -32,9 +32,10 @@
           ((pkgs.stdenvNoCC.mkDerivation (finalAttrs: {
             name = "helmod";
             version = "0.12.19";
-            src = pkgs.fetchurl {
-              url = "https://dl-mod.factorio.com/files/89/c9e3dfbb99555ba24b085c3228a95fc7a9ad6c?secure=kuZjLfCXoc9awR6dgncRrQ,1702896059";
-              hash = "sha256-tUMZWQ8snt3y8WUruIN+skvo9M1V8ZhM7H9QNYkALYQ=";
+            src = pkgs.requireFile {
+              name = "helmod_${finalAttrs.version}.zip";
+              url = "https://mods.factorio.com/download/helmod";
+              sha256 = "b54319590f2c9eddf2f1652bb8837eb24be8f4cd55f1984cec7f503589002d84";
             };
             dontUnpack = true;
             installPhase = ''
