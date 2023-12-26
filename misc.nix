@@ -283,7 +283,7 @@ lib.mkMerge [
               end
           end
 
-          ${pkgs.zoxide}/bin/zoxide init fish --no-aliases | source
+          # ${pkgs.zoxide}/bin/zoxide init fish --no-aliases | source
         '';
       };
 
