@@ -169,7 +169,7 @@ lib.mkMerge [
         };
       };
       docker. enable = false;
-      podman.enable = true;
+      podman = { enable = true; dockerSocket.enable = true; };
       libvirtd = {
         enable = false;
         qemu = {
