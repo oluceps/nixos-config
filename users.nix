@@ -28,6 +28,7 @@
           "docker"
           "wireshark"
           "tss"
+          "podman"
         ];
         shell = pkgs.bash;
 
