@@ -16,6 +16,7 @@ let
 
     cmd = [
       # (ragenix.override { plugins = [ age-plugin-yubikey ]; })
+      _7zz
       (pkgs.linuxPackages_latest.callPackage ./pkgs/shufflecake { }).userland
       metasploit
       distrobox

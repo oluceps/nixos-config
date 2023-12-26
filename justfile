@@ -20,7 +20,7 @@ filter := '''
 
 map := '''
 	{
-		hastur: rha,
+		hastur: rha0,
 		kaambl: kmb,
 		nodens: dgs,
 		azasos: tcs,
