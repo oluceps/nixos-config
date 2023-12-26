@@ -282,6 +282,8 @@ lib.mkMerge [
                 bind -M $mode \cf forward-char
               end
           end
+
+          ${pkgs.zoxide}/bin/zoxide init fish --no-aliases | source
         '';
       };
 
@@ -295,8 +297,9 @@ lib.mkMerge [
       };
       git.enable = true;
       bash = {
-        # interactiveShellInit = ''
-        # '';
+        interactiveShellInit = ''
+          eval "$(${pkgs.zoxide}/bin/zoxide init bash)"
+        '';
         blesh.enable = true;
       };
       sway = { enable = true; };
