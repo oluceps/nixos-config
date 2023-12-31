@@ -5,6 +5,7 @@
 , lib
 , pkgs
 , modulesPath
+, inputs
 , ...
 }: {
   imports = [
@@ -19,7 +20,8 @@
     };
     kernelModules = [ "ec_sys" "uhid" "kvm-amd" ];
     extraModulePackages = with config.boot.kernelPackages; [ v4l2loopback ];
-    kernelPackages = pkgs.linuxPackages_latest;
+    kernelPackages = #pkgs.linuxPackages_latest;
+      inputs.nyx.packages.${pkgs.system}.linuxPackages_cachyos-server;
     # binfmt.emulatedSystems = [
     #   "riscv64-linux"
     #   "aarch64-linux"
@@ -29,16 +31,11 @@
     kernelParams = [
       "amd_pstate=active"
       "amd_iommu=on"
-      # "iommu=pt"
       "random.trust_cpu=off"
       "zswap.enabled=1"
       "zswap.compressor=lz4"
       "zswap.zpool=zsmalloc"
-
-      # "amdgpu.noretry=0"
-      # "amdgpu.lockup_timeout=1000"
-      # "amdgpu.gpu_recovery=1"
-      # "amdgpu.audio=0"
+      "systemd.gpt_auto=0"
     ];
   };
 
