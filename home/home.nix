@@ -71,6 +71,7 @@
   home.packages = with pkgs;
 
     [
+      brave
       celluloid
       thiefmd
       wpsoffice
