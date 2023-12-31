@@ -477,7 +477,7 @@
   };
   #xdg.configFile."sway/config".text = import ./dotfiles/sway/config.nix {inherit config pkgs;};
   xdg.mimeApps = {
-    enable = false;
+    enable = true;
     defaultApplications = {
       "tg" = [ "org.telegram.desktop.desktop" ];
 
@@ -495,7 +495,7 @@
       "x-scheme-handler/mailto"
       "text/html"
     ]
-      (_: "firefox.desktop")
+      (_: "brave-browser.desktop")
     //
     lib.genAttrs [
       "image/gif"

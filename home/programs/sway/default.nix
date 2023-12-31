@@ -70,7 +70,7 @@
         ];
         startup = [
           { command = "fcitx5 -d"; }
-          { command = with pkgs; "${lib.getExe systemd-run-app} ${lib.getExe firefox}"; }
+          { command = with pkgs; "${lib.getExe systemd-run-app} ${lib.getExe' brave "brave"}"; }
           { command = with pkgs; "${lib.getExe systemd-run-app} ${lib.getExe tdesktop}"; }
           { command = with deps; "${wl-paste} --type text --watch ${cliphist} store"; } #Stores only text data
           { command = with deps; "${wl-paste} --type image --watch ${cliphist} store"; } #Stores image data
