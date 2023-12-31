@@ -8,7 +8,7 @@ in
   options.services.scx =
     {
       enable = mkEnableOption "scx service";
-      package = mkPackageOptionMd pkgs "scx" { };
+      package = mkPackageOptionMD pkgs "scx" { };
       scheduler = mkOption {
         type = types.str;
         default = "scx_rusty";

@@ -91,6 +91,10 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    nyx = {
+      url = "github:chaotic-cx/nyx";
+    };
+
     anyrun = {
       url = "github:Kirottu/anyrun";
       inputs.nixpkgs.follows = "nixpkgs";

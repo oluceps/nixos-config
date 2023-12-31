@@ -18,6 +18,7 @@ let
       "mosdns"
       "realm"
       "phantomsocks"
+      "scx"
     ]
     (n: import (./. + ("/" + n)))
   // { sing-box = import ./sing-box { }; };

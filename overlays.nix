@@ -119,6 +119,7 @@ let system = "x86_64-linux"; in [
           system = "x86_64-linux";
         }).pkgsCross.aarch64-multiplatform.OVMF.fd;
 
+      scx = inputs.nyx.packages.${prev.system}.scx;
       # fishPlugins.foreign-env = prev.fishPlugins.foreign-env.overrideAttrs
       #   (old: {
       #     preInstall = old.preInstall + (with prev; ''

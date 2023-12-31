@@ -1,4 +1,4 @@
-{ config, pkgs, lib, data, ... }:
+{ config, pkgs, lib, data, inputs, ... }:
 let
   p = with pkgs; {
 

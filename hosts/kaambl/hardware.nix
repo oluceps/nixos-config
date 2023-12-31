@@ -89,13 +89,17 @@
   security.tpm2.pkcs11.enable = true;
   security.tpm2.tctiEnvironment.enable = true;
 
+  services.scx = {
+    enable = true;
+    scheduler = "scx_rusty";
+  };
   boot = {
     initrd = {
       systemd.enable = true;
       availableKernelModules = [ "nvme" "xhci_pci" "ahci" "usb_storage" "usbhid" "sd_mod" "lz4" "zsmalloc" ];
       kernelModules = [ "tpm" "tpm_tis" "tpm_crb" "kvm-amd" "amdgpu" ];
     };
-    kernelModules = [ "ec_sys" "uhid" "kvm-amd" "brutal" "dm-sflc" ];
+    kernelModules = [ "ec_sys" "uhid" "kvm-amd" "brutal" "dm_sflc" ];
     kernelParams = [
       "amd_pstate=active"
       "zswap.enabled=1"
@@ -111,7 +115,13 @@
       # (import inputs.nixpkgs-pin {
       #   system = "x86_64-linux";
       # })
-      pkgs.linuxPackages_6_5;
+      # pkgs.linuxPackagesFor (pkgs.linux_6_6.override {
+      #   stdenv = pkgs.llvmPackages_17.stdenv;
+      # });
+      # pkgs.linuxPackages_6_6;
+      inputs.nyx.packages.${pkgs.system}.linuxPackages_cachyos-sched-ext;
+    kernelPatches = [
+    ];
   };
 
   # fileSystems."/" =
