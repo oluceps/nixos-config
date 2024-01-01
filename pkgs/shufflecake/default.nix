@@ -3,13 +3,13 @@ let
   genShufflecake = name: installPhase:
     stdenv.mkDerivation (finalAttrs: {
       inherit name;
-      version = "0.4.3-fix-large-device";
+      version = "0.4.4";
       src = fetchFromGitea {
         domain = "codeberg.org";
         owner = "shufflecake";
         repo = "shufflecake-c";
-        rev = "807cd9ea91ded60471b8064d575e93c279eb7129";
-        hash = "sha256-l3L8m+9WXvck5ybNqWlYcfq1Ci1v6y0p2V7BBySiAuo=";
+        rev = "v${finalAttrs.version}";
+        hash = "sha256-zvGHM5kajJlROI8vg1yZQ5NvJvuGLV2iKvumdW8aglA=";
       };
 
       nativeBuildInputs = kernel.moduleBuildDependencies;

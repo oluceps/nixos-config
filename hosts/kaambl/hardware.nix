@@ -116,13 +116,23 @@
       # (import inputs.nixpkgs-pin {
       #   system = "x86_64-linux";
       # })
-      # pkgs.linuxPackagesFor (pkgs.linux_6_6.override {
-      #   stdenv = pkgs.llvmPackages_17.stdenv;
-      # });
-      # pkgs.linuxPackages_6_6;
-      inputs.nyx.packages.${pkgs.system}.linuxPackages_cachyos-sched-ext;
-    kernelPatches = [
-    ];
+      # pkgs.linuxPackagesFor (
+      #   pkgs.linux_6_6.override {
+      #     inherit (pkgs.llvmPackages_17) stdenv;
+      #     extraMakeFlags = [
+      #       "CC=clang"
+      #       "LD=ld"
+      #       "LLVM=1"
+      #       "LLVM_IAS=1"
+      #     ];
+      #   });
+    # pkgs.linuxPackages_6_6;
+    inputs.nyx.packages.${pkgs.system}.linuxPackages_cachyos-sched-ext;
+
+    # kernelPatches =
+    #   let patchPath = ../../.attachs/cachyos-kernel;
+    #   in map (name: { inherit name; patch = patchPath + ("/" + name); })
+    #     (with builtins;attrNames (readDir patchPath));
   };
 
   # fileSystems."/" =

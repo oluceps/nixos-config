@@ -92,7 +92,7 @@
     };
 
     nyx = {
-      url = "github:chaotic-cx/nyx";
+      url = "/home/elen/Src/nyx";
     };
 
     anyrun = {
