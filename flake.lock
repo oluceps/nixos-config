@@ -2698,16 +2698,17 @@
         "yafas": "yafas"
       },
       "locked": {
-        "dirtyRev": "7eca0601216c908ecaf6202b8fccaf6a70e947a8-dirty",
-        "dirtyShortRev": "7eca060-dirty",
         "lastModified": 1704023696,
-        "narHash": "sha256-0xrECUtCwVmwh15J1KAbp4yb8wWeZVRZUPLM7hgSv0M=",
-        "type": "git",
-        "url": "file:///home/elen/Src/nyx"
+        "narHash": "sha256-GIQoVFRsBB+TRpvxnJytvxqELeTFQZORK2O8KQ3t8LQ=",
+        "owner": "oluceps",
+        "repo": "nyx",
+        "rev": "7eca0601216c908ecaf6202b8fccaf6a70e947a8",
+        "type": "github"
       },
       "original": {
-        "type": "git",
-        "url": "file:///home/elen/Src/nyx"
+        "owner": "oluceps",
+        "repo": "nyx",
+        "type": "github"
       }
     },
     "pnpm2nix": {
