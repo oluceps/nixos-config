@@ -1,4 +1,4 @@
-{ lib, modulesPath, ... }:
+{ inputs, pkgs, lib, modulesPath, ... }:
 
 {
   imports =
@@ -28,6 +28,9 @@
     compressorArgs = [ "-19" "-T0" ];
     systemd.enable = true;
   };
+
+  boot.kernelPackages =
+    inputs.nyx.packages.${pkgs.system}.linuxPackages_cachyos-server;
 
   networking.useDHCP = lib.mkDefault true;
 

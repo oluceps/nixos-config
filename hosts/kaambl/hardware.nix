@@ -108,9 +108,9 @@
       "systemd.gpt_auto=0"
     ];
     extraModulePackages = with config.boot.kernelPackages; [
-      v4l2loopback
-      (callPackage "${inputs.self}/pkgs/tcp-brutal" { })
-      (callPackage "${inputs.self}/pkgs/shufflecake" { }).kernelModule
+      # v4l2loopback
+      # (callPackage "${inputs.self}/pkgs/tcp-brutal" { })
+      # (callPackage "${inputs.self}/pkgs/shufflecake" { }).kernelModule
     ];
     kernelPackages =
       # (import inputs.nixpkgs-pin {
@@ -126,8 +126,8 @@
       #       "LLVM_IAS=1"
       #     ];
       #   });
-    # pkgs.linuxPackages_6_6;
-    inputs.nyx.packages.${pkgs.system}.linuxPackages_cachyos-sched-ext;
+      # pkgs.linuxPackages_6_6;
+      inputs.nyx.packages.${pkgs.system}.linuxPackages_cachyos-sched-ext-lto-zen4;
 
     # kernelPatches =
     #   let patchPath = ../../.attachs/cachyos-kernel;

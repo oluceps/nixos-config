@@ -92,8 +92,8 @@
     };
 
     nyx = {
-      # url = "/home/elen/Src/nyx";
-      url = "github:oluceps/nyx";
+      url = "/home/elen/Src/nyx";
+      # url = "github:oluceps/nyx";
     };
 
     anyrun = {
