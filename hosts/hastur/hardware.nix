@@ -66,11 +66,11 @@
     options = [ "subvol=/var" "compress-force=zstd:1" "noatime" "discard=async" "space_cache=v2" ];
   };
 
-  # fileSystems."/tmp" = {
-  #   device = "/dev/disk/by-uuid/e86a6cfa-39cc-4dd9-b5d3-fee5e2613578";
-  #   fsType = "btrfs";
-  #   options = [ "subvolid=28831" "compress-force=zstd" "noatime" "discard=async" "space_cache=v2" ];
-  # };
+  fileSystems."/tmp" = {
+    device = "/dev/disk/by-uuid/e86a6cfa-39cc-4dd9-b5d3-fee5e2613578";
+    fsType = "btrfs";
+    options = [ "subvolid=28831" "compress-force=zstd:1" "nosuid" "nodev" "noatime" "discard=async" "space_cache=v2" ];
+  };
 
   fileSystems."/efi" = {
     device = "/dev/disk/by-uuid/3418-1C5E";
