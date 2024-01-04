@@ -2700,15 +2700,15 @@
       "locked": {
         "lastModified": 1704384463,
         "narHash": "sha256-NilJ0J50Rikyc8E9KuuuozwX9TjJqczOkwUgk66JnNw=",
-        "ref": "refs/heads/cachyos-kernel-llvm",
+        "owner": "oluceps",
+        "repo": "nyx",
         "rev": "3cfffd05e7b80bf208ac978d954f3e9d15be4f2a",
-        "revCount": 830,
-        "type": "git",
-        "url": "file:///home/elen/Src/nyx"
+        "type": "github"
       },
       "original": {
-        "type": "git",
-        "url": "file:///home/elen/Src/nyx"
+        "owner": "oluceps",
+        "repo": "nyx",
+        "type": "github"
       }
     },
     "pnpm2nix": {
