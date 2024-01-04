@@ -6,7 +6,7 @@
   fileSystems."/" = { device = "/dev/vda1"; fsType = "ext4"; };
 
   boot.kernelPackages =
-    inputs.nyx.packages.${pkgs.system}.linuxPackages_cachyos-server;
+    inputs.nyx.packages.${pkgs.system}.linuxPackages_cachyos-server-lto;
 
   boot.initrd.postDeviceCommands = lib.mkIf (!config.boot.initrd.systemd.enable)
     ''
