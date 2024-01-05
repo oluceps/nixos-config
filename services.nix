@@ -128,7 +128,7 @@
 
     daed.enable = false;
     dae = {
-      package = pkgs.dae-unstable;
+      package = pkgs.dae;
       disableTxChecksumIpGeneric = false;
       configFile = config.age.secrets.dae.path;
       # assets = with pkgs; [ v2ray-geoip v2ray-domain-list-community ];

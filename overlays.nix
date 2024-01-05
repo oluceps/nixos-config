@@ -26,7 +26,7 @@ let system = "x86_64-linux"; in [
       #     {
       #       inherit system;
       #     }).lazygit;
-      inherit ((import inputs.nixpkgs-master { inherit system; })) monaspace;
+      inherit ((import inputs.nixpkgs-master { inherit system; })) monaspace dae;
 
       # inputs.hyprland.packages.${system}.default;
       inherit ((import inputs.nixpkgs-rebuild { inherit system; })) nixos-rebuild;
