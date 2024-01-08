@@ -25,11 +25,12 @@ with:
 
 |Type|Program|
 |---|---|
+|Kernel|[cachyos-kernel](https://github.com/CachyOS/linux-cachyos)|
 |Editor|[helix](https://github.com/oluceps/nixos-config/tree/main/home/programs/helix)|
 |WM|[sway](https://github.com/oluceps/nixos-config/tree/main/home/programs/sway)|
 |Bar|[waybar](https://github.com/oluceps/nixos-config/tree/main/home/programs/waybar)|
 |Shell|[fish](https://github.com/oluceps/nixos-config/tree/main/home/programs/fish)|
-|Terminal|[foot](https://github.com/oluceps/nixos-config/tree/main/home/programs/foot)|
+|Terminal|[alacritty](https://github.com/oluceps/nixos-config/tree/main/home/programs/alacritty)|
 |backup|[btrbk](https://github.com/oluceps/nixos-config/tree/main/modules/btrbk)|  
 
 __Overlay & nixosModules__  
