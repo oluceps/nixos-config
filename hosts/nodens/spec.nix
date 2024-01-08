@@ -24,6 +24,7 @@
 
     factorio = {
       enable = true;
+      package = pkgs.factorio-headless;
       openFirewall = true;
       serverSettingsFile = config.age.secrets.factorio-server.path;
       serverAdminsFile = config.age.secrets.factorio-server.path;

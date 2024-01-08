@@ -71,7 +71,7 @@
     };
 
   inputs = {
-    nixpkgs-factorio.url = "github:NixOS/nixpkgs?rev=7c8f8a991be2cf2e3ef3bf197e7c27e7480aa6d8";
+    nixpkgs-factorio.url = "github:NixOS/nixpkgs?rev=b480f6f0b571abe201f6143d6d1f974049977259";
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     nixpkgs-pin.url = "github:NixOS/nixpkgs?rev=e7f38be3775bab9659575f192ece011c033655f0";
     nixpkgs-master.url = "github:NixOS/nixpkgs/master";

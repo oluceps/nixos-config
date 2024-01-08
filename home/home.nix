@@ -71,6 +71,7 @@
   home.packages = with pkgs;
 
     [
+      stellarium
       brave
       celluloid
       thiefmd
