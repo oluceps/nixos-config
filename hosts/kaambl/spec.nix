@@ -28,9 +28,9 @@
         inherit ((import ../../services.nix { inherit pkgs lib config; }).services) dae;
       }
       {
-        dae.enable = true;
+        dae = { enable = true; package = pkgs.dae; };
         sing-box = {
-          enable = false;
+          enable = true;
         };
 
 

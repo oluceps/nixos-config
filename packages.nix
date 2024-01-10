@@ -82,6 +82,7 @@ let
       yarn
       go
 
+      copilot-cli
 
       nix-tree
       kotlin
