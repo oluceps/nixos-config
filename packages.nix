@@ -4,6 +4,7 @@ let
 
     crypt = [ minisign rage age-plugin-yubikey cryptsetup tpm2-tss tpm2-tools ];
 
+    test = [ inputs.factorio-manager.packages.x86_64-linux.default ];
     net = [
       # anti-censor
       [ sing-box rathole tor arti nur-pkgs.tuic phantomsocks ]
