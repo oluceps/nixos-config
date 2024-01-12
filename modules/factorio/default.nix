@@ -282,7 +282,6 @@ in
 
       serviceConfig = {
         Restart = "always";
-        KillSignal = "SIGINT";
         DynamicUser = true;
         StateDirectory = cfg.stateDirName;
         LoadCredential = lib.optional (cfg.serverSettingsFile != "") "server-settings.json:${cfg.serverSettingsFile}"
