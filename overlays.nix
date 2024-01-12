@@ -26,7 +26,9 @@ let system = "x86_64-linux"; in [
       #     {
       #       inherit system;
       #     }).lazygit;
-      inherit ((import inputs.nixpkgs-master { inherit system; })) monaspace;
+      inherit ((import inputs.nixpkgs-master {
+        inherit system; config.allowUnfree = true;
+      })) monaspace factorio-headless-experimental;
 
       # inputs.hyprland.packages.${system}.default;
       inherit ((import inputs.nixpkgs-rebuild { inherit system; })) nixos-rebuild;
@@ -107,11 +109,6 @@ let system = "x86_64-linux"; in [
         {
           system = "x86_64-linux";
         }).fscan;
-
-      factorio-headless = (import inputs.nixpkgs-factorio {
-        system = "x86_64-linux";
-        config.allowUnfree = true;
-      }).factorio-headless;
 
       fd_iuBrGE = (import
         inputs.nixpkgs-22

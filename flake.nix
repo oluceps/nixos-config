@@ -98,6 +98,7 @@
     factorio-manager = {
       url = "/home/elen/Src/factorio-manager";
       # url = "github:oluceps/nyx";
+      inputs.nixpkgs.follows = "nixpkgs";
     };
 
     anyrun = {
