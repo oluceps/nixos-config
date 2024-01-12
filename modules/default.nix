@@ -19,6 +19,7 @@ let
       "realm"
       "phantomsocks"
       "scx"
+      "test"
     ]
     (n: import (./. + ("/" + n)))
   // { sing-box = import ./sing-box { }; };
