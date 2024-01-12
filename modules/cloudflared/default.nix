@@ -6,7 +6,7 @@ let
   cfg = config.services.cloudflared;
 in
 {
-  disabledModules = [ "nixos/modules/services/networking/cloudflared.nix" ];
+  disabledModules = [ "services/networking/cloudflared.nix" ];
   options.services.cloudflared = {
     enable = mkEnableOption (lib.mdDoc "Cloudflare Tunnel client daemon (formerly Argo Tunnel)");
 

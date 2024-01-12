@@ -30,6 +30,7 @@
         factorio-server = { rekeyFile = ./sec/factorio-server.age; mode = "640"; owner = "factorio"; group = "users"; name = "factorio-server"; };
         factorio-admin = { rekeyFile = ./sec/factorio-admin.age; mode = "640"; owner = "factorio"; group = "users"; name = "factorio-admin"; };
         factorio-manager-bot = { rekeyFile = ./sec/factorio-manager-bot.age; mode = "640"; owner = "factorio"; group = "users"; name = "factorio-manager-bot"; };
+        cloudflare-garden-00 = { rekeyFile = ./sec/cloudflare-garden-00.age; mode = "640"; owner = "cloudflared"; group = "users"; name = "garden-00"; };
       };
   };
 

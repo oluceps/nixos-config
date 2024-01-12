@@ -19,7 +19,7 @@ let
       "realm"
       "phantomsocks"
       "scx"
-      "test"
+      "cloudflared"
     ]
     (n: import (./. + ("/" + n)))
   // { sing-box = import ./sing-box { }; };

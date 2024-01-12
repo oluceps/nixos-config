@@ -20,7 +20,6 @@
 
   services = {
     # bpftune.enable = false;
-    tessst.enable = true;
     kubo = {
       enable = false;
       settings.Addresses.API = [
@@ -28,10 +27,6 @@
       ];
     };
     hysteria.instances = [
-      # {
-      #   name = "test";
-      #   serve = true;
-      # }
     ];
 
     btrbk = {

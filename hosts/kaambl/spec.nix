@@ -33,6 +33,10 @@
           enable = true;
         };
 
+        cloudflared = {
+          enable = true;
+          environmentFile = config.age.secrets.cloudflare-garden-00.path;
+        };
 
         shadowsocks.instances = [{
           name = "kaambl-local";
