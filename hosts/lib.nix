@@ -17,11 +17,11 @@ let
 
     # azasos: in wall
     withoutHeads = [
-      "azasos" # tencent cloud
+      # "azasos" # tencent cloud
       "nodens" # digital ocean
-      "yidhra" # aws lightsail
-      "abhoth" # alicloud
-      "colour" # dogyun
+      # "yidhra" # aws lightsail
+      # "abhoth" # alicloud
+      # "colour" # dogyun
     ];
   };
 
