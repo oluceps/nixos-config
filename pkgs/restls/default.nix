@@ -15,10 +15,10 @@ rustPlatform.buildRustPackage rec{
     rev = "v${version}";
     owner = "3andne";
     repo = pname;
-    hash = "";
+    hash = "sha256-nlQdBwxHVbpOmb9Wq+ap2i4KI1zJYT3SEqvedDbVH8Q=";
   };
 
-  cargoHash = "";
+  cargoHash = "sha256-KtNLLtStZ7SNndcPxWfNPA2duoXFVePrbNQFPUz2xFg=";
 
   # RUSTC_BOOTSTRAP = 1;
 }
