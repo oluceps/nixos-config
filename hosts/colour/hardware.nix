@@ -66,7 +66,7 @@
   } // lib.genAttrs [ "/home" "/nix" "/var" ] (name: {
     device = "/dev/sda3";
     fsType = "btrfs";
-    options = [ "subvol=/${name}" "compress-force=zstd:1" "noatime" "discard=async" "space_cache=v2" "nosuid" "nodev" ];
+    options = [ "subvol=${name}" "compress-force=zstd:1" "noatime" "discard=async" "space_cache=v2" "nosuid" "nodev" ];
   });
 
 
