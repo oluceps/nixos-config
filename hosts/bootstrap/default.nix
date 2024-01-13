@@ -13,8 +13,8 @@
             specialArgs = lib.base // { user = "elen"; };
             modules = [
               ./configuration.nix
-              inputs.disko.nixosModules.default
-
+              ./disk-config.nix
+              inputs.disko.nixosModules.disko
             ];
           };
       };
