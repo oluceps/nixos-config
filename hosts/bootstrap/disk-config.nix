@@ -7,7 +7,7 @@
     devices = {
       disk.main = {
         imageSize = "2G";
-        device = "/dev/vda";
+        device = "/dev/sda";
         type = "disk";
         content = {
           type = "gpt";
@@ -26,7 +26,7 @@
               content = {
                 type = "filesystem";
                 format = "vfat";
-                mountpoint = "/boot";
+                mountpoint = "/efi";
                 mountOptions = [ "fmask=0077" "dmask=0077" ];
               };
             };
@@ -65,19 +65,19 @@
 
   # manual
   fileSystems = ({
-    "/boot" = {
-      device = "/dev/sdb2";
+    "/efi" = {
+      device = "/dev/sda2";
       fsType = "vfat";
       options = [ "fmask=0077" "dmask=0077" ];
     };
     "/" = {
-      device = "/dev/sdb2";
+      device = "/dev/sda2";
       fsType = "vfat";
       options = [ "subvol=/root" "compress-force=zstd:1" "noatime" "discard=async" "space_cache=v2" ];
     };
   } // lib.genAttrs [ "home" "nix" "var" ] (name:
     {
-      device = "/dev/sdb3";
+      device = "/dev/sda3";
       fsType = "btrfs";
       options = [ "subvol=/${name}" "compress-force=zstd:1" "noatime" "discard=async" "space_cache=v2" "nosuid" "nodev" ];
     }

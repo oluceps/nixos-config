@@ -54,10 +54,15 @@
       "boot.panic_on_fail"
     ];
     loader = {
-      grub = {
-        enable = true;
-        devices = "/dev/sda";
+      # grub = {
+      #   enable = true;
+      #   devices = "/dev/sda";
+      # };
+      efi = {
+        canTouchEfiVariables = true;
+        efiSysMountPoint = "/efi";
       };
+      systemd-boot.enable = true;
       timeout = 1;
     };
     initrd = {
