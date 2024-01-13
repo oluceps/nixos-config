@@ -57,6 +57,10 @@
                       mountpoint = "/var";
                       mountOptions = [ "compress-force=lzo" "noatime" "discard=async" "space_cache=v2" ];
                     };
+                    "/persist/tmp" = {
+                      mountpoint = "/tmp";
+                      mountOptions = [ "relatime" "nodev" "nosuid" "discard=async" "space_cache=v2" ];
+                    };
                   };
                 };
               };
