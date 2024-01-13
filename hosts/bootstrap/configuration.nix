@@ -77,10 +77,6 @@
         "hv_storvsc"
       ];
 
-      postDeviceCommands = lib.mkIf (!config.boot.initrd.systemd.enable) ''
-        hwclock -s
-      '';
-
     };
   };
 }
