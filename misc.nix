@@ -14,6 +14,14 @@ lib.mkMerge [
       serviceConfig.LimitNOFILE = lib.mkForce 500000000;
       path = [ pkgs.netcat-openbsd ];
     };
+    nix.buildMachines = [{
+      hostName = "rha0";
+      systems = [ "x86_64-linux" ];
+      protocol = "ssh-ng";
+      maxJobs = 24;
+      speedFactor = 2;
+      supportedFeatures = [ "big-parallel" ];
+    }];
     nix =
       {
         package = pkgs.nixVersions.stable;
