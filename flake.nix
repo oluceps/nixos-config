@@ -37,7 +37,9 @@
                 "shufflecake"
               ])
               (readDir ./pkgs))))
-          (n: pkgs.${n});
+          (n: pkgs.${n}) // {
+          image = inputs.self.nixosConfigurations.bootstrap.config.system.build.diskoImages;
+        };
       };
 
       flake = {
