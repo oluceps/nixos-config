@@ -20,7 +20,7 @@
         efiSysMountPoint = "/efi";
       };
       systemd-boot.enable = true;
-      timeout = 0;
+      timeout = 3;
     };
 
     kernelParams = [
