@@ -1,12 +1,18 @@
 { config
 , lib
 , data
-, inputs
+, modulesPath
 , ...
 }: {
-  imports = [ "${inputs.nixpkgs}/nixos/modules/profiles/headless.nix" ];
+  imports = [
+    (modulesPath + "/profiles/qemu-guest.nix")
+  ];
 
   time.timeZone = "America/Los_Angeles";
+  networking.nameservers = [
+    "8.8.8.8"
+  ];
+
 
   users.mutableUsers = false;
   users.users.root = {
@@ -50,14 +56,8 @@
       "console=ttyS0"
       "earlyprintk=ttyS0"
       "rootdelay=300"
-      "panic=1"
-      "boot.panic_on_fail"
     ];
     loader = {
-      # grub = {
-      #   enable = true;
-      #   devices = "/dev/sda";
-      # };
       efi = {
         canTouchEfiVariables = true;
         efiSysMountPoint = "/efi";
@@ -71,52 +71,16 @@
       systemd.enable = true;
 
       kernelModules = [
-        "hv_vmbus"
+        "hv_vmbus" # for hyper-V
         "hv_netvsc"
         "hv_utils"
         "hv_storvsc"
-
-        "virtio_balloon"
-        "virtio_console"
-        "virtio_rng"
       ];
 
       postDeviceCommands = lib.mkIf (!config.boot.initrd.systemd.enable) ''
         hwclock -s
       '';
 
-      availableKernelModules = [
-        "virtio_net"
-        "virtio_pci"
-        "virtio_mmio"
-        "virtio_blk"
-        "virtio_scsi"
-      ];
     };
   };
-
-
-  services.udev.extraRules = ''
-    ENV{DEVTYPE}=="disk", KERNEL!="sda" SUBSYSTEM=="block", SUBSYSTEMS=="scsi", KERNELS=="?:0:0:0", ATTR{removable}=="0", SYMLINK+="disk/by-lun/0",
-    ENV{DEVTYPE}=="disk", KERNEL!="sda" SUBSYSTEM=="block", SUBSYSTEMS=="scsi", KERNELS=="?:0:0:1", ATTR{removable}=="0", SYMLINK+="disk/by-lun/1",
-    ENV{DEVTYPE}=="disk", KERNEL!="sda" SUBSYSTEM=="block", SUBSYSTEMS=="scsi", KERNELS=="?:0:0:2", ATTR{removable}=="0", SYMLINK+="disk/by-lun/2"
-    ENV{DEVTYPE}=="disk", KERNEL!="sda" SUBSYSTEM=="block", SUBSYSTEMS=="scsi", KERNELS=="?:0:0:3", ATTR{removable}=="0", SYMLINK+="disk/by-lun/3"
-
-    ENV{DEVTYPE}=="disk", KERNEL!="sda" SUBSYSTEM=="block", SUBSYSTEMS=="scsi", KERNELS=="?:0:0:4", ATTR{removable}=="0", SYMLINK+="disk/by-lun/4"
-    ENV{DEVTYPE}=="disk", KERNEL!="sda" SUBSYSTEM=="block", SUBSYSTEMS=="scsi", KERNELS=="?:0:0:5", ATTR{removable}=="0", SYMLINK+="disk/by-lun/5"
-    ENV{DEVTYPE}=="disk", KERNEL!="sda" SUBSYSTEM=="block", SUBSYSTEMS=="scsi", KERNELS=="?:0:0:6", ATTR{removable}=="0", SYMLINK+="disk/by-lun/6"
-    ENV{DEVTYPE}=="disk", KERNEL!="sda" SUBSYSTEM=="block", SUBSYSTEMS=="scsi", KERNELS=="?:0:0:7", ATTR{removable}=="0", SYMLINK+="disk/by-lun/7"
-
-    ENV{DEVTYPE}=="disk", KERNEL!="sda" SUBSYSTEM=="block", SUBSYSTEMS=="scsi", KERNELS=="?:0:0:8", ATTR{removable}=="0", SYMLINK+="disk/by-lun/8"
-    ENV{DEVTYPE}=="disk", KERNEL!="sda" SUBSYSTEM=="block", SUBSYSTEMS=="scsi", KERNELS=="?:0:0:9", ATTR{removable}=="0", SYMLINK+="disk/by-lun/9"
-    ENV{DEVTYPE}=="disk", KERNEL!="sda" SUBSYSTEM=="block", SUBSYSTEMS=="scsi", KERNELS=="?:0:0:10", ATTR{removable}=="0", SYMLINK+="disk/by-lun/10"
-    ENV{DEVTYPE}=="disk", KERNEL!="sda" SUBSYSTEM=="block", SUBSYSTEMS=="scsi", KERNELS=="?:0:0:11", ATTR{removable}=="0", SYMLINK+="disk/by-lun/11"
-
-    ENV{DEVTYPE}=="disk", KERNEL!="sda" SUBSYSTEM=="block", SUBSYSTEMS=="scsi", KERNELS=="?:0:0:12", ATTR{removable}=="0", SYMLINK+="disk/by-lun/12"
-    ENV{DEVTYPE}=="disk", KERNEL!="sda" SUBSYSTEM=="block", SUBSYSTEMS=="scsi", KERNELS=="?:0:0:13", ATTR{removable}=="0", SYMLINK+="disk/by-lun/13"
-    ENV{DEVTYPE}=="disk", KERNEL!="sda" SUBSYSTEM=="block", SUBSYSTEMS=="scsi", KERNELS=="?:0:0:14", ATTR{removable}=="0", SYMLINK+="disk/by-lun/14"
-    ENV{DEVTYPE}=="disk", KERNEL!="sda" SUBSYSTEM=="block", SUBSYSTEMS=="scsi", KERNELS=="?:0:0:15", ATTR{removable}=="0", SYMLINK+="disk/by-lun/15"
-
-  '';
-
 }
