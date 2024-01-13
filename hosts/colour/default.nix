@@ -30,9 +30,10 @@
               ../../packages.nix
               ../../misc.nix
               ../../users.nix
+
+              inputs.disko.nixosModules.disko
             ]
-            ++ lib.sharedModules
-            ++ [ inputs.disko.nixosModules.default ];
+            ++ lib.sharedModules;
           };
       };
     };

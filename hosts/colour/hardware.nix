@@ -6,38 +6,44 @@
       (modulesPath + "/profiles/qemu-guest.nix")
     ];
 
-  boot.initrd.availableKernelModules = [
-    "ata_piix"
-    "uhci_hcd"
-    "virtio_pci"
-    "virtio_scsi"
-    "sd_mod"
-    "sr_mod"
-    "lz4"
-  ];
-  boot.initrd.kernelModules = [ ];
-  boot.kernelModules = [ "kvm-intel" ];
-  boot.extraModulePackages = [ ];
-  boot.kernelParams = [
-    "zswap.enabled=1"
-    "zswap.compressor=lz4"
-    "zswap.zpool=zsmalloc"
-  ];
-  boot.initrd = {
-    compressor = "zstd";
-    compressorArgs = [ "-19" "-T0" ];
-    systemd.enable = true;
+  zramSwap = {
+    enable = true;
+    swapDevices = 1;
+    memoryPercent = 80;
+    algorithm = "zstd";
   };
 
-  boot.kernelPackages =
-    inputs.nyx.packages.${pkgs.system}.linuxPackages_cachyos-server;
+  boot = {
+    loader = {
+      efi = {
+        canTouchEfiVariables = true;
+        efiSysMountPoint = "/efi";
+      };
+      systemd-boot.enable = true;
+      timeout = 0;
+    };
 
-  networking.useDHCP = lib.mkDefault true;
+    kernelParams = [
+      "audit=0"
+      "net.ifnames=0"
+    ];
+
+    initrd = {
+      compressor = "zstd";
+      compressorArgs = [ "-19" "-T0" ];
+      systemd.enable = true;
+    };
+
+    kernelPackages =
+      inputs.nyx.packages.${pkgs.system}.linuxPackages_cachyos-server-lto;
+  };
 
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
-  disko.devices = {
-    disk = {
-      sda = {
+  disko = {
+    enableConfig = true;
+
+    devices = {
+      disk.main = {
         device = "/dev/sda";
         type = "disk";
         content = {
@@ -46,39 +52,45 @@
             boot = {
               size = "1M";
               type = "EF02"; # for grub MBR
+              priority = 0;
+            };
+
+            ESP = {
+              name = "ESP";
+              size = "512M";
+              type = "EF00";
+              priority = 1;
+              content = {
+                type = "filesystem";
+                format = "vfat";
+                mountpoint = "/efi";
+                mountOptions = [ "fmask=0077" "dmask=0077" ];
+              };
             };
 
             root = {
-              end = "-200M";
+              size = "100%";
               content = {
                 type = "btrfs";
                 extraArgs = [ "-f" "--csum xxhash64" ];
                 subvolumes = {
-                  # Subvolume name is different from mountpoint
                   "root" = {
                     mountpoint = "/";
-                    mountOptions = [ "compress-force=zstd:1" "noatime" "discard=async" "space_cache=v2" ];
+                    mountOptions = [ "compress-force=zstd:1" "noatime" "discard=async" "space_cache=v2" "nosuid" "nodev" ];
                   };
                   "home" = {
-                    mountOptions = [ "compress-force=zstd:1" "noatime" "discard=async" "space_cache=v2" ];
+                    mountOptions = [ "compress-force=zstd:1" "noatime" "discard=async" "space_cache=v2" "nosuid" "nodev" ];
                     mountpoint = "/home";
                   };
                   "nix" = {
-                    mountOptions = [ "compress-force=zstd:1" "noatime" "discard=async" "space_cache=v2" ];
+                    mountOptions = [ "compress-force=zstd:1" "noatime" "discard=async" "space_cache=v2" "nosuid" "nodev" ];
                     mountpoint = "/nix";
                   };
                   "var" = {
-                    mountOptions = [ "compress-force=zstd:1" "noatime" "discard=async" "space_cache=v2" ];
+                    mountOptions = [ "compress-force=zstd:1" "noatime" "discard=async" "space_cache=v2" "nosuid" "nodev" ];
                     mountpoint = "/var";
                   };
                 };
-              };
-            };
-            plainSwap = {
-              size = "100%";
-              content = {
-                type = "swap";
-                resumeDevice = true; # resume from hiberation from this device
               };
             };
           };

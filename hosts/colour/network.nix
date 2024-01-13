@@ -31,24 +31,17 @@
       ignoredInterfaces = [ "wg0" "wg1" ];
     };
 
-    links."ens18" = {
-      matchConfig.MACAddress = "40:07:be:36:74:e2";
-      linkConfig.Name = "ens18";
-    };
-    links."ens19" = {
-      matchConfig.MACAddress = "4a:67:ae:65:49:7b";
-      linkConfig.Name = "ens19";
+    links."eth0" = {
+      matchConfig.MACAddress = "00:22:48:67:8d:4a";
+      linkConfig.Name = "eth0";
     };
 
     netdevs = { };
 
     networks = {
       "20-wired" = {
-        matchConfig.Name = "ens18";
+        matchConfig.Name = "eth0";
         DHCP = "yes";
-        networkConfig = {
-          # DNSOverTLS = true;
-        };
       };
     };
   };
