@@ -515,11 +515,11 @@
         "poetry2nix": "poetry2nix"
       },
       "locked": {
-        "lastModified": 1705147132,
-        "narHash": "sha256-0xZNWU/D9HGgsVmQSyDf/4rTtjQyHW21LhOTuE5yXmg=",
+        "lastModified": 1705159546,
+        "narHash": "sha256-83Gc0PKuJ/1mCzoS10972EBeTZP4SIDuuZV65bZbnIg=",
         "ref": "refs/heads/master",
-        "rev": "588f6f8904e55b9540151ca8c5676a3c5bd9f875",
-        "revCount": 18,
+        "rev": "e73baa440b1b8a41608408c59a455c1b524cbb87",
+        "revCount": 19,
         "type": "git",
         "url": "file:///home/elen/Src/factorio-manager"
       },
