@@ -6,4 +6,4 @@ let inherit (import ./lib.nix inputs) data; in
 ]
 ++ map (x: ./. + x) (map (x: "/" + x) data.withoutHeads)
 )
-++ [ ./livecd ]
+++ [ ./livecd ./bootstrap ]

@@ -45,7 +45,7 @@
         agenix-rekey = inputs.agenix-rekey.configure {
           userFlake = inputs.self;
           nodes = with inputs.nixpkgs.lib;
-            filterAttrs (n: _: !elem n [ "nixos" ]) inputs.self.nixosConfigurations
+            filterAttrs (n: _: !elem n [ "nixos" "bootstrap" ]) inputs.self.nixosConfigurations
           ;
         };
 
