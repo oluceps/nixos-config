@@ -1,4 +1,5 @@
 { lib
+, config
 , ...
 }: {
   networking = {
@@ -36,9 +37,80 @@
       linkConfig.Name = "eth0";
     };
 
-    netdevs = { };
+    netdevs = {
+      wg0 = {
+        netdevConfig = {
+          Kind = "wireguard";
+          Name = "wg0";
+          MTUBytes = "1300";
+        };
+        wireguardConfig = {
+          PrivateKeyFile = config.age.secrets.wga.path;
+          ListenPort = 51820;
+        };
+        wireguardPeers = [
+          {
+            wireguardPeerConfig = {
+              PublicKey = "BCbrvvMIoHATydMkZtF8c+CHlCpKUy1NW+aP0GnYfRM=";
+              AllowedIPs = [ "10.0.2.2/32" ];
+              PersistentKeepalive = 15;
+            };
+          }
+          {
+            wireguardPeerConfig = {
+              PublicKey = "i7Li/BDu5g5+Buy6m6Jnr09Ne7xGI/CcNAbyK9KKbQg=";
+              AllowedIPs = [ "10.0.2.3/32" ];
+              PersistentKeepalive = 15;
+            };
+          }
+
+          {
+            wireguardPeerConfig = {
+              PublicKey = "PkprQcw4kYLiX1Ix8FcIje1x0yie/gjheX7UbxQ7OUw=";
+              AllowedIPs = [ "10.0.2.4/32" ];
+              PersistentKeepalive = 15;
+            };
+          }
+
+          {
+            wireguardPeerConfig = {
+              PublicKey = "TcqM0iPp4Dw1IceB88qw/hSiPWXAzT9GECVT36eyzgc=";
+              AllowedIPs = [ "10.0.2.6/32" ];
+              PersistentKeepalive = 15;
+            };
+          }
+
+          {
+            wireguardPeerConfig = {
+              PublicKey = "kDWOvV5AJ++zRQeTn12kd9x45JvxNqnwhPnB9HkzK0c=";
+              PersistentKeepalive = 15;
+            };
+          }
+
+          {
+            wireguardPeerConfig = {
+              PublicKey = "83NjKIMSJxSorKEhxbD8lEu0Xa9rbAyGkRD77xsTsWQ=";
+              AllowedIPs = [ "10.0.2.15/32" ];
+              PersistentKeepalive = 15;
+            };
+          }
+        ];
+      };
+    };
 
     networks = {
+
+      "10-wg0" = {
+        matchConfig.Name = "wg0";
+        address = [
+          "10.0.2.1/24"
+        ];
+        networkConfig = {
+          IPMasquerade = "ipv4";
+          IPForward = true;
+        };
+      };
+
       "20-wired" = {
         matchConfig.Name = "eth0";
         DHCP = "yes";

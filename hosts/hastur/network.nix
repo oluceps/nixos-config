@@ -62,8 +62,8 @@
           {
             wireguardPeerConfig = {
               PublicKey = "ANd++mjV7kYu/eKOEz17mf65bg8BeJ/ozBmuZxRT3w0=";
-              AllowedIPs = [ "10.0.0.0/24" ];
-              Endpoint = "47.115.210.51:51820";
+              AllowedIPs = [ "10.0.2.0/24" ];
+              Endpoint = "20.40.97.137:51820";
               PersistentKeepalive = 15;
             };
           }
@@ -98,7 +98,7 @@
         matchConfig.Name = "wg0";
         # IP addresses the client interface will have
         address = [
-          "10.0.0.2/24"
+          "10.0.2.2/24"
         ];
         DHCP = "no";
       };

@@ -74,11 +74,12 @@
           {
             wireguardPeerConfig = {
               PublicKey = "ANd++mjV7kYu/eKOEz17mf65bg8BeJ/ozBmuZxRT3w0=";
-              AllowedIPs = [ "10.0.0.0/24" ];
-              Endpoint = "47.115.210.51:51820";
+              AllowedIPs = [ "10.0.2.0/24" ];
+              Endpoint = "20.40.97.137:51820";
               PersistentKeepalive = 15;
             };
           }
+
         ];
       };
 
@@ -118,7 +119,7 @@
       "10-wg1" = {
         matchConfig.Name = "wg1";
         address = [
-          "10.0.1.3/24"
+          "10.0.2.3/24"
         ];
         DHCP = "no";
       };
