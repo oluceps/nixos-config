@@ -26,7 +26,6 @@
                   "EHfive"
                   "nuenv"
                   "android-nixpkgs"
-                  "dae"
                   "agenix-rekey"
                   "misskey"
                   "nixyDomains"
