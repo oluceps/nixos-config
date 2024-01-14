@@ -1,8 +1,8 @@
-{ min ? false }: { pkgs
-                 , config
-                 , lib
-                 , ...
-                 }:
+{ pkgs
+, config
+, lib
+, ...
+}:
 with lib;
 let
   cfg = config.services.sing-box;
@@ -30,18 +30,13 @@ in
       type = types.package;
       default = pkgs.sing-box;
     };
+    configFile = mkOption {
+      type = types.str;
+      default = config.age.secrets.sing.path;
+    };
 
   };
   config =
-    let
-      configFile = if ! min then config.age.secrets.sing.path else
-      pkgs.writeTextFile {
-        name = "config.json";
-        text = builtins.readFile ./min.json;
-      };
-
-
-    in
     mkIf cfg.enable {
       systemd.services.sing-box = {
         wantedBy = [ "multi-user.target" ];
@@ -49,7 +44,7 @@ in
         description = "sing-box Daemon";
         serviceConfig = {
           User = "proxy";
-          ExecStart = "${lib.getExe' cfg.package "sing-box"} run -c ${configFile} -D $STATE_DIRECTORY";
+          ExecStart = "${lib.getExe' cfg.package "sing-box"} run -c ${cfg.configFile} -D $STATE_DIRECTORY";
           StateDirectory = "sing";
           CapabilityBoundingSet = [
             "CAP_NET_RAW"
