@@ -1,7 +1,8 @@
 {
   description = "oluceps' flake";
   outputs = inputs@{ flake-parts, ... }:
-    let extraLibs = (import ./hosts/lib.nix inputs); in
+    let extraLibs = (import ./hosts/lib.nix inputs); /* f = excludes: valueFunc: */
+    in
     flake-parts.lib.mkFlake { inherit inputs; } {
       imports = import ./hosts inputs;
       systems = [ "x86_64-linux" "aarch64-linux" ];
@@ -11,7 +12,6 @@
           inherit system;
           overlays = with inputs;[
             agenix-rekey.overlays.default
-            fenix.overlays.default
             self.overlays.default
           ];
         };
@@ -65,8 +65,7 @@
 
         nixosModules =
           let
-            shadowedModules = [
-            ];
+            shadowedModules = [ ];
             modules =
               extraLibs.genFilteredDirAttrs ./modules shadowedModules
                 (n: import (./modules + ("/" + n)));
