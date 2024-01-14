@@ -127,6 +127,7 @@
       disableTxChecksumIpGeneric = false;
       configFile = config.age.secrets.dae.path;
       # assets = with pkgs; [ v2ray-geoip v2ray-domain-list-community ];
+      package = pkgs.dae;
       assetsPath = "${pkgs.symlinkJoin {
         name = "dae-assets-nixy";
         paths = [ pkgs.nixy-domains.src "${pkgs.v2ray-geoip}/share/v2ray" ];

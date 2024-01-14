@@ -58,10 +58,6 @@ foreground = "#CDD6F4"
 background = "#A6E3A1"
 foreground = "#1E1E2E"
 
-[colors.search.footer_bar]
-background = "#A6ADC8"
-foreground = "#1E1E2E"
-
 [colors.search.matches]
 background = "#A6ADC8"
 foreground = "#1E1E2E"
@@ -73,10 +69,6 @@ text = "#1E1E2E"
 [colors.vi_mode_cursor]
 cursor = "#B4BEFE"
 text = "#1E1E2E"
-
-[cursor.style]
-blink_interval = 500
-blinking = "Always"
 
 [cursor.vi_mode_style]
 shape = "Block"

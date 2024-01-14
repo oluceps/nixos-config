@@ -80,12 +80,10 @@
     };
 
   inputs = {
-    nixpkgs-factorio.url = "github:NixOS/nixpkgs?rev=b480f6f0b571abe201f6143d6d1f974049977259";
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
-    nixpkgs-pin.url = "github:NixOS/nixpkgs?rev=e7f38be3775bab9659575f192ece011c033655f0";
     nixpkgs-master.url = "github:NixOS/nixpkgs/master";
-    nixpkgs-gui.url = "github:NixOS/nixpkgs?rev=954a801cbe128e24e78230f711df17da01a5d98c";
     nixpkgs-22.url = "github:NixOS/nixpkgs?rev=c91d0713ac476dfb367bbe12a7a048f6162f039c";
+    nixpkgs-dae.url = "github:NixOS/nixpkgs?rev=c43c81954dee4f0b383a6c4ee3f3c66384146d42";
     nixpkgs-rebuild.url = "github:SuperSandro2000/nixpkgs?rev=449114c6240520433a650079c0b5440d9ecf6156";
     nixpkgs-wayland = {
       url = "github:nix-community/nixpkgs-wayland";

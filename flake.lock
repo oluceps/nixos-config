@@ -2210,35 +2210,19 @@
         "type": "github"
       }
     },
-    "nixpkgs-factorio": {
+    "nixpkgs-dae": {
       "locked": {
-        "lastModified": 1704645819,
-        "narHash": "sha256-nOZKFiI6tMWj9jUWidmIaZk1WYE7ex0slaKH+yGaFPc=",
+        "lastModified": 1703592166,
+        "narHash": "sha256-y6q8zVECbzKaqVa93ozQWiQhFDgiSQarJH0+V3SR8jY=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "b480f6f0b571abe201f6143d6d1f974049977259",
+        "rev": "c43c81954dee4f0b383a6c4ee3f3c66384146d42",
         "type": "github"
       },
       "original": {
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "b480f6f0b571abe201f6143d6d1f974049977259",
-        "type": "github"
-      }
-    },
-    "nixpkgs-gui": {
-      "locked": {
-        "lastModified": 1680960640,
-        "narHash": "sha256-PzDCrg7/5MW8MUzmMFMY7Tu6jBCfeUqnVZ1ORW2zhLs=",
-        "owner": "NixOS",
-        "repo": "nixpkgs",
-        "rev": "954a801cbe128e24e78230f711df17da01a5d98c",
-        "type": "github"
-      },
-      "original": {
-        "owner": "NixOS",
-        "repo": "nixpkgs",
-        "rev": "954a801cbe128e24e78230f711df17da01a5d98c",
+        "rev": "c43c81954dee4f0b383a6c4ee3f3c66384146d42",
         "type": "github"
       }
     },
@@ -2342,22 +2326,6 @@
         "owner": "NixOS",
         "ref": "master",
         "repo": "nixpkgs",
-        "type": "github"
-      }
-    },
-    "nixpkgs-pin": {
-      "locked": {
-        "lastModified": 1693377291,
-        "narHash": "sha256-vYGY9bnqEeIncNarDZYhm6KdLKgXMS+HA2mTRaWEc80=",
-        "owner": "NixOS",
-        "repo": "nixpkgs",
-        "rev": "e7f38be3775bab9659575f192ece011c033655f0",
-        "type": "github"
-      },
-      "original": {
-        "owner": "NixOS",
-        "repo": "nixpkgs",
-        "rev": "e7f38be3775bab9659575f192ece011c033655f0",
         "type": "github"
       }
     },
@@ -3393,10 +3361,8 @@
         "nixified-ai": "nixified-ai",
         "nixpkgs": "nixpkgs_19",
         "nixpkgs-22": "nixpkgs-22",
-        "nixpkgs-factorio": "nixpkgs-factorio",
-        "nixpkgs-gui": "nixpkgs-gui",
+        "nixpkgs-dae": "nixpkgs-dae",
         "nixpkgs-master": "nixpkgs-master",
-        "nixpkgs-pin": "nixpkgs-pin",
         "nixpkgs-rebuild": "nixpkgs-rebuild",
         "nixpkgs-wayland": "nixpkgs-wayland",
         "nixyDomains": "nixyDomains",

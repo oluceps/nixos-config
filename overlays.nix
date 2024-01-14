@@ -29,6 +29,10 @@ let system = "x86_64-linux"; in [
       inherit ((import inputs.nixpkgs-master {
         inherit system; config.allowUnfree = true;
       })) monaspace factorio-headless-experimental;
+      inherit ((import inputs.nixpkgs-dae {
+        inherit system; config.allowUnfree = true;
+      })) dae;
+
 
       # inputs.hyprland.packages.${system}.default;
       inherit ((import inputs.nixpkgs-rebuild { inherit system; })) nixos-rebuild;
@@ -104,12 +108,6 @@ let system = "x86_64-linux"; in [
       #       inherit system;
       #     }).sway-unwrapped;
 
-      fscan = (import
-        inputs.nixpkgs-master
-        {
-          system = "x86_64-linux";
-        }).fscan;
-
       fd_iuBrGE = (import
         inputs.nixpkgs-22
         {
@@ -164,8 +162,8 @@ let system = "x86_64-linux"; in [
           src = fetchFromGitHub {
             owner = "daeuniverse";
             repo = "dae";
-            rev = "75e9e1210ed221b7a11c6f40e75dd5639fbe3b9a";
-            hash = "sha256-TmtJtla8kXlK0sCjSjC44pXsEZpL7+UEHgF7nlzrJkU=";
+            rev = "32ea550ba670f16029cf4684e37a472e895c23ec";
+            hash = "sha256-wsCVKSidiJ9aADfcAygHXwi7v/ctrG/fnJW4/G8KtN0=";
             fetchSubmodules = true;
           };
 
@@ -196,6 +194,7 @@ let system = "x86_64-linux"; in [
             substituteInPlace $out/lib/systemd/system/dae.service \
               --replace /usr/bin/dae $out/bin/dae
           '';
+          meta.mainProgram = "dae";
         };
 
 
