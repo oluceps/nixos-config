@@ -36,7 +36,12 @@ in
   ] ++ (genModules [ "agenix-rekey" "ragenix" "impermanence" "lanzaboote" "nix-ld" "self" ])
   ++ (with inputs.dae.nixosModules;[ dae daed ]);
 
-
+  genFilteredDirAttrs = dir: excludes:
+    inputs.nixpkgs.lib.genAttrs
+      (with builtins; filter
+        (n: !elem n excludes)
+        (attrNames
+          (readDir dir)));
   base =
     let inherit (inputs.nixpkgs) lib;
     in { inherit inputs lib data; inherit (inputs) self; };

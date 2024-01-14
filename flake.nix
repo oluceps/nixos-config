@@ -1,6 +1,7 @@
 {
   description = "oluceps' flake";
   outputs = inputs@{ flake-parts, ... }:
+    let extraLibs = (import ./hosts/lib.nix inputs); in
     flake-parts.lib.mkFlake { inherit inputs; } {
       imports = import ./hosts inputs;
       systems = [ "x86_64-linux" "aarch64-linux" ];
@@ -27,19 +28,16 @@
           packages = [ agenix-rekey home-manager just ];
         };
 
-        packages = with pkgs.lib; genAttrs
-          (with builtins; (attrNames (
-            filterAttrs
-              (n: _: !elem n [
-                "glowsans" # multi pkgs
-                "opulr-a-run" # ?
-                "tcp-brutal" # kernelModule
-                "shufflecake"
-              ])
-              (readDir ./pkgs))))
-          (n: pkgs.${n}) // {
-          image = inputs.self.nixosConfigurations.bootstrap.config.system.build.diskoImages;
-        };
+        packages =
+          let
+            shadowedPkgs = [
+              "glowsans" # multi pkgs
+              "opulr-a-run" # ?
+              "tcp-brutal" # kernelModule
+              "shufflecake"
+            ];
+          in
+          extraLibs.genFilteredDirAttrs ./pkgs shadowedPkgs (n: pkgs.${n});
       };
 
       flake = {
@@ -47,29 +45,39 @@
         agenix-rekey = inputs.agenix-rekey.configure {
           userFlake = inputs.self;
           nodes = with inputs.nixpkgs.lib;
-            filterAttrs (n: _: !elem n [ "nixos" "bootstrap" ]) inputs.self.nixosConfigurations
-          ;
+            filterAttrs (n: _: !elem n [ "nixos" "bootstrap" ]) inputs.self.nixosConfigurations;
         };
 
-        overlays = {
-          default =
-            final: prev: prev.lib.genAttrs
-              (with builtins;
-              (with prev.lib; attrNames (
-                filterAttrs
-                  (n: _: !elem n [
-                    "nobody"
-                    "tcp-brutal"
-                    "shufflecake"
-                  ])
-                  (readDir ./pkgs))))
-              (name: final.callPackage (./pkgs + "/${name}") { });
+        overlays =
+          {
+            default = final: prev:
+              let
+                shadowedPkgs = [
+                  "tcp-brutal"
+                  "shufflecake"
+                ];
+              in
+              extraLibs.genFilteredDirAttrs ./pkgs shadowedPkgs
+                (name: final.callPackage (./pkgs + "/${name}") { });
 
-          lib = final: prev: (import ./hosts/lib.nix inputs);
-        };
+            lib = final: prev: extraLibs;
+          };
 
-        nixosModules = import ./modules { inherit (inputs.nixpkgs) lib; };
+        nixosModules =
+          let
+            shadowedModules = [
+            ];
+            modules =
+              extraLibs.genFilteredDirAttrs ./modules shadowedModules
+                (n: import (./modules + ("/" + n)));
+
+            default = { ... }: {
+              imports = builtins.attrValues modules;
+            };
+          in
+          modules // { inherit default; };
       };
+
     };
 
   inputs = {
