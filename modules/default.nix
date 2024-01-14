@@ -1,29 +1,13 @@
 # ref: EHfive/flakes
 { lib, ... }:
 let
-  modules = lib.genAttrs
-    [
-      "shadowsocks"
-      "rathole"
-      "clash-m"
-      "tuic"
-      "juicity"
-      "btrbk"
-      "naive"
-      "sundial"
-      "rustypaste"
-      # "dae"
-      "factorio"
-      "hysteria"
-      "mosdns"
-      "realm"
-      "phantomsocks"
-      "scx"
-      "cloudflared"
-      "restls"
-    ]
-    (n: import (./. + ("/" + n)))
-  // { sing-box = import ./sing-box { }; };
+  disabledModules = [ "polybar" "sing-box" ];
+
+  modules =
+    map (p: ./. + ("/" + p))
+      (builtins.filter (e: !builtins.elem e [ "default.nix" ])
+        (builtins.attrNames (builtins.readDir ./.)))
+    // { sing-box = import ./sing-box { }; };
 
   default = { ... }: {
     imports = builtins.attrValues modules;
