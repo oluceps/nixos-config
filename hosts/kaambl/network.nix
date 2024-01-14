@@ -111,7 +111,7 @@
         matchConfig.Name = "wg0";
         # IP addresses the client interface will have
         address = [
-          "10.0.0.3/24"
+          "10.0.2.3/24"
         ];
         DHCP = "no";
       };
@@ -119,7 +119,7 @@
       "10-wg1" = {
         matchConfig.Name = "wg1";
         address = [
-          "10.0.2.3/24"
+          "10.0.1.3/24"
         ];
         DHCP = "no";
       };

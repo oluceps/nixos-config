@@ -27,8 +27,8 @@
               ./rekey.nix
               ./spec.nix
               ../../age.nix
-              # ../../packages.nix
-              # ../../misc.nix
+              ../../packages.nix
+              ../../misc.nix
               ../../users.nix
             ]
             ++ lib.sharedModules;

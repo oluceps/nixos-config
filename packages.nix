@@ -2,9 +2,7 @@
 let
   p = with pkgs; {
 
-    crypt = [ minisign rage age-plugin-yubikey cryptsetup tpm2-tss tpm2-tools ];
-    test =
-      [ inputs.factorio-manager.packages.x86_64-linux.default ];
+
     net = [
       # anti-censor
       [ sing-box rathole tor arti nur-pkgs.tuic phantomsocks ]
@@ -16,16 +14,12 @@ let
     # ];
 
     cmd = [
-      # (ragenix.override { plugins = [ age-plugin-yubikey ]; })
       _7zz
       (pkgs.linuxPackages_latest.callPackage ./pkgs/shufflecake { }).userland
-      metasploit
+
       distrobox
       dmidecode
-      linuxKernel.packages.linux_latest_libre.cpupower
-      clean-home
-      just
-      typst
+
       helix
       srm
       onagre
@@ -43,11 +37,13 @@ let
 
     info = [ freshfetch htop bottom onefetch hardinfo qjournalctl hyprpicker imgcat nix-index ccze ];
 
-    python = [ (python311.withPackages (ps: with ps; [ pandas requests absl-py tldextract ])) ];
-
   };
 
   e = with pkgs;{
+    crypt = [ minisign rage age-plugin-yubikey cryptsetup tpm2-tss tpm2-tools yubikey-manager yubikey-manager-qt ];
+
+    python = [ (python311.withPackages (ps: with ps; [ pandas requests absl-py tldextract ])) ];
+
     lang = [
       [
         editorconfig-checker
@@ -61,9 +57,6 @@ let
       # languages related
       [ zig lldb haskell-language-server gopls cmake-language-server zls android-file-transfer nixpkgs-review shfmt ]
     ];
-
-    crypt = [ yubikey-manager yubikey-manager-qt ];
-
     dev = [
       friture
       qemu-utils
@@ -124,6 +117,14 @@ let
     ];
     fs = [ gparted e2fsprogs fscrypt-experimental f2fs-tools compsize ];
 
+    cmd =
+      [
+        metasploit
+        linuxKernel.packages.linux_latest_libre.cpupower
+        clean-home
+        just
+        typst
+      ];
     bluetooth = [ bluetuith ];
 
   };
