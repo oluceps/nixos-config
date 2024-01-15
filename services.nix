@@ -19,6 +19,7 @@
 
 
   services = {
+    resolved.enable = lib.mkForce false;
     # bpftune.enable = false;
     kubo = {
       enable = false;
@@ -172,29 +173,6 @@
       ];
     };
 
-    resolved = {
-      enable = false;
-      dnssec = "true";
-      llmnr = "true";
-      extraConfig = ''
-        DNS=1.0.0.1#one.one.one.one
-        FallbackDNS=
-        DNSOverTLS=true
-        # Cache=no
-        DNSStubListener=yes
-      '';
-    };
-
-    # smartdns = {
-    #   enable = false;
-    #   settings = {
-    #     cache-size = 4096;
-    #     server-tls = [ "223.6.6.6:853" "1.0.0.1:853" ];
-    #     server-https = [ "https://dns.alidns.com/dns-query" ];
-    #     prefetch-domain = true;
-    #     speed-check-mode = "ping,tcp:80";
-    #   };
-    # };
     mosdns = {
       config = {
         log = { level = "debug"; production = false; };
@@ -226,8 +204,13 @@
             args = {
               concurrent = 2;
               upstreams = [
-                { addr = "https://1.0.0.1/dns-query"; idle_timeout = 86400; }
-                { addr = "tls://8.8.4.4:853"; idle_timeout = 86400; enable_pipeline = true; }
+                {
+                  addr = "https://1.0.0.1/dns-query";
+                }
+                {
+                  addr = "tls://8.8.4.4:853";
+                  enable_pipeline = true;
+                }
               ];
             };
             tag = "remote_forward";
@@ -237,8 +220,15 @@
             args = {
               concurrent = 2;
               upstreams = [
-                { addr = "https://223.6.6.6/dns-query"; idle_timeout = 86400; }
-                { addr = "tls://dot.pub"; idle_timeout = 86400; enable_pipeline = true; }
+                {
+                  addr = "quic://dns.alidns.com";
+                  dial_addr = "223.6.6.6";
+                }
+                {
+                  addr = "tls://dot.pub";
+                  dial_addr = "1.12.12.12";
+                  enable_pipeline = true;
+                }
               ];
             };
             tag = "local_forward";
@@ -307,6 +297,17 @@
             };
             tag = "tcp_server";
             type = "tcp_server";
+          }
+          {
+            tag = "quic_server";
+            type = "quic_server";
+            args = {
+              entry = "main_sequence";
+              listen = "127.0.0.1:853";
+              cert = config.age.secrets."nyaw.cert".path;
+              key = config.age.secrets."nyaw.key".path;
+              idle_timeout = 30;
+            };
           }
         ];
       };

@@ -15,8 +15,7 @@
                 allowUnsupportedSystem = true;
                 permittedInsecurePackages = lib.mkForce [ "electron-25.9.0" ];
               };
-              overlays = (import ../../overlays.nix inputs)
-                ++
+              overlays =
                 (lib.genOverlays [
                   "self"
                   # "clansty"
@@ -28,7 +27,7 @@
                   "agenix-rekey"
                   "nixyDomains"
                   "nixpkgs-wayland"
-                ]);
+                ]) ++ (import ../../overlays.nix inputs);
             };
             specialArgs = lib.base // { user = "elen"; };
             modules = [

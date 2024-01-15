@@ -55,6 +55,11 @@
         for_window [app_id="org.gnome.Nautilus"] floating enable
         for_window [title="^Open File$"] floating enable
         for_window [title="^Media viewer$"] floating enable, resize set 800 600
+
+        # blur enable
+        # blur_passes 2
+        # corner_radius 2
+        # shadows enable
       '';
       config = {
 

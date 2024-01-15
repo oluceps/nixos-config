@@ -27,9 +27,6 @@
         hyst-us = { rekeyFile = ./sec/hyst-us.age; mode = "640"; owner = "proxy"; group = "users"; name = "hyst-us.yaml"; };
         hyst-us-cli = { rekeyFile = ./sec/hyst-us-cli.age; mode = "640"; owner = "proxy"; group = "users"; name = "hyst-us-cli.yaml"; };
         hyst-us-cli-has = { rekeyFile = ./sec/hyst-us-cli-has.age; mode = "640"; owner = "proxy"; group = "users"; name = "hyst-us-cli-has.yaml"; };
-        factorio-server = { rekeyFile = ./sec/factorio-server.age; mode = "640"; owner = "factorio"; group = "users"; name = "factorio-server"; };
-        factorio-admin = { rekeyFile = ./sec/factorio-admin.age; mode = "640"; owner = "factorio"; group = "users"; name = "factorio-admin"; };
-        factorio-manager-bot = { rekeyFile = ./sec/factorio-manager-bot.age; mode = "640"; owner = "factorio"; group = "users"; name = "factorio-manager-bot"; };
         cloudflare-garden-00 = { rekeyFile = ./sec/cloudflare-garden-00.age; mode = "640"; owner = "cloudflared"; group = "users"; name = "garden-00"; };
       };
   };

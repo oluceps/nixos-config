@@ -28,15 +28,18 @@
         inherit ((import ../../services.nix { inherit pkgs lib config; }).services) dae;
       }
       {
-        dae = { enable = true; };
+        dae = {
+          enable = true;
+          # package = pkgs.dae-unstable;
+        };
         sing-box = {
           enable = true;
         };
 
-        cloudflared = {
-          enable = true;
-          environmentFile = config.age.secrets.cloudflare-garden-00.path;
-        };
+        # cloudflared = {
+        #   enable = true;
+        #   environmentFile = config.age.secrets.cloudflare-garden-00.path;
+        # };
 
         shadowsocks.instances = [{
           name = "kaambl-local";

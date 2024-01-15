@@ -93,6 +93,10 @@
       url = "github:nix-community/disko";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    swayfx = {
+      url = "github:WillPower3309/swayfx";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     conduit = {
       url = "gitlab:famedly/conduit";
       inputs.nixpkgs.follows = "nixpkgs";

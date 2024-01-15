@@ -74,10 +74,10 @@
         dae.enable = true;
         sing-box.enable = true;
 
-        cloudflared = {
-          enable = true;
-          environmentFile = config.age.secrets.cloudflare-garden-00.path;
-        };
+        # cloudflared = {
+        #   enable = true;
+        #   environmentFile = config.age.secrets.cloudflare-garden-00.path;
+        # };
 
         hysteria.instances = [{
           name = "hastur";
