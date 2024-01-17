@@ -38,6 +38,7 @@
           enable = true;
         };
 
+        copilot-gpt4.enable = true;
         # cloudflared = {
         #   enable = true;
         #   environmentFile = config.age.secrets.cloudflare-garden-00.path;

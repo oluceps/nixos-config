@@ -8,7 +8,7 @@
     firewall = {
       checkReversePath = false;
       enable = true;
-      trustedInterfaces = [ "virbr0" "wg0" "wg1" ];
+      trustedInterfaces = [ "virbr0" "wg0" "wg1" "podman*" ];
       allowedUDPPorts = [ 8080 5173 3330 8880 ];
       allowedTCPPorts = [ 8080 9900 2222 5173 3330 8880 ];
     };
