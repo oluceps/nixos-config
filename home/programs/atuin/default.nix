@@ -10,7 +10,7 @@
       auto_sync = true;
       dialect = "us";
       sync_frequency = "10m";
-      sync_address = "https://api.atuin.sh";
+      sync_address = "https://api.atuin.nyaw.xyz";
       search_mode = "fuzzy"; # 'prefix' | 'fulltext' | 'fuzzy'
 
       ##: options: 'global' (default) | 'host' | 'session' | 'directory'
