@@ -93,6 +93,9 @@
       url = "github:nix-community/disko";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    atuin = {
+      url = "github:atuinsh/atuin";
+    };
     swayfx = {
       url = "github:WillPower3309/swayfx";
       inputs.nixpkgs.follows = "nixpkgs";

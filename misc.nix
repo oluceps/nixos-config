@@ -143,6 +143,7 @@ lib.mkMerge [
         format = "$username$hostname$directory$git_branch$git_commit$git_status$nix_shell$cmd_duration$line_break$python$character";
       };
     };
+
     system.activationScripts = {
       # workaround with tmpfs as home and home-manager, since it not preserve
       # ~/.nix-profile symlink after reboot.
@@ -291,7 +292,7 @@ lib.mkMerge [
               end
           end
 
-          # ${pkgs.zoxide}/bin/zoxide init fish --no-aliases | source
+          ${pkgs.atuin}/bin/atuin init fish | source
         '';
       };
 
