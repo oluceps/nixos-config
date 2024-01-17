@@ -11,6 +11,7 @@
     algorithm = "zstd";
   };
 
+  systemd.services.atuin.serviceConfig.Environment = [ "RUST_LOG=debug" ];
   hardware = {
     #   nvidia = {
     #     package = config.boot.kernelPackages.nvidiaPackages.latest;
@@ -80,9 +81,13 @@
         # };
 
         hysteria.instances = [{
-          name = "hastur";
+          name = "nodens";
           configFile = config.age.secrets.hyst-us-cli-has.path;
-        }];
+        }
+          {
+            name = "colour";
+            configFile = config.age.secrets.hyst-az-cli-has.path;
+          }];
 
         shadowsocks.instances = [
           {
@@ -164,6 +169,7 @@
             #type database DBuser origin-address auth-method
             # ipv4
             host  all      all     127.0.0.1/32   trust
+            host  all      all     10.0.2.1/24   trust
             host  all      all     10.0.1.1/24   trust
             host  all      all     10.0.0.1/24   trust
             # ipv6
@@ -180,6 +186,18 @@
           identMap = ''
             misskey misskey misskey
           '';
+        };
+
+
+
+        atuin = {
+          enable = true;
+          host = "0.0.0.0";
+          port = 8888;
+          openFirewall = true;
+          openRegistration = false;
+          maxHistoryLength = 65536;
+          database.uri = "postgresql://atuin@127.0.0.1:5432/atuin";
         };
 
         pipewire = {

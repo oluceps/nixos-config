@@ -24,14 +24,6 @@
     # replicates the default behaviour.
     enableIPv6 = true;
 
-    # interfaces.enp4s0.useDHCP = true;
-    #  interfaces.wlp5s0.useDHCP = true;
-    #
-    # Configure network proxy if necessary
-    # proxy.default = "http://127.0.0.1:7890";
-
-    # proxy.noProxy = "127.0.0.1,localhost,internal.domain";
-
     nftables.enable = true;
     networkmanager.enable = lib.mkForce false;
     networkmanager.dns = "none";
@@ -75,7 +67,7 @@
             wireguardPeerConfig = {
               PublicKey = "ANd++mjV7kYu/eKOEz17mf65bg8BeJ/ozBmuZxRT3w0=";
               AllowedIPs = [ "10.0.2.0/24" ];
-              Endpoint = "20.40.97.137:51820";
+              Endpoint = "127.0.0.1:41821";
               PersistentKeepalive = 15;
             };
           }

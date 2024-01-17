@@ -25,7 +25,9 @@
   services =
     lib.mkMerge [
       {
-        inherit ((import ../../services.nix { inherit pkgs lib config; }).services) dae;
+        inherit ((import ../../services.nix { inherit pkgs lib config; }).services)
+          dae
+          ;
       }
       {
         dae = {
@@ -45,10 +47,16 @@
           name = "kaambl-local";
           configFile = config.age.secrets.ss.path;
         }];
-        hysteria.instances = [{
-          name = "kaambl-local";
-          configFile = config.age.secrets.hyst-us-cli.path;
-        }];
+        hysteria.instances = [
+          {
+            name = "nodens";
+            configFile = config.age.secrets.hyst-us-cli.path;
+          }
+          {
+            name = "colour";
+            configFile = config.age.secrets.hyst-az-cli-kam.path;
+          }
+        ];
 
         phantomsocks =
           {

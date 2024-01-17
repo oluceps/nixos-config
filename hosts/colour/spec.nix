@@ -1,8 +1,6 @@
 { inputs, config, lib, pkgs, ... }:
 
 {
-
-
   nix.gc = {
     automatic = true;
     dates = "weekly";
@@ -42,6 +40,7 @@
 
   systemd.tmpfiles.rules = [
   ];
+  
   services = {
     juicity.instances = [{
       name = "only";
@@ -51,7 +50,36 @@
       };
       configFile = config.age.secrets.juic-san.path;
     }];
+
+    hysteria.instances = [
+      {
+        name = "only";
+        serve = {
+          enable = true;
+          port = 4432;
+        };
+        configFile = config.age.secrets.hyst-us.path;
+      }
+    ];
+
+    caddy = {
+      enable = true;
+      virtualHosts = {
+        "api.atuin.nyaw.xyz" = {
+          hostName = "api.atuin.nyaw.xyz";
+          extraConfig = ''
+            log {
+              level DEBUG
+            }
+    
+            tls mn1.674927211@gmail.com
+            reverse_proxy 10.0.2.2:8888
+          '';
+        };
+      };
+    };
   };
+
   system.stateVersion = "24.05"; # Did you read the comment?
 
 }

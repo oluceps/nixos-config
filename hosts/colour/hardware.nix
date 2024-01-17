@@ -47,7 +47,7 @@
     };
 
     kernelPackages =
-      inputs.nyx.packages.${pkgs.system}.linuxPackages_cachyos-server-lto;
+      pkgs.linuxPackages_latest;
   };
 
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
