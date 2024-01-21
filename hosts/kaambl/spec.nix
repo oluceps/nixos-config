@@ -141,13 +141,13 @@
             };
           };
 
-        factorio-manager = {
-          enable = false;
-          factorioPackage = pkgs.factorio-headless;
-          botConfigPath = config.age.secrets.factorio-manager-bot.path;
-          serverSettingsFile = config.age.secrets.factorio-server.path;
-          serverAdminsFile = config.age.secrets.factorio-server.path;
-        };
+        # factorio-manager = {
+        #   enable = false;
+        #   factorioPackage = pkgs.factorio-headless;
+        #   botConfigPath = config.age.secrets.factorio-manager-bot.path;
+        #   serverSettingsFile = config.age.secrets.factorio-server.path;
+        #   serverAdminsFile = config.age.secrets.factorio-server.path;
+        # };
 
         factorio = {
           enable = false;

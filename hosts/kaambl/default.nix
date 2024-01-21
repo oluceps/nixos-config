@@ -52,7 +52,7 @@
             [
               inputs.aagl.nixosModules.default
               inputs.disko.nixosModules.default
-              inputs.factorio-manager.nixosModules.default
+              # inputs.factorio-manager.nixosModules.default
             ];
           };
       };

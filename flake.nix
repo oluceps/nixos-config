@@ -109,11 +109,11 @@
       # url = "/home/elen/Src/nyx";
       url = "github:oluceps/nyx";
     };
-    factorio-manager = {
-      url = "/home/elen/Src/factorio-manager";
-      # url = "github:oluceps/nyx";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
+    # factorio-manager = {
+    #   url = "/home/elen/Src/factorio-manager";
+    #   # url = "github:oluceps/nyx";
+    #   inputs.nixpkgs.follows = "nixpkgs";
+    # };
 
     anyrun = {
       url = "github:Kirottu/anyrun";

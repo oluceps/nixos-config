@@ -23,13 +23,13 @@
     inherit ((import ../../services.nix { inherit pkgs lib config inputs; }).services) openssh fail2ban;
 
 
-    factorio-manager = {
-      enable = true;
-      factorioPackage = pkgs.factorio-headless-experimental;
-      botConfigPath = config.age.secrets.factorio-manager-bot.path;
-      serverSettingsFile = config.age.secrets.factorio-server.path;
-      serverAdminsFile = config.age.secrets.factorio-server.path;
-    };
+    # factorio-manager = {
+    #   enable = true;
+    #   factorioPackage = pkgs.factorio-headless-experimental;
+    #   botConfigPath = config.age.secrets.factorio-manager-bot.path;
+    #   serverSettingsFile = config.age.secrets.factorio-server.path;
+    #   serverAdminsFile = config.age.secrets.factorio-server.path;
+    # };
 
     factorio = {
       enable = false;
