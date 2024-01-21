@@ -11,6 +11,9 @@
     algorithm = "zstd";
   };
 
+  programs = {
+    anime-game-launcher.enable = true; # Adds launcher and /etc/hosts rules
+  };
   systemd.services.atuin.serviceConfig.Environment = [ "RUST_LOG=debug" ];
   hardware = {
     #   nvidia = {

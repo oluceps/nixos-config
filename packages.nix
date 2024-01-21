@@ -127,6 +127,8 @@ let
       ];
     bluetooth = [ bluetuith ];
 
+    sound = [ pulseaudio ];
+
   };
 in
 {
