@@ -29,7 +29,7 @@
         hyst-us-cli-has = { rekeyFile = ./sec/hyst-us-cli-has.age; mode = "640"; owner = "proxy"; group = "users"; name = "hyst-us-cli-has.yaml"; };
         hyst-az-cli-has = { rekeyFile = ./sec/hyst-az-cli-has.age; mode = "640"; owner = "proxy"; group = "users"; name = "hyst-az-cli-has.yaml"; };
         hyst-az-cli-kam = { rekeyFile = ./sec/hyst-az-cli-kam.age; mode = "640"; owner = "proxy"; group = "users"; name = "hyst-az-cli-kam.yaml"; };
-        cloudflare-garden-00 = { rekeyFile = ./sec/cloudflare-garden-00.age; mode = "640"; owner = "cloudflared"; group = "users"; name = "garden-00"; };
+        # cloudflare-garden-00 = { rekeyFile = ./sec/cloudflare-garden-00.age; mode = "640"; owner = "cloudflared"; group = "users"; name = "garden-00"; };
         atuin = { rekeyFile = ./sec/atuin.age; mode = "640"; owner = user; group = "users"; };
         atuin_key = { rekeyFile = ./sec/atuin_key.age; mode = "640"; owner = user; group = "users"; };
       };
