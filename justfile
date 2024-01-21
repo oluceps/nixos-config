@@ -20,7 +20,7 @@ filter := '''
 
 map := '''
 	{
-		hastur: rha0,
+		hastur: riro@192.168.2.9,
 		kaambl: localhost,
 		nodens: dgs,
 		azasos: tcs,

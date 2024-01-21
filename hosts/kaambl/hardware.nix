@@ -126,8 +126,8 @@
       # (import inputs.nixpkgs-pin {
       #   system = "x86_64-linux";
       # })
-      # pkgs.linuxPackages_6_6;
-      inputs.nyx.packages.${pkgs.system}.linuxPackages_cachyos-sched-ext-lto-zen4;
+      pkgs.linuxPackages_latest;
+    # inputs.nyx.packages.${pkgs.system}.linuxPackages_cachyos-sched-ext-lto-zen4;
 
     # kernelPatches =
     #   let patchPath = ../../.attachs/cachyos-kernel;

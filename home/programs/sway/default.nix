@@ -128,13 +128,15 @@
         ];
 
         output =
-          if user == "riro" then {
-            HDMI-A-1 = {
-              bg = "/etc/nixos/.attachs/wall.jpg fill";
-              mode = "1920x1080";
-              scale = "1";
-            };
-          } else if user == "elen" then {
+          if user == "riro" then
+            {
+              HDMI-A-1 = {
+                bg = "/etc/nixos/.attachs/wall.jpg fill";
+                mode = "1920x1080";
+                scale = "1.5";
+              };
+            }
+          else if user == "elen" then {
 
             eDP-1 = {
               bg = "/etc/nixos/.attachs/wall.jpg fill";

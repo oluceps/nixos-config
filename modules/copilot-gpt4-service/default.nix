@@ -18,8 +18,7 @@ in
         default = [
           "HOST=0.0.0.0"
           "PORT=8081"
-          "CACHE=true"
-          "CACHE_PATH=/tmp/copilot-gpt4/cache.sqlite3"
+          "CACHE=false"
         ];
       };
 

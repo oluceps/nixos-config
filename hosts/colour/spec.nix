@@ -40,7 +40,7 @@
 
   systemd.tmpfiles.rules = [
   ];
-  
+
   services = {
     juicity.instances = [{
       name = "only";
@@ -74,6 +74,13 @@
     
             tls mn1.674927211@gmail.com
             reverse_proxy 10.0.2.2:8888
+          '';
+        };
+        "gpt4.nyaw.xyz" = {
+          hostName = "gpt4.nyaw.xyz";
+          extraConfig = ''
+            tls mn1.674927211@gmail.com
+            reverse_proxy 10.0.2.3:3000
           '';
         };
       };

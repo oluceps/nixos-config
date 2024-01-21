@@ -9,6 +9,9 @@
     rocm-opencl-icd
     rocm-opencl-runtime
   ];
+  environment.sessionVariables = {
+    WLR_RENDERER = "vulkan";
+  };
   zramSwap = {
     enable = false;
     swapDevices = 1;
