@@ -83,16 +83,15 @@
                 };
               };
             };
-          };
 
-          plainSwap = {
-            size = "100%";
-            content = {
-              type = "swap";
-              resumeDevice = true;
+            plainSwap = {
+              size = "100%";
+              content = {
+                type = "swap";
+                resumeDevice = true;
+              };
             };
           };
-
         };
       };
     };
