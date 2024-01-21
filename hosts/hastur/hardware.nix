@@ -21,7 +21,7 @@
     kernelModules = [ "ec_sys" "uhid" "kvm-amd" ];
     # extraModulePackages = with config.boot.kernelPackages; [ v4l2loopback ];
     kernelPackages = pkgs.linuxPackages_latest;
-      # inputs.nyx.packages.${pkgs.system}.linuxPackages_cachyos-server-lto-zen3;
+    # inputs.nyx.packages.${pkgs.system}.linuxPackages_cachyos-server-lto-zen3;
     # binfmt.emulatedSystems = [
     #   "riscv64-linux"
     #   "aarch64-linux"
@@ -40,51 +40,73 @@
   };
 
 
-  fileSystems."/" = {
-    device = "none";
-    fsType = "tmpfs";
-    options = [ "defaults" "size=4G" "mode=755" ];
-  };
+  disko.devices = {
+    disk = {
+      nvme = {
+        type = "disk";
+        device = "/dev/disk/by-diskseq/1";
+        content = {
+          type = "gpt";
+          partitions = {
+            esp = {
+              label = "ESP";
+              size = "2G";
+              type = "EF00";
+              content = {
+                type = "filesystem";
+                format = "vfat";
+                mountpoint = "/efi";
+              };
+            };
+            root = {
+              end = "-32G";
+              content = {
+                type = "btrfs";
+                extraArgs = [ "-f" "--csum xxhash64" "--label nixos" ]; # Override existing partition
+                subvolumes = {
+                  "/persist" = {
+                    mountpoint = "/persist";
+                    mountOptions = [ "compress-force=zstd:1" "noatime" "discard=async" "space_cache=v2" ];
+                  };
+                  "/nix" = {
+                    mountpoint = "/nix";
+                    mountOptions = [ "compress-force=zstd:1" "noatime" "discard=async" "space_cache=v2" "nodev" "nosuid" ];
+                  };
+                  "/var" = {
+                    mountpoint = "/var";
+                    mountOptions = [ "compress-force=zstd:1" "noatime" "discard=async" "space_cache=v2" ];
+                  };
+                  "/persist/tmp" = {
+                    mountpoint = "/tmp";
+                    mountOptions = [ "relatime" "nodev" "nosuid" "discard=async" "space_cache=v2" ];
+                  };
+                };
+              };
+            };
+          };
 
-  fileSystems."/persist" = {
-    device = "/dev/disk/by-uuid/e86a6cfa-39cc-4dd9-b5d3-fee5e2613578";
-    fsType = "btrfs";
-    options = [ "subvol=/persist" "compress-force=zstd:1" "noatime" "discard=async" "space_cache=v2" ];
-    neededForBoot = true;
-  };
+          plainSwap = {
+            size = "100%";
+            content = {
+              type = "swap";
+              resumeDevice = true;
+            };
+          };
 
-  fileSystems."/nix" = {
-    device = "/dev/disk/by-uuid/e86a6cfa-39cc-4dd9-b5d3-fee5e2613578";
-    fsType = "btrfs";
-    options = [ "subvol=/nix" "compress-force=zstd:1" "noatime" "discard=async" "space_cache=v2" ];
-  };
-
-
-  fileSystems."/var" = {
-    device = "/dev/disk/by-uuid/e86a6cfa-39cc-4dd9-b5d3-fee5e2613578";
-    fsType = "btrfs";
-    options = [ "subvol=/var" "compress-force=zstd:1" "noatime" "discard=async" "space_cache=v2" ];
-  };
-
-  fileSystems."/tmp" = {
-    device = "/dev/disk/by-uuid/e86a6cfa-39cc-4dd9-b5d3-fee5e2613578";
-    fsType = "btrfs";
-    options = [ "subvolid=28831" "compress-force=zstd:1" "nosuid" "nodev" "noatime" "discard=async" "space_cache=v2" ];
-  };
-
-  fileSystems."/efi" = {
-    device = "/dev/disk/by-uuid/3418-1C5E";
-    fsType = "vfat";
-  };
-
-  swapDevices = [{
-    device = "/dev/disk/by-partuuid/67a00700-d210-4dbf-a02d-bfefbf6a9a72";
-    randomEncryption = {
-      enable = true;
-      cipher = "aes-xts-plain64";
-      source = "/dev/random";
+        };
+      };
     };
-  }];
+    nodev = {
+      "/" = {
+        fsType = "tmpfs";
+        mountOptions = [ "relatime" "nosuid" "nodev" "size=2G" "mode=755" ];
+      };
+    };
+  };
+
+  fileSystems."/persist".neededForBoot = true;
+
+
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
   hardware.cpu.amd.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
 }
