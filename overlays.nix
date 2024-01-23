@@ -162,12 +162,12 @@ let system = "x86_64-linux"; in [
           src = fetchFromGitHub {
             owner = "daeuniverse";
             repo = "dae";
-            rev = "32ea550ba670f16029cf4684e37a472e895c23ec";
-            hash = "sha256-wsCVKSidiJ9aADfcAygHXwi7v/ctrG/fnJW4/G8KtN0=";
+            rev = "e04b16fdea70f38f8e3dd6637a8bb38739cd8baa";
+            hash = "sha256-0kIBINHEkMB574TadHCdAjA/BS+wFUbt9RK+qMSe5JY=";
             fetchSubmodules = true;
           };
 
-          vendorHash = "sha256-UQRM3/JSsPDAGqYZ43bVYVvSLvqqZ/BJE6hwx5wzfcQ=";
+          vendorHash = "sha256-LaR7SO1PDla/ipFUcCVqpJUHQAWEDjv9F1mJbMk8KVo=";
 
           proxyVendor = true;
 
