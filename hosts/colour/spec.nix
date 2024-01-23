@@ -1,6 +1,12 @@
 { inputs, config, lib, pkgs, ... }:
 
 {
+  virtualisation.podman = {
+    enable = true;
+    dockerSocket.enable = true;
+    dockerCompat = true;
+  };
+
   nix.gc = {
     automatic = true;
     dates = "weekly";
