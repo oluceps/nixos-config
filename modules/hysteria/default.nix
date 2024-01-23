@@ -57,6 +57,7 @@ in
             "hysteria-${s.name}" = {
               wantedBy = [ "multi-user.target" ];
               after = [ "network-online.target" "dae.service" ];
+              wants = [ "network-online.target" ];
               description = "hysteria daemon";
               serviceConfig =
                 let binSuffix = if s.serve.enable then "server" else "client"; in {

@@ -41,6 +41,7 @@ in
       systemd.services.sing-box = {
         wantedBy = [ "multi-user.target" ];
         after = [ "network-online.target" ];
+        wants = [ "network-online.target" ];
         description = "sing-box Daemon";
         serviceConfig = {
           User = "proxy";
