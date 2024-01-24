@@ -71,6 +71,13 @@
               PersistentKeepalive = 15;
             };
           }
+          {
+            wireguardPeerConfig = {
+              PublicKey = "S15atcarZFdphevBkA/c8jMyL71JeS4DcrrpLZJOcj0=";
+              AllowedIPs = [ "10.0.2.5/32" ];
+              PersistentKeepalive = 15;
+            };
+          }
 
           {
             wireguardPeerConfig = {

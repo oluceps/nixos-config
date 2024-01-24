@@ -273,7 +273,7 @@
           }
           {
             args = [
-              { exec = "prefer_ipv4"; }
+              # { exec = "prefer_ipv4"; }
               { exec = "$cache"; }
               { exec = "accept"; matches = "has_resp"; }
               { exec = "goto local_sequence"; matches = "qname $direct_domain"; }

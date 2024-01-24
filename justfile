@@ -44,13 +44,13 @@ help:
 	c                         # check and eval\n\
 	"
 push-secret target="hastur" datas=nodes:
-	{{datas}} | {{filter}} | each { |i| {{map}} | (nix copy --substitute-on-destination --to $'ssh://(($in).{{target}})' (nix eval --raw $'{{loc}}#nixosConfigurations.($i).config.age.rekey.derivation') -vvv) }
+	{{datas}} | {{filter}} | par-each { |i| {{map}} | (nix copy --substitute-on-destination --to $'ssh://(($in).{{target}})' (nix eval --raw $'{{loc}}#nixosConfigurations.($i).config.age.rekey.derivation') -vvv) }
 
 fetch-secret source="kaambl" datas=nodes:
-	{{datas}} | {{filter}} | each { |i| {{map}} | (ssh {{source}} -t $"nix eval --raw {{loc}}#nixosConfigurations.($i).config.age.rekey.derivation") | (nix copy --substitute-on-destination --from 'ssh://{{source}}' $in -vvv )}
+	{{datas}} | {{filter}} | par-each { |i| {{map}} | (ssh {{source}} -t $"nix eval --raw {{loc}}#nixosConfigurations.($i).config.age.rekey.derivation") | (nix copy --substitute-on-destination --from 'ssh://{{source}}' $in -vvv )}
 
 build-host hosts=nodes:
-	{{hosts}} | {{filter}} | each { |i| nom build $'{{loc}}#nixosConfigurations.($i).config.system.build.toplevel' }
+	{{hosts}} | {{filter}} | par-each { |i| nom build $'{{loc}}#nixosConfigurations.($i).config.system.build.toplevel' }
 
 deploy targets=nodes builder="kaambl" mode="switch":
 	#!/usr/bin/env nu
