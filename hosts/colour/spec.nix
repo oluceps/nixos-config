@@ -1,4 +1,4 @@
-{ inputs, config, lib, pkgs, ... }:
+{ config, lib, pkgs, ... }:
 
 {
   virtualisation.podman = {
@@ -20,7 +20,7 @@
 
   services = {
     inherit ((import ../../services.nix
-      ((import ../lib.nix { inherit inputs; }).base
+      (lib.base
         // { inherit pkgs config; })).services)
       openssh fail2ban;
   };

@@ -20,7 +20,10 @@
                   "nixpkgs-wayland"
                 ]);
             };
-            specialArgs = lib.base // { user = "elen"; };
+            specialArgs = lib.base // {
+              inherit lib; # weird
+              user = "elen";
+            };
             modules = [
               ./hardware.nix
               ./network.nix

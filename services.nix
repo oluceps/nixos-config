@@ -1,6 +1,7 @@
 { pkgs
 , lib
 , config
+, self
 , ...
 }:
 
@@ -29,6 +30,19 @@
     };
     hysteria.instances = [
     ];
+    i2pd = {
+      enable = true;
+      notransit = true;
+      outTunnels = {
+        # ssh-vpqn = {
+        #   enable = true;
+        #   name = "ssh";
+        #   destination = "";
+        #   address = "127.0.0.1";
+        #   port = 2222;
+        # };
+      };
+    };
 
     btrbk = {
       config = ''
@@ -196,6 +210,7 @@
               dump_file = "./cache.dump";
               lazy_cache_ttl = 86400;
               size = 65536;
+              dump_interval = 600;
             };
             tag = "cache";
             type = "cache";
@@ -235,6 +250,18 @@
             type = "forward";
           }
           {
+            args = {
+              concurrent = 2;
+              upstreams = [
+                {
+                  addr = "udp://192.168.1.1";
+                }
+              ];
+            };
+            tag = "local_domain_forward";
+            type = "forward";
+          }
+          {
             args = [
               { exec = "ttl 600-3600"; }
               { exec = "accept"; }
@@ -249,6 +276,15 @@
               { exec = "goto ttl_sequence"; }
             ];
             tag = "local_sequence";
+            type = "sequence";
+          }
+          {
+            args = [
+              { exec = "query_summary local_area"; }
+              { exec = "$local_domain_forward"; }
+              { exec = "goto ttl_sequence"; }
+            ];
+            tag = "local_area";
             type = "sequence";
           }
           {
@@ -275,6 +311,12 @@
             args = [
               # { exec = "prefer_ipv4"; }
               { exec = "$cache"; }
+              { exec = "accept"; matches = "has_resp"; }
+              {
+                exec = "$local_domain_forward";
+                matches =
+                  "qname ${with builtins; (concatStringsSep " " (map (n: "full:" + n + ".") (attrNames self.nixosConfigurations)))}";
+              }
               { exec = "accept"; matches = "has_resp"; }
               { exec = "goto local_sequence"; matches = "qname $direct_domain"; }
               { exec = "$final"; }
