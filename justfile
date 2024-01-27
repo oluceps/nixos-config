@@ -20,8 +20,8 @@ filter := '''
 
 map := '''
 	{
-		hastur: riro@192.168.2.9,
-		kaambl: localhost,
+		hastur: hastur,
+		kaambl: kaambl,
 		nodens: dgs,
 		azasos: tcs,
 		abhoth: abh,
@@ -52,7 +52,7 @@ fetch-secret source="kaambl" datas=nodes:
 build-host hosts=nodes:
 	{{hosts}} | {{filter}} | par-each { |i| nom build $'{{loc}}#nixosConfigurations.($i).config.system.build.toplevel' }
 
-deploy targets=nodes builder="kaambl" mode="switch":
+deploy targets=nodes builder="hastur" mode="switch":
 	#!/usr/bin/env nu
 	def get_map [ k: string ] { {{map}} | get $k }
 	{{targets}} | {{filter}} | each { |target| nixos-rebuild --target-host (get_map $target) --build-host (get_map {{builder}}) {{mode}} --use-remote-sudo --flake $'{{loc}}#($target)' }

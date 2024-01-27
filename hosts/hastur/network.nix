@@ -1,5 +1,6 @@
 { lib, config, ... }: {
   services.mosdns.enable = true;
+  # services.resolved.enable = true;
   networking = {
     resolvconf.useLocalResolver = true;
 
@@ -12,7 +13,7 @@
     useDHCP = false;
     firewall = {
       enable = true;
-      trustedInterfaces = [ "virbr0" "wg0" "wg1" "podman*" ];
+      trustedInterfaces = [ "virbr0" "wg0" "wg1" "podman*" "dae0" ];
       allowedUDPPorts = [ 8080 5173 51820 9918 ];
       allowedTCPPorts = [ 8080 9900 2222 5173 1900 ];
     };

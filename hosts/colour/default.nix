@@ -7,7 +7,7 @@
           {
             pkgs = import inputs.nixpkgs {
               system = "x86_64-linux";
-              config = { };
+              config = { allowUnfree = true; };
               overlays = (import ../../overlays.nix inputs)
                 ++
                 (lib.genOverlays [

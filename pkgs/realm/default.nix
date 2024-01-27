@@ -1,11 +1,6 @@
-{ lib
-, fetchFromGitHub
-, pkgs
+{ fetchFromGitHub
+, rustPlatform
 }:
-
-let
-  rustPlatform = pkgs.makeRustPlatform { inherit (pkgs.fenix.minimal) cargo rustc; };
-in
 
 rustPlatform.buildRustPackage rec{
   pname = "realm";
@@ -22,9 +17,4 @@ rustPlatform.buildRustPackage rec{
 
   RUSTC_BOOTSTRAP = 1;
 
-  meta = with lib; {
-    homepage = "https://github.com/zhboner/realm";
-    description = "A network relay tool";
-    mainProgram = "realm";
-  };
 }

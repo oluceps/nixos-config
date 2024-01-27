@@ -1,4 +1,4 @@
-{ pkgs, config, user, lib, ... }: {
+{ pkgs, config, user, lib, inputs, ... }: {
   # Mobile device.
 
   system.stateVersion = "23.05"; # Did you read the comment?
@@ -28,9 +28,9 @@
   services =
     lib.mkMerge [
       {
-        inherit ((import ../../services.nix { inherit pkgs lib config; }).services)
-          dae
-          ;
+        inherit ((import ../../services.nix
+          ((import ../lib.nix { inherit inputs; }).base
+            // { inherit pkgs config; })).services) dae;
       }
       {
         dae = {

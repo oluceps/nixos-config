@@ -32,7 +32,7 @@
               ../../users.nix
             ]
             ++ lib.sharedModules ++ [
-              # inputs.factorio-manager.nixosModules.default
+              inputs.factorio-manager.nixosModules.default
             ];
 
           };

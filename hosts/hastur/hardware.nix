@@ -21,7 +21,7 @@
     kernelModules = [ "ec_sys" "uhid" "kvm-amd" ];
     # extraModulePackages = with config.boot.kernelPackages; [ v4l2loopback ];
     kernelPackages = pkgs.linuxPackages_latest;
-    # inputs.nyx.packages.${pkgs.system}.linuxPackages_cachyos-server-lto-zen3;
+    # inputs.nyx.packages.${pkgs.system}.linuxPackages_cachyos-lto-zen3;
     # binfmt.emulatedSystems = [
     #   "riscv64-linux"
     #   "aarch64-linux"

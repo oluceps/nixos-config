@@ -1,4 +1,4 @@
-{ pkgs, config, lib, ... }:
+{ pkgs, config, lib, inputs, ... }:
 {
   # server inside the cage.
 
@@ -17,11 +17,15 @@
 
   services = lib.mkMerge [
     {
-      inherit ((import ../../services.nix { inherit pkgs lib config; }).services)
+
+      inherit ((import ../../services.nix
+        ((import ../lib.nix { inherit inputs; }).base
+          // { inherit pkgs config; })).services)
+        dae
         openssh
         mosdns
         fail2ban
-        dae;
+        ;
     }
     {
       dae.enable = true;

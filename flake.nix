@@ -12,6 +12,7 @@
           inherit system;
           overlays = with inputs;[
             agenix-rekey.overlays.default
+            fenix.overlays.default
             self.overlays.default
           ];
         };
@@ -109,11 +110,11 @@
       # url = "/home/elen/Src/nyx";
       url = "github:oluceps/nyx";
     };
-    # factorio-manager = {
-    #   url = "/home/elen/Src/factorio-manager";
-    #   # url = "github:oluceps/nyx";
-    #   inputs.nixpkgs.follows = "nixpkgs";
-    # };
+    factorio-manager = {
+      url = "/home/riro/Src/factorio-manager";
+      # url = "github:oluceps/nyx";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
 
     anyrun = {
       url = "github:Kirottu/anyrun";

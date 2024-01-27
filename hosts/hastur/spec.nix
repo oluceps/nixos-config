@@ -1,4 +1,4 @@
-{ pkgs, config, user, lib, ... }: {
+{ pkgs, config, user, lib, inputs, ... }: {
   # This headless machine uses to perform heavy task.
   # Running database and web services.
 
@@ -71,7 +71,9 @@
   services =
     lib.mkMerge [
       {
-        inherit ((import ../../services.nix { inherit pkgs lib config; }).services) dae;
+        inherit ((import ../../services.nix
+          ((import ../lib.nix { inherit inputs; }).base
+            // { inherit pkgs config; })).services) dae;
       }
       {
 

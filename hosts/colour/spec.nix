@@ -19,7 +19,10 @@
   };
 
   services = {
-    inherit ((import ../../services.nix { inherit pkgs lib config inputs; }).services) openssh fail2ban;
+    inherit ((import ../../services.nix
+      ((import ../lib.nix { inherit inputs; }).base
+        // { inherit pkgs config; })).services)
+      openssh fail2ban;
   };
 
   programs = {
@@ -67,6 +70,7 @@
         configFile = config.age.secrets.hyst-us.path;
       }
     ];
+
 
     caddy = {
       enable = true;

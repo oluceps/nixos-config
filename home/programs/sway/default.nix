@@ -1,7 +1,7 @@
 { config
 , pkgs
-, user
 , lib
+, osConfig
 , ...
 }: {
 
@@ -128,16 +128,15 @@
         ];
 
         output =
-          if user == "riro" then
+          if osConfig.networking.hostName == "hastur" then
             {
               HDMI-A-1 = {
                 bg = "/etc/nixos/.attachs/wall.jpg fill";
                 mode = "1920x1080";
-                scale = "1.5";
+                scale = "1.25";
               };
             }
-          else if user == "elen" then {
-
+          else if osConfig.networking.hostName == "kaambl" then {
             eDP-1 = {
               bg = "/etc/nixos/.attachs/wall.jpg fill";
               mode = "2160x1440";
