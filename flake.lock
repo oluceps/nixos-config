@@ -639,11 +639,11 @@
         "rev": "e73baa440b1b8a41608408c59a455c1b524cbb87",
         "revCount": 19,
         "type": "git",
-        "url": "file:///home/elen/Src/factorio-manager"
+        "url": "file:///home/riro/Src/factorio-manager"
       },
       "original": {
         "type": "git",
-        "url": "file:///home/elen/Src/factorio-manager"
+        "url": "file:///home/riro/Src/factorio-manager"
       }
     },
     "fenix": {
@@ -2310,11 +2310,11 @@
     "niri-src": {
       "flake": false,
       "locked": {
-        "lastModified": 1706420082,
-        "narHash": "sha256-7pYO4CbPAUuz+c8Kq0O3PRgMYCN8ADS5pTqnSC5w5D0=",
+        "lastModified": 1706447747,
+        "narHash": "sha256-KYLeHxTujC/Ovm+6X8hxqvrklIMuOsjOwXKgDdRFy94=",
         "owner": "YaLTeR",
         "repo": "niri",
-        "rev": "367e4955ea05044b0151e0a39ea7061788d73af9",
+        "rev": "51243a0a505a533057e7326fbbae882420f0d363",
         "type": "github"
       },
       "original": {

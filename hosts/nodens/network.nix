@@ -2,11 +2,6 @@
 , lib
 , ...
 }: {
-  services.udev.extraRules = ''
-    ATTR{address}=="62:16:bf:7c:57:a3", NAME="eth0"
-    ATTR{address}=="22:48:a2:5b:0b:f0", NAME="eth1"
-  '';
-
   networking = {
     resolvconf.useLocalResolver = true;
     firewall = {
@@ -126,9 +121,7 @@
         matchConfig.Name = "eth0";
         address = [
           "144.126.208.183/20"
-          "10.48.0.5/16"
           "2604:a880:4:1d0::5b:6000/64"
-          "fe80::6016:bfff:fe7c:57a3/64"
         ];
 
         routes = [
@@ -145,22 +138,22 @@
         dhcpV6Config.UseDNS = false;
       };
 
-      "30-eth1" = {
-        matchConfig.Name = "eth1";
-        address = [
-          "10.124.0.2/20"
-          "fe80::2048:a2ff:fe5b:bf0/64"
-        ];
+      # "30-eth1" = {
+      #   matchConfig.Name = "eth1";
+      #   address = [
+      #     "10.124.0.2/20"
+      #     "fe80::2048:a2ff:fe5b:bf0/64"
+      #   ];
 
-        networkConfig = {
-          DNSSEC = true;
-          MulticastDNS = true;
-          DNSOverTLS = true;
-        };
-        # # REALLY IMPORTANT
-        dhcpV4Config.UseDNS = false;
-        dhcpV6Config.UseDNS = false;
-      };
+      #   networkConfig = {
+      #     DNSSEC = true;
+      #     MulticastDNS = true;
+      #     DNSOverTLS = true;
+      #   };
+      #   # # REALLY IMPORTANT
+      #   dhcpV4Config.UseDNS = false;
+      #   dhcpV6Config.UseDNS = false;
+      # };
     };
   };
 }

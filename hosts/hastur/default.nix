@@ -59,6 +59,7 @@
               ./misskey.nix
 
               ./vaultwarden.nix
+              inputs.niri.nixosModules.niri
 
             ] ++ lib.sharedModules
             ++

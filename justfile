@@ -20,8 +20,8 @@ filter := '''
 
 map := '''
 	{
-		hastur: hastur,
-		kaambl: kaambl,
+		hastur: riro@hastur,
+		kaambl: elen@kaambl,
 		nodens: dgs,
 		azasos: tcs,
 		abhoth: abh,

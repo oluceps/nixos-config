@@ -13,6 +13,7 @@
 
   programs = {
     anime-game-launcher.enable = true; # Adds launcher and /etc/hosts rules
+    niri.enable = true;
   };
   systemd.services.atuin.serviceConfig.Environment = [ "RUST_LOG=debug" ];
   hardware = {

@@ -27,6 +27,7 @@
         openssh fail2ban dae;
     }
     {
+      do-agent.enable = true;
       factorio-manager = {
         enable = true;
         factorioPackage = pkgs.factorio-headless-experimental;

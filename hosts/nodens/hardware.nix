@@ -3,6 +3,15 @@
   boot.loader.grub.device = "/dev/vda";
   boot.initrd.availableKernelModules = [ "ata_piix" "uhci_hcd" "xen_blkfront" "vmw_pvscsi" "virtio_net" "virtio_pci" "virtio_mmio" "virtio_blk" "virtio_scsi" "9p" "9pnet_virtio" ];
   boot.initrd.kernelModules = [ "virtio_balloon" "virtio_console" "virtio_rng" ];
+  boot.kernelParams = [
+    "audit=0"
+    "net.ifnames=0"
+
+    "console=ttyS0"
+    "earlyprintk=ttyS0"
+    "rootdelay=300"
+  ];
+
   fileSystems."/" = { device = "/dev/vda1"; fsType = "ext4"; };
 
   boot.kernelPackages =
