@@ -55,7 +55,7 @@ lib.mkMerge [
           [
             "https://cache.nixos.org"
             "https://cache.ngi0.nixos.org"
-            "https://mirror.sjtu.edu.cn/nix-channels/store"
+            # "https://mirror.sjtu.edu.cn/nix-channels/store"
           ];
           auto-optimise-store = true;
           experimental-features = [
