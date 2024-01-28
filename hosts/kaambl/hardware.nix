@@ -114,9 +114,9 @@
     kernelParams = [
       "amd_pstate=active"
       "zswap.enabled=1"
-      "zswap.compressor=lz4"
+      # "zswap.compressor=lz4"
       "zswap.zpool=zsmalloc"
-      "systemd.gpt_auto=0"
+      # "systemd.gpt_auto=0"
     ];
     # extraModulePackages = with config.boot.kernelPackages; [
     #   v4l2loopback

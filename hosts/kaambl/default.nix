@@ -46,6 +46,7 @@
               ../../misc.nix
               ../../users.nix
               ../../sysvars.nix
+              inputs.niri.nixosModules.niri
             ]
             ++ lib.sharedModules
             ++

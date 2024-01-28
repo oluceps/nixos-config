@@ -86,6 +86,8 @@
     nixpkgs-22.url = "github:NixOS/nixpkgs?rev=c91d0713ac476dfb367bbe12a7a048f6162f039c";
     nixpkgs-dae.url = "github:NixOS/nixpkgs?rev=c43c81954dee4f0b383a6c4ee3f3c66384146d42";
     nixpkgs-rebuild.url = "github:SuperSandro2000/nixpkgs?rev=449114c6240520433a650079c0b5440d9ecf6156";
+    niri.url = "github:sodiboo/niri-flake";
+    niri.inputs.niri-src.url = "github:YaLTeR/niri";
     nixpkgs-wayland = {
       url = "github:nix-community/nixpkgs-wayland";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -111,7 +113,7 @@
       url = "github:oluceps/nyx";
     };
     factorio-manager = {
-      url = "/home/riro/Src/factorio-manager";
+      url = "/home/elen/Src/factorio-manager";
       # url = "github:oluceps/nyx";
       inputs.nixpkgs.follows = "nixpkgs";
     };
