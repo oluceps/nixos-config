@@ -55,7 +55,7 @@ build-host hosts=nodes:
 deploy targets=nodes builder="hastur" mode="switch":
 	#!/usr/bin/env nu
 	def get_map [ k: string ] { {{map}} | get $k }
-	{{targets}} | {{filter}} | each { |target| nixos-rebuild --target-host (get_map $target) --build-host (get_map {{builder}}) {{mode}} --use-remote-sudo --flake $'{{loc}}#($target)' }
+	{{targets}} | {{filter}} | par-each { |target| nixos-rebuild --target-host (get_map $target) --build-host (get_map {{builder}}) {{mode}} --use-remote-sudo --flake $'{{loc}}#($target)' }
 
 home-active +args="":
 	nom build '.#homeConfigurations.{{me}}.activationPackage' {{args}}
@@ -66,7 +66,6 @@ build-livecd:
 
 check +args="":
 	nix flake check {{args}}
-	{{nodes}} | each { |x| nix eval --raw $'.#nixosConfigurations.($x).config.system.build.toplevel' --show-trace }
 
 slow-action +args="": rekey check overwrite-s3
 	sudo nixos-rebuild switch
