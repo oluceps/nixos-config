@@ -10,9 +10,9 @@
 lib.mkMerge [
   {
 
-    systemd.sysusers.enable = true;
-    system.etc.overlay.enable = true;
-    system.etc.overlay.mutable = false;
+    # systemd.sysusers.enable = true;
+    # system.etc.overlay.enable = true;
+    # system.etc.overlay.mutable = false;
 
     systemd.services.nix-daemon = {
       serviceConfig.LimitNOFILE = lib.mkForce 500000000;
@@ -219,8 +219,8 @@ lib.mkMerge [
         enable = true;
         shellAliases = {
           j = "just";
-          nd = "cd /etc/nixos";
-          swc = "sudo nixos-rebuild switch --flake /etc/nixos";
+          nd = "cd /home/${user}/Src/nixos";
+          swc = "sudo nixos-rebuild switch --flake /home/${user}/Src/nixos";
           #--log-format internal-json -v 2>&1 | nom --json";
           daso = "sudo";
           daos = "sudo";

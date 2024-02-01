@@ -2,10 +2,10 @@
 
   environment.persistence."/persist" = {
     directories = [
-      "/etc/nixos"
-      "/etc/ssh"
-      "/etc/NetworkManager"
-      "/etc/secureboot"
+      # "/etc/nixos"
+      # "/etc/ssh"
+      # "/etc/NetworkManager"
+      # "/etc/secureboot"
       "/root/.ssh"
     ];
     files = [ "/root/.bash_history" ];

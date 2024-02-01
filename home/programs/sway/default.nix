@@ -2,6 +2,7 @@
 , pkgs
 , lib
 , osConfig
+, user
 , ...
 }: {
 
@@ -131,21 +132,21 @@
           if osConfig.networking.hostName == "hastur" then
             {
               HDMI-A-1 = {
-                bg = "/etc/nixos/.attachs/wall.jpg fill";
+                bg = "/home/${user}/Src/nixos/.attachs/wall.jpg fill";
                 mode = "1920x1080";
                 scale = "1.25";
               };
             }
           else if osConfig.networking.hostName == "kaambl" then {
             eDP-1 = {
-              bg = "/etc/nixos/.attachs/wall.jpg fill";
+              bg = "/home/${user}/Src/nixos/.attachs/wall.jpg fill";
               mode = "2160x1440";
               scale = "2";
             };
           } else {
 
             eDP-1 = {
-              bg = "/etc/nixos/.attachs/wall.jpg fill";
+              bg = "/home/${user}/Src/nixos/.attachs/wall.jpg fill";
               mode = "1366x768";
               scale = "1";
             };

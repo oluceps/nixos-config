@@ -157,7 +157,7 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     ragenix = {
-      url = "github:oluceps/ragenix/fix-sysuser";
+      url = "github:yaxitech/ragenix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     typst-lsp.url = "github:nvarner/typst-lsp";

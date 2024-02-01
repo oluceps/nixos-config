@@ -10,8 +10,9 @@ alias p := push-secret
 
 host := `hostname`
 me   := `whoami`
+loc := "/home/riro/Src/nixos"
 
-nodes := `nix eval --impure --expr "with builtins; attrNames (getFlake \"/etc/nixos\").nixosConfigurations"`
+nodes := `nix eval --impure --expr "with builtins; attrNames (getFlake "/home/riro/Src/nixos").nixosConfigurations"`
 
 # now `all` produces false while which in list.
 filter := '''
@@ -29,7 +30,7 @@ map := '''
 	}
 '''
 
-loc := "/etc/nixos"
+
 
 default:
   @just --choose

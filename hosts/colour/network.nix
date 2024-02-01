@@ -54,6 +54,25 @@
     };
 
     netdevs = {
+      wg2 = {
+        netdevConfig = {
+          Kind = "wireguard";
+          Name = "wg2";
+          MTUBytes = "1300";
+        };
+        wireguardConfig = {
+          PrivateKeyFile = config.age.secrets.wgc-warp.path;
+        };
+        wireguardPeers = [
+          {
+            wireguardPeerConfig = {
+              PublicKey = "bmXOC+F1FxEMF9dyiK2H5/1SUtzH0JuVo51h2wPfgyo=";
+              Endpoint = "engage.cloudflareclient.com:2408";
+              AllowedIPs = [ "::/0" ];
+            };
+          }
+        ];
+      };
       wg0 = {
         netdevConfig = {
           Kind = "wireguard";
@@ -132,6 +151,18 @@
           IPMasquerade = "ipv4";
           IPForward = true;
         };
+      };
+      "15-wg2" = {
+
+        matchConfig.Name = "wg2";
+        address = [
+          "172.16.0.2/32"
+          "2606:4700:110:8dec:4a6d:4075:dfd9:72a7/128"
+        ];
+        # networkConfig = {
+          # IPMasquerade = "ipv4";
+          # IPForward = true;
+        # };
       };
 
       "20-wired" = {
