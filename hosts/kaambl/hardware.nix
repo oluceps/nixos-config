@@ -94,7 +94,7 @@
   security.tpm2.tctiEnvironment.enable = true;
 
   services.scx = {
-    enable = true;
+    enable = false;
     scheduler = "scx_rusty";
   };
   boot = {

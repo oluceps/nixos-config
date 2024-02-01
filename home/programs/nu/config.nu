@@ -197,7 +197,7 @@ $env.config = {
   }
   cursor_shape: {
     emacs: line # block, underscore, line (line is the default)
-    vi_insert: block # block, underscore, line (block is the default)
+    vi_insert: line # block, underscore, line (block is the default)
     vi_normal: underscore # block, underscore, line  (underscore is the default)
   }
   color_config: $light_theme   # if you want a light theme, replace `$dark_theme` to `$light_theme`

@@ -10,9 +10,9 @@
 lib.mkMerge [
   {
 
-    # systemd.sysusers.enable = true;
-    # system.etc.overlay.enable = true;
-    # system.etc.overlay.mutable = false;
+    systemd.sysusers.enable = true;
+    system.etc.overlay.enable = true;
+    system.etc.overlay.mutable = false;
 
     systemd.services.nix-daemon = {
       serviceConfig.LimitNOFILE = lib.mkForce 500000000;
@@ -87,7 +87,7 @@ lib.mkMerge [
         '';
       };
 
-    time.timeZone = "Asia/Singapore";
+    # time.timeZone = "Asia/Singapore";
 
     console = {
       # font = "LatArCyrHeb-16";
