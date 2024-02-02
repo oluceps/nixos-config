@@ -87,7 +87,7 @@ lib.mkMerge [
         '';
       };
 
-    # time.timeZone = "Asia/Singapore";
+    time.timeZone = "Asia/Singapore";
 
     console = {
       # font = "LatArCyrHeb-16";
