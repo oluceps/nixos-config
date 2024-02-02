@@ -160,8 +160,8 @@
           "2606:4700:110:8dec:4a6d:4075:dfd9:72a7/128"
         ];
         # networkConfig = {
-          # IPMasquerade = "ipv4";
-          # IPForward = true;
+        # IPMasquerade = "ipv4";
+        # IPForward = true;
         # };
       };
 
