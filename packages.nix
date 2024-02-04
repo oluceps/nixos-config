@@ -57,6 +57,24 @@ let
       # languages related
       [ zig lldb haskell-language-server gopls cmake-language-server zls android-file-transfer nixpkgs-review shfmt ]
     ];
+    wine = [
+      wineWowPackages.stable
+
+      # support 32-bit only
+      # wine
+
+      # support 64-bit only
+      (wine.override { wineBuild = "wine64"; })
+
+      # wine-staging (version with experimental features)
+      wineWowPackages.staging
+
+      # winetricks (all versions)
+      winetricks
+
+      # native wayland support (unstable)
+      wineWowPackages.waylandFull
+    ];
     dev = [
       friture
       qemu-utils
