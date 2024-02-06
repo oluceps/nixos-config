@@ -85,6 +85,12 @@
         #   enable = true;
         #   environmentFile = config.age.secrets.cloudflare-garden-00.path;
         # };
+        compose-up.instances = [
+          {
+            name = "misskey";
+            workingDirectory = "/home/${user}/Src/misskey";
+          }
+        ];
 
         hysteria.instances = [{
           name = "nodens";
