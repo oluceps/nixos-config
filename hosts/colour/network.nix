@@ -67,8 +67,9 @@
           {
             wireguardPeerConfig = {
               PublicKey = "bmXOC+F1FxEMF9dyiK2H5/1SUtzH0JuVo51h2wPfgyo=";
-              Endpoint = "engage.cloudflareclient.com:2408";
+              Endpoint = "162.159.192.1:2408";
               AllowedIPs = [ "::/0" ];
+              PersistentKeepalive = 15;
             };
           }
         ];
@@ -156,18 +157,35 @@
 
         matchConfig.Name = "wg2";
         address = [
-          "172.16.0.2/32"
-          "2606:4700:110:8dec:4a6d:4075:dfd9:72a7/128"
+          # "172.16.0.2/32"
+          "2606:4700:110:82bf:db9a:4a73:b4e3:5b57/128"
         ];
-        # networkConfig = {
-        # IPMasquerade = "ipv4";
-        # IPForward = true;
-        # };
+        networkConfig = {
+          IPMasquerade = "ipv6";
+          IPForward = true;
+        };
+
+        routes = [
+          {
+            routeConfig = {
+              Destination="::/0";
+              Gateway = "fe80::1";
+              Scope = "link";
+            };
+          }
+        ];
       };
 
       "20-wired" = {
         matchConfig.Name = "eth0";
         DHCP = "yes";
+        # address = [
+        #   "10.0.0.10"
+        # ];
+
+        # routes = [
+        #   { routeConfig.Gateway = "10.0.0.1"; }
+        # ];
       };
     };
   };
