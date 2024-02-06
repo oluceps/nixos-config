@@ -496,7 +496,8 @@
       "x-scheme-handler/mailto"
       "text/html"
     ]
-      (_: "brave-browser.desktop")
+      # (_: "brave-browser.desktop")
+      (_: "firefox.desktop")
     //
     lib.genAttrs [
       "image/gif"

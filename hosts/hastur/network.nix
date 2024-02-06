@@ -1,8 +1,11 @@
 { lib, config, ... }: {
   services.mosdns.enable = true;
+  services.resolved.enable = lib.mkForce false;
   # services.resolved.enable = true;
+  services.resolved.extraConfig = "DNS=192.168.1.1";
   networking = {
     resolvconf.useLocalResolver = true;
+    # useHostResolvConf = true;
 
     hostName = "hastur"; # Define your hostname.
     # replicates the default behaviour.

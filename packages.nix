@@ -152,7 +152,7 @@ in
   environment.systemPackages =
     lib.flatten (lib.attrValues p)
     ++
-    (with pkgs; [ unar texlab edk2 xmrig docker-compose ]) ++
+    (with pkgs; [ unar podman-compose docker-compose ]) ++
     [
       ((pkgs.vim_configurable.override { }).customize {
         name = "vim";
