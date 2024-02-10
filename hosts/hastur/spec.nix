@@ -16,23 +16,25 @@
     niri.enable = false;
   };
   systemd.services.atuin.serviceConfig.Environment = [ "RUST_LOG=debug" ];
-  hardware = {
-    #   nvidia = {
-    #     package = config.boot.kernelPackages.nvidiaPackages.latest;
-    #     modesetting.enable = true;
-    #     powerManagement.enable = false;
-    #   };
 
-    # opengl = {
-    #   enable = true;
-    #   extraPackages = with pkgs; [
-    #     rocm-opencl-icd
-    #     rocm-opencl-runtime
-    #   ];
-    #   driSupport = true;
-    #   driSupport32Bit = true;
-    # };
-  };
+
+  # hardware = {
+  #   nvidia = {
+  #     package = config.boot.kernelPackages.nvidiaPackages.latest;
+  #     modesetting.enable = true;
+  #     powerManagement.enable = false;
+  #   };
+
+  # opengl = {
+  #   enable = true;
+  #   extraPackages = with pkgs; [
+  #     rocm-opencl-icd
+  #     rocm-opencl-runtime
+  #   ];
+  # driSupport = true;
+  # driSupport32Bit = true;
+  # };
+  # };
 
   systemd = {
     # Given that our systems are headless, emergency mode is useless.
@@ -77,6 +79,8 @@
             // { inherit pkgs config; })).services) dae;
       }
       {
+
+        # xserver.videoDrivers = [ "nvidia" ];
 
         dae.enable = true;
         sing-box.enable = true;

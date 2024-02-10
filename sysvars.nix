@@ -12,6 +12,7 @@
     # NIX_CFLAGS_COMPILE = "--verbose";
     # NIX_CFLAGS_LINK = "--verbose";
     # NIX_LDFLAGS = "--verbose";
+    # WLR_RENDERER = "vulkan";
     PATH = [ "/home/${user}/.npm-packages/bin" ];
   };
 }
