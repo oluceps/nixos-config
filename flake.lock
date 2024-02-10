@@ -2334,11 +2334,11 @@
     "niri-src": {
       "flake": false,
       "locked": {
-        "lastModified": 1707198886,
-        "narHash": "sha256-O0/3soIyWvZqcXzpmUwKVxK9IkWwxZckVEK9gTQyxzI=",
+        "lastModified": 1707562894,
+        "narHash": "sha256-R1ed3nkwb2VGpjjgQvvCMUpuyhytZpBo5r078WYZ/I8=",
         "owner": "YaLTeR",
         "repo": "niri",
-        "rev": "baa6263cbe72562b26c37514385ddeb4247feb3e",
+        "rev": "a388c257951107c6d45987bb390f312e5398da71",
         "type": "github"
       },
       "original": {
