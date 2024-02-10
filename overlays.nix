@@ -29,9 +29,9 @@ let system = "x86_64-linux"; in [
       inherit ((import inputs.nixpkgs-master {
         inherit system; config.allowUnfree = true;
       })) monaspace factorio-headless-experimental;
-      inherit ((import inputs.nixpkgs-dae {
-        inherit system; config.allowUnfree = true;
-      })) dae;
+      # inherit ((import inputs.nixpkgs-dae {
+      #   inherit system; config.allowUnfree = true;
+      # })) dae;
 
 
       # inputs.hyprland.packages.${system}.default;

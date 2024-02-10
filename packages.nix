@@ -141,6 +141,7 @@ let
         clean-home
         just
         typst
+        cosmic-term
       ];
     bluetooth = [ bluetuith ];
 
