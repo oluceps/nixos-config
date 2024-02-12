@@ -23,6 +23,7 @@ map := '''
 	{
 		hastur: riro@hastur,
 		kaambl: elen@kaambl,
+		eihort: root@eihort,
 		nodens: dgs,
 		azasos: tcs,
 		abhoth: abh,
@@ -64,6 +65,9 @@ home-active +args="":
 
 build-livecd:
 	nom build .#nixosConfigurations.nixos.config.system.build.isoImage
+
+build-bootstrap:
+	nom build .#nixosConfigurations.bootstrap.config.system.build.diskoImages
 
 check +args="":
 	nix flake check {{args}}
