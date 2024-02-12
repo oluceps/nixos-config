@@ -103,4 +103,22 @@
     };
   };
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
+
+  fileSystems = (lib.genAttrs [ "/nix" "/var" ]
+    (name: {
+      device = "PoolOne/eihort/${name}";
+      fsType = "zfs";
+    }) //
+  {
+    "/home" = {
+      device = "PoolOne/eihort/persist/home";
+      fsType = "zfs";
+    };
+  });
+
+
+
+
+
+
 }
