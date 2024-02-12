@@ -10,6 +10,7 @@
       squashfsCompression = "zstd -Xcompression-level 6";
     };
     programs.fish.enable = true;
+    users.users.root.openssh.authorizedKeys.keys = with data.keys;[ sshPubKey skSshPubKey ];
 
     systemd.services.nix-daemon = {
       serviceConfig.LimitNOFILE = lib.mkForce 500000000;
