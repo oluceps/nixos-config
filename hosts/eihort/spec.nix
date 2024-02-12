@@ -17,6 +17,7 @@
     supportedFilesystems = [ "tcp_bbr" ];
     inherit ((import ../../boot.nix { inherit lib; }).boot) kernel;
   };
+  environment.systemPackages = with pkgs;[ zfs ];
 
   services = lib.mkMerge [
     {
@@ -28,6 +29,7 @@
 
     }
     {
+      zfs.autoScrub.enable = true;
       dae.enable = true;
       mosdns.enable = true;
 

@@ -11,7 +11,7 @@
       allowedUDPPorts = [ 80 443 8080 5173 23180 4444 51820 1935 1985 10080 8000 ];
       allowedTCPPorts = [ 80 443 8080 9900 2222 5173 8448 1935 1985 10080 8000 ];
     };
-
+    hostId = "0bc55a2e";
     useNetworkd = true;
     useDHCP = false;
 

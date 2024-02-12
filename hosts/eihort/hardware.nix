@@ -9,6 +9,7 @@
     algorithm = "zstd";
   };
 
+  systemd.services.zfs-mount.enable = true;
   boot = {
     loader = {
       efi = {
@@ -19,13 +20,17 @@
       timeout = 3;
     };
 
+    supportedFilesystems = [ "zfs" ];
+    zfs.forceImportRoot = false;
+    zfs.extraPools = [ "PoolOne" ];
+
     kernelParams = [
       "audit=0"
       "net.ifnames=0"
 
-      "console=ttyS0"
-      "earlyprintk=ttyS0"
-      "rootdelay=300"
+      # "console=ttyS0"
+      # "earlyprintk=ttyS0"
+      # "rootdelay=300"
     ];
 
     initrd = {
@@ -75,18 +80,20 @@
                     mountpoint = "/";
                     mountOptions = [ "compress-force=zstd:1" "noatime" "discard=async" "space_cache=v2" "nosuid" "nodev" ];
                   };
-                  "home" = {
-                    mountOptions = [ "compress-force=zstd:1" "noatime" "discard=async" "space_cache=v2" "nosuid" "nodev" ];
-                    mountpoint = "/home";
-                  };
-                  "nix" = {
-                    mountOptions = [ "compress-force=zstd:1" "noatime" "discard=async" "space_cache=v2" "nosuid" "nodev" ];
-                    mountpoint = "/nix";
-                  };
-                  "var" = {
-                    mountOptions = [ "compress-force=zstd:1" "noatime" "discard=async" "space_cache=v2" "nosuid" "nodev" ];
-                    mountpoint = "/var";
-                  };
+                  # use zfs dataset
+
+                  # "home" = {
+                  #   mountOptions = [ "compress-force=zstd:1" "noatime" "discard=async" "space_cache=v2" "nosuid" "nodev" ];
+                  #   mountpoint = "/home";
+                  # };
+                  # "nix" = {
+                  #   mountOptions = [ "compress-force=zstd:1" "noatime" "discard=async" "space_cache=v2" "nosuid" "nodev" ];
+                  #   mountpoint = "/nix";
+                  # };
+                  # "var" = {
+                  #   mountOptions = [ "compress-force=zstd:1" "noatime" "discard=async" "space_cache=v2" "nosuid" "nodev" ];
+                  #   mountpoint = "/var";
+                  # };
                 };
               };
             };
