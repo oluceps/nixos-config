@@ -92,6 +92,9 @@
       url = "github:nix-community/nixpkgs-wayland";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    RyanGibb = {
+      url = "github:RyanGibb/nixos";
+    };
     disko = {
       url = "github:nix-community/disko";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -122,6 +125,7 @@
       url = "github:Kirottu/anyrun";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    j-link.url = "github:liff/j-link-flake";
     devenv.url = "github:cachix/devenv";
     aagl = {
       url = "github:ezKEa/aagl-gtk-on-nix";

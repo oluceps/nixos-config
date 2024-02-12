@@ -91,7 +91,6 @@ let
       delta
       # nodejs-18_x
       switch-mute
-      yarn
       go
 
 

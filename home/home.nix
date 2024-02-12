@@ -71,8 +71,9 @@
   home.packages = with pkgs;
 
     [
+      gtkcord4
+      celeste
       stellarium
-      brave
       celluloid
       thiefmd
       wpsoffice

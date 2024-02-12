@@ -29,7 +29,7 @@
                   "agenix-rekey"
                   "misskey"
                   "nixyDomains"
-                  "nixpkgs-wayland"
+                  # "nixpkgs-wayland"
                 ]);
             };
             specialArgs = lib.base // { user = "riro"; };
@@ -66,6 +66,7 @@
             [
               inputs.aagl.nixosModules.default
               inputs.disko.nixosModules.default
+              inputs.j-link.nixosModule
             ];
           };
       };

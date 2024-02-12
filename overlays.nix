@@ -99,7 +99,22 @@ let system = "x86_64-linux"; in [
       #     sha256 = "sha256-nYA8W7iabaepiIsxDrCkG/WIFNrVdubk/AtFhIvYJB8=";
       #   };
       # });
-      # sway-unwrapped = inputs.swayfx.packages.${system}.swayfx-unwrapped;
+      # sway-unwrapped = inputs.;
+      sway-unwrapped = prev.callPackage "${inputs.RyanGibb}/pkgs/sway-im/package.nix" {
+        libdrm = final.libdrm;
+        wlroots = prev.callPackage "${inputs.RyanGibb}/pkgs/wlroots/default.nix" {
+          # for libdrm >=2.4.120
+          mesa = final.mesa;
+          wayland-protocols = prev.wayland-protocols.overrideAttrs (old: rec {
+            pname = "wayland-protocols";
+            version = "1.33";
+            src = prev.fetchurl {
+              url = "https://gitlab.freedesktop.org/wayland/${pname}/-/releases/${version}/downloads/${pname}-${version}.tar.xz";
+              hash = "sha256-lPDFCwkNbmGgP2IEhGexmrvoUb5OEa57NvZfi5jDljo=";
+            };
+          });
+        };
+      };
 
 
       # sway-unwrapped =
