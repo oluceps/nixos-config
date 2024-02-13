@@ -84,6 +84,14 @@
 
         dae.enable = true;
         sing-box.enable = true;
+        beesd.filesystems = {
+          os = {
+            spec = "LABEL=nixos";
+            hashTableSizeMB = 1024; # 256 *2 *2
+            verbosity = "crit";
+            extraOptions = [ "--thread-count" "12" ];
+          };
+        };
 
         # cloudflared = {
         #   enable = true;
