@@ -9,7 +9,6 @@
     algorithm = "zstd";
   };
 
-  systemd.services.zfs-mount.enable = true;
   boot = {
     loader = {
       efi = {
@@ -20,27 +19,27 @@
       timeout = 3;
     };
 
-    supportedFilesystems = [ "zfs" ];
-    zfs.forceImportRoot = false;
-    zfs.extraPools = [ "PoolOne" ];
+    supportedFilesystems = [ "bcachefs" ];
 
     kernelParams = [
       "audit=0"
       "net.ifnames=0"
-
-      # "console=ttyS0"
-      # "earlyprintk=ttyS0"
-      # "rootdelay=300"
     ];
 
     initrd = {
       compressor = "zstd";
       compressorArgs = [ "-19" "-T0" ];
       systemd.enable = true;
+      availableKernelModules = [ "nvme" "xhci_pci" "ahci" "usb_storage" "usbhid" "sd_mod" "mpt3sas" ];
+      kernelModules = [
+        "tpm"
+        "tpm_tis"
+        "tpm_crb"
+        "mpt3sas" # IMPORTANT
+      ];
     };
 
-    kernelPackages =
-      config.boot.zfs.package.latestCompatibleLinuxPackages;
+    kernelPackages = pkgs.linuxPackages_latest;
   };
 
   disko = {
@@ -80,20 +79,18 @@
                     mountpoint = "/";
                     mountOptions = [ "compress-force=zstd:1" "noatime" "discard=async" "space_cache=v2" "nosuid" "nodev" ];
                   };
-                  # use zfs dataset
-
-                  # "home" = {
-                  #   mountOptions = [ "compress-force=zstd:1" "noatime" "discard=async" "space_cache=v2" "nosuid" "nodev" ];
-                  #   mountpoint = "/home";
-                  # };
-                  # "nix" = {
-                  #   mountOptions = [ "compress-force=zstd:1" "noatime" "discard=async" "space_cache=v2" "nosuid" "nodev" ];
-                  #   mountpoint = "/nix";
-                  # };
-                  # "var" = {
-                  #   mountOptions = [ "compress-force=zstd:1" "noatime" "discard=async" "space_cache=v2" "nosuid" "nodev" ];
-                  #   mountpoint = "/var";
-                  # };
+                  "home" = {
+                    mountOptions = [ "compress-force=zstd:1" "noatime" "discard=async" "space_cache=v2" "nosuid" "nodev" ];
+                    mountpoint = "/home";
+                  };
+                  "nix" = {
+                    mountOptions = [ "compress-force=zstd:1" "noatime" "discard=async" "space_cache=v2" "nosuid" "nodev" ];
+                    mountpoint = "/nix";
+                  };
+                  "var" = {
+                    mountOptions = [ "compress-force=zstd:1" "noatime" "discard=async" "space_cache=v2" "nosuid" "nodev" ];
+                    mountpoint = "/var";
+                  };
                 };
               };
             };
@@ -103,22 +100,4 @@
     };
   };
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
-
-  fileSystems = (lib.genAttrs [ "/nix" "/var" ]
-    (name: {
-      device = "PoolOne/eihort/${name}";
-      fsType = "zfs";
-    }) //
-  {
-    "/home" = {
-      device = "PoolOne/eihort/persist/home";
-      fsType = "zfs";
-    };
-  });
-
-
-
-
-
-
 }

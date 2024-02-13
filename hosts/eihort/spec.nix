@@ -12,6 +12,26 @@
     dates = "weekly";
     options = "--delete-older-than 10d";
   };
+  systemd.services.mount-three = {
+    description = "mount pool 3";
+    script =
+      let
+        diskId = map (n: "/dev/disk/by-id/" + n) [
+          "nvme-INTEL_MEMPEK1J016GAH_PHBT82920C53016N"
+          "wwn-0x5000cca05838bc98"
+          "wwn-0x5000cca0583a5e34"
+          "wwn-0x5000cca04608e534"
+          "wwn-0x5000cca0583880c4"
+        ];
+      in
+      ''
+        /run/current-system/sw/bin/mount -o noatime,nodev,nosuid \
+        -t bcachefs \
+        ${lib.concatStringsSep ":" diskId} \
+        /three
+      '';
+    wantedBy = [ "multi-user.target" ];
+  };
 
   boot = {
     supportedFilesystems = [ "tcp_bbr" ];
