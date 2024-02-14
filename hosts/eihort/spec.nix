@@ -25,13 +25,17 @@
         ];
       in
       ''
-        /run/current-system/sw/bin/mount -o noatime,nodev,nosuid \
-        -t bcachefs \
-        ${lib.concatStringsSep ":" diskId} \
-        /three
+        ${lib.getExe (pkgs.nuenv.writeScriptBin {
+          name = "mount";
+          script = let mount = "/run/current-system/sw/bin/mount"; in ''
+            ${mount} | str contains "/three" | if not $in { ${mount} -o noatime,nodev,nosuid -t bcachefs ${lib.concatStringsSep ":" diskId} /three }
+          '';
+        })}
       '';
     wantedBy = [ "multi-user.target" ];
   };
+
+  systemd.services.minio.unitConfig.RequiresMountsFor = "LABEL=THREE";
 
   boot = {
     supportedFilesystems = [ "tcp_bbr" ];
@@ -52,6 +56,12 @@
       # zfs.autoScrub.enable = true;
       dae.enable = true;
       mosdns.enable = true;
+      minio = {
+        enable = true;
+        region = "ap-east-1";
+        rootCredentialsFile = config.age.secrets.minio.path;
+        dataDir = [ "/three/bucket/data" ];
+      };
 
       # compose-up.instances = [
       #   {
