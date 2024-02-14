@@ -49,7 +49,7 @@
 
     }
     {
-      zfs.autoScrub.enable = true;
+      # zfs.autoScrub.enable = true;
       dae.enable = true;
       mosdns.enable = true;
 
