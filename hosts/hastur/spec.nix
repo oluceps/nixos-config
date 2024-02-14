@@ -89,7 +89,7 @@
             spec = "LABEL=nixos";
             hashTableSizeMB = 1024; # 256 *2 *2
             verbosity = "crit";
-            extraOptions = [ "--thread-count" "12" ];
+            extraOptions = [ ];
           };
         };
 
