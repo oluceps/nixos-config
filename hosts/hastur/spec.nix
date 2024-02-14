@@ -88,8 +88,8 @@
           os = {
             spec = "LABEL=nixos";
             hashTableSizeMB = 1024; # 256 *2 *2
-            verbosity = "crit";
-            extraOptions = [ ];
+            verbosity = "info";
+            extraOptions = [ "--loadavg-target" "15.0" ];
           };
         };
 
