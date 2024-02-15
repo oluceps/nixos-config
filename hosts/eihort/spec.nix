@@ -27,9 +27,14 @@
       # chain call
       toString (lib.getExe (pkgs.nuenv.writeScriptBin {
         name = "mount";
-        script = let mount = "/run/current-system/sw/bin/mount"; in ''
-          ${mount} | str contains "/three" | if not $in { ${mount} -o noatime,nodev,nosuid -t bcachefs ${lib.concatStringsSep ":" diskId} /three }
-        '';
+        script =
+          let
+            mount = "/run/current-system/sw/bin/mount -o noatime,nodev,nosuid -t bcachefs ${lib.concatStringsSep ":" diskId} /three";
+          in
+          ''
+            do { ${mount} }
+            if ($env.LAST_EXIT_CODE != 0) { ${mount} }
+          '';
       }));
     wantedBy = [ "multi-user.target" ];
   };
