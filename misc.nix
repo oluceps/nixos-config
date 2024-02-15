@@ -25,9 +25,11 @@ lib.mkMerge [
           nixpkgs.flake = inputs.nixpkgs;
           self.flake = inputs.self;
         };
-        nixPath = [ "nixpkgs=${inputs.nixpkgs}" ];
-        settings = {
 
+        settings = {
+          nix-path = [
+            "nixpkgs=${pkgs.path}"
+          ];
           keep-outputs = true;
           keep-derivations = true;
           trusted-public-keys = [
@@ -79,6 +81,7 @@ lib.mkMerge [
           !include ${config.age.secrets.gh-token.path}
         '';
       };
+    security.pki.certificateFiles = [ "${pkgs.cacert}/etc/ssl/certs/ca-bundle.crt" ];
 
     time.timeZone = "Asia/Singapore";
 

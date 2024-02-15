@@ -16,6 +16,10 @@
     niri.enable = false;
   };
   systemd.services.atuin.serviceConfig.Environment = [ "RUST_LOG=debug" ];
+  systemd.services.restic-backups-persist = {
+    serviceConfig.Environment = [ "GOGC=20" ];
+  };
+
 
 
   # hardware = {
@@ -89,10 +93,30 @@
             spec = "LABEL=nixos";
             hashTableSizeMB = 1024; # 256 *2 *2
             verbosity = "info";
-            extraOptions = [ "--loadavg-target" "15.0" ];
+            extraOptions = [
+              # "--loadavg-target"
+              # "15.0"
+            ];
           };
         };
-
+        restic.backups.solid = {
+          passwordFile = config.age.secrets.wg.path;
+          repositoryFile = config.age.secrets.restic-repo.path;
+          environmentFile = config.age.secrets.restic-envs.path;
+          paths = [ "/persist" "/var" ];
+          extraBackupArgs = [
+            "--one-file-system"
+            "--exclude-caches"
+            "--no-scan"
+            "--retry-lock 2h"
+          ];
+          timerConfig = {
+            OnCalendar = "daily";
+            RandomizedDelaySec = "4h";
+            FixedRandomDelay = true;
+            Persistent = true;
+          };
+        };
         # cloudflared = {
         #   enable = true;
         #   environmentFile = config.age.secrets.cloudflare-garden-00.path;
