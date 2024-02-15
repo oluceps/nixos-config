@@ -24,14 +24,13 @@
           "wwn-0x5000cca0583880c4"
         ];
       in
-      ''
-        ${lib.getExe (pkgs.nuenv.writeScriptBin {
-          name = "mount";
-          script = let mount = "/run/current-system/sw/bin/mount"; in ''
-            ${mount} | str contains "/three" | if not $in { ${mount} -o noatime,nodev,nosuid -t bcachefs ${lib.concatStringsSep ":" diskId} /three }
-          '';
-        })}
-      '';
+      # chain call
+      toString (lib.getExe (pkgs.nuenv.writeScriptBin {
+        name = "mount";
+        script = let mount = "/run/current-system/sw/bin/mount"; in ''
+          ${mount} | str contains "/three" | if not $in { ${mount} -o noatime,nodev,nosuid -t bcachefs ${lib.concatStringsSep ":" diskId} /three }
+        '';
+      }));
     wantedBy = [ "multi-user.target" ];
   };
 
