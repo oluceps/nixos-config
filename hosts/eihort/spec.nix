@@ -29,11 +29,10 @@
         name = "mount";
         script =
           let
-            mount = "/run/current-system/sw/bin/mount -o noatime,nodev,nosuid -t bcachefs ${lib.concatStringsSep ":" diskId} /three";
+            mount = "/run/current-system/sw/bin/mount --onlyonce -o noatime,nodev,nosuid -t bcachefs ${lib.concatStringsSep ":" diskId} /three";
           in
           ''
-            do { ${mount} }
-            if ($env.LAST_EXIT_CODE != 0) { ${mount} }
+            do { ${mount} } | complete
           '';
       }));
     wantedBy = [ "multi-user.target" ];
