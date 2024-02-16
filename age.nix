@@ -22,8 +22,8 @@
       (genWg [ "wg" "wgk" "wgy" "wga" "wgc-warp" "wge" ]) //
       {
         dae = { rekeyFile = ./sec/dae.age; mode = "640"; owner = "proxy"; group = "users"; name = "d.dae"; };
-        "nyaw.key" = { rekeyFile = ./sec/nyaw.key.age; mode = "640"; owner = "proxy"; group = "caddy"; };
-        "nyaw.cert" = { rekeyFile = ./sec/nyaw.cert.age; mode = "640"; owner = "proxy"; group = "caddy"; };
+        "nyaw.key" = { rekeyFile = ./sec/nyaw.key.age; mode = "640"; owner = "caddy"; group = "users"; };
+        "nyaw.cert" = { rekeyFile = ./sec/nyaw.cert.age; mode = "640"; owner = "caddy"; group = "users"; };
         hyst-us = { rekeyFile = ./sec/hyst-us.age; mode = "640"; owner = "proxy"; group = "users"; name = "hyst-us.yaml"; };
         hyst-us-cli = { rekeyFile = ./sec/hyst-us-cli.age; mode = "640"; owner = "proxy"; group = "users"; name = "hyst-us-cli.yaml"; };
         hyst-us-cli-has = { rekeyFile = ./sec/hyst-us-cli-has.age; mode = "640"; owner = "proxy"; group = "users"; name = "hyst-us-cli-has.yaml"; };

@@ -43,7 +43,6 @@
 
     };
     groups.nixosvmtest = { };
-    groups.caddy = { };
 
     mutableUsers = lib.mkForce false;
 

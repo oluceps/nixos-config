@@ -252,7 +252,7 @@
     # xddxdd.dingtalk
     # ]) ++
     (with nur-pkgs;[
-      techmino
+      # techmino
       # rustplayer
     ]);
   home.pointerCursor = {

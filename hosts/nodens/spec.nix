@@ -180,68 +180,74 @@
         }
       ];
 
-      caddy = {
-        enable = true;
-        # user = "root";
-        # configFile = config.age.secrets.caddy-lsa.path;
-        # package = pkgs.caddy-mod;
-        # globalConfig = ''
-        #   	order forward_proxy before file_server
-        # '';
-        virtualHosts = {
-          "magicb.uk" = {
-            hostName = "magicb.uk";
-            extraConfig = ''
-              tls mn1.674927211@gmail.com
-              file_server {
-                  root /var/www/public
-              }
-            '';
-          };
+      # caddy = {
+      #   enable = true;
+      #   # user = "root";
+      #   # configFile = config.age.secrets.caddy-lsa.path;
+      #   # package = pkgs.caddy-mod;
+      #   globalConfig = ''
+      #     	order forward_proxy before reverse_proxy
+      #   '';
+      #   virtualHosts = {
+      #     "magicb.uk" = {
+      #       hostName = "magicb.uk";
+      #       extraConfig = ''
+      #         tls mn1.674927211@gmail.com
+      #         file_server {
+      #             root /var/www/public
+      #         }
+      #       '';
+      #     };
 
-          "pb.nyaw.xyz" = {
-            hostName = "pb.nyaw.xyz";
-            extraConfig = ''
-              reverse_proxy 127.0.0.1:3999
-              tls ${config.age.secrets."nyaw.cert".path} ${config.age.secrets."nyaw.key".path}
-            '';
-          };
+      #     "pb.nyaw.xyz" = {
+      #       hostName = "pb.nyaw.xyz";
+      #       extraConfig = ''
+      #         reverse_proxy 127.0.0.1:3999
+      #         forward_proxy {
+      #           basic_auth user pass
+      #           hide_ip
+      #           hide_via
+      #           probe_resistance
+      #         }
+      #         tls ${config.age.secrets."nyaw.cert".path} ${config.age.secrets."nyaw.key".path}
+      #       '';
+      #     };
 
-          "nyaw.xyz" = {
-            hostName = "nyaw.xyz";
-            extraConfig = ''
-              reverse_proxy 10.0.1.2:3000
-              tls ${config.age.secrets."nyaw.cert".path} ${config.age.secrets."nyaw.key".path}
-              redir /matrix https://matrix.to/#/@sec:nyaw.xyz
+      #     "nyaw.xyz" = {
+      #       hostName = "nyaw.xyz";
+      #       extraConfig = ''
+      #         reverse_proxy 10.0.1.2:3000
+      #         tls ${config.age.secrets."nyaw.cert".path} ${config.age.secrets."nyaw.key".path}
+      #         redir /matrix https://matrix.to/#/@sec:nyaw.xyz
 
-              header /.well-known/matrix/* Content-Type application/json
-              header /.well-known/matrix/* Access-Control-Allow-Origin *
-              respond /.well-known/matrix/server `{"m.server": "matrix.nyaw.xyz:443"}`
-              respond /.well-known/matrix/client `{"m.homeserver": {"base_url": "https://matrix.nyaw.xyz"},"org.matrix.msc3575.proxy": {"url": "https://matrix.nyaw.xyz"}}`
-            '';
-          };
-          "matrix.nyaw.xyz" = {
-            hostName = "matrix.nyaw.xyz";
-            extraConfig = ''
-              	reverse_proxy /_matrix/* 10.0.1.2:6167
-            '';
-          };
-          "vault.nyaw.xyz" = {
-            hostName = "vault.nyaw.xyz";
-            extraConfig = ''
-              	reverse_proxy 10.0.1.2:8003
-            '';
-          };
-          "ctos.magicb.uk" = {
-            hostName = "ctos.magicb.uk";
-            extraConfig = ''
-              tls mn1.674927211@gmail.com
-              reverse_proxy 10.0.1.2:10002
-            '';
-          };
-        };
+      #         header /.well-known/matrix/* Content-Type application/json
+      #         header /.well-known/matrix/* Access-Control-Allow-Origin *
+      #         respond /.well-known/matrix/server `{"m.server": "matrix.nyaw.xyz:443"}`
+      #         respond /.well-known/matrix/client `{"m.homeserver": {"base_url": "https://matrix.nyaw.xyz"},"org.matrix.msc3575.proxy": {"url": "https://matrix.nyaw.xyz"}}`
+      #       '';
+      #     };
+      #     "matrix.nyaw.xyz" = {
+      #       hostName = "matrix.nyaw.xyz";
+      #       extraConfig = ''
+      #         	reverse_proxy /_matrix/* 10.0.1.2:6167
+      #       '';
+      #     };
+      #     "vault.nyaw.xyz" = {
+      #       hostName = "vault.nyaw.xyz";
+      #       extraConfig = ''
+      #         	reverse_proxy 10.0.1.2:8003
+      #       '';
+      #     };
+      #     "ctos.magicb.uk" = {
+      #       hostName = "ctos.magicb.uk";
+      #       extraConfig = ''
+      #         tls mn1.674927211@gmail.com
+      #         reverse_proxy 10.0.1.2:10002
+      #       '';
+      #     };
+      #   };
 
-      };
+      # };
     }
   ];
 
