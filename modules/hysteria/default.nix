@@ -14,6 +14,7 @@ in
         options = {
           name = mkOption { type = types.str; };
           package = mkPackageOption pkgs "hysteria" { };
+          credentials = mkOption { type = types.listOf types.str; default = [ ]; };
           serve = mkOption {
             type = types.submodule {
               options = {
@@ -61,8 +62,9 @@ in
               description = "hysteria daemon";
               serviceConfig =
                 let binSuffix = if s.serve.enable then "server" else "client"; in {
-                  User = "proxy";
-                  ExecStart = "${lib.getExe' s.package "hysteria"} ${binSuffix} --disable-update-check -c ${s.configFile}";
+                  DynamicUser = true;
+                  ExecStart = "${lib.getExe' s.package "hysteria"} ${binSuffix} --disable-update-check -c $\{CREDENTIALS_DIRECTORY}/config.yaml";
+                  LoadCredential = [ "config.yaml:${s.configFile}" ] ++ s.credentials;
                   AmbientCapabilities = [ "CAP_NET_ADMIN" "CAP_NET_BIND_SERVICE" ];
                   Restart = "on-failure";
                 };

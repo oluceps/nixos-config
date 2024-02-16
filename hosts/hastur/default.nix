@@ -66,7 +66,7 @@
             [
               inputs.aagl.nixosModules.default
               inputs.disko.nixosModules.default
-              inputs.j-link.nixosModule
+              # inputs.j-link.nixosModule
             ];
           };
       };

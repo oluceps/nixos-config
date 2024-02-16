@@ -153,6 +153,10 @@
 
       juicity.instances = [{
         name = "only";
+        credentials = [
+          "key:${config.age.secrets."nyaw.key".path}"
+          "cert:${config.age.secrets."nyaw.cert".path}"
+        ];
         serve = {
           enable = true;
           port = 23180;
@@ -176,6 +180,10 @@
             enable = true;
             port = 4432;
           };
+          credentials = [
+            "key:${config.age.secrets."nyaw.key".path}"
+            "cert:${config.age.secrets."nyaw.cert".path}"
+          ];
           configFile = config.age.secrets.hyst-us.path;
         }
       ];

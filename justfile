@@ -23,7 +23,7 @@ map := '''
 	{
 		hastur: riro@hastur,
 		kaambl: elen@kaambl,
-		eihort: root@eihort,
+		eihort: root@192.168.1.159,
 		nodens: dgs,
 		azasos: tcs,
 		abhoth: abh,

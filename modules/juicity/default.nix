@@ -15,6 +15,7 @@ in
         options = {
           name = mkOption { type = types.str; };
           package = mkPackageOption pkgs "juicity" { };
+          credentials = mkOption { type = types.listOf types.str; default = [ ]; };
           serve = mkOption {
             type = types.submodule {
               options = {
@@ -63,8 +64,9 @@ in
               serviceConfig =
                 let binSuffix = if s.serve.enable then "server" else "client"; in {
                   Type = "simple";
-                  User = "proxy";
-                  ExecStart = "${s.package}/bin/juicity-${binSuffix} run -c ${s.configFile}";
+                  DynamicUser=true;
+                  ExecStart = "${s.package}/bin/juicity-${binSuffix} run -c $\{CREDENTIALS_DIRECTORY}/config";
+                  LoadCredential = [ "config:${s.configFile}" ] ++ s.credentials;
                   AmbientCapabilities = [ "CAP_NET_ADMIN" "CAP_NET_BIND_SERVICE" ];
                   Restart = "on-failure";
                 };
