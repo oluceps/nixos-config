@@ -38,7 +38,7 @@
               "shufflecake"
             ];
           in
-          extraLibs.genFilteredDirAttrs ./pkgs shadowedPkgs (n: pkgs.${n});
+          extraLibs.genFilteredDirAttrsV2 ./pkgs shadowedPkgs (n: pkgs.${n});
       };
 
       flake = {
@@ -58,8 +58,8 @@
                   "shufflecake"
                 ];
               in
-              extraLibs.genFilteredDirAttrs ./pkgs shadowedPkgs
-                (name: final.callPackage (./pkgs + "/${name}") { });
+              extraLibs.genFilteredDirAttrsV2 ./pkgs shadowedPkgs
+                (name: final.callPackage (./pkgs + "/${name}.nix") { });
 
             lib = final: prev: extraLibs;
           };
@@ -68,8 +68,8 @@
           let
             shadowedModules = [ ];
             modules =
-              extraLibs.genFilteredDirAttrs ./modules shadowedModules
-                (n: import (./modules + ("/" + n)));
+              extraLibs.genFilteredDirAttrsV2 ./modules shadowedModules
+                (n: import (./modules + "/${n}.nix"));
 
             default = { ... }: {
               imports = builtins.attrValues modules;

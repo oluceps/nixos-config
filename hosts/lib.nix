@@ -44,6 +44,15 @@ in
         (n: !elem n excludes)
         (attrNames
           (readDir dir)));
+
+  genFilteredDirAttrsV2 = dir: excludes:
+    with inputs.nixpkgs.lib; genAttrs
+      (with builtins; filter
+        (n: !elem n excludes)
+        (map (removeSuffix ".nix")
+          (attrNames
+            (readDir dir))));
+
   base =
     let inherit (inputs.nixpkgs) lib;
     in { inherit inputs lib data; inherit (inputs) self; };
