@@ -36,11 +36,6 @@
       };
       root.shell = pkgs.bash;
 
-      proxy = {
-        isSystemUser = true;
-        group = "nogroup";
-      };
-
     };
     groups.nixosvmtest = { };
 

@@ -15,6 +15,7 @@ in
         options = {
           name = mkOption { type = types.str; };
           package = mkPackageOption pkgs "shadowsocks-rust" { };
+          credentials = mkOption { type = types.listOf types.str; default = [ ]; };
           serve = mkOption {
             type = types.submodule {
               options = {
@@ -64,8 +65,9 @@ in
               serviceConfig =
                 let binSuffix = if s.serve.enable then "server" else "local"; in {
                   Type = "simple";
-                  User = "proxy";
-                  ExecStart = "${s.package}/bin/ss${binSuffix} -c ${s.configFile}";
+                  DynamicUser = true;
+                  LoadCredential = [ "config:${s.configFile}" ] ++ s.credentials;
+                  ExecStart = "${s.package}/bin/ss${binSuffix} -c $\{CREDENTIALS_DIRECTORY}/config";
                   AmbientCapabilities = [ "CAP_NET_ADMIN" "CAP_NET_BIND_SERVICE" ];
                   Restart = "on-failure";
                 };
