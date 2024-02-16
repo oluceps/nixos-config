@@ -92,10 +92,10 @@
           os = {
             spec = "LABEL=nixos";
             hashTableSizeMB = 1024; # 256 *2 *2
-            verbosity = "info";
+            verbosity = "crit";
             extraOptions = [
-              # "--loadavg-target"
-              # "15.0"
+              "--loadavg-target"
+              "5.0"
             ];
           };
         };
@@ -164,7 +164,7 @@
           };
         };
 
-        btrbk.enable = true;
+        btrbk.enable = false;
 
         keycloak = {
           enable = false;

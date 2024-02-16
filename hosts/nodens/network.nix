@@ -55,7 +55,7 @@
     enable = true;
 
     wait-online = {
-      enable = true;
+      enable = false;
       anyInterface = true;
       ignoredInterfaces = [ "wg0" "wg1" ];
     };
