@@ -168,7 +168,7 @@
         routes = [
           {
             routeConfig = {
-              Destination="::/0";
+              Destination = "::/0";
               Gateway = "fe80::1";
               Scope = "link";
             };

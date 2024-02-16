@@ -64,7 +64,7 @@ in
               serviceConfig =
                 let binSuffix = if s.serve.enable then "server" else "client"; in {
                   Type = "simple";
-                  DynamicUser=true;
+                  DynamicUser = true;
                   ExecStart = "${s.package}/bin/juicity-${binSuffix} run -c $\{CREDENTIALS_DIRECTORY}/config";
                   LoadCredential = [ "config:${s.configFile}" ] ++ s.credentials;
                   AmbientCapabilities = [ "CAP_NET_ADMIN" "CAP_NET_BIND_SERVICE" ];

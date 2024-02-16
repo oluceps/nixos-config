@@ -15,7 +15,6 @@ let
 
     cmd = [
       _7zz
-      (pkgs.linuxPackages_latest.callPackage ./pkgs/shufflecake { }).userland
 
       distrobox
       dmidecode
