@@ -45,7 +45,7 @@ in
         description = "sing-box Daemon";
         serviceConfig = {
           DynamicUser = true;
-          ExecStart = "${lib.getExe' cfg.package "sing-box"} run -c $CREDENTIALS_DIRECTORY/config.json -D $STATE_DIRECTORY";
+          ExecStart = "${lib.getExe' cfg.package "sing-box"} run -c $\{CREDENTIALS_DIRECTORY}/config.json -D $STATE_DIRECTORY";
           LoadCredential = [ ("config.json:" + cfg.configFile) ];
           StateDirectory = "sing";
           CapabilityBoundingSet = [

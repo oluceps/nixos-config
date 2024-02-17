@@ -5282,11 +5282,11 @@
     "niri-src": {
       "flake": false,
       "locked": {
-        "lastModified": 1708108837,
-        "narHash": "sha256-0Z3KT3VEQxM1c41KnNeXTCdqVHexfPUtnbvMQlKGSWc=",
+        "lastModified": 1708164471,
+        "narHash": "sha256-S2I7aK9FXS+e5dqxulg+74DNrMHHkhd15SOyHEK4RLM=",
         "owner": "YaLTeR",
         "repo": "niri",
-        "rev": "baaac2f3c46c4322fb2b740aa869dc48047c30f3",
+        "rev": "dd7362913ec98b1d9a8b5a133044f00324ad5dc7",
         "type": "github"
       },
       "original": {
