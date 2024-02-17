@@ -38,8 +38,9 @@ let
 
   };
 
+  # extra
   e = with pkgs;{
-    crypt = [ minisign rage age-plugin-yubikey cryptsetup tpm2-tss tpm2-tools yubikey-manager yubikey-manager-qt ];
+    crypt = [ minisign rage age-plugin-yubikey cryptsetup tpm2-tss tpm2-tools yubikey-manager yubikey-manager-qt monero-cli ];
 
     python = [ (python311.withPackages (ps: with ps; [ pandas requests absl-py tldextract ])) ];
 
