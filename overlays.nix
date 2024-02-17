@@ -69,6 +69,7 @@ let system = "x86_64-linux"; in [
               "nu"
               "typst"
               "scheme"
+              "just"
             ];
       };
 
