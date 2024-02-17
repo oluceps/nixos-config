@@ -44,8 +44,9 @@ in
         wants = [ "network-online.target" ];
         description = "sing-box Daemon";
         serviceConfig = {
-          User = "proxy";
-          ExecStart = "${lib.getExe' cfg.package "sing-box"} run -c ${cfg.configFile} -D $STATE_DIRECTORY";
+          DynamicUser = true;
+          ExecStart = "${lib.getExe' cfg.package "sing-box"} run -c $CREDENTIALS_DIRECTORY/config.json -D $STATE_DIRECTORY";
+          LoadCredential = [ ("config.json:" + cfg.configFile) ];
           StateDirectory = "sing";
           CapabilityBoundingSet = [
             "CAP_NET_RAW"
