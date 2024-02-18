@@ -53,7 +53,6 @@
 
     netdevs = {
       bond0 = {
-
         netdevConfig = {
           Kind = "bond";
           Name = "bond0";
@@ -64,8 +63,6 @@
           PrimaryReselectPolicy = "always";
           MIIMonitorSec = "1s";
         };
-
-
       };
 
       wg0 = {
@@ -158,6 +155,8 @@
           BindCarrier = [ "eth0" "wlan0" ];
         };
 
+
+        linkConfig.MACAddress = "fc:62:ba:3a:e1:5f";
       };
 
       "30-rndis" = {
