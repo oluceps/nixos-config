@@ -47,8 +47,8 @@
       config = ''
         ssh_identity /persist/keys/ssh_host_ed25519_key
         timestamp_format        long
-        snapshot_preserve_min   48h
-        snapshot_preserve       168h 
+        snapshot_preserve_min   24h
+        snapshot_preserve       7d 
         volume /persist
           snapshot_dir .snapshots
           subvolume .
