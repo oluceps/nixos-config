@@ -20,16 +20,14 @@
     serviceConfig.Environment = [ "GOGC=20" ];
   };
 
-  systemd.services.tester = {
-    serviceConfig = {
-      Type = "simple";
-      ExecStart = "exit 3";
-      ExecStopPost = ''
-        ${pkgs.curl}/bin/curl -H tags:warning -H prio:high -u ":$\{TOKEN}" -d 'hello from systemd service' https://ntfy.nyaw.xyz/info
-      '';
-    };
-    wantedBy = [ "multi-user.target" ];
-  };
+  # systemd.services.tester = {
+  #   serviceConfig = {
+  #     Type = "simple";
+  #     ExecStart = "exit 3";
+  #     ExecStopPost = lib.genNtfyMsgScriptPath "tags warning prio high" "info" "test";
+  #   };
+  #   wantedBy = [ "multi-user.target" ];
+  # };
 
   # hardware = {
   #   nvidia = {

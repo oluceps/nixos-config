@@ -19,7 +19,7 @@
   };
 
   systemd.services.btrfs-scrub-persist.serviceConfig.ExecStopPost =
-    "${pkgs.curl}/bin/curl -H tags:red_circle -H prio:high -u :tk_qjnep6jfzaig85uw28iaydw6wjc53 -d 'btrfs scrub failed on hastur' https://ntfy.nyaw.xyz/error";
+    lib.genNtfyMsgScriptPath "tags red_circle prio high" "error" "btrfs scrub failed on hastur";
 
   services = {
     bpftune.enable = true;
