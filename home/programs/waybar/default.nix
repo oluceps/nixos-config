@@ -117,7 +117,7 @@
           };
           network = {
             interval = 1;
-            interface = if user == "elen" then "wlan0" else "wan";
+            interface = if user == "elen" then "wlan0" else "bond0";
             format = "{bandwidthDownOctets}";
             max-length = 10;
             min-length = 8;

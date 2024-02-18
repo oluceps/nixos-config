@@ -10,7 +10,7 @@
     hostName = "hastur"; # Define your hostname.
     # replicates the default behaviour.
     enableIPv6 = true;
-    interfaces.wan.wakeOnLan.enable = true;
+    interfaces.eth0.wakeOnLan.enable = true;
     wireless.iwd.enable = true;
     useNetworkd = true;
     useDHCP = false;
@@ -30,12 +30,12 @@
     wait-online = {
       enable = true;
       anyInterface = true;
-      ignoredInterfaces = [ "wlan" ];
+      ignoredInterfaces = [ "wlan0" ];
     };
 
-    links."10-wan" = {
+    links."10-eth0" = {
       matchConfig.MACAddress = "3c:7c:3f:22:49:80";
-      linkConfig.Name = "wan";
+      linkConfig.Name = "eth0";
     };
 
     links."30-rndis" = {
@@ -46,12 +46,27 @@
         MACAddressPolicy = "persistent";
       };
     };
-    links."40-wlan" = {
+    links."40-wlan0" = {
       matchConfig.MACAddress = "70:66:55:e7:1c:b1";
-      linkConfig.Name = "wlan";
+      linkConfig.Name = "wlan0";
     };
 
     netdevs = {
+      bond0 = {
+
+        netdevConfig = {
+          Kind = "bond";
+          Name = "bond0";
+          # MTUBytes = "1300";
+        };
+        bondConfig = {
+          Mode = "active-backup";
+          PrimaryReselectPolicy = "always";
+          MIIMonitorSec = "1s";
+        };
+
+
+      };
 
       wg0 = {
         netdevConfig = {
@@ -115,30 +130,35 @@
         DHCP = "no";
       };
 
-      "20-wired" = {
-        matchConfig.Name = "wan";
+      "20-wired-bond0" = {
+        matchConfig.Name = "eth0";
+
+        networkConfig = {
+          Bond = "bond0";
+          PrimarySlave = true;
+        };
+
+      };
+
+      "40-wireless-bond1" = {
+        matchConfig.Name = "wlan0";
+        networkConfig = {
+          Bond = "bond1";
+        };
+      };
+
+      "5-bond0" = {
+        matchConfig.Name = "bond0";
         DHCP = "yes";
         dhcpV4Config.RouteMetric = 2046;
         dhcpV6Config.RouteMetric = 2046;
         # address = [ "192.168.0.2/24" ];
-        networkConfig = {
-          # Bond = "bond1";
-          # PrimarySlave = true;
-          DNSSEC = true;
-          MulticastDNS = true;
-          DNSOverTLS = true;
-        };
-        # # REALLY IMPORTANT
-        dhcpV4Config.UseDNS = false;
-        dhcpV6Config.UseDNS = false;
-      };
 
-      # "40-wireless" = {
-      #   matchConfig.Name = "wlan";
-      #   networkConfig = {
-      #     Bond = "bond1";
-      #   };
-      # };
+        networkConfig = {
+          BindCarrier = [ "eth0" "wlan0" ];
+        };
+
+      };
 
       "30-rndis" = {
         matchConfig.Name = "rndis";
