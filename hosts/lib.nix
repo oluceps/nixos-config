@@ -53,6 +53,8 @@ in
           (attrNames
             (readDir dir))));
 
+  genCredPath = config: key: (key + ":" + config.age.secrets.${key}.path);
+
   base =
     let inherit (inputs.nixpkgs) lib;
     in { inherit inputs lib data; inherit (inputs) self; };

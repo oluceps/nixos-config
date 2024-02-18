@@ -19,9 +19,9 @@
     factorio-headless
   ];
 
-  systemd.services.caddy.serviceConfig.LoadCredential = [
-    ("nyaw.cert:" + config.age.secrets."nyaw.cert".path)
-    ("nyaw.key:" + config.age.secrets."nyaw.key".path)
+  systemd.services.caddy.serviceConfig.LoadCredential = (map (lib.genCredPath config)) [
+    "nyaw.cert"
+    "nyaw.key"
   ];
   services = lib.mkMerge [
     {
