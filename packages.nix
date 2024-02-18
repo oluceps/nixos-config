@@ -15,6 +15,7 @@ let
 
     cmd = [
       _7zz
+      yazi
 
       distrobox
       dmidecode
