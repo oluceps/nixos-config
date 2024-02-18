@@ -18,6 +18,8 @@
     # xdgOpenUsePortal = true;
   };
 
+  systemd.services.btrfs-scrub-persist.serviceConfig.ExecStopPost =
+    "${pkgs.curl}/bin/curl -H tags:red_circle -H prio:high -u :tk_qjnep6jfzaig85uw28iaydw6wjc53 -d 'btrfs scrub failed on hastur' https://ntfy.nyaw.xyz/error";
 
   services = {
     bpftune.enable = true;
