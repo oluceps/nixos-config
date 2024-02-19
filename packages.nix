@@ -16,6 +16,7 @@ let
     cmd = [
       _7zz
       yazi
+      rclone
 
       distrobox
       dmidecode
@@ -35,7 +36,7 @@ let
     # # ripgrep-all 
 
 
-    info = [ freshfetch htop bottom onefetch hardinfo qjournalctl hyprpicker imgcat nix-index ccze ];
+    info = [ freshfetch htop onefetch hardinfo qjournalctl hyprpicker imgcat nix-index ccze ];
 
   };
 
@@ -59,6 +60,7 @@ let
       [ zig lldb haskell-language-server gopls cmake-language-server zls android-file-transfer nixpkgs-review shfmt ]
     ];
     wine = [
+      bottles
       wineWowPackages.stable
 
       # support 32-bit only
