@@ -23,7 +23,7 @@ in
           };
           keep = mkOption {
             type = types.str;
-            default = "3day";
+            default = "3hr";
           };
         };
       });
@@ -55,7 +55,6 @@ in
               description = "${s.name} snapy daemon";
               serviceConfig =
                 {
-                  # DynamicUser = true;
                   User = "root";
                   ExecStart =
                     let btrfs = lib.getExe' pkgs.btrfs-progs "btrfs"; in
@@ -63,17 +62,15 @@ in
                       {
                         name = "snapy";
                         script = ''
-                          # take snapshot
-                          date now | format date "%m-%d_%H:%M:%S" | ${btrfs} subvol snapshot -r ${s.source} $'${s.source}/.snapshots/($in)'
+                          let date_format = "%Y-%m-%d_%H:%M:%S%z"
 
-                          date now
-                          # rm out-dated
-                          ls ${s.source}/.snapshots | filter { |i| ((date now) - $i.modified) > ${s.keep} } | each { |d| ${btrfs} sub del $d.name }
+                          # take snapshot
+                          date now | format date $date_format | ${btrfs} subvol snapshot -r ${s.source} $'${s.source}/.snapshots/($in)'
+
+                          # clean outdated
+                          ls ${s.source}/.snapshots | filter { |i| ((date now) - ($i.name | into datetime --format $date_format)) > ${s.keep} } | each { |d| ${btrfs} sub del $d.name }
                         '';
                       }));
-
-                  # AmbientCapabilities = [ "CAP_SYS_ADMIN" "CAP_SYS_RESOURCE" "CAP_DAC_OVERRIDE" ];
-                  # CapabilityBoundingSet = [ "CAP_SYS_ADMIN" "CAP_SYS_RESOURCE" "CAP_DAC_OVERRIDE" ];
                 };
             };
           })

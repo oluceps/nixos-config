@@ -99,6 +99,21 @@
         # xserver.enable = true;
         # xserver.displayManager.gdm.enable = true;
         # xserver.desktopManager.gnome.enable = true;
+        snapy.instances = [
+          {
+            name = "persist";
+            source = "/persist";
+            keep = "2hr";
+            calendar = "*:0/3";
+          }
+          {
+            name = "var";
+            source = "/var";
+            keep = "2hr";
+            calendar = "*:0/3";
+          }
+        ];
+
         tailscale = { enable = true; openFirewall = true; };
 
         dae.enable = true;
