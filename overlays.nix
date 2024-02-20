@@ -28,7 +28,7 @@ let system = "x86_64-linux"; in [
       #     }).lazygit;
       inherit ((import inputs.nixpkgs-master {
         inherit system; config.allowUnfree = true;
-      })) monaspace factorio-headless-experimental;
+      })) monaspace factorio-headless-experimental linuxPackages_latest;
       # inherit ((import inputs.nixpkgs-dae {
       #   inherit system; config.allowUnfree = true;
       # })) dae;
