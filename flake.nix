@@ -138,6 +138,7 @@
     dae.url = "github:daeuniverse/flake.nix?rev=e16931c97e18eddd6a36b182687701cd6d03b284";
     # nixyDomains.url = "/home/elen/nixyDomains";
     nixyDomains.url = "github:oluceps/nixyDomains";
+    nixyDomains.flake = false;
     nuenv.url = "github:DeterminateSystems/nuenv";
     EHfive.url = "github:EHfive/flakes";
     agenix-rekey = {

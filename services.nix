@@ -2,6 +2,7 @@
 , lib
 , config
 , self
+, inputs
 , ...
 }:
 
@@ -122,10 +123,10 @@
       configFile = config.age.secrets.dae.path;
       # assets = with pkgs; [ v2ray-geoip v2ray-domain-list-community ];
       package = pkgs.dae-unstable;
-      assetsPath = "${pkgs.symlinkJoin {
-        name = "dae-assets-nixy";
-        paths = [ pkgs.nixy-domains.src "${pkgs.v2ray-geoip}/share/v2ray" ];
-      }}";
+      # assetsPath = "${pkgs.symlinkJoin {
+      #   name = "dae-assets-nixy";
+      #   paths = [ "${inputs.nixyDomains}/assets" "${pkgs.v2ray-geoip}/share/v2ray" ];
+      # }}";
 
       openFirewall = {
         enable = true;
@@ -169,7 +170,7 @@
     mosdns = {
       config = {
         log = { level = "debug"; production = false; };
-        plugins = let src = "${pkgs.nixy-domains.src}"; in [
+        plugins = let src = "${inputs.nixyDomains}/assets"; in [
           {
             args = {
               files = [ "${src}/accelerated-domains.china.txt" ];
