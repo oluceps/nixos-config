@@ -25,7 +25,6 @@
                   "nuenv"
                   "android-nixpkgs"
                   "agenix-rekey"
-                  "nixyDomains"
                   "nixpkgs-wayland"
                 ]) ++ (import ../../overlays.nix inputs);
             };

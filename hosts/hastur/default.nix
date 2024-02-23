@@ -28,7 +28,6 @@
                   "android-nixpkgs"
                   "agenix-rekey"
                   "misskey"
-                  "nixyDomains"
                   # "nixpkgs-wayland"
                 ]);
             };
