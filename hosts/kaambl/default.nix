@@ -36,7 +36,7 @@
               ./spec.nix
               ../persist.nix
               ../secureboot.nix
-              ../../services.nix
+              ../../services/misc.nix
               inputs.home-manager.nixosModules.default
               ../../home
               ../../boot.nix
