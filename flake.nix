@@ -3,7 +3,7 @@
   outputs = inputs@{ flake-parts, ... }:
     let extraLibs = (import ./hosts/lib.nix inputs); /* f = excludes: valueFunc: */
     in
-    flake-parts.lib.mkFlake { inherit inputs; } {
+    flake-parts.lib.mkFlake { inherit inputs; } ({ ... }: {
       imports = import ./hosts inputs;
       debug = false;
       systems = [ "x86_64-linux" "aarch64-linux" ];
@@ -39,7 +39,7 @@
               "shufflecake"
             ];
           in
-          extraLibs.genFilteredDirAttrsV2 ./pkgs shadowedPkgs (n: pkgs.${n});
+          (extraLibs.genFilteredDirAttrsV2 ./pkgs shadowedPkgs (n: pkgs.${n}));
       };
 
       flake = {
@@ -79,9 +79,10 @@
           modules // { inherit default; };
       };
 
-    };
+    });
 
   inputs = {
+    tg-online-keeper.url = "/home/elen/Src/tg-online-keeper";
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     nixpkgs-master.url = "github:NixOS/nixpkgs/master";
     nixpkgs-22.url = "github:NixOS/nixpkgs?rev=c91d0713ac476dfb367bbe12a7a048f6162f039c";
