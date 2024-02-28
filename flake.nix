@@ -82,7 +82,6 @@
     });
 
   inputs = {
-    tg-online-keeper.url = "/home/elen/Src/tg-online-keeper";
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     nixpkgs-master.url = "github:NixOS/nixpkgs/master";
     nixpkgs-22.url = "github:NixOS/nixpkgs?rev=c91d0713ac476dfb367bbe12a7a048f6162f039c";
@@ -94,6 +93,7 @@
       url = "github:nix-community/nixpkgs-wayland";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    tg-online-keeper.url = "github:oluceps/TelegramOnlineKeeper";
     RyanGibb = {
       url = "github:RyanGibb/nixos";
     };

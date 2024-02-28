@@ -10749,16 +10749,17 @@
         "poetry2nix": "poetry2nix_3"
       },
       "locked": {
-        "dirtyRev": "9240f5b6607ab3dc9d5f23602fdccfe267ba4ad1-dirty",
-        "dirtyShortRev": "9240f5b-dirty",
-        "lastModified": 1709013468,
-        "narHash": "sha256-IKiHRFMlDBtZOHin5bVDq8ObGA1tmc0/BOuRq+KWJ34=",
-        "type": "git",
-        "url": "file:///home/elen/Src/tg-online-keeper"
+        "lastModified": 1709083474,
+        "narHash": "sha256-Q0lz9mzo+TNSdVz7lUuu21cuQnA2dWimQ7zqj3XRA8Y=",
+        "owner": "oluceps",
+        "repo": "TelegramOnlineKeeper",
+        "rev": "2a6eb7f6ddea1ae9a23d939a1bb09abde78d72d0",
+        "type": "github"
       },
       "original": {
-        "type": "git",
-        "url": "file:///home/elen/Src/tg-online-keeper"
+        "owner": "oluceps",
+        "repo": "TelegramOnlineKeeper",
+        "type": "github"
       }
     },
     "treefmt-nix": {
