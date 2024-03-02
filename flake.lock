@@ -11005,15 +11005,15 @@
       "locked": {
         "lastModified": 1709344841,
         "narHash": "sha256-DknOQPIii+x6sWf2B65P++6Wu4zip9YvZu3h4nSMcng=",
-        "ref": "refs/heads/main",
+        "owner": "oluceps",
+        "repo": "TelegramOnlineKeeper",
         "rev": "7f4f429138c91af6bf4ba40140ea3b681dee1a55",
-        "revCount": 12,
-        "type": "git",
-        "url": "file:///home/elen/Src/tg-online-keeper"
+        "type": "github"
       },
       "original": {
-        "type": "git",
-        "url": "file:///home/elen/Src/tg-online-keeper"
+        "owner": "oluceps",
+        "repo": "TelegramOnlineKeeper",
+        "type": "github"
       }
     },
     "treefmt-nix": {
