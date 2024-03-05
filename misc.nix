@@ -338,8 +338,6 @@ lib.mkMerge [
         {
           enable = lib.mkDefault false;
           xkb.layout = "us";
-          xkb.options = "eurosign:e";
-          windowManager.bspwm.enable = true;
         };
     };
 
