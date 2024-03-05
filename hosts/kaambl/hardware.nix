@@ -4,6 +4,8 @@
 { inputs, config, lib, pkgs, modulesPath, ... }:
 
 {
+
+  hardware.pulseaudio.enable = lib.mkForce false;
   imports =
     [
       (modulesPath + "/installer/scan/not-detected.nix")
