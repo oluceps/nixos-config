@@ -148,7 +148,7 @@ let
       ];
     bluetooth = [ bluetuith ];
 
-    sound = [ pulseaudio ];
+    sound = [ pulseaudio pwvucontrol ];
 
     display = [ cage ];
 

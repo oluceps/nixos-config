@@ -15,15 +15,17 @@ const hosts = $map.name
 
 let get_map = { |per| $map | filter {|i| $i.name == $per } }
 
-def "main ps" [
+let get_addr = { |b| do $get_map $b | $in.addr.0 }
+
+def "main p" [
   target: string
   nodes?: list<string> = $hosts
 ] {
-  let drv = {|name| nix eval --raw $'.#nixosConfigurations.($name).config.age.rekey.derivation'}
+  let drv = { |name| nix eval --raw $'.#nixosConfigurations.($name).config.age.rekey.derivation' }
 
-  let f = {|target_addr, path| nix copy --substitute-on-destination --to $'ssh://($target_addr)' $path -vvv}
+  let push = { |t_addr, path| nix copy --substitute-on-destination --to $'ssh://($t_addr)' $path -vvv }
 
-  let target_addr = do $get_map $target
+  let target_addr = do $get_addr $target
 
   $map |
   par-each { 
@@ -31,18 +33,18 @@ def "main ps" [
      let name = $per.name
      if $name in $nodes {
 
-       do $f ($target_addr.addr.0) (do $drv $per.name) 
+       do $push ($target_addr) (do $drv $per.name) 
 
      }
    }
 }
 
 def "main b" [
-  builder: string = "hastur"
   nodes?: list<string> = $hosts
+  --builder (-b): string = "hastur"
 ] {
 
-  let target_addr = do $get_map $builder
+  let target_addr = do $get_addr $builder
 
   $map |
   par-each { 
@@ -56,19 +58,19 @@ def "main b" [
 }
 
 def "main d" [
-  builder: string = "hastur"
   nodes?: list<string> = $hosts
   mode?: string = "switch"
+  --builder (-b): string = "hastur"
 ] {
 
-  let builder_addr = do $get_map $builder
+  let builder_addr = do $get_addr $builder
 
   $map |
-  par-each { 
+  par-each {
   |per|
      let name = $per.name
      if $name in $nodes {
-       nixos-rebuild $mode --flake $'.#($name)' --target-host $"ssh://(do $get_map $name)" --build-host $"ssh://($builder_addr)" --use-remote-sudo
+       nixos-rebuild $mode --flake $'.#($name)' --target-host (do $get_addr $name) --build-host $"($builder_addr)" --use-remote-sudo
      }
    }
 
