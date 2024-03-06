@@ -29,13 +29,7 @@ let system = "x86_64-linux"; in [
       inherit ((import inputs.nixpkgs-master {
         inherit system; config.allowUnfree = true;
       })) monaspace factorio-headless-experimental linuxPackages_latest;
-      # inherit ((import inputs.nixpkgs-dae {
-      #   inherit system; config.allowUnfree = true;
-      # })) dae;
 
-
-      # inputs.hyprland.packages.${system}.default;
-      # inherit ((import inputs.nixpkgs-rebuild { inherit system; })) nixos-rebuild;
       helix = inputs.helix.packages.${system}.default.override {
         includeGrammarIf = grammar:
           prev.lib.any
@@ -87,13 +81,6 @@ let system = "x86_64-linux"; in [
       });
 
       nur-pkgs = inputs.nur-pkgs.packages.${system};
-
-      # linuxPackages_latest =
-      #   (import inputs.nixpkgs-pin-kernel {
-      #     inherit system; config = {
-      #     allowUnfree = true;
-      #   };
-      #   }).linuxPackages_latest;
 
       blesh = prev.blesh.overrideAttrs (old: {
         src = prev.fetchzip {

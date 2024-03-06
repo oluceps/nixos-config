@@ -1,5 +1,5 @@
 alias nd = cd ~/Src/nixos
-alias swc = sudo nixos-rebuild switch --flake . --verbose
+alias swc = nh os switch
 alias off = poweroff
 alias kls = ls
 alias lks = ls
@@ -8,94 +8,7 @@ alias l = ls
 alias g = lazygit
 alias cd.. = cd ..
 
-
-
-let catppuccin = {
-  latte: {
-    rosewater: "#dc8a78"
-    flamingo: "#dd7878"
-    pink: "#ea76cb"
-    mauve: "#8839ef"
-    red: "#d20f39"
-    maroon: "#e64553"
-    peach: "#fe640b"
-    yellow: "#df8e1d"
-    green: "#40a02b"
-    teal: "#179299"
-    sky: "#04a5e5"
-    sapphire: "#209fb5"
-    blue: "#1e66f5"
-    lavender: "#7287fd"
-    text: "#4c4f69"
-    subtext1: "#5c5f77"
-    subtext0: "#6c6f85"
-    overlay2: "#7c7f93"
-    overlay1: "#8c8fa1"
-    overlay0: "#9ca0b0"
-    surface2: "#acb0be"
-    surface1: "#bcc0cc"
-    surface0: "#ccd0da"
-    crust: "#dce0e8"
-    mantle: "#e6e9ef"
-    base: "#eff1f5"
-  }
-  frappe: {
-    rosewater: "#f2d5cf"
-    flamingo: "#eebebe"
-    pink: "#f4b8e4"
-    mauve: "#ca9ee6"
-    red: "#e78284"
-    maroon: "#ea999c"
-    peach: "#ef9f76"
-    yellow: "#e5c890"
-    green: "#a6d189"
-    teal: "#81c8be"
-    sky: "#99d1db"
-    sapphire: "#85c1dc"
-    blue: "#8caaee"
-    lavender: "#babbf1"
-    text: "#c6d0f5"
-    subtext1: "#b5bfe2"
-    subtext0: "#a5adce"
-    overlay2: "#949cbb"
-    overlay1: "#838ba7"
-    overlay0: "#737994"
-    surface2: "#626880"
-    surface1: "#51576d"
-    surface0: "#414559"
-    base: "#303446"
-    mantle: "#292c3c"
-    crust: "#232634"
-  }
-  macchiato: {
-    rosewater: "#f4dbd6"
-    flamingo: "#f0c6c6"
-    pink: "#f5bde6"
-    mauve: "#c6a0f6"
-    red: "#ed8796"
-    maroon: "#ee99a0"
-    peach: "#f5a97f"
-    yellow: "#eed49f"
-    green: "#a6da95"
-    teal: "#8bd5ca"
-    sky: "#91d7e3"
-    sapphire: "#7dc4e4"
-    blue: "#8aadf4"
-    lavender: "#b7bdf8"
-    text: "#cad3f5"
-    subtext1: "#b8c0e0"
-    subtext0: "#a5adcb"
-    overlay2: "#939ab7"
-    overlay1: "#8087a2"
-    overlay0: "#6e738d"
-    surface2: "#5b6078"
-    surface1: "#494d64"
-    surface0: "#363a4f"
-    base: "#24273a"
-    mantle: "#1e2030"
-    crust: "#181926"
-  }
-  mocha: {
+const color_palette = {
     rosewater: "#f5e0dc"
     flamingo: "#f2cdcd"
     pink: "#f5c2e7"
@@ -122,49 +35,91 @@ let catppuccin = {
     base: "#1e1e2e"
     mantle: "#181825"
     crust: "#11111b"
-  }
 }
 
-# $env.LS_COLORS = cat ~/.config/nushell/ls-colors | str trim
-
-let stheme = $catppuccin.mocha
-
-
 let theme = {
-  separator: $stheme.overlay0
-  leading_trailing_space_bg: $stheme.overlay0
-  header: $stheme.green
-  date: $stheme.mauve
-  filesize: $stheme.blue
-  row_index: $stheme.pink
-  bool: $stheme.peach
-  int: $stheme.peach
-  duration: $stheme.peach
-  range: $stheme.peach
-  float: $stheme.peach
-  string: $stheme.green
-  nothing: $stheme.peach
-  binary: $stheme.peach
-  cellpath: $stheme.peach
-  hints: dark_gray
+    separator: $color_palette.overlay0
+    leading_trailing_space_bg: { attr: "n" }
+    header: { fg: $color_palette.blue attr: "b" }
+    empty: $color_palette.lavender
+    bool: $color_palette.lavender
+    int: $color_palette.peach
+    duration: $color_palette.text
+    filesize: {|e|
+          if $e < 1mb {
+            $color_palette.green
+        } else if $e < 100mb {
+            $color_palette.yellow
+        } else if $e < 500mb {
+            $color_palette.peach
+        } else if $e < 800mb {
+            $color_palette.maroon
+        } else if $e > 800mb {
+            $color_palette.red
+        }
+    }
+    date: {|| (date now) - $in |
+        if $in < 1hr {
+            $color_palette.green
+        } else if $in < 1day {
+            $color_palette.yellow
+        } else if $in < 3day {
+            $color_palette.peach
+        } else if $in < 1wk {
+            $color_palette.maroon
+        } else if $in > 1wk {
+            $color_palette.red
+        }
+    }
+    range: $color_palette.text
+    float: $color_palette.text
+    string: $color_palette.text
+    nothing: $color_palette.text
+    binary: $color_palette.text
+    cellpath: $color_palette.text
+    row_index: { fg: $color_palette.mauve attr: "b" }
+    record: $color_palette.text
+    list: $color_palette.text
+    block: $color_palette.text
+    hints: $color_palette.overlay1
+    search_result: { fg: $color_palette.red bg: $color_palette.text }
 
-  shape_garbage: { fg: $stheme.crust bg: $stheme.red attr: b }
-  shape_bool: $stheme.blue
-  shape_int: { fg: $stheme.mauve attr: b}
-  shape_float: { fg: $stheme.mauve attr: b}
-  shape_range: { fg: $stheme.yellow attr: b}
-  shape_internalcall: { fg: $stheme.blue attr: b}
-  shape_external: { fg: $stheme.blue attr: b}
-  shape_externalarg: $stheme.text 
-  shape_literal: $stheme.blue
-  shape_operator: $stheme.yellow
-  shape_signature: { fg: $stheme.green attr: b}
-  shape_string: $stheme.green
-  shape_filepath: $stheme.yellow
-  shape_globpattern: { fg: $stheme.blue attr: b}
-  shape_variable: $stheme.text
-  shape_flag: { fg: $stheme.blue attr: b}
-  shape_custom: {attr: b}
+    shape_and: { fg: $color_palette.pink attr: "b" }
+    shape_binary: { fg: $color_palette.pink attr: "b" }
+    shape_block: { fg: $color_palette.blue attr: "b" }
+    shape_bool: $color_palette.teal
+    shape_custom: $color_palette.green
+    shape_datetime: { fg: $color_palette.teal attr: "b" }
+    shape_directory: $color_palette.teal
+    shape_external: $color_palette.teal
+    shape_externalarg: { fg: $color_palette.green attr: "b" }
+    shape_filepath: $color_palette.teal
+    shape_flag: { fg: $color_palette.blue attr: "b" }
+    shape_float: { fg: $color_palette.pink attr: "b" }
+    shape_garbage: { fg: $color_palette.text bg: $color_palette.red attr: "b" }
+    shape_globpattern: { fg: $color_palette.teal attr: "b" }
+    shape_int: { fg: $color_palette.pink attr: "b" }
+    shape_internalcall: { fg: $color_palette.teal attr: "b" }
+    shape_list: { fg: $color_palette.teal attr: "b" }
+    shape_literal: $color_palette.blue
+    shape_match_pattern: $color_palette.green
+    shape_matching_brackets: { attr: "u" }
+    shape_nothing: $color_palette.teal
+    shape_operator: $color_palette.peach
+    shape_or: { fg: $color_palette.pink attr: "b" }
+    shape_pipe: { fg: $color_palette.pink attr: "b" }
+    shape_range: { fg: $color_palette.peach attr: "b" }
+    shape_record: { fg: $color_palette.teal attr: "b" }
+    shape_redirection: { fg: $color_palette.pink attr: "b" }
+    shape_signature: { fg: $color_palette.green attr: "b" }
+    shape_string: $color_palette.green
+    shape_string_interpolation: { fg: $color_palette.teal attr: "b" }
+    shape_table: { fg: $color_palette.blue attr: "b" }
+    shape_variable: $color_palette.pink
+
+    background: $color_palette.base
+    foreground: $color_palette.text
+    cursor: $color_palette.blue
 }
 
 # The default config record. This is where much of your global configuration is setup.
