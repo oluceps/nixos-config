@@ -9,7 +9,7 @@
         dpi-aware = "yes";
         term = "foot";
         pad = "8x12";
-        shell = "${pkgs.fish}/bin/fish";
+        shell = "${pkgs.nushell}/bin/nu";
         login-shell = "no";
       };
 

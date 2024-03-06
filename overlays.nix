@@ -35,7 +35,7 @@ let system = "x86_64-linux"; in [
 
 
       # inputs.hyprland.packages.${system}.default;
-      inherit ((import inputs.nixpkgs-rebuild { inherit system; })) nixos-rebuild;
+      # inherit ((import inputs.nixpkgs-rebuild { inherit system; })) nixos-rebuild;
       helix = inputs.helix.packages.${system}.default.override {
         includeGrammarIf = grammar:
           prev.lib.any
@@ -135,11 +135,11 @@ let system = "x86_64-linux"; in [
       #       inherit system;
       #     }).sway-unwrapped;
 
-      fd_iuBrGE = (import
-        inputs.nixpkgs-22
-        {
-          system = "x86_64-linux";
-        }).pkgsCross.aarch64-multiplatform.OVMF.fd;
+      # fd_iuBrGE = (import
+      #   inputs.nixpkgs-22
+      #   {
+      #     system = "x86_64-linux";
+      #   }).pkgsCross.aarch64-multiplatform.OVMF.fd;
 
       scx = inputs.nyx.packages.${prev.system}.scx;
       # fishPlugins.foreign-env = prev.fishPlugins.foreign-env.overrideAttrs
