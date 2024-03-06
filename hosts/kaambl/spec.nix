@@ -44,7 +44,7 @@
         verbosity = "crit";
         extraOptions = [
           "--loadavg-target"
-          "100.0"
+          "2.0"
         ];
       };
     };

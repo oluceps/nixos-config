@@ -24,6 +24,9 @@ slow-action +args="": rekey check overwrite-s3
 rekey:
     agenix rekey
 
+update:
+    nix flake update --commit-lock-file
+
 overwrite-s3:
     mc mirror --overwrite --remove /home/{{ me }}/Sec/ r2/sec/Sec
     mc mirror --overwrite --remove {{ loc }}/sec/ r2/sec/credentials
