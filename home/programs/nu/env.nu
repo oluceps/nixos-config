@@ -28,7 +28,12 @@ $env.NU_PLUGIN_DIRS = [
 
 def create_prompt [p] {
     let gold = {fg: '#f1c4cd'}
-    $'(ansi blue)(pwd) (ansi reset)(ansi --escape $gold)(do -i {git rev-parse --abbrev-ref HEAD } | str trim | str join)(ansi reset)(char newline)(ansi cyan)($p)(ansi reset)'
+    let home = $env.HOME | str trim
+    let in_home = pwd | str starts-with $home
+    let path = if $in_home {
+        pwd | str replace $home '~'
+    }
+    $'(ansi blue)($path) (ansi reset)(ansi --escape $gold)(do -i {git rev-parse --abbrev-ref HEAD } | str trim | str join)(ansi reset)(char newline)(ansi cyan)($p)(ansi reset)'
 }
 
 
