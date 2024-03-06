@@ -4,6 +4,7 @@ alias c := check
 
 host := `hostname`
 me := `whoami`
+loc := `pwd`
 
 default:
     @just --choose
@@ -29,6 +30,3 @@ overwrite-s3:
 
 overwrite-local:
     mc mirror --overwrite --remove r2/sec/Sec /home/{{ me }}/Sec/
-
-cn:
-    git clean -f

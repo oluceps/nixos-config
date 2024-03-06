@@ -76,24 +76,26 @@ def "main d" [
 
 }
 
+const age_pub = /run/agenix/age
+
 def "main en" [name: string] {
-  rage -e $name -i /run/agenix/age -i ./age-yubikey-identity-7d5d5540.txt.pub -o $'./($name).age'
+  rage -e $name -i $age_pub -i ./sec/age-yubikey-identity-7d5d5540.txt.pub -o $'./($name).age'
   srm $name
 }
 
 def "main de" [name: string] {
-  rage -d $'./($name)' -i /run/agenix/age # -i ./age-yubikey-identity-7d5d5540.txt.pub
+  rage -d $'./($name)' -i $age_pub # -i ./age-yubikey-identity-7d5d5540.txt.pub
 }
 
 def "main dump" [] {
-  srm -frC decrypted
-  mkdir decrypted
-  ls ./*.age | par-each {|i| main de $i.name | save $'decrypted/($i.name)' }
+  srm -frC ./sec/decrypted
+  mkdir ./sec/decrypted
+  ls ./sec/*.age | par-each {|i| main de $i.name | save $'sec/decrypted/($i.name | path basename)' }
 }
 
 def "main chk" [] {
   let allow = ["f" "age-yubikey-identity-7d5d5540.txt.pub"]
-  ls | filter {|i| not ($in.name | str ends-with "age")} | filter {|i| not ($i.name in $allow) }
+  ls sec | filter {|i| not ($in.name | path basename | str ends-with "age")} | filter {|i| not ($i.name | path basename | $in in $allow) }
 }
 
 def main [] { }
