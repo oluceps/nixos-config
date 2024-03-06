@@ -318,6 +318,9 @@ lib.mkMerge [
       command-not-found.enable = false;
       steam = {
         enable = true;
+        package = pkgs.steam.override {
+          extraPkgs = pkgs: [ pkgs.maple-mono-SC-NF ];
+        };
         remotePlay.openFirewall = true; # Open ports in the firewall for Steam Remote Play
         dedicatedServer.openFirewall = true; # Open ports in the firewall for Source Dedicated Server
       };

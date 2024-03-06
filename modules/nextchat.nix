@@ -1,5 +1,6 @@
 { pkgs
 , config
+, user
 , lib
 , ...
 }:
@@ -32,7 +33,7 @@ in
         serviceConfig = {
           Type = "simple";
           DynamicUser = true;
-          WorkingDirectory = cfg.workdir;
+          RootDirectory = cfg.workDir;
           ExecStart = "${lib.getExe pkgs.yarn} start";
           EnvironmentFile = cfg.environmentFile;
           Restart = "on-failure";

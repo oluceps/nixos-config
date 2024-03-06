@@ -141,17 +141,17 @@
       "zswap.zpool=zsmalloc"
       "systemd.gpt_auto=0"
     ];
-    # extraModulePackages = with config.boot.kernelPackages; [
-    #   v4l2loopback
-    #   (callPackage "${inputs.self}/pkgs/tcp-brutal" { })
-    #   (callPackage "${inputs.self}/pkgs/shufflecake" { }).kernelModule
-    # ];
+    extraModulePackages = with config.boot.kernelPackages; [
+      v4l2loopback
+      (callPackage "${inputs.self}/pkgs/tcp-brutal.nix" { })
+      shufflecake
+    ];
     kernelPackages =
       # (import inputs.nixpkgs-pin {
       #   system = "x86_64-linux";
       # })
       pkgs.linuxPackages_latest;
-      # inputs.nyx.packages.${pkgs.system}.linuxPackages_cachyos-zen3;
+    # inputs.nyx.packages.${pkgs.system}.linuxPackages_cachyos-zen3;
 
     # kernelPatches =
     #   let patchPath = ../../.attachs/cachyos-kernel;

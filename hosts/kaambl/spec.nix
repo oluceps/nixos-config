@@ -44,7 +44,7 @@
         verbosity = "crit";
         extraOptions = [
           "--loadavg-target"
-          "2.0"
+          "100.0"
         ];
       };
     };
@@ -64,18 +64,17 @@
     ];
     tailscale = { enable = true; openFirewall = true; };
 
-    copilot-gpt4.enable = true;
     # cloudflared = {
     #   enable = true;
     #   environmentFile = config.age.secrets.cloudflare-garden-00.path;
     # };
 
     compose-up.instances = [
-      {
-        name = "nextchat";
-        workingDirectory = "/home/${user}/Src/ChatGPT-Next-Web";
-        extraArgs = "chatgpt-next-web";
-      }
+      # {
+      #   name = "nextchat";
+      #   workingDirectory = "/home/${user}/Src/ChatGPT-Next-Web";
+      #   extraArgs = "chatgpt-next-web";
+      # }
     ];
 
     shadowsocks.instances = [{
