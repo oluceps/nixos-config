@@ -29,7 +29,6 @@
         devShells.default = with pkgs; mkShell {
           packages = [ agenix-rekey home-manager just ];
           shellHook = ''
-            export PATH=$PATH:./.
           '';
         };
 

@@ -13,66 +13,52 @@ const map = [
 
 const hosts = $map.name
 
-let get_map = { |per| $map | where name == $per }
-
-let get_addr = { |b| do $get_map $b | $in.addr.0 }
-
-def "main p" [
-  target: string
-  node?: string
-] {
-  let drv = { |name| nix eval --raw $'.#nixosConfigurations.($name).config.age.rekey.derivation' }
-
-  let push = { |t_addr, path| nix copy --substitute-on-destination --to $'ssh://($t_addr)' $path -vvv }
-
-  let target_addr = do $get_addr $target
-
-  do $push ($target_addr) (do $drv $node) 
+export-env {
+  $env.get_map = { |per| $map | where name == $per }
+  $env.get_addr = { |b| do $env.get_map $b | $in.addr.0 }
 }
 
-def "main b" [
-  node?: string
+export def b [
+  nodes?: list<string>
   --builder (-b): string = "hastur"
 ] {
 
-  let target_addr = do $get_addr $builder
+  let target_addr = do $env.get_addr $builder
 
-  nom build $'.#nixosConfigurations.($node).config.system.build.toplevel' --builders $"($target_addr)"
+  $nodes | par-each {|| nom build $'.#nixosConfigurations.($in).config.system.build.toplevel' --builders $"($target_addr)" }
 
 }
 
-def "main d" [
-  node?: string
+export def d [
+  nodes?: list<string>
   mode?: string = "switch"
   --builder (-b): string = "hastur"
 ] {
 
-  let builder_addr = do $get_addr $builder
+  let builder_addr = do $env.get_addr $builder
 
-  nixos-rebuild $mode --flake $'.#($node)' --target-host (do $get_addr $node) --build-host $"($builder_addr)" --use-remote-sudo
+  $nodes | par-each {|| nixos-rebuild $mode --flake $'.#($in)' --target-host (do $env.get_addr $in) --build-host $"($builder_addr)" --use-remote-sudo }
 
 }
 
 const age_pub = /run/agenix/age
 
-def "main en" [name: string] {
+export def en [name: string] {
   rage -e $name -i $age_pub -i ./sec/age-yubikey-identity-7d5d5540.txt.pub -o $'./($name).age'
   srm $name
 }
 
-def "main de" [name: string] {
+export def de [name: string] {
   rage -d $'./($name)' -i $age_pub # -i ./age-yubikey-identity-7d5d5540.txt.pub
 }
 
-def "main dump" [path?: string = "./sec/decrypted"] {
+export def dump [path?: string = "./sec/decrypted"] {
   srm -frC $path
   mkdir $path
-  ls ./sec/*.age | par-each {|i| main de $i.name | save $'($path)/($i.name | path parse | $in.stem)' }
+  ls ./sec/*.age | par-each {|i| de $i.name | save $'($path)/($i.name | path parse | $in.stem)' }
 }
 
-def "main chk" [] {
+export def chk [] {
   let allow = ["f" "age-yubikey-identity-7d5d5540.txt.pub" "rekeyed"]
   ls sec | filter {|i| not ($in.name | path basename | str ends-with "age")} | filter {|i| not ($i.name | path basename | $in in $allow) }
 }
-
-def main [] { }
