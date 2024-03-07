@@ -28,8 +28,6 @@
 
         devShells.default = with pkgs; mkShell {
           packages = [ agenix-rekey home-manager just ];
-          shellHook = ''
-          '';
         };
 
         packages =

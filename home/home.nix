@@ -100,7 +100,7 @@
 
       # fractal
 
-      yuzu-mainline
+      # yuzu-mainline
       photoprism
 
       virt-manager
