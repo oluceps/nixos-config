@@ -113,8 +113,6 @@
       dosbox-staging
       meld
       # yubioath-flutter
-      libsForQt5.qtbase
-      libsForQt5.qtwayland
       openapi-generator-cli
 
       gimp
