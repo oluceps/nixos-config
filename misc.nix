@@ -13,6 +13,7 @@ lib.mkMerge [
     # systemd.sysusers.enable = true;
     # system.etc.overlay.enable = true;
     # system.etc.overlay.mutable = false;
+    systemd.sysusers.enable = true;
 
     nh = {
       enable = true;
