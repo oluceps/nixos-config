@@ -64,10 +64,10 @@ def "main de" [name: string] {
   rage -d $'./($name)' -i $age_pub # -i ./age-yubikey-identity-7d5d5540.txt.pub
 }
 
-def "main dump" [] {
-  srm -frC ./sec/decrypted
-  mkdir ./sec/decrypted
-  ls ./sec/*.age | par-each {|i| main de $i.name | save $'sec/decrypted/($i.name | path basename)' }
+def "main dump" [path?: string = "./sec/decrypted"] {
+  srm -frC $path
+  mkdir $path
+  ls ./sec/*.age | par-each {|i| main de $i.name | save $'($path)/($i.name | path parse | $in.stem)' }
 }
 
 def "main chk" [] {
