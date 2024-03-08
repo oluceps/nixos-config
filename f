@@ -2,7 +2,7 @@
 
 const map = [
     [name, addr];
-		[hastur, riro@10.0.2.2],
+		[hastur, riro@10.0.1.2],
 		[kaambl, elen@localhost],
 		[eihort, elen@10.0.2.6],
 		[nodens, dgs],
@@ -25,7 +25,19 @@ export def b [
 
   let target_addr = do $env.get_addr $builder
 
-  $nodes | par-each {|| nom build $'.#nixosConfigurations.($in).config.system.build.toplevel' --builders $"($target_addr)" }
+  let h = hostname | str trim
+
+  let job = if $h != $builder {
+    ["--max-jobs" "0"]
+  }
+
+  let machine_spec = "x86_64-linux - - - big-parallel"
+
+  $nodes | par-each {|| 
+    (nix build $'.#nixosConfigurations.($in).config.system.build.toplevel'
+      --builders $"($target_addr) ($machine_spec)"
+      ...($job) -vvv) 
+  }
 
 }
 
@@ -37,7 +49,13 @@ export def d [
 
   let builder_addr = do $env.get_addr $builder
 
-  $nodes | par-each {|| nixos-rebuild $mode --flake $'.#($in)' --target-host (do $env.get_addr $in) --build-host $"($builder_addr)" --use-remote-sudo }
+  $nodes | par-each {||
+    (nixos-rebuild $mode
+      --flake $'.#($in)'
+      --target-host (do $env.get_addr $in)
+      --build-host $"($builder_addr)"
+      --use-remote-sudo)
+  }
 
 }
 
@@ -55,10 +73,18 @@ export def de [name: string] {
 export def dump [path?: string = "./sec/decrypted"] {
   srm -frC $path
   mkdir $path
-  ls ./sec/*.age | par-each {|i| de $i.name | save $'($path)/($i.name | path parse | $in.stem)' }
+  ls ./sec/*.age | par-each {|i| 
+    de $i.name | save $'($path)/($i.name | path parse | $in.stem)' 
+  }
 }
 
 export def chk [] {
   let allow = ["f" "age-yubikey-identity-7d5d5540.txt.pub" "rekeyed"]
-  ls sec | filter {|i| not ($in.name | path basename | str ends-with "age")} | filter {|i| not ($i.name | path basename | $in in $allow) }
+  ls sec |
+    filter {|i|
+      not ($in.name | path basename | str ends-with "age")
+    } |
+    filter {|i|
+      not ($i.name | path basename | $in in $allow)
+    }
 }
