@@ -103,7 +103,14 @@
   boot = {
     supportedFilesystems = [ "bcachefs" ];
     initrd = {
-      systemd = { enable = true; emergencyAccess = data.keys.hashedPasswd; };
+      systemd = {
+        enable = true;
+        # emergencyAccess = data.keys.hashedPasswd;
+        # work with cachyos kernel
+        suppressedStorePaths = [
+          "${config.boot.initrd.systemd.package}/lib/systemd/system-generators/systemd-hibernate-resume-generator"
+        ];
+      };
       availableKernelModules =
         [
           "nvme"
