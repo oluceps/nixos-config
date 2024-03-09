@@ -1,13 +1,13 @@
 { config, pkgs, lib, data, ... }:
 let
   # cfg = config.services.prometheus;
-  targets = map (n: "${n}.nyaw.xyz") data.withoutHeads;
+  targets = map (n: "${n}.nyaw.xyz") [ "nodens" "colour" ];
 in
 {
   services.prometheus = {
     enable = true;
-    webExternalUrl = "https://${config.networking.fqdn}/prom";
-    listenAddress = "127.0.0.1";
+    webExternalUrl = "https://colour.nyaw.xyz/prom";
+    listenAddress = "10.0.2.2";
     port = 9090;
     retentionTime = "7d";
     globalConfig = {
@@ -15,15 +15,6 @@ in
       evaluation_interval = "1m";
     };
     scrapeConfigs = [
-      # {
-      #   job_name = "metrics";
-      #   scheme = "https";
-      #   basic_auth = {
-      #     username = "prometheus";
-      #     password_file = config.sops.secrets.prometheus.path;
-      #   };
-      #   static_configs = [{ inherit targets; }];
-      # }
       {
         job_name = "caddy";
         scheme = "https";
@@ -36,17 +27,8 @@ in
       }
       {
         job_name = "dns";
-        scheme = "http";
-        # basic_auth = {
-        #   username = "prometheus";
-        #   password_file = config.sops.secrets.prometheus.path;
-        # };
-        metrics_path = "/metric";
-        static_configs = [{ targets = [ "hastur.nyaw.xyz:9092" ]; }];
-        # relabel_configs = [{
-        #   source_labels = [ "__param_target" ];
-        #   target_label = "target";
-        # }];
+        metrics_path = "/metrics";
+        static_configs = [{ targets = [ "localhost:9092" ]; }];
       }
 
     ];
