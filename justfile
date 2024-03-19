@@ -24,7 +24,8 @@ build-livecd:
 
 build-bootstrap:
     nom build .#nixosConfigurations.bootstrap.config.system.build.diskoImages
-
+test-bootstrap:
+    nix run github:nix-community/nixos-anywhere -- --flake .#bootstrap --vm-test
 build *args:
     #!/usr/bin/env nu
     use {{loc}}/f
