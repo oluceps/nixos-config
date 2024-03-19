@@ -4742,11 +4742,11 @@
         "poetry2nix": "poetry2nix"
       },
       "locked": {
-        "lastModified": 1710790004,
-        "narHash": "sha256-mk7idEhYPiBy/2VW54k1UNolJaesastBcX8LNb5BNHA=",
+        "lastModified": 1710849728,
+        "narHash": "sha256-NNo61uvQPD+GSmXOAWL2Fi5XIgJugjfx0gAc+P9m+qM=",
         "owner": "asoul-rec",
         "repo": "factorio-manager",
-        "rev": "61351fc441831f266156074aa98b06f143cd6ff1",
+        "rev": "425e6ec427a4adb0b3927f7e9e402dc350c41fb1",
         "type": "github"
       },
       "original": {

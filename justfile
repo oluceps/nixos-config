@@ -92,4 +92,4 @@ overwrite-local:
     mc mirror --overwrite --remove r2/sec/Sec {{ home }}/Sec/
 
 cleanthebucket:
-    if ((input) == "yes") { srm -frC {{ home }}/Sec/*a }
+    if ((input) == "yes") { srm -frC {{ home }}/Sec/* }
