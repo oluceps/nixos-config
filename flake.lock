@@ -4744,15 +4744,16 @@
       "locked": {
         "lastModified": 1710862254,
         "narHash": "sha256-FcssDRvWpZDoae6X4ljQG4j0NEK2lrINjcLwFGvIgjc=",
-        "ref": "refs/heads/x",
+        "owner": "asoul-rec",
+        "repo": "factorio-manager",
         "rev": "9a6811b5c3cbb842d289af8b08460a2108e64d9e",
-        "revCount": 28,
-        "type": "git",
-        "url": "file:///home/elen/Src/factorio-manager"
+        "type": "github"
       },
       "original": {
-        "type": "git",
-        "url": "file:///home/elen/Src/factorio-manager"
+        "owner": "asoul-rec",
+        "ref": "x",
+        "repo": "factorio-manager",
+        "type": "github"
       }
     },
     "factorio-manager_2": {
