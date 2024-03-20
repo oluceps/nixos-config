@@ -51,6 +51,7 @@
   };
 
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
+
   fileSystems = {
     "/efi" = {
       device = "/dev/sda2";
