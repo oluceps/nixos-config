@@ -80,7 +80,7 @@ check:
     f chk
 
 rekey:
-    agenix rekey
+    agenix rekey -a
 
 update:
     nix flake update --commit-lock-file
