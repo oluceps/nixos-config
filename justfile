@@ -43,10 +43,10 @@ encrypt *args:
                        reduce {|it, acc| $it + (char newline) + $acc } | fzf
     echo "input file name: "
     let name = (input)
-    let raw_path = (mktemp -t)
-    hx $raw_path
-    rage -e $raw_path -i $age_pub -i {{ yubikey-ident }} -o $'($output_dir)($name).age'
-    srm -C $raw_path
+    let tmp_path = (mktemp -t)
+    hx $tmp_path
+    rage -e $tmp_path -i $age_pub -i {{ yubikey-ident }} -o $'($output_dir)($name).age'
+    srm -C $tmp_path
 
 edit-sec *args:
     #!/usr/bin/env nu
