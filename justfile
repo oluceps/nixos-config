@@ -58,7 +58,6 @@ edit-sec *args:
     let tmp_file = (mktemp -t)
     rage -d $encrypted_file_tob_edit -i $age_pub -o $tmp_file
     hx $tmp_file
-    srm -C $encrypted_file_tob_edit
     rage -e $tmp_file -i $age_pub -i {{ yubikey-ident }} -o $encrypted_file_tob_edit
     srm -C $tmp_file
 
