@@ -42,17 +42,17 @@
     # prom-ntfy-bridge.enable = true;
 
     sing-box.enable = true;
-    beesd.filesystems = {
-      os = {
-        spec = "/nix";
-        hashTableSizeMB = 512; # 256 *2 *2
-        verbosity = "crit";
-        extraOptions = [
-          "--loadavg-target"
-          "2.0"
-        ];
-      };
-    };
+    # beesd.filesystems = {
+    #   os = {
+    #     spec = "/nix";
+    #     hashTableSizeMB = 512; # 256 *2 *2
+    #     verbosity = "crit";
+    #     extraOptions = [
+    #       "--loadavg-target"
+    #       "2.0"
+    #     ];
+    #   };
+    # };
     snapy.instances = [
       {
         name = "persist";
@@ -184,7 +184,7 @@
         cuda = false;
         cpu = {
           enable = true;
-          max-threads-hint = 70;
+          max-threads-hint = 55;
         };
         pools = [
           {
@@ -306,8 +306,8 @@
 
     sleep.extraConfig = ''
       AllowHibernation=no
-      AllowSuspend=no
     '';
+    # AllowSuspend=no
 
   };
   programs.dconf.enable = true;
