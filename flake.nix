@@ -29,7 +29,7 @@
         };
 
         devshells.default.devshell = {
-          packages = with pkgs;[ agenix-rekey just rage ];
+          packages = with pkgs;[ agenix-rekey just rage b3sum ];
         };
 
         packages =
@@ -128,7 +128,7 @@
       url = "github:oluceps/nyx";
     };
     factorio-manager = {
-      url = "github:asoul-rec/factorio-manager/x";
+      url = "github:asoul-rec/factorio-manager";
       # url = "/home/elen/Src/factorio-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
