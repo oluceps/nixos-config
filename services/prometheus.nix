@@ -31,7 +31,6 @@ in
     {
       job_name = "metrics";
       scheme = "https";
-      metrics_path = "/metrics";
       basic_auth = {
         username = "prometheus";
         password_file = "/run/credentials/prometheus.service/wg";
