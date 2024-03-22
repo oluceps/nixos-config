@@ -25,7 +25,7 @@ in
         listen = "unix//tmp/caddy.sock";
         config.persist = false;
       };
-      # logging.logs.debug.level = "debug";
+      logging.logs.debug.level = "debug";
       apps = {
         http.grace_period = "1s";
         http.servers.srv0 = {
@@ -71,6 +71,12 @@ in
             policies = [
               {
                 key_type = "p256";
+                issuers = [
+                  {
+                    email = "mn1.674927211@gmail.com";
+                    module = "acme";
+                  }
+                ];
               }
             ];
           };
