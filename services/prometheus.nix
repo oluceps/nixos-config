@@ -28,6 +28,15 @@ in
       metrics_path = "/metrics";
       static_configs = [{ targets = [ "localhost:9092" ]; }];
     }
+    {
+      job_name = "metrics";
+      scheme = "https";
+      basic_auth = {
+        username = "prometheus";
+        password_file = "/run/credentials/prometheus.service/wg";
+      };
+      static_configs = [{ inherit targets; }];
+    }
     # {
     #   job_name = "http";
     #   scheme = "https";
