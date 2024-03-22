@@ -3089,16 +3089,18 @@
         "pre-commit-hooks": "pre-commit-hooks_2"
       },
       "locked": {
-        "dirtyRev": "a9f42419a6e4a8e66a1630de7f17a6546da57c6e-dirty",
-        "dirtyShortRev": "a9f4241-dirty",
-        "lastModified": 1711050240,
-        "narHash": "sha256-crQUobffAEioFhn+JudOUH1ogz25GvbltGiqqPa2oDk=",
-        "type": "git",
-        "url": "file:///home/elen/Src/flake.nix"
+        "lastModified": 1711077508,
+        "narHash": "sha256-n/01IMvXyhK2nUJqw/nm8uZcrspP/lQUXKyMGlk+/ws=",
+        "owner": "daeuniverse",
+        "repo": "flake.nix",
+        "rev": "ff51cc3116c6ea5b54d5c595e095884d41b8a8d4",
+        "type": "github"
       },
       "original": {
-        "type": "git",
-        "url": "file:///home/elen/Src/flake.nix"
+        "owner": "daeuniverse",
+        "ref": "exp",
+        "repo": "flake.nix",
+        "type": "github"
       }
     },
     "dae_2": {

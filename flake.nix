@@ -144,8 +144,8 @@
       url = "github:tadfisher/android-nixpkgs";
     };
     # path:/home/riro/Src/flake.nix
-    # dae.url = "github:daeuniverse/flake.nix/exp";
-    dae.url = "/home/elen/Src/flake.nix";
+    dae.url = "github:daeuniverse/flake.nix/exp";
+    # dae.url = "/home/elen/Src/flake.nix";
     # nixyDomains.url = "";
     nixyDomains.url = "github:oluceps/nixyDomains";
     nixyDomains.flake = false;
