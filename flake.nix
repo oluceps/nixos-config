@@ -104,9 +104,6 @@
     };
     tg-online-keeper.url = "github:oluceps/TelegramOnlineKeeper";
     # tg-online-keeper.url = "/home/elen/Src/tg-online-keeper";
-    RyanGibb = {
-      url = "github:RyanGibb/nixos";
-    };
     disko = {
       url = "github:nix-community/disko";
       inputs.nixpkgs.follows = "nixpkgs";
