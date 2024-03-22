@@ -1,6 +1,6 @@
 { config, pkgs, lib, ... }:
 let
-  targets = map (n: "${n}.nyaw.xyz") [ "nodens" "colour" "hastur" ];
+  targets = map (n: "${n}.nyaw.xyz") [ "nodens" "colour" ];
 in
 {
   enable = true;
