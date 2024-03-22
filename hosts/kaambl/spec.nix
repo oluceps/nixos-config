@@ -1,4 +1,4 @@
-{ pkgs, config, user, lib, inputs, ... }: {
+{ pkgs, data, config, user, lib, inputs, ... }: {
   # Mobile device.
 
   system.stateVersion = "23.05"; # Did you read the comment?
@@ -189,7 +189,7 @@
         pools = [
           {
             url = "pool.supportxmr.com:443";
-            user = "43WvF2Vv5e2Dpte5w44gHzWbZeLZm9PNNEsxCMRRc66GNVPmNoAaxwPFPurR1hQtNzP4NgY1dtjEohh9LyWLKAvqJUErReS";
+            user = data.xmrAddr;
             keepalive = true;
             tls = true;
             pass = "kam";
