@@ -73,13 +73,13 @@ in
               }
             ];
           };
-          certificates = {
-            load_files = [{
-              certificate = "/run/credentials/caddy.service/nyaw.cert";
-              key = "/run/credentials/caddy.service/nyaw.key";
-              tags = [ "cert0" ];
-            }];
-          };
+          # certificates = {
+          #   load_files = [{
+          #     certificate = "/run/credentials/caddy.service/nyaw.cert";
+          #     key = "/run/credentials/caddy.service/nyaw.key";
+          #     tags = [ "cert0" ];
+          #   }];
+          # };
         };
       };
     };
