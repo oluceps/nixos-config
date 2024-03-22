@@ -29,7 +29,7 @@
         };
 
         devshells.default.devshell = {
-          packages = with pkgs;[ agenix-rekey just rage b3sum ];
+          packages = with pkgs;[ agenix-rekey just rage b3sum nushell ];
         };
 
         packages =
@@ -144,8 +144,8 @@
       url = "github:tadfisher/android-nixpkgs";
     };
     # path:/home/riro/Src/flake.nix
-    dae.url = "github:daeuniverse/flake.nix/exp";
-    # dae.url = "/home/elen/Src/flake.nix";
+    # dae.url = "github:daeuniverse/flake.nix/exp";
+    dae.url = "/home/elen/Src/flake.nix";
     # nixyDomains.url = "";
     nixyDomains.url = "github:oluceps/nixyDomains";
     nixyDomains.flake = false;
