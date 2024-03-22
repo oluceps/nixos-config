@@ -61,6 +61,12 @@ in
                 }
               ];
             }
+            {
+              handler = "reverse_proxy";
+              upstreams = with config.services.prometheus.exporters.blackbox;[{
+                dial = "${listenAddress}:${toString port}";
+              }];
+            }
           ];
           metrics = { };
 
