@@ -70,7 +70,7 @@ in
                 any_tag = [ "cert0" ];
               };
               match = {
-                sni = [ "nyaw.xyz" ];
+                sni = [ "*.nyaw.xyz" ];
               };
             }
           ];
@@ -80,16 +80,6 @@ in
             policies = [
               {
                 key_type = "p256";
-              }
-              {
-                subjects = [
-                  "matrix.nyaw.xyz"
-                  "vault.nyaw.xyz"
-                  "pb.nyaw.xyz"
-                  "nyaw.xyz"
-                  "api.heartrate.nyaw.xyz"
-                  config.networking.fqdn
-                ];
               }
               {
                 issuers = [
