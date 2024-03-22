@@ -1,7 +1,7 @@
 { config, pkgs, lib, data, ... }:
 let
   # cfg = config.services.prometheus;
-  targets = map (n: "${n}.nyaw.xyz") [ "nodens" "colour" ];
+  targets = map (n: "${n}.nyaw.xyz") [ "nodens" "colour" "hastur" ];
 in
 {
 
@@ -31,9 +31,27 @@ in
         static_configs = [{ inherit targets; }];
       }
       {
-        job_name = "dns";
+        job_name = "mosdns";
         metrics_path = "/metrics";
         static_configs = [{ targets = [ "localhost:9092" ]; }];
+      }
+      {
+        job_name = "http";
+        scheme = "https";
+        basic_auth = {
+          username = "prometheus";
+          password_file = "/run/credentials/prometheus.service/wg";
+        };
+        metrics_path = "/probe";
+        params = {
+          module = [ "http_2xx" ];
+          target = [ "https://nyaw.xyz" ];
+        };
+        static_configs = [{ inherit targets; }];
+        relabel_configs = [{
+          source_labels = [ "__param_target" ];
+          target_label = "target";
+        }];
       }
     ];
     rules = lib.singleton (builtins.toJSON {
