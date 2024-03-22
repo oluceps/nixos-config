@@ -62,7 +62,7 @@
 
           ./vaultwarden.nix
           inputs.niri.nixosModules.niri
-          ./prometheus.nix
+          ./caddy.nix
 
         ]
           ++

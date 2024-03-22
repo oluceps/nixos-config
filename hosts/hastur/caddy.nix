@@ -1,0 +1,3 @@
+{}: {
+  repack.caddy.enable = true;
+}

@@ -37,12 +37,13 @@ in
                 host = [ config.networking.fqdn ];
                 path = [ "/prom" "/prom/*" ];
               }];
-              handle = [{
-                handler = "reverse_proxy";
-                upstreams = [{ dial = "10.0.1.2:9090"; }];
-              }];
+              handle = [
+                {
+                  handler = "reverse_proxy";
+                  upstreams = [{ dial = "10.0.1.2:9090"; }];
+                }
+              ];
             }
-
             {
               match = [{
                 host = [ config.networking.fqdn ];
@@ -61,44 +62,14 @@ in
                 }
               ];
             }
-            {
-              handler = "reverse_proxy";
-              upstreams = with config.services.prometheus.exporters.blackbox;[{
-                dial = "${listenAddress}:${toString port}";
-              }];
-            }
           ];
           metrics = { };
-
-          tls_connection_policies = [
-            {
-              certificate_selection = {
-                any_tag = [ "cert0" ];
-              };
-              match = {
-                sni = [ "*.nyaw.xyz" ];
-              };
-            }
-          ];
         };
         tls = {
           automation = {
             policies = [
               {
                 key_type = "p256";
-              }
-              {
-                issuers = [
-                  {
-                    email = "mn1.674927211@gmail.com";
-                    module = "acme";
-                  }
-                  {
-                    email = "mn1.674927211@gmail.com";
-                    module = "zerossl";
-                  }
-                ];
-                subjects = [ "ctos.magicb.uk" "magicb.uk" ];
               }
             ];
           };
