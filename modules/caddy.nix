@@ -1,14 +1,15 @@
-{ utils, pkgs, config, lib, ... }:
+# original from NickCao/flakes
+{ pkgs, config, lib, ... }:
 let
-  cfg = config.cloud.caddy;
+  cfg = config.repack.caddy;
   format = pkgs.formats.json { };
+  configfile = format.generate "config.json" cfg.settings;
 in
 {
 
   options = {
-    cloud.caddy = {
+    repack.caddy = {
       enable = lib.mkEnableOption "caddy api gateway";
-      package = lib.mkPackageOption pkgs "caddy" { };
       settings = lib.mkOption {
         type = lib.types.submodule {
           freeformType = format.type;
@@ -19,26 +20,111 @@ in
   };
 
   config = lib.mkIf cfg.enable {
-
-    cloud.caddy.settings = {
+    repack.caddy.settings = {
       admin = {
         listen = "unix//tmp/caddy.sock";
         config.persist = false;
       };
+      # logging.logs.debug.level = "debug";
       apps = {
-        tls.automation.policies = [{
-          key_type = "p256";
-        }];
         http.grace_period = "1s";
+        http.servers.srv0 = {
+          listen = [ ":443" ];
+          strict_sni_host = false;
+          routes = [
+            {
+              match = [{
+                host = [ config.networking.fqdn ];
+                path = [ "/prom" "/prom/*" ];
+              }];
+              handle = [{
+                handler = "reverse_proxy";
+                upstreams = [{ dial = "10.0.1.2:9090"; }];
+              }];
+            }
+
+            {
+              match = [{
+                host = [ config.networking.fqdn ];
+                path = [ "/caddy" ];
+              }];
+              handle = [
+                {
+                  handler = "authentication";
+                  providers.http_basic.accounts = [{
+                    username = "prometheus";
+                    password = "$2b$05$EGDkhDEoadOvUkJujmyer.944J2Dh4U73TUtb11Z1bVZwd2rjNECO";
+                  }];
+                }
+                {
+                  handler = "metrics";
+                }
+              ];
+            }
+          ];
+          metrics = { };
+
+          tls_connection_policies = [
+            {
+              certificate_selection = {
+                any_tag = [ "cert0" ];
+              };
+              match = {
+                sni = [ "nyaw.xyz" ];
+              };
+            }
+          ];
+        };
+        tls = {
+          automation = {
+            policies = [
+              {
+                key_type = "p256";
+              }
+              {
+                subjects = [
+                  "matrix.nyaw.xyz"
+                  "vault.nyaw.xyz"
+                  "pb.nyaw.xyz"
+                  "nyaw.xyz"
+                  "api.heartrate.nyaw.xyz"
+                  config.networking.fqdn
+                ];
+              }
+              {
+                issuers = [
+                  {
+                    email = "mn1.674927211@gmail.com";
+                    module = "acme";
+                  }
+                  {
+                    email = "mn1.674927211@gmail.com";
+                    module = "zerossl";
+                  }
+                ];
+                subjects = [ "ctos.magicb.uk" "magicb.uk" ];
+              }
+            ];
+          };
+          certificates = {
+            load_files = [{
+              certificate = "/run/credentials/caddy.service/nyaw.cert";
+              key = "/run/credentials/caddy.service/nyaw.key";
+              tags = [ "cert0" ];
+            }];
+          };
+        };
       };
     };
-    systemd.services.caddy = {
 
+    environment.etc."caddy/config.json".source = configfile;
+
+    systemd.services.caddy = {
       serviceConfig = {
         Type = "notify";
-        ExecStart = "${cfg.package}/bin/caddy run --config /var/lib/caddy/config.json";
-        ExecReload = "${cfg.package}/bin/caddy reload --force --config /var/lib/caddy/config.json";
-        User = "root";
+        ExecStart = "${pkgs.caddy}/bin/caddy run --config /etc/caddy/config.json";
+        ExecReload = "${pkgs.caddy}/bin/caddy reload --force --config /etc/caddy/config.json";
+        DynamicUser = true;
         StateDirectory = "caddy";
         AmbientCapabilities = [ "CAP_NET_BIND_SERVICE" ];
         Environment = [ "XDG_DATA_HOME=%S" ];
@@ -46,6 +132,7 @@ in
       wantedBy = [ "multi-user.target" ];
       after = [ "network.target" "network-online.target" ];
       requires = [ "network-online.target" ];
+      reloadTriggers = [ configfile ];
     };
   };
 
