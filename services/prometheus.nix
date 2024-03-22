@@ -35,6 +35,7 @@ in
         username = "prometheus";
         password_file = "/run/credentials/prometheus.service/wg";
       };
+      metrics_path = "/metrics";
       static_configs = [{ inherit targets; }];
     }
     # {
