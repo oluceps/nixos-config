@@ -25,7 +25,7 @@ in
       };
     };
 
-    services.caddy.settings.apps.http.servers.srv0.routes = [
+    repack.caddy.settings.apps.http.servers.srv0.routes = [
       {
         match = [{
           host = [ config.networking.fqdn ];
