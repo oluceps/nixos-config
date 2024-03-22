@@ -52,6 +52,7 @@
       (n: importService n)
   ) // {
 
+    metrics.enable = true;
     juicity.instances = [{
       name = "only";
       credentials = [
