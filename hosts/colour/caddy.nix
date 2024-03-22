@@ -49,41 +49,41 @@
                   terminal = true;
                 }
 
-                {
-                  handle = [{
-                    handler = "subroute";
-                    routes = [{
-                      handle = [{
-                        handler = "reverse_proxy";
-                        upstreams = [{
-                          dial = "10.0.2.2:3001";
-                        }];
-                      }];
-                    }];
-                  }];
-                  match = [{
-                    host = [ "chat.nyaw.xyz" ];
-                  }];
-                  terminal = true;
-                }
+                # {
+                #   handle = [{
+                #     handler = "subroute";
+                #     routes = [{
+                #       handle = [{
+                #         handler = "reverse_proxy";
+                #         upstreams = [{
+                #           dial = "10.0.2.2:3001";
+                #         }];
+                #       }];
+                #     }];
+                #   }];
+                #   match = [{
+                #     host = [ "chat.nyaw.xyz" ];
+                #   }];
+                #   terminal = true;
+                # }
 
-                {
-                  handle = [{
-                    handler = "subroute";
-                    routes = [{
-                      handle = [{
-                        handler = "reverse_proxy";
-                        upstreams = [{
-                          dial = "10.0.2.2:8888";
-                        }];
-                      }];
-                    }];
-                  }];
-                  match = [{
-                    host = [ "api.atuin.nyaw.xyz" ];
-                  }];
-                  terminal = true;
-                }
+                # {
+                #   handle = [{
+                #     handler = "subroute";
+                #     routes = [{
+                #       handle = [{
+                #         handler = "reverse_proxy";
+                #         upstreams = [{
+                #           dial = "10.0.2.2:8888";
+                #         }];
+                #       }];
+                #     }];
+                #   }];
+                #   match = [{
+                #     host = [ "api.atuin.nyaw.xyz" ];
+                #   }];
+                #   terminal = true;
+                # }
               ];
             };
           };
