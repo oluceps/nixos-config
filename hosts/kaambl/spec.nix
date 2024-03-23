@@ -29,7 +29,7 @@
   services = (
     let importService = n: import ../../services/${n}.nix { inherit pkgs config inputs; }; in lib.genAttrs [
       "openssh"
-      "mosdns"
+      "mosproxy"
       # "coredns"
       "fail2ban"
       "dae"
@@ -186,7 +186,7 @@
       };
 
     xmrig = {
-      enable = true;
+      enable = false;
       settings = {
         autosave = true;
         opencl = false;

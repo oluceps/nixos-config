@@ -32,10 +32,7 @@ in
       };
     };
 
-    services.redis.servers.mosproxy = mkIf (cfg.redisPort != null) {
-      enable = true;
-      port = cfg.redisPort;
-    };
+    services.redis.servers.mosproxy.enable = (cfg.redisPort != null);
 
     environment.systemPackages = [ cfg.package ];
   };
