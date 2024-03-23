@@ -53,6 +53,7 @@
       (n: importService n)
   ) // {
 
+    prom-ntfy-bridge.enable = true;
     metrics.enable = true;
     juicity.instances = [{
       name = "only";
