@@ -32,7 +32,6 @@
         hyst-us-cli = { rekeyFile = ./sec/hyst-us-cli.age; mode = "640"; owner = "root"; group = "users"; name = "hyst-us-cli.yaml"; };
         atuin = { rekeyFile = ./sec/atuin.age; mode = "640"; owner = user; group = "users"; };
         atuin_key = { rekeyFile = ./sec/atuin_key.age; mode = "640"; owner = user; group = "users"; };
-        prom = { rekeyFile = ./sec/prom.age; mode = "640"; owner = "prometheus"; group = "users"; };
       };
   };
 }
