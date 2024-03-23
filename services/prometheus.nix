@@ -88,24 +88,4 @@ in
       targets = [ "127.0.0.1:8009" ];
     }];
   }];
-
-  exporters = {
-    node = {
-      enable = true;
-      listenAddress = "127.0.0.1";
-      enabledCollectors = [ "systemd" ];
-      disabledCollectors = [ "arp" ];
-    };
-    blackbox = {
-      enable = true;
-      listenAddress = "127.0.0.1";
-      configFile = (pkgs.formats.yaml { }).generate "config.yml" {
-        modules = {
-          http_2xx = {
-            prober = "http";
-          };
-        };
-      };
-    };
-  };
 }
