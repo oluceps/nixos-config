@@ -28,6 +28,7 @@ in
       wantedBy = [ "multi-user.target" ];
       restartTriggers = [ configFile ];
       serviceConfig = {
+        Restart = "on-failure";
         StateDirectory = "mosproxy";
         ExecStart = "${cfg.package}/bin/mosproxy router -c ${configFile}";
       };
