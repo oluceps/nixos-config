@@ -48,6 +48,7 @@
     let importService = n: import ../../services/${n}.nix { inherit pkgs config; }; in lib.genAttrs [
       "openssh"
       "fail2ban"
+      "prometheus"
     ]
       (n: importService n)
   ) // {

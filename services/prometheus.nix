@@ -9,7 +9,7 @@ in
 {
   enable = true;
   webExternalUrl = "https://${config.networking.fqdn}/prom";
-  listenAddress = "0.0.0.0";
+  listenAddress = "127.0.0.1";
   port = 9090;
   retentionTime = "7d";
   globalConfig = {
@@ -27,11 +27,11 @@ in
       metrics_path = "/caddy";
       static_configs = [{ inherit targets; }];
     }
-    {
-      job_name = "mosdns";
-      metrics_path = "/metrics";
-      static_configs = [{ targets = [ "localhost:9092" ]; }];
-    }
+    # {
+    #   job_name = "mosdns";
+    #   metrics_path = "/metrics";
+    #   static_configs = [{ targets = [ "localhost:9092" ]; }];
+    # }
     {
       job_name = "metrics";
       scheme = "https";

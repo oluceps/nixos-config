@@ -93,7 +93,7 @@
       "dae"
       "scrutiny"
       "ddns-go"
-      "prometheus"
+      # "prometheus"
     ]
       (n: importService n)
   ) // {
