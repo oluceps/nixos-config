@@ -2,7 +2,6 @@
 , lib
 , ...
 }: {
-  services.mosdns.enable = true;
   services.resolved.enable = lib.mkForce false;
   networking = {
     resolvconf.useLocalResolver = true;
