@@ -97,7 +97,7 @@
     ]
       (n: importService n)
   ) // {
-    services.prometheus.exporters.node = {
+    prometheus.exporters.node = {
       enable = true;
       listenAddress = "0.0.0.0";
       enabledCollectors = [ "systemd" ];
