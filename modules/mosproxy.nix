@@ -23,7 +23,8 @@ in
   config = mkIf cfg.enable {
     systemd.services.mosproxy = {
       description = "mosproxy Daemon";
-      after = [ "network.target" ];
+      after = [ "network.target" ]
+        ++ lib.optional (cfg.redisPort != null) "redis-mosproxy.service";
       wantedBy = [ "multi-user.target" ];
       restartTriggers = [ configFile ];
       serviceConfig = {
