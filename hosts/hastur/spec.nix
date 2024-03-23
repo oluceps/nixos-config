@@ -97,8 +97,13 @@
     ]
       (n: importService n)
   ) // {
+    services.prometheus.exporters.node = {
+      enable = true;
+      listenAddress = "0.0.0.0";
+      enabledCollectors = [ "systemd" ];
+      disabledCollectors = [ "arp" ];
+    };
 
-    metrics.enable = true;
     prom-ntfy-bridge.enable = true;
     # xserver.videoDrivers = [ "nvidia" ];
 
