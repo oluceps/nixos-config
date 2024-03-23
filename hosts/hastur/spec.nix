@@ -21,10 +21,6 @@
     serviceConfig.Environment = [ "GOGC=20" ];
   };
 
-  systemd.services.prometheus.serviceConfig.LoadCredential = (map (lib.genCredPath config)) [
-    "wg"
-  ];
-
   # systemd.services.tester = {
   #   serviceConfig = {
   #     Type = "simple";
