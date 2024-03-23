@@ -27,11 +27,16 @@ in
       metrics_path = "/caddy";
       static_configs = [{ inherit targets; }];
     }
-    # {
-    #   job_name = "mosdns";
-    #   metrics_path = "/metrics";
-    #   static_configs = [{ targets = [ "localhost:9092" ]; }];
-    # }
+    {
+      job_name = "mosproxy";
+      metrics_path = "/metrics";
+      static_configs = [{
+        targets = [
+          "10.0.2.2:9092"
+          "10.0.2.3:9092"
+        ];
+      }];
+    }
     {
       job_name = "metrics";
       scheme = "https";

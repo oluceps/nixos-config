@@ -12,7 +12,7 @@ in
       mem_size = 1048576;
       redis = "unix:///run/redis-mosproxy/redis.sock";
     };
-    metrics = { addr = "localhost:9092"; };
+    metrics = { addr = "0.0.0.0:9092"; };
     ecs = { enabled = false; };
     log = { queries = true; };
     domain_sets = [{ files = [ "${src}/accelerated-domains.gfw.txt" ]; tag = "gfw"; }];
@@ -30,7 +30,6 @@ in
         quic = { max_streams = 100; };
         udp = { multi_routes = false; };
       }
-
       {
         listen = "127.0.0.1:53";
         protocol = "gnet";
