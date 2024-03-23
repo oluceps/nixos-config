@@ -22,7 +22,7 @@ in
       scheme = "https";
       basic_auth = {
         username = "prometheus";
-        password_file = "/run/credentials/prometheus.service/wg";
+        password_file = config.age.secrets.prom.path;
       };
       metrics_path = "/caddy";
       static_configs = [{ inherit targets; }];
@@ -37,9 +37,8 @@ in
       scheme = "https";
       basic_auth = {
         username = "prometheus";
-        password_file = "/run/credentials/prometheus.service/wg";
+        password_file = config.age.secrets.prom.path;
       };
-      metrics_path = "/metrics";
       static_configs = [{ inherit targets; }];
     }
     # {

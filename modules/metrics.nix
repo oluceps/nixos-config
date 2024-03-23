@@ -36,7 +36,7 @@ in
             handler = "authentication";
             providers.http_basic.accounts = [{
               username = "prometheus";
-              password = "$2b$05$EGDkhDEoadOvUkJujmyer.944J2Dh4U73TUtb11Z1bVZwd2rjNECO";
+              password = "$2b$05$bKuO7ehC6wKR28/pfhJZOuNyQFUtF7FwhkPFLwcbCMhfLRNUV54vm";
             }];
           }
           {
@@ -57,7 +57,7 @@ in
             handler = "authentication";
             providers.http_basic.accounts = [{
               username = "prometheus";
-              password = "$2b$05$EGDkhDEoadOvUkJujmyer.944J2Dh4U73TUtb11Z1bVZwd2rjNECO";
+              password = "$2b$05$bKuO7ehC6wKR28/pfhJZOuNyQFUtF7FwhkPFLwcbCMhfLRNUV54vm";
             }];
           }
           {
