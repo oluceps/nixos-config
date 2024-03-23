@@ -18,8 +18,10 @@ in
     domain_sets = [{ files = [ "${src}/accelerated-domains.gfw.txt" ]; tag = "gfw"; }];
 
     rules = [
+      { domain = "gfw"; forward = "ggl"; reject = 0; reverse = false; }
       { domain = "gfw"; forward = "one"; reject = 0; reverse = false; }
       { forward = "ali"; reject = 0; }
+      { forward = "dot"; reject = 0; }
     ];
     servers = [
       {
@@ -36,9 +38,13 @@ in
       }
     ];
     upstreams = [
-
       {
-        addr = "https://1.0.0.1/dns-query";
+        addr = "https://dns.google/dns-query";
+        dial_addr = "8.8.8.8";
+        tag = "ggl";
+      }
+      {
+        addr = "tls+pipeline://1.1.1.1:853";
         tag = "one";
       }
       {
