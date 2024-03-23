@@ -49,6 +49,12 @@
     #     port = 12345;
     #   };
     # };
+    prometheus.exporters.node = {
+      enable = true;
+      listenAddress = "0.0.0.0";
+      enabledCollectors = [ "systemd" ];
+      disabledCollectors = [ "arp" ];
+    };
 
     sing-box.enable = true;
     # beesd.filesystems = {

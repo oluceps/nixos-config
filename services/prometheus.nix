@@ -50,7 +50,9 @@ in
     {
       job_name = "hastur-metric";
       scheme = "http";
-      static_configs = [{ targets = [ "10.0.1.2:9100" ]; }];
+      static_configs = [{
+        targets = [ "10.0.1.2:9100" "10.0.1.3:9100" ];
+      }];
     }
     # {
     #   job_name = "http";
