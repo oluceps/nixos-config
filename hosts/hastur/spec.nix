@@ -98,6 +98,7 @@
       (n: importService n)
   ) // {
 
+    metrics.enable = true;
     prom-ntfy-bridge.enable = true;
     # xserver.videoDrivers = [ "nvidia" ];
 
