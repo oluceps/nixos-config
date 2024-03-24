@@ -70,4 +70,16 @@ in
         (substring 0 1 str))
       (substring 1 16 str)
     ];
+
+  legacyGetFlake = srcPath:
+    (import
+      (
+        let lock = builtins.fromJSON (builtins.readFile ../flake.lock); in
+        fetchTarball {
+          url = lock.nodes.flake-compat.locked.url or "https://github.com/edolstra/flake-compat/archive/${lock.nodes.flake-compat.locked.rev}.tar.gz";
+          sha256 = lock.nodes.flake-compat.locked.narHash;
+        }
+      )
+      srcPath
+    ).defaultNix;
 }

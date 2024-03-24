@@ -63,8 +63,8 @@
                   "shufflecake"
                 ];
               in
-              extraLibs.genFilteredDirAttrsV2 ./pkgs shadowedPkgs
-                (name: final.callPackage (./pkgs + "/${name}.nix") { });
+              (extraLibs.genFilteredDirAttrsV2 ./pkgs shadowedPkgs
+                (name: final.callPackage (./pkgs + "/${name}.nix") { inherit (inputs.self) lib; }));
 
             lib = final: prev: extraLibs;
           };
