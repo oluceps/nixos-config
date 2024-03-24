@@ -16,7 +16,7 @@ jobs:
 
       - name: Show
         run: |
-          nix flake show
+          nix flake show --all-systems
 
 name: lint
 on: 
