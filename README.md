@@ -22,9 +22,7 @@ with:
 
 ---
 
-```
-
-### Cache
+### Binary Cache
 
 ```nix
 nix.settings = {
