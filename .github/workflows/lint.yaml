@@ -9,14 +9,14 @@ jobs:
       - name: Install Nix
         uses: cachix/install-nix-action@v26
 
-      - name: Show
-        run: |
-          nix flake show
-
       - name: Flake check
         run: |
           nix flake check
         shell: bash
+
+      - name: Show
+        run: |
+          nix flake show
 
 name: lint
 on: 
