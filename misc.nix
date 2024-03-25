@@ -183,7 +183,7 @@ lib.mkMerge [
           cores = 6;
         };
       };
-      docker. enable = false;
+      docker.enable = false;
       podman = {
         enable = true;
         dockerSocket.enable = true;
@@ -191,22 +191,21 @@ lib.mkMerge [
       };
       libvirtd = {
         enable = false;
-        qemu = {
-          ovmf = {
-            enable = true;
-            packages =
-              # let
-              #   pkgs = import inputs.nixpkgs-22 {
-              #     system = "x86_64-linux";
-              #   };
-              # in
-              [
-                pkgs.OVMFFull.fd
-                pkgs.pkgsCross.aarch64-multiplatform.OVMF.fd
-              ];
-          };
-          swtpm.enable = true;
+        qemu.ovmf = {
+          enable = true;
+          packages =
+            # let
+            #   pkgs = import inputs.nixpkgs-22 {
+            #     system = "x86_64-linux";
+            #   };
+            # in
+            [
+              pkgs.OVMFFull.fd
+              pkgs.pkgsCross.aarch64-multiplatform.OVMF.fd
+            ];
         };
+        qemu.swtpm.enable = true;
+
       };
       waydroid.enable = false;
     };

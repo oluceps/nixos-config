@@ -1,4 +1,4 @@
-{ config, pkgs, lib, data, inputs, ... }:
+{ config, pkgs, lib, data, ... }:
 let
   p = with pkgs; {
 
@@ -46,7 +46,7 @@ let
   e = with pkgs;{
     crypt = [ minisign rage age-plugin-yubikey cryptsetup tpm2-tss tpm2-tools yubikey-manager yubikey-manager-qt monero-cli ];
 
-    python = [ (python311.withPackages (ps: with ps; [ pandas requests absl-py tldextract bleak matplotlib ])) ];
+    python = [ (python311.withPackages (ps: with ps; [ pandas requests absl-py tldextract bleak matplotlib clang ])) ];
 
     lang = [
       [
