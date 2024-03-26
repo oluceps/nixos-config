@@ -16,40 +16,43 @@
     niri.enable = true;
     sway.enable = true;
   };
-  systemd.services.atuin.serviceConfig.Environment = [ "RUST_LOG=debug" ];
-  systemd.services.restic-backups-persist = {
-    serviceConfig.Environment = [ "GOGC=20" ];
-  };
-
-  # systemd.services.tester = {
-  #   serviceConfig = {
-  #     Type = "simple";
-  #     ExecStart = "exit 3";
-  #     ExecStopPost = lib.genNtfyMsgScriptPath "tags warning prio high" "info" "test";
-  #   };
-  #   wantedBy = [ "multi-user.target" ];
-  # };
-
-  # hardware = {
-  #   nvidia = {
-  #     package = config.boot.kernelPackages.nvidiaPackages.latest;
-  #     modesetting.enable = true;
-  #     powerManagement.enable = false;
-  #     open = true;
-  #   };
-
-  #   opengl = {
-  #     enable = true;
-  #     # extraPackages = with pkgs; [
-  #     #   rocm-opencl-icd
-  #     #   rocm-opencl-runtime
-  #     # ];
-  #     driSupport = true;
-  #     driSupport32Bit = true;
-  #   };
-  # };
-
   systemd = {
+    services = {
+      atuin.serviceConfig.Environment = [ "RUST_LOG=debug" ];
+      restic-backups-persist.serviceConfig.Environment = [ "GOGC=20" ];
+      btrfs-scrub-persist.serviceConfig.ExecStopPost =
+        lib.genNtfyMsgScriptPath "tags red_circle prio high" "error" "btrfs scrub failed on hastur";
+    };
+
+    # systemd.services.tester = {
+    #   serviceConfig = {
+    #     Type = "simple";
+    #     ExecStart = "exit 3";
+    #     ExecStopPost = lib.genNtfyMsgScriptPath "tags warning prio high" "info" "test";
+    #   };
+    #   wantedBy = [ "multi-user.target" ];
+    # };
+
+    # hardware = {
+    #   nvidia = {
+    #     package = config.boot.kernelPackages.nvidiaPackages.latest;
+    #     modesetting.enable = true;
+    #     powerManagement.enable = false;
+    #     open = true;
+    #   };
+
+    #   opengl = {
+    #     enable = true;
+    #     # extraPackages = with pkgs; [
+    #     #   rocm-opencl-icd
+    #     #   rocm-opencl-runtime
+    #     # ];
+    #     driSupport = true;
+    #     driSupport32Bit = true;
+    #   };
+    # };
+
+
     # Given that our systems are headless, emergency mode is useless.
     # We prefer the system to attempt to continue booting so
     # that we can hopefully still access it remotely.
@@ -74,6 +77,7 @@
       AllowSuspend=no
       AllowHibernation=no
     '';
+
   };
 
   # photoprism minio
