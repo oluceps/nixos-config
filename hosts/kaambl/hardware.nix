@@ -164,7 +164,7 @@
       #   system = "x86_64-linux";
       # })
       # pkgs.linuxPackages_latest;
-      inputs.nyx.packages.${pkgs.system}.linuxPackages_cachyos-zen3;
+      inputs.nyx.packages.${pkgs.system}.linuxPackages_cachyos;
 
     # kernelPatches =
     #   let patchPath = ../../.attachs/cachyos-kernel;
