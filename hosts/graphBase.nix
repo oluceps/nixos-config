@@ -39,7 +39,6 @@
     wireshark = { enable = true; package = pkgs.wireshark; };
     kdeconnect.enable = true;
     adb.enable = true;
-    mosh.enable = true;
     command-not-found.enable = false;
     steam = {
       enable = true;
