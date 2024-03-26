@@ -2,7 +2,6 @@
 , pkgs
 , lib
 , user
-, osConfig
 , ...
 }:
 let
@@ -22,12 +21,12 @@ let
 in
 {
   imports =
-    map (d: ./programs + d)
+    (map (d: ./programs + d)
       (map (n: "/" + n)
         (lib.unique (baseModule
-          ++ lib.optionals osConfig.security.rtkit.enable
-          fullModule))
-      );
+        ++
+        fullModule))
+      )) ++ [ ./graphBase.nix ];
 
   home.stateVersion = "22.11";
   home.username = user;
