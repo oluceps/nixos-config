@@ -180,11 +180,11 @@
 
     hysteria.instances = [{
       name = "nodens";
-      configFile = config.age.secrets.hyst-us-cli-has.path;
+      configFile = config.age.secrets.hyst-us-cli.path;
     }
       {
         name = "colour";
-        configFile = config.age.secrets.hyst-az-cli-has.path;
+        configFile = config.age.secrets.hyst-az-cli.path;
       }];
 
     shadowsocks.instances = [
