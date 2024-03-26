@@ -35,6 +35,7 @@
     style = "adwaita";
   };
   programs = {
+
     wireshark = { enable = true; package = pkgs.wireshark; };
     git.enable = true;
     bash = {
@@ -65,10 +66,11 @@
       };
     };
   };
-  security.services.swaylock = { };
-
-  # Enable sound.
-  rtkit.enable = true;
+  security = {
+    services.swaylock = { };
+    # Enable sound.
+    rtkit.enable = true;
+  };
 
   services.xserver = {
     enable = lib.mkDefault false;
