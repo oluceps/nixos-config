@@ -63,7 +63,7 @@
           ./vaultwarden.nix
           inputs.niri.nixosModules.niri
 
-          ../graphBase.nix
+          # ../graphBase.nix
         ]
           ++
           [
