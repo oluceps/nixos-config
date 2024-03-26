@@ -97,6 +97,7 @@
       "dae"
       "scrutiny"
       "ddns-go"
+      "atticd"
       # "prometheus"
     ]
       (n: importService n)
