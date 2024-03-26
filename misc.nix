@@ -126,6 +126,13 @@
 
   services = {
 
+    bpftune.enable = true;
+
+    journald.extraConfig =
+      ''
+        SystemMaxUse=1G
+      '';
+
     dbus = {
       enable = true;
       implementation = "broker";

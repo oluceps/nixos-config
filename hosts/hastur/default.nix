@@ -45,7 +45,6 @@
           ../persist.nix
           ../secureboot.nix
           ../../packages.nix
-          ../../services/misc.nix
           ../../misc.nix
           ../../sysvars.nix
           ../../age.nix
