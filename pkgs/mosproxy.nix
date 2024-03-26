@@ -11,7 +11,7 @@ buildGo122Module {
     rev = "75dec96b4ca6faf238179c88a43fd6b452802cb4";
     hash = "sha256-8S0ynSHF1BK9NmMBVWeHMovHAlWrIHLSysCiL79hO18=";
   });
-  vendorHash = "sha256-hB0Oak42cGGga3moq+dnEHJ+v2ufcgxavzi9T1m2Uok=";
+  vendorHash = "sha256-MGZkuhxEcxrswd68FiUl2uhnAVCT8OINXhuaG5Ds/dA=";
   doCheck = false;
   ldflags = [
     "-s"
