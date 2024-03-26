@@ -6,7 +6,7 @@ export-env {
   $env.get_addr = { |map, per| $map | where name == $per | $in.addr.0 }
 }
 
-export def b [
+export def br [
   nodes?: list<string>
   --builder (-b): string = "hastur"
 ] {
@@ -27,6 +27,16 @@ export def b [
     (nix build $'.#nixosConfigurations.($in).config.system.build.toplevel'
       --builders $"($target_addr) ($machine_spec)"
       ...($job) -vvv) 
+  }
+
+}
+
+export def b [
+  nodes?: list<string>
+] {
+
+  $nodes | par-each {|| 
+    (nix build $'.#nixosConfigurations.($in).config.system.build.toplevel') 
   }
 
 }
