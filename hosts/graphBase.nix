@@ -71,7 +71,6 @@
           jre17_minimal
           inotify-tools
           rustup
-          minio-client
           tmux
           # awscli2
 

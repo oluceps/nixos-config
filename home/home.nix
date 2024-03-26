@@ -143,4 +143,6 @@ in
       enableSshSupport = false;
     };
   };
+
+  home.packages = with pkgs;[ atuin ];
 }

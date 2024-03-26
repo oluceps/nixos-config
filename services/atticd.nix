@@ -7,6 +7,14 @@
 
   settings = {
     listen = "[::]:8083";
+    database.url = "postgresql://attic:attic@localhost:5432/attic";
+    api-endpoint = "https://attic.nyaw.xyz/";
+    storage = {
+      type = "s3";
+      region = "ap-east-1";
+      bucket = "attic";
+      endpoint = "http://localhost:9000";
+    };
 
     # Data chunking
     #

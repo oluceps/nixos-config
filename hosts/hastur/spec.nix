@@ -138,17 +138,17 @@
     tailscale = { enable = true; openFirewall = true; };
 
     sing-box.enable = false;
-    # beesd.filesystems = {
-    #   os = {
-    #     spec = "LABEL=nixos";
-    #     hashTableSizeMB = 1024; # 256 *2 *2
-    #     verbosity = "crit";
-    #     extraOptions = [
-    #       "--loadavg-target"
-    #       "5.0"
-    #     ];
-    #   };
-    # };
+    beesd.filesystems = {
+      os = {
+        spec = "LABEL=nixos";
+        hashTableSizeMB = 1024; # 256 *2 *2
+        verbosity = "crit";
+        extraOptions = [
+          "--loadavg-target"
+          "40.0"
+        ];
+      };
+    };
     restic.backups.solid = {
       passwordFile = config.age.secrets.wg.path;
       repositoryFile = config.age.secrets.restic-repo.path;
