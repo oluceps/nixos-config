@@ -113,6 +113,7 @@
             just
             typst
             cosmic-term
+            acpi
           ];
         bluetooth = [ bluetuith ];
 
