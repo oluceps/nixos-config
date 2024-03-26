@@ -37,14 +37,6 @@
   programs = {
 
     wireshark = { enable = true; package = pkgs.wireshark; };
-    git.enable = true;
-    bash = {
-      interactiveShellInit = ''
-        eval "$(${pkgs.zoxide}/bin/zoxide init bash)"
-        eval "$(${lib.getExe pkgs.atuin} init bash)"
-      '';
-      blesh.enable = true;
-    };
     kdeconnect.enable = true;
     adb.enable = true;
     mosh.enable = true;
@@ -71,12 +63,53 @@
     # Enable sound.
     rtkit.enable = true;
   };
+  services = {
 
-  services.xserver = {
-    enable = lib.mkDefault false;
-    xkb.layout = "us";
+    udev = {
+      packages = with pkgs;[
+        android-udev-rules
+        # qmk-udev-rules
+        jlink-udev-rules
+        yubikey-personalization
+        libu2f-host
+        via
+        opensk-udev-rules
+        nrf-udev-rules
+      ];
+    };
+    gnome.gnome-keyring.enable = true;
+    dbus = {
+      enable = true;
+      implementation = "broker";
+      apparmor = "enabled";
+    };
+    fwupd.enable = true;
+
+    flatpak.enable = true;
+    pcscd.enable = true;
+    xserver = {
+      enable = lib.mkDefault false;
+      xkb.layout = "us";
+    };
   };
 
+
+
+  systemd.user.services.nix-index = {
+    environment = config.networking.proxy.envVars;
+    script = ''
+      FILE=index-x86_64-linux
+      mkdir -p ~/.cache/nix-index
+      cd ~/.cache/nix-index
+      ${pkgs.curl}/bin/curl -LO https://github.com/Mic92/nix-index-database/releases/latest/download/$FILE
+      mv -v $FILE files
+    '';
+    serviceConfig = {
+      Restart = "on-failure";
+      Type = "oneshot";
+    };
+    startAt = "weekly";
+  };
 
 
   fonts = {

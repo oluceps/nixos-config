@@ -140,6 +140,15 @@
     "machine-id".text = "b08dfa6083e7567a1921a715000001fb\n";
   };
   programs = {
+
+    git.enable = true;
+    bash = {
+      interactiveShellInit = ''
+        eval "$(${pkgs.zoxide}/bin/zoxide init bash)"
+        eval "$(${lib.getExe pkgs.atuin} init bash)"
+      '';
+      blesh.enable = true;
+    };
     nix-ld.enable = true;
     fish = {
       enable = true;
