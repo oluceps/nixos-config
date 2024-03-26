@@ -15,6 +15,7 @@ let
 
     cmd = [
 
+      btop
       atuin
       minio-client
       attic
