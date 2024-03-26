@@ -55,19 +55,6 @@ export def d [
 
 const age_pub = /run/agenix/age
 
-export def de [path: string] {
-  let tmp_path = (mktemp -t)
-  rage -d $path -i $age_pub -o $tmp_path # -i ./age-yubikey-identity-7d5d5540.txt.pub
-  let mime_type = (xdg-mime query filetype $tmp_path)
-  if ($mime_type | str contains "image") {
-    cat $tmp_path | img2sixel
-  } else {
-    cat $tmp_path
-  }
-
-  srm -C $tmp_path
-}
-
 export def dump [path?: string = "./sec/decrypted"] {
   srm -frC $path
   mkdir $path
@@ -85,19 +72,4 @@ export def chk [] {
     filter {|i|
       not ($i.name | path basename | $in in $allow)
     }
-}
-
-export def rswc [
-  --builder (-b): string = "hastur"
-] {
-
-  let job = ["--max-jobs" "0"]
-
-  let map = (open $map_path | lines | split column ":" name addr)
-
-  let target_addr = do $env.get_addr ($map) $builder
-
-  let machine_spec = "x86_64-linux - - -"
-
-  nh os switch --no-nom -- --builders $"($target_addr)"
 }
