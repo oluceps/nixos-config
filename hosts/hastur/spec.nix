@@ -144,8 +144,8 @@
         hashTableSizeMB = 1024; # 256 *2 *2
         verbosity = "crit";
         extraOptions = [
-          "--loadavg-target"
-          "40.0"
+          "-c"
+          "6"
         ];
       };
     };
