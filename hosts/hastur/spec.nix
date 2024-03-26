@@ -103,6 +103,7 @@
       enabledCollectors = [ "systemd" ];
       disabledCollectors = [ "arp" ];
     };
+    fwupd.enable = true;
 
     prom-ntfy-bridge.enable = true;
     # xserver.videoDrivers = [ "nvidia" ];

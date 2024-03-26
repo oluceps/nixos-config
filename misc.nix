@@ -130,9 +130,7 @@
       enable = true;
       implementation = "broker";
     };
-
-
-    fwupd.enable = true;
+ 
   };
 
   documentation = {
