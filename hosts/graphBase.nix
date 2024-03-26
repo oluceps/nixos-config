@@ -193,12 +193,6 @@
       ];
     };
     gnome.gnome-keyring.enable = true;
-    dbus = {
-      enable = true;
-      implementation = "broker";
-      apparmor = "enabled";
-    };
-    fwupd.enable = true;
 
     flatpak.enable = true;
     pcscd.enable = true;

@@ -124,6 +124,17 @@
     polkit.enable = true;
   };
 
+  services = {
+
+    dbus = {
+      enable = true;
+      implementation = "broker";
+    };
+
+
+    fwupd.enable = true;
+  };
+
   documentation = {
     enable = true;
     nixos.enable = false;
