@@ -3,7 +3,7 @@
   xdg = {
     mime = {
       enable = true;
-      inherit ((import ./home/home.nix { inherit config pkgs lib inputs user; }).xdg.mimeApps) defaultApplications;
+      inherit ((import ../home/home.nix { inherit config pkgs lib inputs user; }).xdg.mimeApps) defaultApplications;
     };
   };
 
@@ -67,7 +67,7 @@
     };
   };
   security = {
-    services.swaylock = { };
+    pam.services.swaylock = { };
     # Enable sound.
     rtkit.enable = true;
   };
