@@ -30,23 +30,23 @@
                   }];
                   terminal = true;
                 }
-                {
-                  handle = [{
-                    handler = "subroute";
-                    routes = [{
-                      handle = [{
-                        handler = "reverse_proxy";
-                        upstreams = [{
-                          dial = "10.0.1.2:9000";
-                        }];
-                      }];
-                    }];
-                  }];
-                  match = [{
-                    host = [ "s3.nyaw.xyz" ];
-                  }];
-                  terminal = true;
-                }
+                # {
+                #   handle = [{
+                #     handler = "subroute";
+                #     routes = [{
+                #       handle = [{
+                #         handler = "reverse_proxy";
+                #         upstreams = [{
+                #           dial = "10.0.1.2:9000";
+                #         }];
+                #       }];
+                #     }];
+                #   }];
+                #   match = [{
+                #     host = [ "s3.nyaw.xyz" ];
+                #   }];
+                #   terminal = true;
+                # }
                 {
                   handle = [{
                     handler = "subroute";

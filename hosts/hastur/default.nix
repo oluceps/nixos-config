@@ -33,6 +33,7 @@
                   "agenix-rekey"
                   "misskey"
                   "nixpkgs-wayland"
+                  "attic"
                 ]);
             };
           }
