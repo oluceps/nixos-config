@@ -130,7 +130,7 @@
       enable = true;
       implementation = "broker";
     };
- 
+
   };
 
   documentation = {
