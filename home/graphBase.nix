@@ -1,5 +1,5 @@
-{ pkgs, lib, config, ... }: {
-  packages = with pkgs;[
+{ pkgs, lib, config, inputs, ... }: {
+  home.packages = with pkgs;[
     qq
     gtkcord4
     celeste
