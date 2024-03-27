@@ -4,10 +4,12 @@
     let extraLibs = (import ./hosts/lib.nix inputs);
     in
     flake-parts.lib.mkFlake { inherit inputs; } ({ withSystem, ... }: {
-      imports = (import ./hosts inputs) ++ (with inputs;[
-        pre-commit-hooks.flakeModule
-        devshell.flakeModule
-      ]);
+      imports =
+        (with inputs;[
+          pre-commit-hooks.flakeModule
+          devshell.flakeModule
+        ])
+        ++ [ ./hosts ];
       debug = false;
       systems = [ "x86_64-linux" "aarch64-linux" "riscv64-linux" ];
       perSystem = { pkgs, system, inputs', ... }: {
@@ -17,6 +19,7 @@
           overlays = with inputs;[
             agenix-rekey.overlays.default
             fenix.overlays.default
+            colmena.overlays.default
             self.overlays.default
           ];
         };
@@ -29,7 +32,7 @@
         };
 
         devshells.default.devshell = {
-          packages = with pkgs;[ agenix-rekey just rage b3sum nushell ];
+          packages = with pkgs;[ agenix-rekey just rage b3sum nushell colmena ];
         };
 
         packages =
@@ -48,10 +51,11 @@
       flake = {
         lib = inputs.nixpkgs.lib.extend inputs.self.overlays.lib;
 
+        nixosConfigurations = ((inputs.colmena.lib.makeHive inputs.self.colmena).introspect (x: x)).nodes;
+
         agenix-rekey = inputs.agenix-rekey.configure {
           userFlake = inputs.self;
-          nodes = with inputs.nixpkgs.lib;
-            filterAttrs (n: _: !elem n [ "livecd" "bootstrap" ]) inputs.self.nixosConfigurations;
+          nodes = inputs.self.nixosConfigurations;
         };
 
         overlays =
@@ -95,6 +99,10 @@
     nh = {
       url = "github:viperML/nh";
       inputs.nixpkgs.follows = "nixpkgs"; # override this repo's nixpkgs snapshot
+    };
+    colmena = {
+      url = "github:zhaofengli/colmena";
+      inputs.nixpkgs.follows = "nixpkgs";
     };
     attic = {
       url = "github:zhaofengli/attic";
