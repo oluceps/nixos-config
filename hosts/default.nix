@@ -1,11 +1,11 @@
 { withSystem, self, inputs, ... }:
 let
   generalHost = [
-    "colour"
+    # "colour"
     "nodens"
     "kaambl"
-    "abhoth"
-    "azasos"
+    # "abhoth"
+    # "azasos"
   ];
 in
 {

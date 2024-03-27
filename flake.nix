@@ -59,7 +59,8 @@
 
         agenix-rekey = inputs.agenix-rekey.configure {
           userFlake = inputs.self;
-          nodes = inputs.self.nixosConfigurations;
+          nodes = with inputs.nixpkgs.lib;
+            filterAttrs (n: _: !elem n [ "livecd" "bootstrap" ]) inputs.self.nixosConfigurations;
         };
 
         overlays =
