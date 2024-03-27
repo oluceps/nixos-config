@@ -9,7 +9,11 @@
           pre-commit-hooks.flakeModule
           devshell.flakeModule
         ])
-        ++ [ ./hosts ];
+        ++ [
+          ./hosts
+          ./hosts/livecd
+          ./hosts/bootstrap
+        ];
       debug = false;
       systems = [ "x86_64-linux" "aarch64-linux" "riscv64-linux" ];
       perSystem = { pkgs, system, inputs', ... }: {
