@@ -34,6 +34,7 @@
       "fail2ban"
       "dae"
       "ddns-go"
+      "postgresql"
     ]
       (n: importService n)
   ) //
