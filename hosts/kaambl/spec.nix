@@ -332,7 +332,7 @@
     anime-borb-launcher.enable = true;
     honkers-railway-launcher.enable = true;
     honkers-launcher.enable = true;
-    niri.enable = true;
+    # niri.enable = true;
   };
   systemd.tmpfiles.rules = [
     # "L+    /opt/rocm/hip   -    -    -     -    ${pkgs.rocmPackages.clr}"
