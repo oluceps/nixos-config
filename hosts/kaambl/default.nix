@@ -1,6 +1,6 @@
 { lib, user, inputs, ... }: {
   deployment = {
-    targetHost = null;
+    targetHost = "10.0.1.3";
     targetUser = user;
     allowLocalDeployment = true;
   };
