@@ -70,4 +70,9 @@ in
         (substring 0 1 str))
       (substring 1 16 str)
     ];
+
+  readToStore = p: toString (pkgs.writeTextFile {
+    name = builtins.baseNameOf p;
+    text = builtins.readFile p;
+  });
 }
