@@ -21,7 +21,7 @@
       enable = true;
       trustedInterfaces = [ "virbr0" "wg*" "podman*" "dae0" ];
       allowedUDPPorts = [ 8080 5173 51820 9918 8013 ];
-      allowedTCPPorts = [ 8080 9900 2222 5173 1900 ];
+      allowedTCPPorts = [ 22 8080 9900 2222 5173 1900 ];
     };
     nftables.enable = true;
     networkmanager.enable = lib.mkForce false;

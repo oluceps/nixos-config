@@ -19,7 +19,7 @@
           # inputs.ragenix.nixosModules.default
           inputs.self.nixosModules.default
           ./additions.nix
-          ./kaambl-network-compatible.nix
+          ./hastur-network-compatible.nix
         ];
       });
 }

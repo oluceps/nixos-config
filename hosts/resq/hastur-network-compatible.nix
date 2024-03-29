@@ -71,7 +71,7 @@
           MTUBytes = "1300";
         };
         wireguardConfig = {
-          PrivateKeyFile = /run/agenix/wg;
+          PrivateKeyFile = lib.readToStore /run/agenix/wg;
         };
         wireguardPeers = [
           {

@@ -2,7 +2,7 @@
 , lib
 , ...
 }: {
-  services.resolved.enable = lib.mkForce false;
+  services.resolved.enable = lib.mkForce true;
   networking = {
     resolvconf.useLocalResolver = true;
     firewall = {
