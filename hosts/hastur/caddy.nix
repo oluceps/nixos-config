@@ -43,8 +43,8 @@
         };
         tls.certificates.load_files = [
           {
-            certificate = "/run/certificates/caddy.service/nyaw.cert";
-            key = "/run/certificates/caddy.service/nyaw.key";
+            certificate = "/run/credentials/caddy.service/nyaw.cert";
+            key = "/run/credentials/caddy.service/nyaw.key";
             tags = [ "cert0" ];
           }
         ];
