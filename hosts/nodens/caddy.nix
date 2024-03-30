@@ -70,8 +70,14 @@
                     routes = [{
                       handle = [{
                         handler = "reverse_proxy";
+                        transport = {
+                          protocol = "http";
+                          tls = {
+                            server_name = "attic.nyaw.xyz";
+                          };
+                        };
                         upstreams = [{
-                          dial = "attic.nyaw.xyz";
+                          dial = "10.0.1.2:443";
                         }];
                       }];
                     }];
