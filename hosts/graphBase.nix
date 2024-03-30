@@ -26,7 +26,17 @@
             # black
           ]
           # languages related
-          [ zig lldb haskell-language-server gopls cmake-language-server zls android-file-transfer nixpkgs-review shfmt ]
+          [
+            zig
+            lldb
+            # haskell-language-server
+            gopls
+            cmake-language-server
+            zls
+            android-file-transfer
+            nixpkgs-review
+            shfmt
+          ]
         ];
         wine = [
           # bottles
