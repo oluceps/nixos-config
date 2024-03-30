@@ -149,7 +149,9 @@
     style = "adwaita";
   };
   programs = {
-
+    anime-game-launcher.enable = true; # Adds launcher and /etc/hosts rules
+    niri.enable = true;
+    sway.enable = true;
     wireshark = { enable = true; package = pkgs.wireshark; };
     kdeconnect.enable = true;
     adb.enable = true;
@@ -177,6 +179,21 @@
     rtkit.enable = true;
   };
   services = {
+
+    greetd = {
+      enable = true;
+      settings = rec {
+        initial_session = {
+          command =
+            "${pkgs.greetd.tuigreet}/bin/tuigreet --time --remember --cmd ${pkgs.writeShellScript "sway" ''
+          export $(/run/current-system/systemd/lib/systemd/user-environment-generators/30-systemd-environment-d-generator)
+          exec sway
+        ''}";
+          inherit user;
+        };
+        default_session = initial_session;
+      };
+    };
 
     acpid.enable = true;
     udev = {
