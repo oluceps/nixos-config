@@ -15,6 +15,7 @@
       ./rekey.nix
       ./spec.nix
       ./matrix.nix
+      ./caddy.nix
 
       ../persist.nix
       ../secureboot.nix
