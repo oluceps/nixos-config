@@ -11,6 +11,12 @@
     algorithm = "zstd";
   };
 
+  nix.gc = {
+    automatic = true;
+    dates = "weekly";
+    options = "--delete-older-than 10d";
+  };
+
   programs = {
     direnv = {
       enable = true;
@@ -94,7 +100,7 @@
   services = (
     let importService = n: import ../../services/${n}.nix { inherit pkgs config inputs lib user; }; in lib.genAttrs [
       "openssh"
-      "mosproxy"
+      # "mosproxy"
       "fail2ban"
       "dae"
       "scrutiny"

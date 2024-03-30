@@ -1,12 +1,12 @@
 { lib, config, ... }: {
-  services.resolved.enable = lib.mkForce false;
+  services.resolved.enable = lib.mkForce true;
   # services.resolved.enable = true;
   services.resolved.extraConfig = "DNS=192.168.1.1";
   networking = {
     resolvconf.useLocalResolver = true;
     # useHostResolvConf = true;
     hosts = {
-      "127.0.0.1" = [ "attic.nyaw.xyz" ];
+      "127.0.0.1" = [ "attic.nyaw.xyz" "api.s3.nyaw.xyz" ];
     };
 
     hostName = "hastur"; # Define your hostname.

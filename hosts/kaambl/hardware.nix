@@ -157,7 +157,7 @@
     extraModulePackages = with config.boot.kernelPackages; [
       v4l2loopback
       (callPackage "${inputs.self}/pkgs/tcp-brutal.nix" { })
-      shufflecake
+      # shufflecake
     ];
     kernelPackages =
       # (import inputs.nixpkgs-pin {
