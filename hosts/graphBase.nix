@@ -11,7 +11,7 @@
   programs = {
     dconf.enable = true;
     anime-game-launcher.enable = true; # Adds launcher and /etc/hosts rules
-    niri.enable = true;
+    # niri.enable = true;
     sway.enable = true;
     wireshark = { enable = true; package = pkgs.wireshark; };
     kdeconnect.enable = true;
