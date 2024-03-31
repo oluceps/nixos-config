@@ -53,7 +53,7 @@
         settings = {
           listen-http = ":2586";
           behind-proxy = true;
-          auth-default-access = "read-write";
+          auth-default-access = "deny-all";
           base-url = "http://ntfy.nyaw.xyz";
         };
       };

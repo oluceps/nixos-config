@@ -21,8 +21,8 @@
     services = {
       atuin.serviceConfig.Environment = [ "RUST_LOG=debug" ];
       restic-backups-persist.serviceConfig.Environment = [ "GOGC=20" ];
-      btrfs-scrub-persist.serviceConfig.ExecStopPost =
-        lib.genNtfyMsgScriptPath "tags red_circle prio high" "error" "btrfs scrub failed on hastur";
+      # btrfs-scrub-persist.serviceConfig.ExecStopPost =
+      #   lib.genNtfyMsgScriptPath "tags red_circle prio high" "error" "btrfs scrub failed on hastur";
     };
 
     # systemd.services.tester = {
@@ -98,7 +98,7 @@
       "postgresql"
       "photoprism"
       "mysql"
-      # "prometheus"
+      "prometheus"
     ]
       (n: importService n)
   ) // {
