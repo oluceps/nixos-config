@@ -92,11 +92,6 @@
   networking.firewall.allowedTCPPorts =
     [ 9000 9001 6622 ] ++ [ config.services.photoprism.port ];
 
-  xdg.portal.wlr.enable = true;
-  xdg.portal.enable = true;
-
-  programs.dconf.enable = true;
-
   services = (
     let importService = n: import ../../services/${n}.nix { inherit pkgs config inputs lib user; }; in lib.genAttrs [
       "openssh"
