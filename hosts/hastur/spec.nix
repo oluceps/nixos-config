@@ -17,13 +17,6 @@
     options = "--delete-older-than 10d";
   };
 
-  programs = {
-    direnv = {
-      enable = true;
-      nix-direnv.enable = true;
-      silent = true;
-    };
-  };
   systemd = {
     services = {
       atuin.serviceConfig.Environment = [ "RUST_LOG=debug" ];

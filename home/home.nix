@@ -15,11 +15,11 @@ let
     "btop"
     "hyfetch"
     "starship"
-    # "direnv"
+    "direnv"
   ];
 
   fullModule = (with builtins;attrNames
-    (lib.filterAttrs (n: _: !elem n [ "direnv" "hyprland" ])  # one or more of them conflict with gnome  "sway" "hyprland" "waybar"
+    (lib.filterAttrs (n: _: !elem n [ "hyprland" ])  # one or more of them conflict with gnome  "sway" "hyprland" "waybar"
       (readDir ./programs)));
 
   optionalGraphicComponents =
