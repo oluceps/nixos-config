@@ -8,7 +8,7 @@ let
 in
 {
   enable = true;
-  webExternalUrl = "https://${config.networking.fqdn}/prom";
+  # webExternalUrl = "https://nodens.nyaw.xyz/prom";
   listenAddress = "0.0.0.0";
   port = 9090;
   retentionTime = "7d";
