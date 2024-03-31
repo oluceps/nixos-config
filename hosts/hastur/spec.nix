@@ -210,7 +210,7 @@
       enable = true;
       location = "/var/lib/backup/postgresql";
       compression = "zstd";
-      startAt = "weekly";
+      startAt = "*-*-* 04:00:00";
     };
 
     pipewire = {
