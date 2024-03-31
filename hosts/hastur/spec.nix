@@ -88,7 +88,6 @@
   services = (
     let importService = n: import ../../services/${n}.nix { inherit pkgs config inputs lib user; }; in lib.genAttrs [
       "openssh"
-      # "mosproxy"
       "fail2ban"
       "dae"
       "scrutiny"
@@ -102,12 +101,7 @@
     ]
       (n: importService n)
   ) // {
-    prometheus.exporters.node = {
-      enable = true;
-      listenAddress = "0.0.0.0";
-      enabledCollectors = [ "systemd" ];
-      disabledCollectors = [ "arp" ];
-    };
+    metrics.enable = true;
     fwupd.enable = true;
 
     prom-ntfy-bridge.enable = true;
