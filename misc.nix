@@ -249,6 +249,8 @@
         end
 
         ${pkgs.atuin}/bin/atuin init fish | source
+
+        ${lib.getExe pkgs.direnv} hook fish | source
       '';
     };
 
