@@ -37,7 +37,7 @@
       metrics.enable = true;
       trojan-server.enable = true;
       do-agent.enable = true;
-      copilot-gpt4.enable = true;
+      # copilot-gpt4.enable = true;
       factorio-manager = {
         enable = true;
         factorioPackage = pkgs.factorio-headless-experimental;
