@@ -83,21 +83,21 @@
           {
             wireguardPeerConfig = {
               PublicKey = "BCbrvvMIoHATydMkZtF8c+CHlCpKUy1NW+aP0GnYfRM=";
-              AllowedIPs = [ "10.0.1.2/32" ];
+              AllowedIPs = [ "10.0.2.2/32" ];
               PersistentKeepalive = 15;
             };
           }
           {
             wireguardPeerConfig = {
               PublicKey = "i7Li/BDu5g5+Buy6m6Jnr09Ne7xGI/CcNAbyK9KKbQg=";
-              AllowedIPs = [ "10.0.1.3/32" ];
+              AllowedIPs = [ "10.0.2.3/32" ];
               PersistentKeepalive = 15;
             };
           }
           {
             wireguardPeerConfig = {
               PublicKey = "+fuA9nUmFVKy2Ijfh5xfcnO9tpA/SkIL4ttiWKsxyXI=";
-              AllowedIPs = [ "10.0.1.1/32" ];
+              AllowedIPs = [ "10.0.2.1/32" ];
               Endpoint = "127.0.0.1:41820";
               PersistentKeepalive = 15;
             };
@@ -112,6 +112,7 @@
         matchConfig.Name = "wg0";
         address = [
           "10.0.1.8/24"
+          "10.0.2.8/24"
         ];
         networkConfig = {
           IPMasquerade = "ipv4";
