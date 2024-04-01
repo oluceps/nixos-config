@@ -86,14 +86,14 @@
           {
             wireguardPeerConfig = {
               PublicKey = "BCbrvvMIoHATydMkZtF8c+CHlCpKUy1NW+aP0GnYfRM=";
-              AllowedIPs = [ "10.0.1.2/32" "192.168.1.0/24" ];
+              AllowedIPs = [ "10.0.1.2/32" ];
               PersistentKeepalive = 15;
             };
           }
           {
             wireguardPeerConfig = {
               PublicKey = "i7Li/BDu5g5+Buy6m6Jnr09Ne7xGI/CcNAbyK9KKbQg=";
-              AllowedIPs = [ "10.0.1.3/32" "10.234.0.0/16" ];
+              AllowedIPs = [ "10.0.1.3/32" ];
               PersistentKeepalive = 15;
             };
           }
@@ -107,7 +107,7 @@
           {
             wireguardPeerConfig = {
               PublicKey = "49xNnrpNKHAvYCDikO3XhiK94sUaSQ4leoCnTOQjWno=";
-              AllowedIPs = [ "10.0.1.8/32" "10.0.2.8/32" ];
+              AllowedIPs = [ "10.0.0.0/16" ];
             };
           }
           # {
