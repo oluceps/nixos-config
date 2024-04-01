@@ -79,23 +79,32 @@
           PrivateKeyFile = config.age.secrets.wg.path;
         };
         wireguardPeers = [
+
+          {
+            wireguardPeerConfig = {
+              PublicKey = "49xNnrpNKHAvYCDikO3XhiK94sUaSQ4leoCnTOQjWno=";
+              AllowedIPs = [ "10.0.1.8/32" ];
+              Endpoint = "116.196.112.43:51820";
+              PersistentKeepalive = 15;
+            };
+          }
           {
             wireguardPeerConfig = {
               PublicKey = "+fuA9nUmFVKy2Ijfh5xfcnO9tpA/SkIL4ttiWKsxyXI=";
-              AllowedIPs = [ "10.0.1.0/24" ];
+              AllowedIPs = [ "10.0.1.1/32" ];
               Endpoint = "127.0.0.1:41820";
               PersistentKeepalive = 15;
             };
           }
 
-          {
-            wireguardPeerConfig = {
-              PublicKey = "ANd++mjV7kYu/eKOEz17mf65bg8BeJ/ozBmuZxRT3w0=";
-              AllowedIPs = [ "10.0.1.9/32" "10.0.1.0/24" ];
-              Endpoint = "127.0.0.1:41821";
-              PersistentKeepalive = 15;
-            };
-          }
+          # {
+          #   wireguardPeerConfig = {
+          #     PublicKey = "ANd++mjV7kYu/eKOEz17mf65bg8BeJ/ozBmuZxRT3w0=";
+          #     AllowedIPs = [ "10.0.1.9/32" "10.0.1.0/24" ];
+          #     Endpoint = "127.0.0.1:41821";
+          #     PersistentKeepalive = 15;
+          #   };
+          # }
         ];
       };
     };

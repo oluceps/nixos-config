@@ -15,6 +15,7 @@ let
 
     cmd = [
 
+      difftastic
       direnv
       btop
       atuin

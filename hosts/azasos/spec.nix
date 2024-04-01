@@ -2,7 +2,7 @@
 {
   # server inside the cage.
 
-  system.stateVersion = "23.05";
+  system.stateVersion = "24.05";
 
   nix.gc = {
     automatic = true;
@@ -10,10 +10,10 @@
     options = "--delete-older-than 3d";
   };
 
-  # boot = {
-  #   supportedFilesystems = [ "tcp_bbr" ];
-  #   inherit ((import ../sysctl.nix { inherit lib; }).boot) kernel;
-  # };
+  boot = {
+    supportedFilesystems = [ "tcp_bbr" ];
+    inherit ((import ../sysctl.nix { inherit lib; }).boot) kernel;
+  };
 
   services =
     (
@@ -27,6 +27,13 @@
         (n: importService n)
     ) // {
       sing-box.enable = true;
+
+      hysteria.instances = [
+        {
+          name = "nodens";
+          configFile = config.age.secrets.hyst-us-cli.path;
+        }
+      ];
     };
 
   networking.firewall = {
