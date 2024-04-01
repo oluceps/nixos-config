@@ -8,6 +8,7 @@
   imports =
     lib.sharedModules ++ [
 
+      inputs.disko.nixosModules.default
       ./hardware.nix
       ./network.nix
       ./rekey.nix

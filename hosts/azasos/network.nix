@@ -1,12 +1,7 @@
-{ config
-, lib
+{ lib
 , ...
 }: {
-  services = {
-    mosdns.enable = true;
-    resolved.enable = !config.services.mosdns.enable;
-  };
-  networking.domain = "tencent-shanghai";
+  networking.domain = "nyaw.xyz";
   networking = {
     resolvconf.useLocalResolver = true;
     firewall = {
@@ -49,9 +44,9 @@
       ignoredInterfaces = [ "wg0" "wg1" ];
     };
 
-    links."10-ens5" = {
-      matchConfig.MACAddress = "52:54:00:99:b9:31";
-      linkConfig.Name = "ens5";
+    links."10-eth0" = {
+      matchConfig.MACAddress = "fa:16:3e:d3:09:f8";
+      linkConfig.Name = "eth0";
     };
 
     netdevs = {
@@ -144,7 +139,7 @@
       # };
 
       "20-wired" = {
-        matchConfig.Name = "ens5";
+        matchConfig.Name = "eth0";
         DHCP = "yes";
         dhcpV4Config.RouteMetric = 2046;
         dhcpV6Config.RouteMetric = 2046;

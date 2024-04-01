@@ -10,10 +10,10 @@
     options = "--delete-older-than 3d";
   };
 
-  boot = {
-    supportedFilesystems = [ "tcp_bbr" ];
-    inherit ((import ../sysctl.nix { inherit lib; }).boot) kernel;
-  };
+  # boot = {
+  #   supportedFilesystems = [ "tcp_bbr" ];
+  #   inherit ((import ../sysctl.nix { inherit lib; }).boot) kernel;
+  # };
 
   services =
     (
@@ -22,10 +22,10 @@
         "mosdns"
         "fail2ban"
         "dae"
+        "mosproxy"
       ]
         (n: importService n)
     ) // {
-      dae.enable = true;
       sing-box.enable = true;
     };
 
