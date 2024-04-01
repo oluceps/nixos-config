@@ -19,7 +19,7 @@
     (
       let importService = n: import ../../services/${n}.nix { inherit pkgs config inputs; }; in lib.genAttrs [
         "openssh"
-        "mosdns"
+        # "mosdns"
         "fail2ban"
         "dae"
         "mosproxy"
