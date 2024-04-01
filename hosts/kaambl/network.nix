@@ -4,6 +4,10 @@
 }: {
   services.resolved.enable = lib.mkForce false;
   networking = {
+    hosts = {
+      "10.0.1.2" = [ "attic.nyaw.xyz" "api.s3.nyaw.xyz" ];
+      "10.0.1.1" = [ "nodens.nyaw.xyz" ];
+    };
     resolvconf.useLocalResolver = true;
     firewall = {
       checkReversePath = false;
