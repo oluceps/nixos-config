@@ -15,6 +15,7 @@ let
 
     cmd = [
 
+      smartmontools
       difftastic
       direnv
       btop
