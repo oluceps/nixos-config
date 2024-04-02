@@ -170,7 +170,7 @@
         critic = {
           passwordFile = config.age.secrets.wg.path;
           repositoryFile = config.age.secrets.restic-repo-crit.path;
-          environmentFile = config.age.secrets.restic-envs.path;
+          environmentFile = config.age.secrets.restic-envs-crit.path;
           paths = [ "/var/lib/backup" "/var/lib/private/matrix-conduit" ];
           extraBackupArgs = [
             "--exclude-caches"
