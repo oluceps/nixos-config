@@ -1,10 +1,9 @@
-{
-  config,
-  pkgs,
-  lib,
-  inputs,
-  user,
-  ...
+{ config
+, pkgs
+, lib
+, inputs
+, user
+, ...
 }:
 {
   xdg = {
@@ -19,8 +18,7 @@
             inputs
             user
             ;
-        }).xdg.mimeApps
-        )
+        }).xdg.mimeApps)
         defaultApplications
         ;
     };
@@ -326,7 +324,7 @@
         glowsansTC
         glowsansJ
       ])
-      ++ (with nur-pkgs; [
+      ++ (with pkgs; [
         san-francisco
         plangothic
         maoken-tangyuan
