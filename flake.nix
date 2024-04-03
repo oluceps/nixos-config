@@ -132,12 +132,7 @@
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     nixpkgs-master.url = "github:NixOS/nixpkgs/master";
     nixpkgs-22.url = "github:NixOS/nixpkgs?rev=c91d0713ac476dfb367bbe12a7a048f6162f039c";
-    nixpkgs-rebuild.url = "github:SuperSandro2000/nixpkgs?rev=449114c6240520433a650079c0b5440d9ecf6156";
     niri.url = "github:sodiboo/niri-flake";
-    nh = {
-      url = "github:viperML/nh";
-      inputs.nixpkgs.follows = "nixpkgs"; # override this repo's nixpkgs snapshot
-    };
     colmena = {
       url = "github:zhaofengli/colmena";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -146,7 +141,6 @@
       url = "github:zhaofengli/attic";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    # niri.inputs.niri-src.url = "github:YaLTeR/niri";
     devshell.url = "github:numtide/devshell";
     nixpkgs-wayland = {
       url = "github:nix-community/nixpkgs-wayland";
@@ -161,15 +155,10 @@
     atuin = {
       url = "github:atuinsh/atuin";
     };
-    swayfx = {
-      url = "github:WillPower3309/swayfx";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
     conduit = {
       url = "gitlab:famedly/conduit";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-
     nyx = {
       # url = "/home/elen/Src/nyx";
       url = "github:oluceps/nyx";
@@ -179,7 +168,6 @@
       # url = "/home/elen/Src/factorio-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-
     anyrun = {
       url = "github:Kirottu/anyrun";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -215,7 +203,6 @@
       url = "github:Ninlives/misskey.nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    nixified-ai.url = "github:nixified-ai/flake";
     pre-commit-hooks = {
       url = "github:cachix/pre-commit-hooks.nix";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -224,28 +211,20 @@
       url = "github:yaxitech/ragenix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    nur-pkgs = {
-      url = "github:oluceps/nur-pkgs";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
     fenix = {
       url = "github:nix-community/fenix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    hyprpicker.url = "github:hyprwm/hyprpicker";
     lanzaboote = {
       url = "github:nix-community/lanzaboote";
     };
     impermanence.url = "github:nix-community/impermanence";
-    clash-meta.url = "github:MetaCubeX/Clash.Meta/Alpha";
-    alejandra.url = "github:kamadorueda/alejandra";
     prismlauncher = {
       url = "github:PrismLauncher/PrismLauncher";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     home-manager.url = "github:nix-community/home-manager";
     helix.url = "github:helix-editor/helix";
-    hyprland.url = "github:vaxerski/Hyprland";
     berberman.url = "github:berberman/flakes";
     # clansty.url = "github:clansty/flake";
   };

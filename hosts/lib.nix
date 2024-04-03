@@ -52,7 +52,6 @@ in
       "ragenix"
       "impermanence"
       "lanzaboote"
-      "nh"
       "self"
     ])
     ++ (with inputs.dae.nixosModules; [

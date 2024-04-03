@@ -15,10 +15,7 @@ in
     users.${user} = {
       imports = [
         homeProfile
-        inputs.hyprland.homeManagerModules.default
         inputs.android-nixpkgs.hmModule
-        inputs.anyrun.homeManagerModules.default
-        #        
       ];
     };
     extraSpecialArgs = {

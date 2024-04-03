@@ -6,16 +6,11 @@ in
   (
     final: prev:
     prev.lib.genAttrs [
-      "hyprland"
-      "hyprpicker"
-      "clash-meta"
       "nil"
       "ragenix"
       "prismlauncher"
       "resign"
       "nix-direnv"
-      # "anyrun"
-      # "devenv"
       "attic"
     ] (n: inputs.${n}.packages.${system}.default)
     # //
