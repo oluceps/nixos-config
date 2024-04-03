@@ -86,7 +86,6 @@ in
         }
       );
 
-      nur-pkgs = inputs.nur-pkgs.packages.${system};
 
       blesh = prev.blesh.overrideAttrs (old: {
         src = prev.fetchzip {
