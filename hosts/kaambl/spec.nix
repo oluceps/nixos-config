@@ -1,4 +1,13 @@
-{ pkgs, data, config, user, lib, inputs, ... }: {
+{
+  pkgs,
+  data,
+  config,
+  user,
+  lib,
+  inputs,
+  ...
+}:
+{
   # Mobile device.
 
   system.stateVersion = "23.05"; # Did you read the comment?
@@ -26,95 +35,111 @@
   };
   programs.sway.enable = true;
 
-  services = (
-    let importService = n: import ../../services/${n}.nix { inherit pkgs config inputs user; }; in lib.genAttrs [
-      "openssh"
-      "mosproxy"
-      # "coredns"
-      "fail2ban"
-      "dae"
-      "ddns-go"
-      "postgresql"
-    ]
-      (n: importService n)
-  ) //
-  {
+  services =
+    (
+      let
+        importService =
+          n:
+          import ../../services/${n}.nix {
+            inherit
+              pkgs
+              config
+              inputs
+              user
+              ;
+          };
+      in
+      lib.genAttrs [
+        "openssh"
+        "mosproxy"
+        # "coredns"
+        "fail2ban"
+        "dae"
+        "ddns-go"
+        "postgresql"
+      ] (n: importService n)
+    )
+    // {
 
-    # prom-ntfy-bridge.enable = true;
-    # daed = {
-    #   enable = true;
-    #   configDir = "/etc/daed";
-    #   listen = "0.0.0.0:2023";
-    #   openFirewall = {
-    #     enable = true;
-    #     port = 12345;
-    #   };
-    # };
-    prometheus.exporters.node = {
-      enable = true;
-      listenAddress = "0.0.0.0";
-      enabledCollectors = [ "systemd" ];
-      disabledCollectors = [ "arp" ];
-    };
+      # prom-ntfy-bridge.enable = true;
+      # daed = {
+      #   enable = true;
+      #   configDir = "/etc/daed";
+      #   listen = "0.0.0.0:2023";
+      #   openFirewall = {
+      #     enable = true;
+      #     port = 12345;
+      #   };
+      # };
+      prometheus.exporters.node = {
+        enable = true;
+        listenAddress = "0.0.0.0";
+        enabledCollectors = [ "systemd" ];
+        disabledCollectors = [ "arp" ];
+      };
 
-    sing-box.enable = true;
-    # beesd.filesystems = {
-    #   os = {
-    #     spec = "/nix";
-    #     hashTableSizeMB = 512; # 256 *2 *2
-    #     verbosity = "crit";
-    #     extraOptions = [
-    #       "--loadavg-target"
-    #       "2.0"
-    #     ];
-    #   };
-    # };
-    snapy.instances = [
-      {
-        name = "persist";
-        source = "/persist";
-        keep = "2day";
-        timerConfig.onCalendar = "*:0/3";
-      }
-      {
-        name = "var";
-        source = "/var";
-        keep = "7day";
-        timerConfig.onCalendar = "daily";
-      }
-    ];
-    tailscale = { enable = true; openFirewall = true; };
+      sing-box.enable = true;
+      # beesd.filesystems = {
+      #   os = {
+      #     spec = "/nix";
+      #     hashTableSizeMB = 512; # 256 *2 *2
+      #     verbosity = "crit";
+      #     extraOptions = [
+      #       "--loadavg-target"
+      #       "2.0"
+      #     ];
+      #   };
+      # };
+      snapy.instances = [
+        {
+          name = "persist";
+          source = "/persist";
+          keep = "2day";
+          timerConfig.onCalendar = "*:0/3";
+        }
+        {
+          name = "var";
+          source = "/var";
+          keep = "7day";
+          timerConfig.onCalendar = "daily";
+        }
+      ];
+      tailscale = {
+        enable = true;
+        openFirewall = true;
+      };
 
-    # cloudflared = {
-    #   enable = true;
-    #   environmentFile = config.age.secrets.cloudflare-garden-00.path;
-    # };
+      # cloudflared = {
+      #   enable = true;
+      #   environmentFile = config.age.secrets.cloudflare-garden-00.path;
+      # };
 
-    compose-up.instances = [
-      # {
-      #   name = "nextchat";
-      #   workingDirectory = "/home/${user}/Src/ChatGPT-Next-Web";
-      #   extraArgs = "chatgpt-next-web";
-      # }
-    ];
+      compose-up.instances = [
+        # {
+        #   name = "nextchat";
+        #   workingDirectory = "/home/${user}/Src/ChatGPT-Next-Web";
+        #   extraArgs = "chatgpt-next-web";
+        # }
+      ];
 
-    shadowsocks.instances = [{
-      name = "kaambl-local";
-      configFile = config.age.secrets.ss.path;
-    }];
-    hysteria.instances = [
-      {
-        name = "nodens";
-        configFile = config.age.secrets.hyst-us-cli.path;
-      }
-      {
-        name = "colour";
-        configFile = config.age.secrets.hyst-az-cli.path;
-      }
-    ];
+      shadowsocks.instances = [
+        {
+          name = "kaambl-local";
+          configFile = config.age.secrets.ss.path;
+        }
+      ];
+      hysteria.instances = [
+        {
+          name = "nodens";
+          configFile = config.age.secrets.hyst-us-cli.path;
+        }
+        {
+          name = "colour";
+          configFile = config.age.secrets.hyst-az-cli.path;
+        }
+      ];
 
-    phantomsocks =
-      {
+      phantomsocks = {
         enable = true;
         settings = {
           interfaces = [
@@ -187,103 +212,108 @@
             '')
           ];
           services = [
-            { address = "127.0.0.1:1681"; name = "socks"; protocol = "socks"; }
+            {
+              address = "127.0.0.1:1681";
+              name = "socks";
+              protocol = "socks";
+            }
           ];
         };
       };
 
-    xmrig = {
-      enable = false;
-      settings = {
-        autosave = true;
-        opencl = false;
-        cuda = false;
-        cpu = {
-          enable = true;
-          max-threads-hint = 55;
+      xmrig = {
+        enable = false;
+        settings = {
+          autosave = true;
+          opencl = false;
+          cuda = false;
+          cpu = {
+            enable = true;
+            max-threads-hint = 55;
+          };
+          pools = [
+            {
+              url = "pool.supportxmr.com:443";
+              user = data.xmrAddr;
+              keepalive = true;
+              tls = true;
+              pass = "kam";
+            }
+          ];
         };
-        pools = [
-          {
-            url = "pool.supportxmr.com:443";
-            user = data.xmrAddr;
-            keepalive = true;
-            tls = true;
-            pass = "kam";
-          }
+      };
+
+      # factorio-manager = {
+      #   enable = false;
+      #   factorioPackage = pkgs.factorio-headless;
+      #   botConfigPath = config.age.secrets.factorio-manager-bot.path;
+      #   serverSettingsFile = config.age.secrets.factorio-server.path;
+      #   serverAdminsFile = config.age.secrets.factorio-server.path;
+      # };
+
+      factorio = {
+        enable = false;
+        openFirewall = true;
+        serverSettingsFile = config.age.secrets.factorio-server.path;
+        serverAdminsFile = config.age.secrets.factorio-server.path;
+        mods = [
+          (
+            (pkgs.stdenvNoCC.mkDerivation (finalAttrs: {
+              name = "helmod";
+              version = "0.12.19";
+              src = pkgs.fetchurl {
+                url = "https://dl-mod.factorio.com/files/89/c9e3dfbb99555ba24b085c3228a95fc7a9ad6c?secure=kuZjLfCXoc9awR6dgncRrQ,1702896059";
+                hash = "sha256-tUMZWQ8snt3y8WUruIN+skvo9M1V8ZhM7H9QNYkALYQ=";
+              };
+              dontUnpack = true;
+              installPhase = ''
+                runHook preInstall
+                install -m 0644 $src -D $out/helmod_${finalAttrs.version}.zip
+                runHook postInstall
+              '';
+            }))
+            // {
+              deps = [ ];
+            }
+          )
         ];
       };
 
-    };
-
-    # factorio-manager = {
-    #   enable = false;
-    #   factorioPackage = pkgs.factorio-headless;
-    #   botConfigPath = config.age.secrets.factorio-manager-bot.path;
-    #   serverSettingsFile = config.age.secrets.factorio-server.path;
-    #   serverAdminsFile = config.age.secrets.factorio-server.path;
-    # };
-
-    factorio = {
-      enable = false;
-      openFirewall = true;
-      serverSettingsFile = config.age.secrets.factorio-server.path;
-      serverAdminsFile = config.age.secrets.factorio-server.path;
-      mods =
-        [
-          ((pkgs.stdenvNoCC.mkDerivation (finalAttrs: {
-            name = "helmod";
-            version = "0.12.19";
-            src = pkgs.fetchurl {
-              url = "https://dl-mod.factorio.com/files/89/c9e3dfbb99555ba24b085c3228a95fc7a9ad6c?secure=kuZjLfCXoc9awR6dgncRrQ,1702896059";
-              hash = "sha256-tUMZWQ8snt3y8WUruIN+skvo9M1V8ZhM7H9QNYkALYQ=";
-            };
-            dontUnpack = true;
-            installPhase = ''
-              runHook preInstall
-              install -m 0644 $src -D $out/helmod_${finalAttrs.version}.zip
-              runHook postInstall
-            '';
-          })) // { deps = [ ]; })
-        ];
-    };
-
-
-
-    gvfs.enable = false;
-    blueman.enable = true;
-    pipewire = {
-      enable = true;
-      alsa.enable = true;
-      alsa.support32Bit = true;
-      pulse.enable = true;
-      jack.enable = true;
-      extraConfig.pipewire."92-low-latency" = {
-        context.properties = {
-          default.clock.rate = 48000;
-          default.clock.quantum = 256;
-          default.clock.min-quantum = 256;
-          default.clock.max-quantum = 256;
+      gvfs.enable = false;
+      blueman.enable = true;
+      pipewire = {
+        enable = true;
+        alsa.enable = true;
+        alsa.support32Bit = true;
+        pulse.enable = true;
+        jack.enable = true;
+        extraConfig.pipewire."92-low-latency" = {
+          context.properties = {
+            default.clock.rate = 48000;
+            default.clock.quantum = 256;
+            default.clock.min-quantum = 256;
+            default.clock.max-quantum = 256;
+          };
         };
       };
+      # sundial.enable = true;
+
+      # xserver = {
+      #   videoDrivers = [ "amdgpu" ];
+      #   enable = true;
+      #   displayManager = {
+      #     # sddm.enable = true;
+      #     gdm = {
+      #       enable = false;
+      #     };
+
+      #   };
+      #   desktopManager = {
+      #     # plasma5.enable = true;
+      #     gnome.enable = false;
+      #   };
+      # };
     };
-    # sundial.enable = true;
-
-    # xserver = {
-    #   videoDrivers = [ "amdgpu" ];
-    #   enable = true;
-    #   displayManager = {
-    #     # sddm.enable = true;
-    #     gdm = {
-    #       enable = false;
-    #     };
-
-    #   };
-    #   desktopManager = {
-    #     # plasma5.enable = true;
-    #     gnome.enable = false;
-    #   };
-    # };
-  };
 
   # services.udev = {
   #   packages = with pkgs; [ gnome.gnome-settings-daemon ];
@@ -309,7 +339,6 @@
       AllowHibernation=no
     '';
     # AllowSuspend=no
-
   };
   programs.dconf.enable = true;
   programs = {
@@ -322,29 +351,29 @@
   systemd.tmpfiles.rules = [
     # "L+    /opt/rocm/hip   -    -    -     -    ${pkgs.rocmPackages.clr}"
     "L+ /run/gdm/.config/monitors.xml - - - - ${pkgs.writeText "gdm-monitors.xml" ''
-        <monitors version="2">
-            <configuration>
-                <logicalmonitor>
-                    <x>0</x>
-                    <y>0</y>
-                    <scale>2</scale>
-                    <primary>yes</primary>
-                    <monitor>
-                        <monitorspec>
-                            <connector>eDP-1</connector>
-                            <vendor>BOE</vendor>
-                            <product>0x0893</product>
-                            <serial>0x00000000</serial>
-                        </monitorspec>
-                        <mode>
-                            <width>2160</width>
-                            <height>1440</height>
-                            <rate>60.001</rate>
-                        </mode>
-                    </monitor>
-                </logicalmonitor>
-            </configuration>
-        </monitors>
+      <monitors version="2">
+          <configuration>
+              <logicalmonitor>
+                  <x>0</x>
+                  <y>0</y>
+                  <scale>2</scale>
+                  <primary>yes</primary>
+                  <monitor>
+                      <monitorspec>
+                          <connector>eDP-1</connector>
+                          <vendor>BOE</vendor>
+                          <product>0x0893</product>
+                          <serial>0x00000000</serial>
+                      </monitorspec>
+                      <mode>
+                          <width>2160</width>
+                          <height>1440</height>
+                          <rate>60.001</rate>
+                      </mode>
+                  </monitor>
+              </logicalmonitor>
+          </configuration>
+      </monitors>
     ''}"
   ];
 }

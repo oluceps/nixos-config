@@ -1,4 +1,10 @@
-{ pkgs, config, lib, inputs, ... }:
+{
+  pkgs,
+  config,
+  lib,
+  inputs,
+  ...
+}:
 {
   # server inside the cage.
 
@@ -17,15 +23,18 @@
 
   services =
     (
-      let importService = n: import ../../services/${n}.nix { inherit pkgs config inputs; }; in lib.genAttrs [
+      let
+        importService = n: import ../../services/${n}.nix { inherit pkgs config inputs; };
+      in
+      lib.genAttrs [
         "openssh"
         # "mosdns"
         "fail2ban"
         "dae"
         "mosproxy"
-      ]
-        (n: importService n)
-    ) // {
+      ] (n: importService n)
+    )
+    // {
       sing-box.enable = true;
 
       hysteria.instances = [
@@ -40,7 +49,6 @@
     allowedUDPPorts = [ 6059 ];
     allowedTCPPorts = [ 6059 ];
   };
-
 
   programs = {
     git.enable = true;
@@ -67,9 +75,7 @@
       #   https://utcc.utoronto.ca/~cks/space/blog/linux/SystemdShutdownWatchdog
       rebootTime = "30s";
     };
-
   };
 
-  systemd.tmpfiles.rules = [
-  ];
+  systemd.tmpfiles.rules = [ ];
 }

@@ -1,7 +1,8 @@
-{ pkgs
-, config
-, lib
-, ...
+{
+  pkgs,
+  config,
+  lib,
+  ...
 }:
 with lib;
 let
@@ -17,7 +18,6 @@ in
       type = types.package;
       default = pkgs.nur-pkgs.naiveproxy;
     };
-
   };
   config =
     let
@@ -45,11 +45,6 @@ in
           ];
           Restart = "on-failure";
         };
-
       };
-
     };
-
-
 }
-

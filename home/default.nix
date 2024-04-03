@@ -1,5 +1,9 @@
-{ inputs, system, user, ... }:
-
+{
+  inputs,
+  system,
+  user,
+  ...
+}:
 
 let
   homeProfile = ./home.nix;
@@ -17,7 +21,8 @@ in
         #        
       ];
     };
-    extraSpecialArgs = { inherit inputs system user; };
+    extraSpecialArgs = {
+      inherit inputs system user;
+    };
   };
-
 }

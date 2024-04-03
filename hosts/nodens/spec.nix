@@ -1,4 +1,10 @@
-{ inputs, pkgs, config, lib, ... }:
+{
+  inputs,
+  pkgs,
+  config,
+  lib,
+  ...
+}:
 {
   # server.
 
@@ -15,9 +21,7 @@
     inherit ((import ../sysctl.nix { inherit lib; }).boot) kernel;
   };
 
-  environment.systemPackages = with pkgs;[
-    factorio-headless
-  ];
+  environment.systemPackages = with pkgs; [ factorio-headless ];
 
   systemd.services.trojan-server.serviceConfig.LoadCredential = (map (lib.genCredPath config)) [
     "nyaw.cert"
@@ -26,13 +30,16 @@
 
   services =
     (
-      let importService = n: import ../../services/${n}.nix { inherit pkgs config inputs; }; in lib.genAttrs [
+      let
+        importService = n: import ../../services/${n}.nix { inherit pkgs config inputs; };
+      in
+      lib.genAttrs [
         "openssh"
         "fail2ban"
         "rustypaste"
-      ]
-        (n: importService n)
-    ) // {
+      ] (n: importService n)
+    )
+    // {
 
       metrics.enable = true;
       trojan-server.enable = true;
@@ -66,16 +73,18 @@
         }
       ];
 
-      juicity.instances = [{
-        name = "only";
-        credentials = [
-          "key:${config.age.secrets."nyaw.key".path}"
-          "cert:${config.age.secrets."nyaw.cert".path}"
-        ];
-        serve = true;
-        openFirewall = 23180;
-        configFile = config.age.secrets.juic-san.path;
-      }];
+      juicity.instances = [
+        {
+          name = "only";
+          credentials = [
+            "key:${config.age.secrets."nyaw.key".path}"
+            "cert:${config.age.secrets."nyaw.cert".path}"
+          ];
+          serve = true;
+          openFirewall = 23180;
+          configFile = config.age.secrets.juic-san.path;
+        }
+      ];
 
       hysteria.instances = [
         {
@@ -91,7 +100,6 @@
           configFile = config.age.secrets.hyst-us.path;
         }
       ];
-
     };
 
   programs = {
@@ -119,9 +127,7 @@
       #   https://utcc.utoronto.ca/~cks/space/blog/linux/SystemdShutdownWatchdog
       rebootTime = "30s";
     };
-
   };
 
-  systemd.tmpfiles.rules = [
-  ];
+  systemd.tmpfiles.rules = [ ];
 }

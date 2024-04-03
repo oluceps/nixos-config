@@ -1,100 +1,132 @@
 {
   description = "oluceps' flake";
-  outputs = inputs@{ flake-parts, ... }:
-    let extraLibs = (import ./hosts/lib.nix inputs);
+  outputs =
+    inputs@{ flake-parts, ... }:
+    let
+      extraLibs = (import ./hosts/lib.nix inputs);
     in
-    flake-parts.lib.mkFlake { inherit inputs; } ({ withSystem, ... }: {
-      imports =
-        (with inputs;[
-          pre-commit-hooks.flakeModule
-          devshell.flakeModule
-        ])
-        ++ [
-          ./hosts
-          ./hosts/livecd
-          ./hosts/bootstrap
-          ./hosts/resq
-        ];
-      debug = false;
-      systems = [ "x86_64-linux" "aarch64-linux" "riscv64-linux" ];
-      perSystem = { pkgs, system, inputs', ... }: {
-
-        _module.args.pkgs = import inputs.nixpkgs {
-          inherit system;
-          overlays = with inputs;[
-            agenix-rekey.overlays.default
-            fenix.overlays.default
-            colmena.overlays.default
-            self.overlays.default
+    flake-parts.lib.mkFlake { inherit inputs; } (
+      { withSystem, ... }:
+      {
+        imports =
+          (with inputs; [
+            pre-commit-hooks.flakeModule
+            devshell.flakeModule
+          ])
+          ++ [
+            ./hosts
+            ./hosts/livecd
+            ./hosts/bootstrap
+            ./hosts/resq
           ];
-        };
-
-        pre-commit = {
-          check.enable = true;
-          settings.hooks = {
-            nixpkgs-fmt.enable = true;
-          };
-        };
-
-        devshells.default.devshell = {
-          packages = with pkgs;[ agenix-rekey just rage b3sum nushell colmena ];
-        };
-
-        packages =
-          let
-            shadowedPkgs = [
-              "glowsans" # multi pkgs
-              "opulr-a-run" # ?
-              "tcp-brutal" # kernelModule
-              "shufflecake"
-            ];
-          in
-          (extraLibs.genFilteredDirAttrsV2 ./pkgs shadowedPkgs (n: pkgs.${n}));
-        formatter = pkgs.nixpkgs-fmt;
-      };
-
-      flake = {
-        lib = inputs.nixpkgs.lib.extend inputs.self.overlays.lib;
-
-        nixosConfigurations = ((inputs.colmena.lib.makeHive inputs.self.colmena).introspect (x: x)).nodes;
-
-        agenix-rekey = inputs.agenix-rekey.configure {
-          userFlake = inputs.self;
-          nodes = with inputs.nixpkgs.lib;
-            filterAttrs (n: _: !elem n [ "resq" "livecd" "bootstrap" ]) inputs.self.nixosConfigurations;
-        };
-
-        overlays =
+        debug = false;
+        systems = [
+          "x86_64-linux"
+          "aarch64-linux"
+          "riscv64-linux"
+        ];
+        perSystem =
           {
-            default = final: prev:
+            pkgs,
+            system,
+            inputs',
+            ...
+          }:
+          {
+
+            _module.args.pkgs = import inputs.nixpkgs {
+              inherit system;
+              overlays = with inputs; [
+                agenix-rekey.overlays.default
+                fenix.overlays.default
+                colmena.overlays.default
+                self.overlays.default
+              ];
+            };
+
+            pre-commit = {
+              check.enable = true;
+              settings.hooks = {
+                nixpkgs-fmt.enable = true;
+              };
+            };
+
+            devshells.default.devshell = {
+              packages = with pkgs; [
+                agenix-rekey
+                just
+                rage
+                b3sum
+                nushell
+                colmena
+              ];
+            };
+
+            packages =
+              let
+                shadowedPkgs = [
+                  "glowsans" # multi pkgs
+                  "opulr-a-run" # ?
+                  "tcp-brutal" # kernelModule
+                  "shufflecake"
+                ];
+              in
+              (extraLibs.genFilteredDirAttrsV2 ./pkgs shadowedPkgs (n: pkgs.${n}));
+            formatter = pkgs.nixfmt-rfc-style;
+          };
+
+        flake = {
+          lib = inputs.nixpkgs.lib.extend inputs.self.overlays.lib;
+
+          nixosConfigurations = ((inputs.colmena.lib.makeHive inputs.self.colmena).introspect (x: x)).nodes;
+
+          agenix-rekey = inputs.agenix-rekey.configure {
+            userFlake = inputs.self;
+            nodes =
+              with inputs.nixpkgs.lib;
+              filterAttrs (
+                n: _:
+                !elem n [
+                  "resq"
+                  "livecd"
+                  "bootstrap"
+                ]
+              ) inputs.self.nixosConfigurations;
+          };
+
+          overlays = {
+            default =
+              final: prev:
               let
                 shadowedPkgs = [
                   "tcp-brutal"
                   "shufflecake"
                 ];
               in
-              extraLibs.genFilteredDirAttrsV2 ./pkgs shadowedPkgs
-                (name: final.callPackage (./pkgs + "/${name}.nix") { });
+              extraLibs.genFilteredDirAttrsV2 ./pkgs shadowedPkgs (
+                name: final.callPackage (./pkgs + "/${name}.nix") { }
+              );
 
             lib = final: prev: extraLibs;
           };
 
-        nixosModules =
-          let
-            shadowedModules = [ "sundial" ];
-            modules =
-              extraLibs.genFilteredDirAttrsV2 ./modules shadowedModules
-                (n: import (./modules + "/${n}.nix"));
+          nixosModules =
+            let
+              shadowedModules = [ "sundial" ];
+              modules = extraLibs.genFilteredDirAttrsV2 ./modules shadowedModules (
+                n: import (./modules + "/${n}.nix")
+              );
 
-            default = { ... }: {
-              imports = builtins.attrValues modules;
-            };
-          in
-          modules // { inherit default; };
-
-      };
-
-    });
+              default =
+                { ... }:
+                {
+                  imports = builtins.attrValues modules;
+                };
+            in
+            modules // { inherit default; };
+        };
+      }
+    );
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
@@ -217,5 +249,4 @@
     berberman.url = "github:berberman/flakes";
     # clansty.url = "github:clansty/flake";
   };
-
 }
