@@ -1,7 +1,8 @@
-{ inputs
-, system
-, user
-, ...
+{
+  inputs,
+  system,
+  user,
+  ...
 }:
 
 let
