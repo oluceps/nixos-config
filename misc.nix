@@ -8,12 +8,6 @@
   ...
 }:
 {
-  nh = {
-    enable = true;
-    clean.enable = true;
-    clean.extraArgs = "--keep-since 4d --keep 3";
-    flake = "/home/${user}/Src/nixos";
-  };
   systemd.services.nix-daemon = {
     serviceConfig.LimitNOFILE = lib.mkForce 500000000;
   };
