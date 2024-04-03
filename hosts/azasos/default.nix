@@ -1,9 +1,9 @@
 # JD cloud Mon  1 Apr 17:05:22 +08 2024
-{ lib, user, inputs, ... }: {
+{ lib, inputs, user, ... }: {
   deployment = {
     targetHost = "116.196.112.43";
     targetPort = 22;
-    targetUser = "root";
+    targetUser = user;
   };
 
   imports =
