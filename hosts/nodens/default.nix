@@ -12,6 +12,7 @@
   };
 
   imports = lib.sharedModules ++ [
+    ../../services
     ./hardware.nix
     ./network.nix
     ./rekey.nix
