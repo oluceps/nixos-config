@@ -1,8 +1,7 @@
-{
-  inputs,
-  system,
-  user,
-  ...
+{ inputs
+, system
+, user
+, ...
 }:
 
 let
@@ -16,6 +15,7 @@ in
       imports = [
         homeProfile
         inputs.android-nixpkgs.hmModule
+        inputs.anyrun.homeManagerModules.default
       ];
     };
     extraSpecialArgs = {

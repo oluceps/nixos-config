@@ -18,7 +18,7 @@
       rust-analyzer
       nil
       shfmt
-      nixpkgs-fmt
+      nixfmt-rfc-style
       # taplo
       rustfmt
       clang-tools

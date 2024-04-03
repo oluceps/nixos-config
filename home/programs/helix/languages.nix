@@ -125,7 +125,7 @@
     {
       name = "nix";
       formatter = {
-        command = "nixpkgs-fmt";
+        command = "nixfmt-rfc-style";
       };
     }
     {
