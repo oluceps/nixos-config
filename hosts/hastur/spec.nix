@@ -99,206 +99,190 @@
     "prom"
   ];
 
-  services =
-    (
-      let
-        importService =
-          n:
-          import ../../services/${n}.nix {
-            inherit
-              pkgs
-              config
-              inputs
-              lib
-              user
-              ;
-          };
-      in
-      lib.genAttrs [
-        "openssh"
-        "fail2ban"
-        "dae"
-        "scrutiny"
-        "ddns-go"
-        "atticd"
-        "atuin"
-        "postgresql"
-        "photoprism"
-        "mysql"
-        "prometheus"
-      ] (n: importService n)
-    )
-    // {
-      metrics.enable = true;
-      fwupd.enable = true;
+  srv = {
+    openssh = true;
+    fail2ban = true;
+    dae = true;
+    scrutiny = true;
+    ddns-go = true;
+    atticd = true;
+    atuin = true;
+    postgresql = true;
+    photoprism = true;
+    mysql = true;
+    prometheus = true;
+  };
+  services = {
+    metrics.enable = true;
+    fwupd.enable = true;
 
-      prom-ntfy-bridge.enable = true;
-      # xserver.videoDrivers = [ "nvidia" ];
+    prom-ntfy-bridge.enable = true;
+    # xserver.videoDrivers = [ "nvidia" ];
 
-      # xserver.enable = true;
-      # xserver.displayManager.gdm.enable = true;
-      # xserver.desktopManager.gnome.enable = true;
+    # xserver.enable = true;
+    # xserver.displayManager.gdm.enable = true;
+    # xserver.desktopManager.gnome.enable = true;
 
-      copilot-gpt4.enable = true;
-      # nextchat.enable = true;
+    copilot-gpt4.enable = true;
+    # nextchat.enable = true;
 
-      snapy.instances = [
-        {
-          name = "persist";
-          source = "/persist";
-          keep = "2day";
-          timerConfig.onCalendar = "*:0/10";
-        }
-        {
-          name = "var";
-          source = "/var";
-          keep = "7day";
-          timerConfig.onCalendar = "daily";
-        }
-      ];
+    snapy.instances = [
+      {
+        name = "persist";
+        source = "/persist";
+        keep = "2day";
+        timerConfig.onCalendar = "*:0/10";
+      }
+      {
+        name = "var";
+        source = "/var";
+        keep = "7day";
+        timerConfig.onCalendar = "daily";
+      }
+    ];
 
-      tailscale = {
-        enable = true;
-        openFirewall = true;
+    tailscale = {
+      enable = true;
+      openFirewall = true;
+    };
+
+    sing-box.enable = false;
+    beesd.filesystems = {
+      os = {
+        spec = "LABEL=nixos";
+        hashTableSizeMB = 1024; # 256 *2 *2
+        verbosity = "crit";
+        extraOptions = [
+          "-c"
+          "6"
+        ];
       };
-
-      sing-box.enable = false;
-      beesd.filesystems = {
-        os = {
-          spec = "LABEL=nixos";
-          hashTableSizeMB = 1024; # 256 *2 *2
-          verbosity = "crit";
-          extraOptions = [
-            "-c"
-            "6"
+    };
+    restic = {
+      backups = {
+        # solid = {
+        #   passwordFile = config.age.secrets.wg.path;
+        #   repositoryFile = config.age.secrets.restic-repo.path;
+        #   environmentFile = config.age.secrets.restic-envs.path;
+        #   paths = [ "/persist" "/var" ];
+        #   extraBackupArgs = [
+        #     "--one-file-system"
+        #     "--exclude-caches"
+        #     "--no-scan"
+        #     "--retry-lock 2h"
+        #   ];
+        #   timerConfig = {
+        #     OnCalendar = "daily";
+        #     RandomizedDelaySec = "4h";
+        #     FixedRandomDelay = true;
+        #     Persistent = true;
+        #   };
+        # };
+        critic = {
+          passwordFile = config.age.secrets.wg.path;
+          repositoryFile = config.age.secrets.restic-repo-crit.path;
+          environmentFile = config.age.secrets.restic-envs-crit.path;
+          paths = [
+            "/var/lib/backup"
+            "/var/lib/private/matrix-conduit"
           ];
-        };
-      };
-      restic = {
-        backups = {
-          # solid = {
-          #   passwordFile = config.age.secrets.wg.path;
-          #   repositoryFile = config.age.secrets.restic-repo.path;
-          #   environmentFile = config.age.secrets.restic-envs.path;
-          #   paths = [ "/persist" "/var" ];
-          #   extraBackupArgs = [
-          #     "--one-file-system"
-          #     "--exclude-caches"
-          #     "--no-scan"
-          #     "--retry-lock 2h"
-          #   ];
-          #   timerConfig = {
-          #     OnCalendar = "daily";
-          #     RandomizedDelaySec = "4h";
-          #     FixedRandomDelay = true;
-          #     Persistent = true;
-          #   };
-          # };
-          critic = {
-            passwordFile = config.age.secrets.wg.path;
-            repositoryFile = config.age.secrets.restic-repo-crit.path;
-            environmentFile = config.age.secrets.restic-envs-crit.path;
-            paths = [
-              "/var/lib/backup"
-              "/var/lib/private/matrix-conduit"
-            ];
-            extraBackupArgs = [
-              "--exclude-caches"
-              "--no-scan"
-              "--retry-lock 2h"
-            ];
-            pruneOpts = [ "--keep-daily 3" ];
-            timerConfig = {
-              OnCalendar = "daily";
-              RandomizedDelaySec = "4h";
-              FixedRandomDelay = true;
-              Persistent = true;
-            };
-          };
-        };
-      };
-      # cloudflared = {
-      #   enable = true;
-      #   environmentFile = config.age.secrets.cloudflare-garden-00.path;
-      # };
-      compose-up.instances = [
-        # {
-        #   name = "misskey";
-        #   workingDirectory = "/home/${user}/Src/misskey";
-        # }
-        {
-          name = "nextchat";
-          workingDirectory = "/home/${user}/Src/ChatGPT-Next-Web";
-          extraArgs = "chatgpt-next-web";
-          environmentFile = config.age.secrets.nextchat.path;
-        }
-      ];
-
-      hysteria.instances = [
-        {
-          name = "nodens";
-          configFile = config.age.secrets.hyst-us-cli.path;
-        }
-        # {
-        #   name = "colour";
-        #   configFile = config.age.secrets.hyst-az-cli.path;
-        # }
-      ];
-
-      shadowsocks.instances = [
-        {
-          name = "rha";
-          configFile = config.age.secrets.ss-az.path;
-          serve = {
-            enable = true;
-            port = 6059;
-          };
-        }
-      ];
-
-      gvfs.enable = true;
-
-      postgresqlBackup = {
-        enable = true;
-        location = "/var/lib/backup/postgresql";
-        compression = "zstd";
-        startAt = "*-*-* 04:00:00";
-      };
-
-      pipewire = {
-        enable = true;
-        alsa.enable = true;
-        alsa.support32Bit = true;
-        pulse.enable = true;
-        jack.enable = true;
-      };
-
-      minio = {
-        enable = true;
-        region = "ap-east-1";
-        rootCredentialsFile = config.age.secrets.minio.path;
-      };
-
-      xmrig = {
-        enable = false;
-        settings = {
-          autosave = true;
-          opencl = false;
-          cuda = false;
-          cpu = {
-            enable = true;
-            max-threads-hint = 90;
-          };
-          pools = [
-            {
-              url = "pool.supportxmr.com:443";
-              user = data.xmrAddr;
-              keepalive = true;
-              tls = true;
-              pass = "rha";
-            }
+          extraBackupArgs = [
+            "--exclude-caches"
+            "--no-scan"
+            "--retry-lock 2h"
           ];
+          pruneOpts = [ "--keep-daily 3" ];
+          timerConfig = {
+            OnCalendar = "daily";
+            RandomizedDelaySec = "4h";
+            FixedRandomDelay = true;
+            Persistent = true;
+          };
         };
       };
     };
+    # cloudflared = {
+    #   enable = true;
+    #   environmentFile = config.age.secrets.cloudflare-garden-00.path;
+    # };
+    compose-up.instances = [
+      # {
+      #   name = "misskey";
+      #   workingDirectory = "/home/${user}/Src/misskey";
+      # }
+      {
+        name = "nextchat";
+        workingDirectory = "/home/${user}/Src/ChatGPT-Next-Web";
+        extraArgs = "chatgpt-next-web";
+        environmentFile = config.age.secrets.nextchat.path;
+      }
+    ];
+
+    hysteria.instances = [
+      {
+        name = "nodens";
+        configFile = config.age.secrets.hyst-us-cli.path;
+      }
+      # {
+      #   name = "colour";
+      #   configFile = config.age.secrets.hyst-az-cli.path;
+      # }
+    ];
+
+    shadowsocks.instances = [
+      {
+        name = "rha";
+        configFile = config.age.secrets.ss-az.path;
+        serve = {
+          enable = true;
+          port = 6059;
+        };
+      }
+    ];
+
+    gvfs.enable = true;
+
+    postgresqlBackup = {
+      enable = true;
+      location = "/var/lib/backup/postgresql";
+      compression = "zstd";
+      startAt = "*-*-* 04:00:00";
+    };
+
+    pipewire = {
+      enable = true;
+      alsa.enable = true;
+      alsa.support32Bit = true;
+      pulse.enable = true;
+      jack.enable = true;
+    };
+
+    minio = {
+      enable = true;
+      region = "ap-east-1";
+      rootCredentialsFile = config.age.secrets.minio.path;
+    };
+
+    xmrig = {
+      enable = false;
+      settings = {
+        autosave = true;
+        opencl = false;
+        cuda = false;
+        cpu = {
+          enable = true;
+          max-threads-hint = 90;
+        };
+        pools = [
+          {
+            url = "pool.supportxmr.com:443";
+            user = data.xmrAddr;
+            keepalive = true;
+            tls = true;
+            pass = "rha";
+          }
+        ];
+      };
+    };
+  };
 }
