@@ -11,7 +11,7 @@
   systemd.services.nix-daemon = {
     serviceConfig = {
       LimitNOFILE = lib.mkForce 500000000;
-      Environment = [ "TMPDIR=/var/tmp/nix-daemon" ];
+      PrivateTmp = true;
     };
   };
 
