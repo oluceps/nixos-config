@@ -6,12 +6,12 @@ let
 
   allSrvPathNoSuffix = map (removeSuffix ".nix") allSrvPath;
 
-  existSrvPath = filter (n: builtins.hasAttr n args.config.services) allSrvPathNoSuffix;
+  existSrvOpt = filter (n: builtins.hasAttr n args.config.services) allSrvPathNoSuffix;
 in
 {
   options.srv = genAttrs allSrvPathNoSuffix (sn: mkEnableOption "${sn} service");
 
-  config.services = genAttrs existSrvPath (
+  config.services = genAttrs existSrvOpt (
     n:
     (mkIf (args.config.srv.${n}) (
       import ./${n}.nix {
