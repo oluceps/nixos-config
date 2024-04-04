@@ -11,18 +11,5 @@ in
 {
   options.srv = genAttrs allSrvPathNoSuffix (sn: mkEnableOption "${sn} service");
 
-  config.services = genAttrs existSrvOpt (
-    n:
-    (mkIf (args.config.srv.${n}) (
-      import ./${n}.nix {
-        inherit (args)
-          pkgs
-          config
-          inputs
-          lib
-          user
-          ;
-      }
-    ))
-  );
+  config.services = genAttrs existSrvOpt (n: (mkIf (args.config.srv.${n}) (import ./${n}.nix args)));
 }
