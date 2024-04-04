@@ -100,17 +100,17 @@
   ];
 
   srv = {
-    openssh = true;
-    fail2ban = true;
-    dae = true;
-    scrutiny = true;
-    ddns-go = true;
-    atticd = true;
-    atuin = true;
-    postgresql = true;
-    photoprism = true;
-    mysql = true;
-    prometheus = true;
+    openssh.enable = true;
+    fail2ban.enable = true;
+    dae.enable = true;
+    scrutiny.enable = true;
+    ddns-go.enable = true;
+    atticd.enable = true;
+    atuin.enable = true;
+    postgresql.enable = true;
+    photoprism.enable = true;
+    mysql.enable = true;
+    prometheus.enable = true;
   };
   services = {
     metrics.enable = true;

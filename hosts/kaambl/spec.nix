@@ -33,10 +33,10 @@
   programs.sway.enable = true;
 
   srv = {
-    openssh = true;
-    mosproxy = true;
-    fail2ban = true;
-    dae = true;
+    openssh.enable = true;
+    mosproxy.enable = true;
+    fail2ban.enable = true;
+    dae.enable = true;
   };
 
   services = {
