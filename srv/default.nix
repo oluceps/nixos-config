@@ -11,6 +11,10 @@ in
 {
   options.srv = genAttrs allSrvPathNoSuffix (sn: {
     enable = mkEnableOption "${sn} service";
+    /*
+      Introduce this in per hosts and use with
+      srv = { a = { enable = true; override = { opt1 = false; };};}
+    */
     override = mkOption {
       type = lib.types.unspecified;
       default = { };
