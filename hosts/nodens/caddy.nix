@@ -47,13 +47,13 @@
                           handle = [
                             {
                               handler = "reverse_proxy";
-                              # transport = {
-                              #   protocol = "http";
-                              #   tls = {
-                              #     server_name = "s3.nyaw.xyz";
-                              #   };
-                              # };
-                              upstreams = [ { dial = "10.0.1.2:9000"; } ];
+                              transport = {
+                                protocol = "http";
+                                tls = {
+                                  server_name = "s3.nyaw.xyz";
+                                };
+                              };
+                              upstreams = [ { dial = "10.0.1.2:443"; } ];
                             }
                           ];
                         }
