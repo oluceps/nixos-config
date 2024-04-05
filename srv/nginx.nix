@@ -1,9 +1,7 @@
 { ... }:
 {
   enable = true;
-  httpConfig = ''
-    client_max_body_size 8G;
-  '';
+  clientMaxBodySize = "4G";
   virtualHosts = {
     "attic.nyaw.xyz" = {
       forceSSL = true;
