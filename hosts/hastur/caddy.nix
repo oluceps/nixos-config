@@ -76,7 +76,7 @@
                   };
                 }
               ];
-              protocols = [ "http/1.1" ];
+              protocols = [ "http/2+" ];
             };
           };
         };
