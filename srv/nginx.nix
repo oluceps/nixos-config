@@ -1,6 +1,9 @@
 { ... }:
 {
   enable = true;
+  httpConfig = ''
+    client_max_body_size 8G;
+  '';
   virtualHosts = {
     "attic.nyaw.xyz" = {
       forceSSL = true;
@@ -37,8 +40,7 @@
             # Default is HTTP/1, keepalive is only enabled in HTTP/1.1
             proxy_http_version 1.1;
             proxy_set_header Connection "";
-            chunked_transfer_encoding off;
-            client_max_body_size 8G;
+            chunked_transfer_encoding off
           '';
         };
       };
