@@ -2,6 +2,7 @@
   pkgs,
   data,
   config,
+  lib,
   ...
 }:
 {
