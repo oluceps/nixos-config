@@ -370,32 +370,9 @@
                   terminal = true;
                 }
               ];
-
-              tls_connection_policies = [
-                {
-                  match = {
-                    sni = [
-                      "attic.nyaw.xyz"
-                      "hastur.nyaw.xyz"
-                      "s3.nyaw.xyz"
-                    ];
-                  };
-                  certificate_selection = {
-                    any_tag = [ "cert0" ];
-                  };
-                }
-              ];
             };
           };
         };
-
-        tls.certificates.load_files = [
-          {
-            certificate = "/run/credentials/caddy.service/nyaw.cert";
-            key = "/run/credentials/caddy.service/nyaw.key";
-            tags = [ "cert0" ];
-          }
-        ];
       };
     };
   };
