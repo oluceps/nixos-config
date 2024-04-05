@@ -46,7 +46,7 @@
                               upstreams = [ { dial = "localhost:9000"; } ];
                               transport = {
                                 protocol = "http";
-                                versions = [ "1.1" ];
+                                versions = [ "h2c" ];
                               };
                             }
                           ];
