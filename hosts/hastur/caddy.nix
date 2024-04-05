@@ -25,10 +25,10 @@
                             {
                               handler = "reverse_proxy";
                               upstreams = [ { dial = "localhost:8083"; } ];
-                              transport = {
-                                protocol = "http";
-                                versions = [ "1.1" ];
-                              };
+                              # transport = {
+                              #   protocol = "http";
+                              #   versions = [ "1.1" ];
+                              # };
                             }
                           ];
                         }
@@ -48,10 +48,10 @@
                             {
                               handler = "reverse_proxy";
                               upstreams = [ { dial = "localhost:9000"; } ];
-                              transport = {
-                                protocol = "http";
-                                versions = [ "1.1" ];
-                              };
+                              # transport = {
+                              #   protocol = "http";
+                              #   versions = [ "1.1" ];
+                              # };
                             }
                           ];
                         }
@@ -76,6 +76,7 @@
                   };
                 }
               ];
+              protocols = [ "http/1.1" ];
             };
           };
         };
