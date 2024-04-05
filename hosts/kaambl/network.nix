@@ -12,8 +12,10 @@
   networking = {
     hosts = {
       "10.0.1.2" = [
-        "attic.nyaw.xyz"
         "s3.nyaw.xyz"
+      ];
+      "10.0.2.2" = [
+        "attic.nyaw.xyz"
       ];
       "10.0.1.1" = [ "nodens.nyaw.xyz" ];
     };
