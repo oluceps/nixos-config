@@ -91,7 +91,9 @@
           {
             wireguardPeerConfig = {
               PublicKey = "+fuA9nUmFVKy2Ijfh5xfcnO9tpA/SkIL4ttiWKsxyXI=";
-              AllowedIPs = [ "10.0.1.0/24" ];
+              AllowedIPs = [
+                "10.0.1.0/24"
+              ];
               Endpoint = "127.0.0.1:41820";
               PersistentKeepalive = 15;
             };
@@ -99,7 +101,10 @@
           {
             wireguardPeerConfig = {
               PublicKey = "49xNnrpNKHAvYCDikO3XhiK94sUaSQ4leoCnTOQjWno=";
-              AllowedIPs = [ "10.0.2.0/24" ];
+              AllowedIPs = [
+                "10.0.2.0/24"
+                "192.168.1.0/24"
+              ];
               Endpoint = "116.196.112.43:51820";
               PersistentKeepalive = 15;
             };
