@@ -38,7 +38,7 @@
             proxy_http_version 1.1;
             proxy_set_header Connection "";
             chunked_transfer_encoding off;
-            client_max_body_size 256M;
+            client_max_body_size 8G;
           '';
         };
       };
