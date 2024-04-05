@@ -44,6 +44,10 @@
                             {
                               handler = "reverse_proxy";
                               upstreams = [ { dial = "localhost:9000"; } ];
+                              transport = {
+                                protocol = "http";
+                                versions = [ "1.1" ];
+                              };
                             }
                           ];
                         }
