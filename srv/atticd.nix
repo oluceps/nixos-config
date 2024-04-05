@@ -40,7 +40,8 @@
       max-size = 256 * 1024; # 256 KiB
     };
     garbage-collection = {
-      interval = "7 day";
+      interval = "1 days";
+      default-retention-period = "7 days";
     };
   };
 }
