@@ -8,7 +8,7 @@
     # useHostResolvConf = true;
     hosts = {
       "127.0.0.1" = [
-        "attic.nyaw.xyz"
+        # "attic.nyaw.xyz"
         "s3.nyaw.xyz"
       ];
       "10.0.1.1" = [ "nodens.nyaw.xyz" ];
