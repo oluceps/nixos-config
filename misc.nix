@@ -10,6 +10,8 @@
 {
 
   systemd.sysusers.enable = true;
+  system.etc.overlay.enable = true;
+
   systemd.services.nix-daemon = {
     serviceConfig = {
       LimitNOFILE = lib.mkForce 500000000;
@@ -106,7 +108,7 @@
     '';
   };
 
-  time.timeZone = "Asia/Singapore";
+  # time.timeZone = "Asia/Singapore";
 
   console = {
     # font = "LatArCyrHeb-16";
