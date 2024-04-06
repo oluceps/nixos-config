@@ -11,12 +11,8 @@
   };
   networking = {
     hosts = {
-      "10.0.1.2" = [
-        "s3.nyaw.xyz"
-      ];
-      "10.0.2.2" = [
-        "attic.nyaw.xyz"
-      ];
+      "10.0.1.2" = [ "s3.nyaw.xyz" ];
+      "10.0.2.2" = [ "attic.nyaw.xyz" ];
       "10.0.1.1" = [ "nodens.nyaw.xyz" ];
     };
     nameservers = [
@@ -114,7 +110,10 @@
           {
             wireguardPeerConfig = {
               PublicKey = "49xNnrpNKHAvYCDikO3XhiK94sUaSQ4leoCnTOQjWno=";
-              AllowedIPs = [ "10.0.2.0/24" ];
+              AllowedIPs = [
+                "10.0.2.0/24"
+                "192.168.1.0/24"
+              ];
               Endpoint = "116.196.112.43:51820";
               PersistentKeepalive = 15;
             };
@@ -139,6 +138,15 @@
           "10.0.2.3/24"
         ];
         DHCP = "no";
+        routes = [
+          {
+            routeConfig = {
+              Destination = "192.168.1.0/24";
+              Gateway = "10.0.2.3";
+              Scope = "link";
+            };
+          }
+        ];
       };
 
       "20-wireless" = {
