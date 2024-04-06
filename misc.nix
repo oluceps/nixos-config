@@ -8,6 +8,8 @@
   ...
 }:
 {
+
+  systemd.sysusers.enable = true;
   systemd.services.nix-daemon = {
     serviceConfig = {
       LimitNOFILE = lib.mkForce 500000000;
