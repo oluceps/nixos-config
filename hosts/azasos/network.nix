@@ -117,10 +117,7 @@
           {
             wireguardPeerConfig = {
               PublicKey = "BCbrvvMIoHATydMkZtF8c+CHlCpKUy1NW+aP0GnYfRM=";
-              AllowedIPs = [
-                "10.0.2.2/32"
-                "192.168.1.0/24"
-              ];
+              AllowedIPs = [ "10.0.2.2/32" ];
               PersistentKeepalive = 15;
             };
           }
@@ -149,7 +146,6 @@
         address = [
           "10.0.1.8/24"
           "10.0.2.8/24"
-          "192.168.1.8/24"
         ];
         networkConfig = {
           IPMasquerade = "ipv4";
