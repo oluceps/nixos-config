@@ -7,14 +7,14 @@
   credentialsFile = config.age.secrets.attic.path;
 
   settings = {
-    listen = "127.0.0.1:8083";
+    listen = "[::]:8083";
     database.url = "postgresql://attic:attic@localhost:5432/attic";
     api-endpoint = "https://attic.nyaw.xyz/";
     storage = {
       type = "s3";
       region = "ap-east-1";
       bucket = "attic";
-      endpoint = "http://10.0.1.2:9000"; # Only Private Network Accesible
+      endpoint = "http://s3.nyaw.xyz:9000"; # Only Private Network Accesible
     };
 
     # Data chunking
