@@ -210,7 +210,7 @@
       inputs.agenix.follows = "agenix";
     };
     agenix = {
-      url = "github:oluceps/agenix";
+      url = "github:oluceps/agenix/with-sysuser";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     fenix = {
