@@ -62,6 +62,7 @@ let
 
     cmd = [
 
+      asciinema
       smartmontools
       difftastic
       direnv
