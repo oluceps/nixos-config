@@ -14,7 +14,7 @@
       type = "s3";
       region = "ap-east-1";
       bucket = "attic";
-      endpoint = "http://s3.nyaw.xyz:9000"; # Only Private Network Accesible
+      endpoint = "https://s3.nyaw.xyz";
     };
 
     # Data chunking
