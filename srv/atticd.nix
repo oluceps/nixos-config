@@ -7,7 +7,7 @@
   credentialsFile = config.age.secrets.attic.path;
 
   settings = {
-    listen = "[::]:8083";
+    listen = "127.0.0.1:8083";
     database.url = "postgresql://attic:attic@localhost:5432/attic";
     api-endpoint = "https://attic.nyaw.xyz/";
     storage = {
