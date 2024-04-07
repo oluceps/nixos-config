@@ -31,11 +31,11 @@
         "systems": "systems"
       },
       "locked": {
-        "lastModified": 1712434725,
-        "narHash": "sha256-mJdEIoZPn2TR7v+kpN/BV2azhPd+mAY73jZl6JbOSgo=",
-        "ref": "refs/heads/main",
-        "rev": "b4923d7014e1537fb01587b7642d7b241ba3ab21",
-        "revCount": 300,
+        "lastModified": 1712460422,
+        "narHash": "sha256-Z+SboaSrzZmZj1pHz0EyLxV/YPkcBDP6CpABgsXfOjM=",
+        "ref": "refs/heads/with-sysuser",
+        "rev": "e48467b0c70c6c9a8a668aa425d21e6c87e73050",
+        "revCount": 301,
         "type": "git",
         "url": "file:///home/elen/Tools/agenix"
       },
