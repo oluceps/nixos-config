@@ -11,7 +11,7 @@
 
   systemd.sysusers.enable = true;
   system.etc.overlay.enable = true;
-  # system.etc.overlay.mutable = false;
+  system.etc.overlay.mutable = false;
 
   systemd.services.nix-daemon = {
     serviceConfig = {
