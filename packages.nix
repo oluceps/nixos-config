@@ -123,6 +123,7 @@ let
     # # ripgrep-all 
 
     info = [
+      ncdu_2 # disk space info
       freshfetch
       htop
       onefetch
