@@ -37,18 +37,18 @@ in
         metrics_path = "/caddy";
         static_configs = [ { inherit targets; } ];
       }
-      {
-        job_name = "mosproxy";
-        metrics_path = "/metrics";
-        static_configs = [
-          {
-            targets = [
-              # "10.0.1.2:9092"
-              "10.0.1.3:9092"
-            ];
-          }
-        ];
-      }
+      # {
+      #   job_name = "mosproxy";
+      #   metrics_path = "/metrics";
+      #   static_configs = [
+      #     {
+      #       targets = [
+      #         # "10.0.1.2:9092"
+      #         "10.0.1.3:9092"
+      #       ];
+      #     }
+      #   ];
+      # }
       {
         job_name = "metrics";
         scheme = "https";
