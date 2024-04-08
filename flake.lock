@@ -31,11 +31,11 @@
         "systems": "systems"
       },
       "locked": {
-        "lastModified": 1712461623,
-        "narHash": "sha256-sYdrXI6dvIPksv2wBSHyYiElrho9z4RH5ysmpChej6Q=",
+        "lastModified": 1712542888,
+        "narHash": "sha256-jLhTZa8014KckX4J+kJLzrslUw0/oGcZVt1Z2OTGvdY=",
         "owner": "oluceps",
         "repo": "agenix",
-        "rev": "c5703d556acf5ef3e026fedeb0e5f5287b6551b9",
+        "rev": "8ff1e1afcdf12789c92cdf10a957e9df2a2388f4",
         "type": "github"
       },
       "original": {
