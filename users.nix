@@ -51,11 +51,11 @@
 
   security = {
     doas = {
-      enable = false;
+      enable = true;
       wheelNeedsPassword = false;
     };
     sudo-rs = {
-      enable = lib.mkForce true;
+      enable = lib.mkForce false;
       # package = pkgs.sudo-rs;
       extraRules = [
         {
