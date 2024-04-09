@@ -59,6 +59,7 @@
       with pkgs;
       {
         crypt = [
+          mieru
           minisign
           rage
           age-plugin-yubikey
