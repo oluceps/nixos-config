@@ -23,15 +23,17 @@ in
       after = [ "network-online.target" ];
       wants = [ "network-online.target" ];
 
+      preStart = ''
+        mkdir -p /var/lib/srs
+        cp -r ${cfg.package}/objs /var/lib/srs/
+      '';
+
       serviceConfig = {
         Type = "forking";
-        ExecPreStart = [
-          "cp -r ${cfg.package}/objs $STATE_DIRECTORY/objs"
-          "ln -sfn ${cfg.package}/bin/srs $STATE_DIRECTORY/srs"
-        ];
-        PIDFile = "$STATE_DIRECTORY/objs/srs.pid";
-        ExecStart = "$STATE_DIRECTORY/srs -c ${pkgs.writeText "srs.conf" cfg.config}";
-        StateDirectory = "srs-server";
+        PIDFile = "/run/srs.pid";
+        WorkingDirectory = "/var/lib/srs";
+        ExecStart = "${cfg.package}/bin/srs -c ${pkgs.writeText "srs.conf" cfg.config}";
+        StateDirectory = "srs";
         Restart = "always";
       };
     };
