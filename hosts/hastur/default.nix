@@ -11,6 +11,10 @@
     buildOnTarget = true;
     allowLocalDeployment = true;
     targetUser = user;
+    privilegeEscalationCommand = [
+      "doas"
+      "--"
+    ];
   };
 
   imports =
@@ -41,7 +45,6 @@
 
       inputs.misskey.nixosModules.default
       ./misskey.nix
-
     ]
     ++ (with inputs; [
       aagl.nixosModules.default
