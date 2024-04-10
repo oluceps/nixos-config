@@ -12,6 +12,19 @@
       autoStart = true;
       openFirewall = true;
       package = pkgs.paper-server;
+      # whitelist = {
+      #   user1 = "";
+      # };
+      serverProperties = {
+        server-port = 43000;
+        difficulty = 1;
+        gamemode = 1;
+        max-players = 5;
+        motd = "nya";
+        white-list = false;
+        enable-rcon = true;
+        "rcon.password" = "123?";
+      };
     };
   };
 }
