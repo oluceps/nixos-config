@@ -11,7 +11,7 @@
       enable = true;
       autoStart = true;
       openFirewall = true;
-      package = pkgs.paper-server;
+      package = pkgs.quilt-server;
       # whitelist = {
       #   user1 = "";
       # };
