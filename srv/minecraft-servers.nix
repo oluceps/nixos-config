@@ -11,7 +11,7 @@
       enable = true;
       autoStart = true;
       openFirewall = true;
-      package = pkgs.minecraftServers.paper-server;
+      package = pkgs.paper-server;
     };
   };
 }
