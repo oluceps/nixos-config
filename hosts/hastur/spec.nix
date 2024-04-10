@@ -117,6 +117,22 @@
   services = {
     metrics.enable = true;
     fwupd.enable = true;
+    realm = {
+      enable = true;
+      settings = {
+        log.level = "warn";
+        network = {
+          no_tcp = false;
+          use_udp = true;
+        };
+        endpoints = [
+          {
+            listen = "[::]:2222";
+            remote = "127.0.0.1:3001";
+          }
+        ];
+      };
+    };
 
     prom-ntfy-bridge.enable = true;
     # xserver.videoDrivers = [ "nvidia" ];
