@@ -23,7 +23,8 @@
         motd = "nya";
         white-list = false;
         enable-rcon = true;
-        "rcon.password" = "123?";
+        rcon.port = 25575;
+        rcon.password = "123?";
       };
     };
   };
