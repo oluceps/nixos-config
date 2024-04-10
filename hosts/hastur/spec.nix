@@ -112,6 +112,7 @@
     mysql.enable = true;
     prometheus.enable = true;
     vaultwarden.enable = true;
+    minecraft-servers.enable = true;
   };
   services = {
     metrics.enable = true;

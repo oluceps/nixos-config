@@ -50,7 +50,8 @@
       aagl.nixosModules.default
       disko.nixosModules.default
       attic.nixosModules.atticd
-      inputs.niri.nixosModules.niri
+      niri.nixosModules.niri
+      nix-minecraft.nixosModules.minecraft-servers
       # inputs.j-link.nixosModule
     ]);
 }

@@ -144,6 +144,7 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     tg-online-keeper.url = "github:oluceps/TelegramOnlineKeeper";
+    nix-minecraft.url = "github:Infinidoge/nix-minecraft";
     # tg-online-keeper.url = "/home/elen/Src/tg-online-keeper";
     disko = {
       url = "github:nix-community/disko";
