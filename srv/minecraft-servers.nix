@@ -19,6 +19,7 @@
         server-port = 43000;
         difficulty = 1;
         gamemode = 1;
+        online-mode = false;
         max-players = 5;
         motd = "nya";
         white-list = false;
