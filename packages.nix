@@ -18,7 +18,6 @@ let
           bleak
           matplotlib
           clang
-          mcrcon
         ]
       ))
     ];
@@ -123,6 +122,7 @@ let
     # ];
 
     cmd = [
+      mcrcon
 
       asciinema
       smartmontools
