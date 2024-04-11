@@ -13,11 +13,9 @@
   system.etc.overlay.enable = true;
   system.etc.overlay.mutable = true;
 
-  systemd.services.nix-daemon = {
-    serviceConfig = {
-      LimitNOFILE = lib.mkForce 500000000;
-      Environment = [ "TMPDIR=/var/tmp/nix-daemon" ];
-    };
+  systemd.services.nix-daemon.serviceConfig = {
+    LimitNOFILE = lib.mkForce 500000000;
+    Environment = [ "TMPDIR=/var/tmp/nix-daemon" ];
   };
 
   boot.tmp.useTmpfs = true;
@@ -147,15 +145,12 @@
       SystemMaxUse=1G
     '';
 
-    dbus = {
-      enable = true;
-      implementation = "broker";
-    };
+    dbus.implementation = "broker";
   };
 
   documentation = {
     enable = true;
-    nixos.enable = false;
+    nixos.enable = true;
     man.enable = false;
   };
 
