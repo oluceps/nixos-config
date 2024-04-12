@@ -6,7 +6,7 @@
       {
         device = "wlan0";
         dns = "tcp://208.67.220.220:5353";
-        hint = "w-seq,https,w-md5";
+        hint = "w-md5,s-seg,https";
         name = "default";
       }
       {
