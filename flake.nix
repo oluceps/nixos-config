@@ -167,8 +167,8 @@
       url = "github:oluceps/nyx";
     };
     factorio-manager = {
-      # url = "github:asoul-rec/factorio-manager";
-      url = "/home/elen/Src/factorio-manager";
+      url = "github:asoul-rec/factorio-manager";
+      # url = "/home/elen/Src/factorio-manager";
       # inputs.nixpkgs.follows = "nixpkgs";
     };
     anyrun = {
