@@ -46,7 +46,7 @@
     };
     groups.nixosvmtest = { };
 
-    mutableUsers = false;
+    # mutableUsers = false;
   };
 
   security = {
