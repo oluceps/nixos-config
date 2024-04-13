@@ -33,7 +33,7 @@
       ../secureboot.nix
       ../../packages.nix
       ../../misc.nix
-      ../../sysvars.nix
+      ../sysvars.nix
       ../../age.nix
 
       ../sysctl.nix

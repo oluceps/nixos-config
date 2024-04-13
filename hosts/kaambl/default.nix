@@ -30,7 +30,7 @@
     ../../packages.nix
     ../../misc.nix
     ../../users.nix
-    ../../sysvars.nix
+    ../sysvars.nix
     inputs.niri.nixosModules.niri
     ../graphBase.nix
 
