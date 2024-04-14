@@ -27,7 +27,7 @@ in
       let
         perSrv = args.config.srv.${n};
       in
-      (mkIf (perSrv.enable) ((removeAttrs (import ./${n}.nix args) [ "hoist" ]) // perSrv.override))
+      (mkIf (perSrv.enable) ((removeAttrs (import ./${n}.nix args) [ "attach" ]) // perSrv.override))
     )
   );
 }
