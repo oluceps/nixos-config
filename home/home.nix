@@ -22,7 +22,14 @@ let
   fullModule = (
     with builtins;
     attrNames (
-      lib.filterAttrs (n: _: !elem n [ "hyprland" ]) # one or more of them conflict with gnome  "sway" "hyprland" "waybar"
+      lib.filterAttrs
+        (
+          n: _:
+          !elem n [
+            "hyprland"
+            "resign"
+          ]
+        ) # one or more of them conflict with gnome  "sway" "hyprland" "waybar"
         (readDir ./programs)
     )
   );
@@ -90,7 +97,7 @@ in
       userName = "oluceps";
       userEmail = "i@oluceps.uk";
       extraConfig = {
-        # user.signingKey = "/run/agenix/id_sk";
+        user.signingKey = "/run/agenix/id_sk";
         tag.gpgsign = true;
         core.editor = with pkgs; (lib.getExe helix);
         commit.gpgsign = true;
