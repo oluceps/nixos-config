@@ -25,7 +25,7 @@ in
       type = types.str;
       default = "/home/seed/.radicle";
     };
-    package = mkPackageOption pkgs "radicle";
+    package = mkPackageOption pkgs "radicle" { };
   };
   config = mkIf cfg.enable {
     users.users.seed = {
