@@ -1,6 +1,7 @@
 {
   pkgs,
   config,
+  inputs',
   lib,
   ...
 }:
@@ -23,13 +24,13 @@ in
     };
     httpListen = mkOption {
       type = types.str;
-      default = "0.0.0.0:8776";
+      default = "0.0.0.0:8084";
     };
     home = mkOption {
       type = types.str;
       default = "/home/seed/.radicle";
     };
-    package = mkPackageOption pkgs "radicle" { };
+    package = mkPackageOption inputs'.radicle.packages "radicle-full" { };
     envFile = mkOption {
       type = types.nullOr types.str;
       default = null;
@@ -75,12 +76,17 @@ in
       ];
       wantedBy = [ "multi-user.target" ];
       description = "Radicle HTTP Daemon";
+      path = [ pkgs.git ];
 
       serviceConfig = {
         User = "seed";
         Group = "seed";
         ExecStart = "${cfg.package}/bin/radicle-httpd --listen ${cfg.httpListen}";
-        Environment = [ "RAD_HOME=${cfg.home}" ];
+        Environment = [
+          "RAD_HOME=${cfg.home}"
+          "RUST_BACKTRACE=1"
+          "RUST_LOG=info"
+        ];
         KillMode = "process";
         Restart = "always";
         RestartSec = 1;
