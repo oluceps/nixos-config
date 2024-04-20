@@ -97,14 +97,14 @@ in
       userName = "oluceps";
       userEmail = "i@oluceps.uk";
       extraConfig = {
-        user.signingKey = "/run/agenix/id_sk";
+        user.signingKey = "/run/agenix/id";
         tag.gpgsign = true;
         core.editor = with pkgs; (lib.getExe helix);
         commit.gpgsign = true;
         gpg = {
           format = "ssh";
           ssh.defaultKeyCommand = "ssh-add -L";
-          ssh.allowedSignersFile = toString (pkgs.writeText "allowed_signers" "");
+          ssh.allowedSignersFile = toString (pkgs.writeText "allowed_signers" "\n");
         };
         merge.conflictStyle = "diff3";
         merge.tool = "vimdiff";
