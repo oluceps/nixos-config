@@ -37,11 +37,6 @@
   };
   services = {
 
-    radicle = {
-      enable = true;
-      envFile = config.age.secrets.radicle-pass.path;
-      # home = "/home/${user}/.radicle";
-    };
     realm = {
       enable = false;
       settings = {
