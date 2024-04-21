@@ -36,7 +36,7 @@
     rustypaste.enable = true;
   };
   services = {
-
+    radicle.enable = true;
     realm = {
       enable = false;
       settings = {

@@ -108,25 +108,25 @@
                   match = [ { host = [ "chat.nyaw.xyz" ]; } ];
                   terminal = true;
                 }
-                # {
-                #   handle = [
-                #     {
-                #       handler = "subroute";
-                #       routes = [
-                #         {
-                #           handle = [
-                #             {
-                #               handler = "reverse_proxy";
-                #               upstreams = [ { dial = "localhost:8084"; } ];
-                #             }
-                #           ];
-                #         }
-                #       ];
-                #     }
-                #   ];
-                #   match = [ { host = [ "seed.nyaw.xyz" ]; } ];
-                #   terminal = true;
-                # }
+                {
+                  handle = [
+                    {
+                      handler = "subroute";
+                      routes = [
+                        {
+                          handle = [
+                            {
+                              handler = "reverse_proxy";
+                              upstreams = [ { dial = "localhost:8084"; } ];
+                            }
+                          ];
+                        }
+                      ];
+                    }
+                  ];
+                  match = [ { host = [ "seed.nyaw.xyz" ]; } ];
+                  terminal = true;
+                }
                 {
                   handle = [
                     {
