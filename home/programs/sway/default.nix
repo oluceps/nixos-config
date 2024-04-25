@@ -83,7 +83,6 @@
         ];
         startup = [
           { command = "fcitx5 -d"; }
-          { command = with pkgs; lib.getExe' swww "swww-daemon"; }
           { command = with pkgs; "${lib.getExe systemd-run-app} ${firefox}"; }
           { command = with pkgs; "${lib.getExe systemd-run-app} ${lib.getExe tdesktop}"; }
           { command = with deps; "${wl-paste} --type text --watch ${cliphist} store"; } # Stores only text data

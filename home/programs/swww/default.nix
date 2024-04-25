@@ -22,7 +22,7 @@ in
 
       Service = {
         ExecStartPre = "${pkgs.swww}/bin/swww-daemon";
-        ExecStart = "${lib.getExe pkgs.swww} img /home/${user}/Videos/output_trimmed_enhanced.gif";
+        ExecStart = "${lib.getExe pkgs.swww} restore";
         Restart = "on-failure";
       };
 
