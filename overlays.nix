@@ -10,6 +10,7 @@ inputs':
       "nix-direnv"
       "attic"
       "radicle"
+      "nixd"
     ] (n: inputs'.${n}.packages.default)
     # //
     # GUI applications overlay. for stability
