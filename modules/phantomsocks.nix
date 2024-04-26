@@ -22,7 +22,7 @@ in
 
   options = {
     services.phantomsocks = {
-      enable = mkEnableOption (lib.mdDoc "phantomsocks");
+      enable = mkEnableOption "phantomsocks";
 
       settings = mkOption {
         default = { };

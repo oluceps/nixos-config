@@ -22,7 +22,7 @@ in
 
   options = {
     services.realm = {
-      enable = mkEnableOption (lib.mdDoc "realm");
+      enable = mkEnableOption "realm";
 
       settings = mkOption {
         default = { };
