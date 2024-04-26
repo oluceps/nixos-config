@@ -33,6 +33,31 @@ nix.settings = {
 };
 ```
 
+## structure
+
+```
+.
+├── age.nix
+├── ci.nix
+├── default.nix
+├── flake.lock
+├── flake.nix
+├── fn
+├── home
+├── hosts
+├── justfile
+├── LICENSE
+├── misc.nix
+├── modules
+├── overlays.nix
+├── packages.nix
+├── pkgs
+├── README.md
+├── sec
+├── srv
+└── users.nix
+```
+
 
 ## References
 
