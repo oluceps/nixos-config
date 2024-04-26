@@ -8,6 +8,7 @@
 let
   inherit (lib)
     mkOption
+    mkPackageOption
     types
     mkEnableOption
     mkIf
@@ -28,7 +29,7 @@ in
         type = types.submodule { freeformType = settingsFormat.type; };
       };
 
-      package = mkPackageOptionMD pkgs "phantomsocks" { };
+      package = mkPackageOption pkgs "phantomsocks" { };
     };
   };
 
