@@ -47,7 +47,7 @@ in
           "graphical-session.target"
           "swww-daemon.service"
         ];
-        Require = [ "swww-daemon.service" ];
+        Requires = [ "swww-daemon.service" ];
       };
       Service = {
         Restart = "on-failure";
