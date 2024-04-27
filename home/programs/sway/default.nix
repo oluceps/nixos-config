@@ -83,14 +83,18 @@
         ];
         startup = [
           { command = "fcitx5 -d"; }
-          # { command = "${pkgs.swww}/bin/swww-daemon"; }
           # {
-          #   command = "${pkgs.swww}/bin/swww img --no-resize ${
-          #     pkgs.fetchurl {
-          #       url = "https://s3.nyaw.xyz/misc/u6.gif";
-          #       hash = "sha256-rlYUaXCdbPNO0yC1ytw2j/U8aMbpVKsRc3uwpClFCgM=";
-          #     }
-          #   }";
+          #   command = "${pkgs.swww}/bin/swww-daemon";
+          # }
+          # {
+          #   command="${pkgs.coreutils}/bin/sleep 1 & ${pkgs.swww}/bin/swww img --resize=fit -f Nearest /nix/store/knnnzbvma1vsn7vw0464dmgl1lyfpn6n-u6-2160x1440.gif";
+          # }
+
+          # ${
+          #   pkgs.fetchurl {
+          #     url = "https://s3.nyaw.xyz/misc/u6.gif";
+          #     hash = "sha256-rlYUaXCdbPNO0yC1ytw2j/U8aMbpVKsRc3uwpClFCgM=";
+          #   }
           # }
           { command = with pkgs; "${lib.getExe systemd-run-app} ${firefox}"; }
           { command = with pkgs; "${lib.getExe systemd-run-app} ${lib.getExe tdesktop}"; }
