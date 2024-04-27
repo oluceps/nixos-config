@@ -40,35 +40,36 @@ in
       };
     };
 
-    # systemd.user.services.swww = {
-    #   Unit = {
-    #     PartOf = [ "graphical-session.target" ];
-    #     After = [ "graphical-session.target" ];
-    #   };
-    #   Service = {
-    #     Restart = "on-failure";
-    #     Type = "oneshot";
-    #     Environment = [
-    #       "XDG_CACHE_HOME=/home/${user}/.cache"
-    #       "HOME=/home/${user}"
-    #       "WAYLAND_DISPLAY=wayland-1"
-    #       "DISPLAY=:0"
-    #     ];
-    #     ExecStartPre = "${pkgs.coreutils}/bin/sleep 1";
-    #     ExecStart = ''
-    #       ${pkgs.swww}/bin/swww img -o eDP-1 --resize=fit -f Nearest /nix/store/knnnzbvma1vsn7vw0464dmgl1lyfpn6n-u6-2160x1440.gif
-    #       # $\{
-    #       #   pkgs.fetchurl {
-    #       #     url = "https://s3.nyaw.xyz/misc/u6-2160x1440.gif";
-    #       #     hash = "";
-    #       #   }
-    #       # }
-    #     '';
-    #   };
+    systemd.user.services.swww = {
+      Unit = {
+        PartOf = [ "graphical-session.target" ];
+        After = [
+          "graphical-session.target"
+          "swww-daemon.service"
+        ];
+        Require = [ "swww-daemon.service" ];
+      };
+      Service = {
+        Restart = "on-failure";
+        Type = "oneshot";
+        Environment = [
+          "XDG_CACHE_HOME=/home/${user}/.cache"
+          "WAYLAND_DISPLAY=wayland-1"
+        ];
+        ExecStartPre = "${pkgs.coreutils}/bin/sleep 1";
+        ExecStart = ''
+          ${pkgs.swww}/bin/swww img --resize=no -f Nearest ${
+            pkgs.fetchurl {
+              url = "https://s3.nyaw.xyz/misc/u6-fit.gif";
+              sha256 = "17a3xjp91v4syj0rhxylwl9rbvfn73dk0f688hhsm8j0lipbg3r1";
+            }
+          }
+        '';
+      };
 
-    #   Install = {
-    #     WantedBy = [ "sway-session.target" ];
-    #   };
-    # };
+      Install = {
+        WantedBy = [ "sway-session.target" ];
+      };
+    };
   };
 }
