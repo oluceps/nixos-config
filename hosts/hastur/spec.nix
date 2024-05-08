@@ -109,7 +109,7 @@
     dae.enable = true;
     scrutiny.enable = true;
     ddns-go.enable = true;
-    atticd.enable = true;
+    atticd.enable = false;
     atuin.enable = true;
     postgresql.enable = true;
     photoprism.enable = true;
