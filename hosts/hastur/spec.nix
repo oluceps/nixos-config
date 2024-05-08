@@ -31,6 +31,10 @@
   systemd = {
     services = {
       atuin.serviceConfig.Environment = [ "RUST_LOG=debug" ];
+      atticd.serviceConfig.Environment = [
+        "RUST_LOG=debug"
+        "RUST_BACKTRACE=1"
+      ];
       # restic-backups-solid.serviceConfig.Environment = [ "GOGC=20" ];
     };
 
