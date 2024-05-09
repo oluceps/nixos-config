@@ -50,6 +50,18 @@
 
     sing-box.enable = true;
 
+    beesd.filesystems = {
+      os = {
+        spec = "LABEL=nixos";
+        hashTableSizeMB = 512; # 256 *2 *2
+        verbosity = "crit";
+        extraOptions = [
+          "--thread-count"
+          "10"
+        ];
+      };
+    };
+
     snapy.instances = [
       {
         name = "persist";
