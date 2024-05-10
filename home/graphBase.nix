@@ -50,7 +50,6 @@
     virt-manager
     xdg-utils
     fluffychat
-    mpv
     hyfetch
 
     # microsoft-edge
