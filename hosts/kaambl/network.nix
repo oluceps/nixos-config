@@ -1,14 +1,16 @@
 { config, lib, ... }:
 {
   services.resolved = {
-    # enable = lib.mkForce false;
+    enable = lib.mkForce false;
     llmnr = "false";
     dnssec = "false";
     extraConfig = ''
       MulticastDNS=off
     '';
-    fallbackDns = [ "8.8.8.8#dns.google" ];
-    # dnsovertls = "true";
+    fallbackDns = [
+      "8.8.8.8#dns.google"
+    ];
+    # dnsovertls = "opportunistic";
   };
   networking = {
     hosts = {
@@ -16,10 +18,10 @@
       "10.0.2.2" = [ "attic.nyaw.xyz" ];
       "10.0.1.1" = [ "nodens.nyaw.xyz" ];
     };
-    # nameservers = [
-    #   "223.5.5.5#dns.alidns.com"
-    #   "120.53.53.53#dot.pub"
-    # ];
+    nameservers = [
+      # "223.5.5.5#dns.alidns.com"
+      # "120.53.53.53#dot.pub"
+    ];
     # resolvconf.useLocalResolver = lib.mkForce true;
     resolvconf.enable = false;
     firewall = {
@@ -152,11 +154,11 @@
         DHCP = "yes";
         dhcpV4Config.RouteMetric = 2040;
         dhcpV6Config.RouteMetric = 2046;
-        networkConfig = {
-          DNSSEC = false;
-          MulticastDNS = false;
-          DNSOverTLS = false;
-        };
+        # networkConfig = {
+        #   DNSSEC = false;
+        #   MulticastDNS = false;
+        #   DNSOverTLS = false;
+        # };
         # # REALLY IMPORTANT
         dhcpV4Config.UseDNS = true;
         dhcpV6Config.UseDNS = true;
