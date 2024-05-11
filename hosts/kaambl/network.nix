@@ -1,6 +1,7 @@
 { config, lib, ... }:
 {
   services.resolved = {
+    # enable = lib.mkForce false;
     llmnr = "false";
     dnssec = "false";
     extraConfig = ''
@@ -15,10 +16,10 @@
       "10.0.2.2" = [ "attic.nyaw.xyz" ];
       "10.0.1.1" = [ "nodens.nyaw.xyz" ];
     };
-    nameservers = [
-      "223.5.5.5#dns.alidns.com"
-      "120.53.53.53#dot.pub"
-    ];
+    # nameservers = [
+    #   "223.5.5.5#dns.alidns.com"
+    #   "120.53.53.53#dot.pub"
+    # ];
     # resolvconf.useLocalResolver = lib.mkForce true;
     resolvconf.enable = false;
     firewall = {
