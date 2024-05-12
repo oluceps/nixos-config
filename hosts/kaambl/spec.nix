@@ -42,6 +42,7 @@
     phantomsocks.enable = true;
     # srs.enable = true;
     # coredns.enable = true;
+    coredns.enable = true;
     dae.enable = true;
     # smartdns.enable = true;
   };
