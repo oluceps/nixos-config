@@ -1,15 +1,13 @@
 { config, lib, ... }:
 {
   services.resolved = {
-    enable = lib.mkForce false;
+    # enable = lib.mkForce false;
     llmnr = "false";
     dnssec = "false";
     extraConfig = ''
       MulticastDNS=off
     '';
-    fallbackDns = [
-      "8.8.8.8#dns.google"
-    ];
+    fallbackDns = [ "8.8.8.8#dns.google" ];
     # dnsovertls = "opportunistic";
   };
   networking = {
@@ -19,8 +17,8 @@
       "10.0.1.1" = [ "nodens.nyaw.xyz" ];
     };
     nameservers = [
-      # "223.5.5.5#dns.alidns.com"
-      # "120.53.53.53#dot.pub"
+      "223.5.5.5#dns.alidns.com"
+      #   # "120.53.53.53#dot.pub"
     ];
     # resolvconf.useLocalResolver = lib.mkForce true;
     resolvconf.enable = false;
