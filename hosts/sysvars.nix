@@ -20,6 +20,6 @@
     PATH = [ "/home/${user}/.npm-packages/bin" ];
     RAD_HOME = "/home/${user}/.local/share/radicle";
     NTFY_AUTH_FILE = config.services.ntfy-sh.settings.auth-file or "";
-    LD_LIBRARY_PATH = [ "${lib.getLib pkgs.pcsclite}/lib" ];
+    # LD_LIBRARY_PATH = [ "${lib.getLib pkgs.pcsclite}/lib" ];
   };
 }
