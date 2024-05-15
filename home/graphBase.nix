@@ -15,7 +15,7 @@
     obsidian
     celluloid
     thiefmd
-    wpsoffice
+    # wpsoffice
     fractal
     mari0
     # anyrun
