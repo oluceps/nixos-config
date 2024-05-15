@@ -111,3 +111,6 @@ cleanthebucket:
     #!/usr/bin/env nu
     if ((input) == "yes") { srm -frC {{ home }}/Sec/* }
     sudo btrfs sub del /persist/.snapshots/*
+
+resign-all:
+    git filter-branch --commit-filter 'git commit-tree -S "$@";' -- --all
