@@ -52,14 +52,32 @@ in
 
   genFilteredDirAttrs =
     dir: excludes:
-    inputs.nixpkgs.lib.genAttrs (with builtins; filter (n: !elem n excludes) (attrNames (readDir dir)));
+    inputs.nixpkgs.lib.genAttrs (
+      let
+        inherit (builtins)
+          filter
+          elem
+          attrNames
+          readDir
+          ;
+      in
+      filter (n: !elem n excludes) (attrNames (readDir dir))
+    );
 
   genFilteredDirAttrsV2 =
     dir: excludes:
-    with inputs.nixpkgs.lib;
+    let
+      inherit (inputs.nixpkgs.lib)
+        genAttrs
+        subtractLists
+        removeSuffix
+        attrNames
+        filterAttrs
+        ;
+      inherit (builtins) readDir;
+    in
     genAttrs (
       subtractLists excludes (
-        with builtins;
         map (removeSuffix ".nix") (attrNames (filterAttrs (_: v: v == "regular") (readDir dir)))
       )
     );
@@ -68,7 +86,9 @@ in
 
   capitalize =
     str:
-    with pkgs.lib.strings;
+    let
+      inherit (pkgs.lib.strings) toUpper substring concatStrings;
+    in
     concatStrings [
       (toUpper (substring 0 1 str))
       (substring 1 16 str)
@@ -88,7 +108,7 @@ in
     let
       inherit (pkgs.lib) mapAttrs writeText;
     in
-    if !(builtins.pathExists ../sec) then
+    if !(builtins.pathExists "${inputs.self}/sec") then
       (mapAttrs (
         n: v:
         v

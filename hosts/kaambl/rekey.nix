@@ -1,4 +1,9 @@
-{ data, user, ... }:
+{
+  data,
+  user,
+  lib,
+  ...
+}:
 let
   hostPrivKey = "/persist/keys/ssh_host_ed25519_key";
 in
@@ -6,7 +11,7 @@ in
   age = {
     identityPaths = [ hostPrivKey ];
     rekey.hostPubkey = data.keys.kaamblHostPubKey;
-    secrets = {
+    secrets = lib.secCompLayer {
       id = {
         rekeyFile = ../../sec/id.age;
         mode = "400";
