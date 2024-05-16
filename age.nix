@@ -16,7 +16,7 @@
       localStorageDir = ./sec/rekeyed/${config.networking.hostName};
     };
 
-    secrets =
+    secrets = lib.secCompLayer (
       let
         gen =
           ns: owner: group: mode:
@@ -131,6 +131,7 @@
           owner = user;
           group = "users";
         };
-      };
+      }
+    );
   };
 }

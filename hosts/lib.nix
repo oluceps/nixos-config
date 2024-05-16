@@ -82,4 +82,31 @@ in
         text = builtins.readFile p;
       }
     );
+
+  secCompLayer =
+    secs:
+    let
+      inherit (pkgs.lib) mapAttrs writeText;
+    in
+    if !(builtins.pathExists ../sec) then
+      (mapAttrs (
+        n: v:
+        v
+        // {
+          rekeyFile = writeText "empty" ''
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IHNzaC1lZDI1NTE5IEdPMitlQSB3Wjgx
+            ZHlSYWdyajZDc0Foek5DZkd6a25vdUcxL1F6UktoMk90a0o2YkVRCmc1cW40UU1G
+            THZidFJCcVRSL1VTTzNHYlNIUGsvQ1d2bHpjWmg3QzVsRG8KLT4gcGl2LXAyNTYg
+            ZlYxVlFBIEF1QUtPWHhseTdKUmlDRERIdkUzR1JnT1ArVExkcEVna1IzUGFJaDQr
+            cmRkCkhaaTlZcERwblpFK0s3VUVYOUx3S00yckx1enBURVJMd0hFSkxZY09XdjgK
+            LT4gIXtbby1ncmVhc2UKVWMrTzFhVlhyT2hHalFvCi0tLSBNbzNlVnpSa2dyYXNw
+            dkxiQm9SQ2xJaXVTd25WSTFNMTduNk5RVnU4d1ZJCuP+oqFlibWZC4RE9t/t4lF/
+            Psju+EG7Nj86x73RozGE
+            -----END AGE ENCRYPTED FILE-----
+          '';
+        }
+      ) secs)
+    else
+      secs;
 }
