@@ -149,5 +149,4 @@ in
     };
   };
 
-  home.packages = with pkgs; [ atuin ];
 }
