@@ -161,6 +161,7 @@
     "C /var/cache/tuigreet/lastuser - - - - ${pkgs.writeText "lastuser" "${user}"}"
     "d /var/tmp/nix-daemon 0755 root root -"
     "d /var/lib/ssh 0755 root root -"
+    "L /home/${user}/.nix-profile - - - - /home/${user}/.local/state/nix/profiles/profile"
   ];
 
   i18n.defaultLocale = "en_GB.UTF-8";

@@ -6,7 +6,13 @@ let
   inherit (builtins) readDir foldl' attrNames;
   inherit (lib.attrsets) filterAttrs setAttrByPath recursiveUpdate;
   inherit (lib.lists) singleton;
-  inherit (lib) removeSuffix;
+  inherit (lib)
+    removeSuffix
+    concatStringsSep
+    drop
+    reverseList
+    splitString
+    ;
   inherit (pkgs) writeText;
 
   listRecursive = pathStr: listRecursive' { } pathStr;
@@ -35,9 +41,7 @@ let
       ) { } (attrNames files);
     in
     recursiveUpdate dirs' files';
-  parent =
-    p:
-    lib.concatStringsSep "/" (lib.reverseList (lib.drop 1 (lib.reverseList (lib.splitString "/" p))));
+  parent = p: concatStringsSep "/" (reverseList (drop 1 (reverseList (splitString "/" p))));
 in
 lib.concatStringsSep "\n" (
   lib.foldlAttrs (

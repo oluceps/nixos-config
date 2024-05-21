@@ -86,174 +86,202 @@
               // {
                 userPkgs = pkgs.symlinkJoin {
                   name = "user-pkgs";
-                  paths = with pkgs; [
-                    # qq
-                    firefox
-                    # dissent
-                    celeste
-                    stellarium
-                    obsidian
-                    celluloid
-                    thiefmd
-                    # wpsoffice
-                    fractal
-                    mari0
-                    # anyrun
-                    # factorio
-                    loupe
-                    gedit
-                    # logseq
-                    # jetbrains.pycharm-professional
-                    # jetbrains.idea-ultimate
-                    # jetbrains.clion
-                    # jetbrains.rust-rover
+                  paths =
+                    with pkgs;
+                    [
+                      # qq
+                      firefox
+                      # dissent
+                      celeste
+                      stellarium
+                      obsidian
+                      celluloid
+                      thiefmd
+                      # wpsoffice
+                      fractal
+                      mari0
+                      # anyrun
+                      # factorio
+                      loupe
+                      gedit
+                      # logseq
+                      # jetbrains.pycharm-professional
+                      # jetbrains.idea-ultimate
+                      # jetbrains.clion
+                      # jetbrains.rust-rover
 
-                    # bottles
+                      # bottles
 
-                    kooha # recorder
+                      kooha # recorder
 
-                    typst
-                    blender-hip
-                    ruffle
+                      typst
+                      blender-hip
+                      ruffle
 
-                    # fractal
+                      # fractal
 
-                    # yuzu-mainline
-                    photoprism
+                      # yuzu-mainline
+                      photoprism
 
-                    virt-manager
-                    xdg-utils
-                    fluffychat
-                    hyfetch
+                      virt-manager
+                      xdg-utils
+                      fluffychat
+                      hyfetch
 
-                    # microsoft-edge
-                    dosbox-staging
-                    meld
-                    # yubioath-flutter
-                    openapi-generator-cli
+                      # microsoft-edge
+                      dosbox-staging
+                      meld
+                      # yubioath-flutter
+                      openapi-generator-cli
 
-                    gimp
-                    imv
+                      gimp
+                      imv
 
-                    veracrypt
-                    openpgp-card-tools
-                    tutanota-desktop
+                      veracrypt
+                      openpgp-card-tools
+                      tutanota-desktop
 
-                    # davinci-resolve
-                    cava
+                      # davinci-resolve
+                      cava
 
-                    # wpsoffice-cn
+                      # wpsoffice-cn
 
-                    sbctl
-                    qbittorrent
+                      sbctl
+                      qbittorrent
 
-                    protonmail-bridge
+                      protonmail-bridge
 
-                    koreader
-                    cliphist
-                    # realvnc-vnc-viewer
-                    #    mathematica
-                    pcsctools
-                    ccid
+                      koreader
+                      cliphist
+                      # realvnc-vnc-viewer
+                      #    mathematica
+                      pcsctools
+                      ccid
 
-                    # nrfconnect
-                    # nrfutil
-                    # nrf-command-line-tools
-                    yubikey-manager
+                      # nrfconnect
+                      # nrfutil
+                      # nrf-command-line-tools
+                      yubikey-manager
 
-                    xdeltaUnstable
-                    xterm
+                      xdeltaUnstable
+                      xterm
 
-                    # feeluown
-                    # feeluown-bilibili
-                    # # feeluown-local
-                    # feeluown-netease
-                    # feeluown-qqmusic
+                      # feeluown
+                      # feeluown-bilibili
+                      # # feeluown-local
+                      # feeluown-netease
+                      # feeluown-qqmusic
 
-                    chntpw
-                    gkraken
-                    libnotify
+                      chntpw
+                      gkraken
+                      libnotify
 
-                    # Perf
-                    stress
-                    s-tui
-                    mprime
+                      # Perf
+                      stress
+                      s-tui
+                      mprime
 
-                    # reader
-                    calibre
-                    # obsidian
-                    mdbook
-                    sioyek
-                    zathura
-                    foliate
+                      # reader
+                      calibre
+                      # obsidian
+                      mdbook
+                      sioyek
+                      zathura
+                      foliate
 
-                    # file
-                    filezilla
-                    file
-                    lapce
-                    kate
-                    # cinnamon.nemo
-                    gnome.nautilus
-                    gnome.dconf-editor
-                    gnome.gnome-boxes
-                    gnome.evince
-                    # zathura
+                      # file
+                      filezilla
+                      file
+                      lapce
+                      kate
+                      # cinnamon.nemo
+                      gnome.nautilus
+                      gnome.dconf-editor
+                      gnome.gnome-boxes
+                      gnome.evince
+                      # zathura
 
-                    # social
-                    # discord
-                    tdesktop
-                    nheko
-                    element-desktop-wayland
-                    # thunderbird
-                    # fluffychat
-                    scrcpy
+                      # social
+                      # discord
+                      tdesktop
+                      nheko
+                      element-desktop-wayland
+                      # thunderbird
+                      # fluffychat
+                      scrcpy
 
-                    alacritty
-                    rio
-                    appimage-run
-                    lutris
-                    tofi
-                    # zoom-us
-                    # gnomecast
-                    tetrio-desktop
+                      alacritty
+                      rio
+                      appimage-run
+                      lutris
+                      tofi
+                      # zoom-us
+                      # gnomecast
+                      tetrio-desktop
 
-                    ffmpeg_5-full
+                      ffmpeg_5-full
 
-                    foot
+                      foot
 
-                    brightnessctl
+                      brightnessctl
 
-                    fuzzel
-                    swaybg
-                    wl-clipboard
-                    wf-recorder
-                    grim
-                    slurp
+                      fuzzel
+                      swaybg
+                      wl-clipboard
+                      wf-recorder
+                      grim
+                      slurp
 
-                    mongodb-compass
-                    tor-browser-bundle-bin
+                      mongodb-compass
+                      tor-browser-bundle-bin
 
-                    vial
+                      vial
 
-                    android-tools
-                    zellij
-                    # netease-cloud-music-gtk
-                    cmatrix
-                    termius
-                    # kotatogram-desktop
-                    nmap
-                    lm_sensors
+                      android-tools
+                      zellij
+                      # netease-cloud-music-gtk
+                      cmatrix
+                      termius
+                      # kotatogram-desktop
+                      nmap
+                      lm_sensors
 
-                    feh
-                    pamixer
-                    sl
-                    ncpamixer
-                    # texlive.combined.scheme-full
-                    vlc
-                    bluedevil
-                    julia-bin
-                    prismlauncher
-                  ];
+                      feh
+                      pamixer
+                      sl
+                      ncpamixer
+                      # texlive.combined.scheme-full
+                      vlc
+                      bluedevil
+                      julia-bin
+                      prismlauncher
+                    ]
+                    ++ (with pkgs; [
+                      rust-analyzer
+                      # nil
+                      nixd
+                      shfmt
+                      nixfmt-rfc-style
+                      # taplo
+                      rustfmt
+                      clang-tools
+                      # haskell-language-server
+                      cmake-language-server
+                      arduino-language-server
+                      typst-lsp
+                      vhdl-ls
+                      delve
+                      python311Packages.python-lsp-server
+                      tinymist
+                    ])
+                    ++ (with pkgs.nodePackages_latest; [
+                      vscode-json-languageserver-bin
+                      vscode-html-languageserver-bin
+                      vscode-css-languageserver-bin
+                      bash-language-server
+                      vls
+                      prettier
+                    ]);
                 };
               };
             formatter = pkgs.nixfmt-rfc-style;
