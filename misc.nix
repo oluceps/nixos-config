@@ -162,6 +162,24 @@
     "d /var/tmp/nix-daemon 0755 root root -"
     "d /var/lib/ssh 0755 root root -"
     "L /home/${user}/.nix-profile - - - - /home/${user}/.local/state/nix/profiles/profile"
+    "L /home/${user}/.blerc - - - - ${pkgs.writeText "blerc" ''
+      bleopt term_true_colors=none
+      bleopt prompt_ruler=empty-line
+      ble-face -s command_builtin_dot       fg=yellow,bold
+      ble-face -s command_builtin           fg=yellow
+      ble-face -s filename_directory        underline,fg=magenta
+      ble-face -s filename_directory_sticky underline,fg=white,bg=magenta
+      ble-face -s command_function          fg=blue
+
+      function ble/prompt/backslash:my/starship-right {
+        local right
+        ble/util/assign right '${pkgs.starship}/bin/starship prompt --right'
+        ble/prompt/process-prompt-string "$right"
+      }
+      bleopt prompt_rps1="\n\n\q{my/starship-right}"
+      bleopt prompt_ps1_final="\033[1m=>\033[0m "
+      bleopt prompt_rps1_transient="same-dir"
+    ''}"
   ];
 
   i18n.defaultLocale = "en_GB.UTF-8";
