@@ -79,7 +79,7 @@ in
 
   bindsym --no-repeat XF86AudioMute exec pamixer --toggle-mute
   bindsym Alt+Print exec ${deps.grim} - | ${wl-copy} -t image/png
-  bindsym Ctrl+Shift+l exec ${deps.swaylock}
+  bindsym Ctrl+Shift+l exec ${lib.getExe pkgs.swaylock}
   bindsym Mod4+0 workspace number 10
   bindsym Mod4+1 workspace number 1
   bindsym Mod4+2 workspace number 2
@@ -151,7 +151,7 @@ in
   bindsym Mod4+space floating toggle
   bindsym Mod4+v splitv
   bindsym Mod4+w layout tabbed
-  bindsym Print exec ${lib.getExe pkgs.grimshot} copy area
+  bindsym Print exec ${lib.getExe pkgs.sway-contrib.grimshot} copy area
   bindsym XF86AudioLowerVolume exec pamixer -d 5
   bindsym XF86AudioRaiseVolume exec pamixer -i 5
   bindsym XF86MonBrightnessUp exec brightnessctl set +3%
@@ -204,7 +204,7 @@ in
   exec ${wl-paste} --type image --watch ${deps.cliphist} store
 
   workspace "1" output "HDMI-A-1"
-  exec "${pkgs.dbus}/bin/dbus-update-activation-environment --systemd ${variables}; ${extraCommands}"
+  exec "${pkgs.dbus}/bin/dbus-update-activation-environment --systemd ${lib.concatStringsSep " " variables}; ${lib.concatStringsSep " && " extraCommands}"
   bindgesture swipe:right workspace prev
   bindgesture swipe:left workspace next
   bindsym --whole-window {

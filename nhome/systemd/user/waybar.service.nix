@@ -1,9 +1,11 @@
+{pkgs,...}:
+''
 [Install]
 WantedBy=sway-session.target
 
 [Service]
-ExecReload=/nix/store/ddypgcb25zgi0gwvklxlzazjrh9s63dg-coreutils-9.5/bin/kill -SIGUSR2 $MAINPID
-ExecStart=/nix/store/p2swxmhvla3zdh1kwypdb7002v0phavb-waybar-+912d0e8/bin/waybar
+ExecReload=${pkgs.coreutils}/bin/kill -SIGUSR2 $MAINPID
+ExecStart=${pkgs.waybar}
 KillMode=mixed
 Restart=on-failure
 
@@ -12,3 +14,4 @@ After=graphical-session-pre.target
 Description=Highly customizable Wayland bar for Sway and Wlroots based compositors.
 Documentation=https://github.com/Alexays/Waybar/wiki
 PartOf=graphical-session.target
+''
