@@ -189,6 +189,7 @@
   };
   programs = {
     direnv = {
+      enable = true;
       package = pkgs.direnv;
       silent = false;
       loadInNixShell = true;

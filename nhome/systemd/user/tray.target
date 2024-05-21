@@ -1,3 +1,0 @@
-[Unit]
-Description=Home Manager System Tray
-Requires=graphical-session-pre.target

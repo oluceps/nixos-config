@@ -203,6 +203,8 @@ in
 
   exec ${wl-paste} --type image --watch ${deps.cliphist} store
 
+  exec ${lib.getExe pkgs.waybar}
+
   workspace "1" output "HDMI-A-1"
   exec "${pkgs.dbus}/bin/dbus-update-activation-environment --systemd ${lib.concatStringsSep " " variables}; ${lib.concatStringsSep " && " extraCommands}"
   bindgesture swipe:right workspace prev
