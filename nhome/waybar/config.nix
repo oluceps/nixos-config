@@ -100,7 +100,20 @@
         },
         "format-muted": "x",
         "min-length": 5,
-        "on-click": "${lib.getExe pkgs.switch-mute}",
+        "on-click": "${
+          lib.getExe (
+            pkgs.nuenv.writeScriptBin {
+              name = "switch-mute";
+              script =
+                let
+                  pamixer = pkgs.lib.getExe pkgs.pamixer;
+                in
+                ''
+                  ${pamixer} --get-mute | str trim | if $in == "false" { ${pamixer} -m } else { ${pamixer} -u }
+                '';
+            }
+          )
+        }",
         "scroll-step": 1,
         "tooltip": false
       },

@@ -2,7 +2,7 @@
 	gpgsign = true
 
 [core]
-	editor = "/nix/store/1wzpsaa5f31i2230mnjlblc8fj2ps7sp-helix-term-24.3.0/bin/hx"
+	editor = "/run/current-system/sw/bin/hx"
 
 [fetch]
 	prune = true

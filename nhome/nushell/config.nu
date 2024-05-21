@@ -488,7 +488,7 @@ $env.config.hooks.pre_prompt = (
     $env.config.hooks.pre_prompt?
     | default []
     | append {||
-        let direnv = (/nix/store/qhaxq7slz4k3hqk0q32nm2xgsqzhc2r0-direnv-2.34.0/bin/direnv export json
+        let direnv = (/run/current-system/sw/bin/direnv export json
         | from json
         | default {})
         if ($direnv | is-empty) {

@@ -41,6 +41,7 @@
                 fenix.overlays.default
                 colmena.overlays.default
                 self.overlays.default
+                nuenv.overlays.default
               ];
               config = {
                 allowUnfree = true;
