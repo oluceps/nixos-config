@@ -129,7 +129,6 @@ let
       asciinema
       smartmontools
       difftastic
-      direnv
       btop
       atuin
       minio-client

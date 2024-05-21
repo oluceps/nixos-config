@@ -188,6 +188,16 @@
     "machine-id".text = "b08dfa6083e7567a1921a715000001fb\n";
   };
   programs = {
+    direnv = {
+      package = pkgs.direnv;
+      silent = false;
+      loadInNixShell = true;
+      direnvrcExtra = "";
+      nix-direnv = {
+        enable = true;
+        package = pkgs.nix-direnv;
+      };
+    };
     ssh = {
       startAgent = true;
       enableAskPassword = true;

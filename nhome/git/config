@@ -17,7 +17,7 @@
 	format = "ssh"
 
 [gpg "ssh"]
-	allowedSignersFile = "/nix/store/f9w97mppgvz0mkflfq6m5jq12jk65s3v-allowed_signers"
+	allowedSignersFile = "/dev/null"
 	defaultKeyCommand = "ssh-add -L"
 
 [http]
