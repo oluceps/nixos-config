@@ -1,0 +1,161 @@
+font pango:monospace 8.000000
+floating_modifier Mod4
+default_border pixel 2
+default_floating_border pixel 2
+hide_edge_borders smart
+focus_wrapping no
+focus_follows_mouse yes
+focus_on_window_activation smart
+mouse_warping output
+workspace_layout default
+workspace_auto_back_and_forth no
+client.focused #f0c9cf #787878 #ffffff #E1A679 #D7C4BB
+client.focused_inactive #333333 #5f676a #ffffff #484e50 #5f676a
+client.unfocused #597B84 #2b3339 #888888 #E1A679 #597B84
+client.urgent #DB8E71 #e68183 #ffffff #a7c080 #DB8E71
+client.placeholder #000000 #0c0c0c #ffffff #000000 #0c0c0c
+client.background a7c080
+
+bindsym --no-repeat XF86AudioMute exec pamixer --toggle-mute
+bindsym Alt+Print exec /nix/store/55nw8lbjxb2bz0awhlzsv2ara64vwrmb-grim-+47e2658/bin/grim - | /nix/store/9jbkbq7p468jii2dmf6y85y36isix5hv-wl-clipboard-+4f20741/bin/wl-copy -t image/png
+bindsym Ctrl+Shift+l exec /nix/store/n5y5rh6bqf73y23nc3wr9fl95kzp2m7n-swaylock-+f9ce3f1/bin/swaylock
+bindsym Mod4+0 workspace number 10
+bindsym Mod4+1 workspace number 1
+bindsym Mod4+2 workspace number 2
+bindsym Mod4+3 workspace number 3
+bindsym Mod4+4 workspace number 4
+bindsym Mod4+5 workspace number 5
+bindsym Mod4+6 workspace number 6
+bindsym Mod4+7 workspace number 7
+bindsym Mod4+8 workspace number 8
+bindsym Mod4+9 workspace number 9
+bindsym Mod4+Ctrl+1 move container to workspace number 1
+bindsym Mod4+Ctrl+2 move container to workspace number 2
+bindsym Mod4+Ctrl+3 move container to workspace number 3
+bindsym Mod4+Ctrl+4 move container to workspace number 4
+bindsym Mod4+Ctrl+5 move container to workspace number 5
+bindsym Mod4+Ctrl+6 move container to workspace number 6
+bindsym Mod4+Ctrl+7 move container to workspace number 7
+bindsym Mod4+Ctrl+8 move container to workspace number 8
+bindsym Mod4+Ctrl+9 move container to workspace number 9
+bindsym Mod4+Ctrl+h move left
+bindsym Mod4+Ctrl+i scratchpad show
+bindsym Mod4+Ctrl+j move down
+bindsym Mod4+Ctrl+k move up
+bindsym Mod4+Ctrl+l move right
+bindsym Mod4+Ctrl+p exec /nix/store/97ljfnyh67fbjrdpqbs1kjk2z77wjh86-cliphist-0.5.0/bin/cliphist list | /nix/store/4n6031kkyygk2s0pxs6dp1yfdzzrhyjj-fuzzel-1.10.2/bin/fuzzel -d -I -l 7 -x 8 -y 7 -P 9 -b ede3e7d9 -r 3 -t 8b614db3 -C ede3e7d9 -f 'Maple Mono SC NF:style=Regular:size=15' -P 10 -B 7 -w 50 | /nix/store/97ljfnyh67fbjrdpqbs1kjk2z77wjh86-cliphist-0.5.0/bin/cliphist decode | /nix/store/9jbkbq7p468jii2dmf6y85y36isix5hv-wl-clipboard-+4f20741/bin/wl-copy
+bindsym Mod4+Ctrl+s exec /nix/store/wn0gbjpwq6s89hm9x7nfmhv218s5141z-save-clipboard-to/bin/save-clipboard-to
+bindsym Mod4+Down focus down
+bindsym Mod4+Left focus left
+bindsym Mod4+Return exec /nix/store/ai1dx8pwgw8dx3bsnvbgh79zv63gdwza-systemd-run-app/bin/systemd-run-app /nix/store/p2armbqxyzkcxkpq17grl9y512hsmv0a-foot-3a7ea1f44b5cac16c4d67cddb75c02638d59c55c/bin/foot
+bindsym Mod4+Right focus right
+bindsym Mod4+Shift+0 move container to workspace number 10
+
+
+
+
+
+
+
+
+
+bindsym Mod4+Shift+Down move down
+bindsym Mod4+Shift+Left move left
+bindsym Mod4+Shift+Right move right
+bindsym Mod4+Shift+Up move up
+bindsym Mod4+Shift+c reload
+bindsym Mod4+Shift+e exec swaynag -t warning -m 'You pressed the exit shortcut. Do you really want to exit sway? This will end your Wayland session.' -b 'Yes, exit sway' 'swaymsg exit'
+
+
+
+
+bindsym Mod4+Shift+minus move scratchpad
+
+
+bindsym Mod4+Up focus up
+bindsym Mod4+a focus parent
+bindsym Mod4+b splith
+bindsym Mod4+d exec /nix/store/4n6031kkyygk2s0pxs6dp1yfdzzrhyjj-fuzzel-1.10.2/bin/fuzzel -I -l 7 -x 8 -y 7 -P 9 -b ede3e7d9 -r 3 -t 8b614db3 -C ede3e7d9 -f 'Maple Mono SC NF:style=Regular:size=15' -P 10 -B 7
+bindsym Mod4+e layout toggle split
+bindsym Mod4+f fullscreen toggle
+bindsym Mod4+h focus left
+bindsym Mod4+i move scratchpad
+bindsym Mod4+j focus down
+bindsym Mod4+k focus up
+bindsym Mod4+l focus right
+bindsym Mod4+minus scratchpad show
+bindsym Mod4+q kill
+bindsym Mod4+r mode resize
+bindsym Mod4+s layout stacking
+bindsym Mod4+shift+r exec /nix/store/k8vshy4q9ayxi2fia6idxj6m3nswwzc7-screen-recorder-toggle/bin/screen-recorder-toggle
+bindsym Mod4+space floating toggle
+bindsym Mod4+v splitv
+bindsym Mod4+w layout tabbed
+bindsym Print exec /nix/store/9yq6y777zl6i5qndcs3hl63fpchv0jsh-grimshot-0-unstable-2024-01-20/bin/grimshot copy area
+bindsym XF86AudioLowerVolume exec pamixer -d 5
+bindsym XF86AudioRaiseVolume exec pamixer -i 5
+bindsym XF86MonBrightnessUp exec brightnessctl set +3%
+bindsym XF86MonBrightnessdown exec brightnessctl set 3%-
+
+input "1267:12764:ELAN2204:00_04F3:31DC_Touchpad" {
+natural_scroll enabled
+tap enabled
+}
+
+output "HDMI-A-1" {
+bg /nix/store/0d7a5drysm1hy6ic4h380vf9zxp5sqng-109066252_p0.jpg fill
+mode 2560x1660
+scale 2
+}
+
+output "eDP-1" {
+adaptive_sync on
+bg /nix/store/0d7a5drysm1hy6ic4h380vf9zxp5sqng-109066252_p0.jpg fill
+mode 2160x1440@60Hz
+scale 2
+}
+
+mode "resize" {
+  bindsym Down resize grow height 10 px
+  bindsym Escape mode default
+  bindsym Left resize shrink width 10 px
+  bindsym Return mode default
+  bindsym Right resize grow width 10 px
+  bindsym Up resize shrink height 10 px
+  bindsym h resize shrink width 10 px
+  bindsym j resize grow height 10 px
+  bindsym k resize shrink height 10 px
+  bindsym l resize grow width 10 px
+}
+
+gaps inner 2
+gaps outer 1
+smart_gaps on
+for_window [app_id="gcr-prompter"] floating enable
+exec fcitx5 -d
+
+exec /nix/store/ai1dx8pwgw8dx3bsnvbgh79zv63gdwza-systemd-run-app/bin/systemd-run-app /nix/store/d7h88xgja511p7wzh7gr8zmjx6fihvfv-firefox-125.0.3
+
+exec /nix/store/ai1dx8pwgw8dx3bsnvbgh79zv63gdwza-systemd-run-app/bin/systemd-run-app /nix/store/8nd70j15fb2avfxnracxm4ry0dlb38lc-telegram-desktop-5.0.1/bin/telegram-desktop
+
+exec /nix/store/9jbkbq7p468jii2dmf6y85y36isix5hv-wl-clipboard-+4f20741/bin/wl-paste --type text --watch /nix/store/97ljfnyh67fbjrdpqbs1kjk2z77wjh86-cliphist-0.5.0/bin/cliphist store
+
+exec /nix/store/9jbkbq7p468jii2dmf6y85y36isix5hv-wl-clipboard-+4f20741/bin/wl-paste --type image --watch /nix/store/97ljfnyh67fbjrdpqbs1kjk2z77wjh86-cliphist-0.5.0/bin/cliphist store
+
+workspace "1" output "HDMI-A-1"
+exec "/nix/store/pvyfwb5fyh0max87rkhch4ac4d9b90lq-dbus-1.14.10/bin/dbus-update-activation-environment --systemd DISPLAY WAYLAND_DISPLAY SWAYSOCK XDG_CURRENT_DESKTOP XDG_SESSION_TYPE NIXOS_OZONE_WL XCURSOR_THEME XCURSOR_SIZE; systemctl --user start sway-session.target"
+bindgesture swipe:right workspace prev
+bindgesture swipe:left workspace next
+bindsym --whole-window {
+    Mod4+button4 workspace prev
+    Mod4+button5 workspace next
+}
+
+for_window [app_id="org.gnome.Nautilus"] floating enable
+for_window [title="^Open File$"] floating enable
+for_window [title="^Media viewer$"] floating enable, resize set 800 600
+
+# blur enable
+# blur_passes 2
+# corner_radius 2
+# shadows enable

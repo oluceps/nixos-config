@@ -1,0 +1,6 @@
+import = ["/nix/store/n42kbh37gn1jrv7kcr879wr1ys9hwjkw-alacritty.toml"]
+[font]
+size = 13.5
+
+[shell]
+program = "/nix/store/qsw6vj5mrr2sn06gcf7v77v2n1walcwr-fish-3.7.1/bin/fish"
