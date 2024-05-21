@@ -88,7 +88,8 @@
                   name = "user-pkgs";
                   paths = with pkgs; [
                     # qq
-                    dissent
+                    firefox
+                    # dissent
                     celeste
                     stellarium
                     obsidian
