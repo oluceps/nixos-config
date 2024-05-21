@@ -68,6 +68,11 @@
               ];
             };
 
+            apps.default = {
+              type = "app";
+              program = pkgs.writeScriptBin "link-home" (toString (import ./nhome { inherit lib pkgs; }));
+            };
+
             packages =
               let
                 shadowedPkgs = [

@@ -1,11 +1,12 @@
 { lib, pkgs, ... }@args:
 # https://gist.github.com/thalesmg/ae5dc3c5359aed78a33243add14a887d
 let
-  configPlace = "/home/elen/.config";
+  configPlace = "~/.config";
 
   inherit (builtins) readDir foldl' attrNames;
   inherit (lib.attrsets) filterAttrs setAttrByPath recursiveUpdate;
-  inherit (lib) removeSuffix removePrefix;
+  inherit (lib.lists) singleton;
+  inherit (lib) removeSuffix;
   inherit (pkgs) writeText;
 
   listRecursive = pathStr: listRecursive' { } pathStr;
@@ -34,5 +35,13 @@ let
       ) { } (attrNames files);
     in
     recursiveUpdate dirs' files';
+  parent =
+    p:
+    lib.concatStringsSep "/" (lib.reverseList (lib.drop 1 (lib.reverseList (lib.splitString "/" p))));
 in
-listRecursive
+lib.concatStringsSep "\n" (
+  lib.foldlAttrs (
+    acc: n: v:
+    acc ++ singleton "mkdir -p ${parent n}; ln -sf ${v} ${n}"
+  ) [ ] (listRecursive "")
+)
