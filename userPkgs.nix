@@ -3,6 +3,7 @@ with pkgs;
 [
   # qq
   firefox
+  chromium
   # dissent
   celeste
   stellarium

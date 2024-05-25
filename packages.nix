@@ -18,6 +18,7 @@ let
           bleak
           matplotlib
           clang
+          pyyaml
         ]
       ))
     ];
@@ -125,6 +126,7 @@ let
 
     cmd = [
       mcrcon
+      zola
 
       asciinema
       smartmontools
