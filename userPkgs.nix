@@ -195,6 +195,4 @@ with pkgs;
   vls
   prettier
 ])
-++(with pkgs;[
-  
-])
+++ (with pkgs; [ fluent-icon-theme ])
