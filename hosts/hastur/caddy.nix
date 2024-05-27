@@ -13,6 +13,7 @@
         http.grace_period = "1s";
         http = {
           servers = {
+            protocols = [ "h1" ];
             srv0 = {
               routes = [
                 {
