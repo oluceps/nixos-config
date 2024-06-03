@@ -34,6 +34,8 @@ jobs:
         extra-conf: |
           access-tokens = github.com=${{ secrets.GITHUB_TOKEN }}
           nix-path = https://nixos.org/channels/${{ matrix.nixChannel }}/nixexprs.tar.xz
+    - name: update unstable
+      run: nix-channel --update nixpkgs
 
     - name: Show nixpkgs version
       run: nix-instantiate --eval -E '(import <nixpkgs> {}).lib.version'
