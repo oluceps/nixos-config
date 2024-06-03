@@ -20,20 +20,20 @@ jobs:
           - oluceps
         cachixName:
           - nixos-config
-        nixPath:
-          - nixpkgs=channel:nixos-unstable
+        nixChannel:
+          - nixos-unstable
+          - nixpkgs-unstable
     runs-on: ubuntu-latest
     steps:
     - name: Checkout repository
       uses: actions/checkout@v4
 
-    - name: Install nix
-      uses: cachix/install-nix-action@V27
+    - name: Install Nix
+      uses: DeterminateSystems/nix-installer-action@main
       with:
-        nix_path: "${{ matrix.nixPath }}"
-        extra_nix_config: |
-          experimental-features = nix-command flakes
+        extra-conf: |
           access-tokens = github.com=${{ secrets.GITHUB_TOKEN }}
+          nix-path = https://nixos.org/channels/${{ matrix.nixChannel }}/nixexprs.tar.xz
 
     - name: Show nixpkgs version
       run: nix-instantiate --eval -E '(import <nixpkgs> {}).lib.version'
