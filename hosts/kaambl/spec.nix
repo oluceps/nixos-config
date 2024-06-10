@@ -43,7 +43,7 @@
     # srs.enable = true;
     # coredns.enable = true;
     coredns.enable = true;
-    dae.enable = false;
+    dae.enable = true;
     # smartdns.enable = true;
   };
 

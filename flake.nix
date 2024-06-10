@@ -41,6 +41,7 @@
             _module.args.pkgs = import inputs.nixpkgs {
               inherit system;
               overlays = with inputs; [
+                agenix-rekey.overlays.default
                 fenix.overlays.default
                 colmena.overlays.default
                 self.overlays.default
