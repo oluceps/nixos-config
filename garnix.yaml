@@ -1,0 +1,6 @@
+builds:
+  include:
+  - nixosConfigurations.*
+  exclude:
+  - nixosConfigurations.resq.*
+  - nixosConfigurations.bootstrap.*
