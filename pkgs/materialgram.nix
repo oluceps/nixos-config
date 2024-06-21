@@ -8,6 +8,7 @@
 tdesktop.overrideAttrs (
   finalAttrs: previousAttrs: {
     pname = "materialgram";
+    version = "5.1.7.1-unstable-2024-05-18";
 
     src = fetchFromGitHub {
       owner = "kukuruzka165";
