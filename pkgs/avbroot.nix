@@ -10,17 +10,17 @@
 
 rustPlatform.buildRustPackage rec {
   pname = "avbroot";
-  version = "3.2.1";
+  version = "3.3.0";
 
   src = fetchFromGitHub {
     owner = "chenxiaolong";
     repo = "avbroot";
     rev = "v${version}";
-    hash = "sha256-o3XNuTvQivHxluHr/HPnPCl97mUF1sypjmszMsG7haA=";
+    hash = "sha256-RaRG9atZ7I+oyEh59UQ6nvIwc3oEYPrGcNbYEDWK0nw=";
   };
 
   cargoLock = {
-    lockFile = ./lock/avbroot.lock;
+    lockFile = ./Cargo.lock;
     outputHashes = {
       "bzip2-0.4.4" = "sha256-9YKPFvaGNdGPn2mLsfX8Dh90vR+X4l3YSrsz0u4d+uQ=";
       "zip-0.6.6" = "sha256-oZQOW7xlSsb7Tw8lby4LjmySpWty9glcZfzpPuQSSz0=";
@@ -38,12 +38,12 @@ rustPlatform.buildRustPackage rec {
     darwin.apple_sdk.frameworks.Security
   ];
 
-  meta = with lib; {
+  meta =  {
     description = "Sign (and root) Android A/B OTAs with custom keys while preserving Android Verified Boot";
     homepage = "https://github.com/chenxiaolong/avbroot";
     changelog = "https://github.com/chenxiaolong/avbroot/blob/${src.rev}/CHANGELOG.md";
-    license = licenses.gpl3Only;
-    maintainers = with maintainers; [ ];
+    license = lib.licenses.gpl3Only;
+    maintainers = with lib.maintainers; [ oluceps ];
     mainProgram = "avbroot";
   };
 }
