@@ -38,6 +38,13 @@
         9000
         9001
       ];
+
+      allowedTCPPortRanges = [
+        {
+          from = 10000;
+          to = 10010;
+        }
+      ];
     };
     hostId = "0bc55a2e";
     useNetworkd = true;
