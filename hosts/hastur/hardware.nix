@@ -70,7 +70,7 @@
     disk = {
       nvme = {
         type = "disk";
-        device = "/dev/disk/by-id/";
+        device = "/dev/disk/by-id/nvme-KBG50ZNV512G_KIOXIA_436C75TAECJX";
         content = {
           type = "gpt";
           partitions = {
