@@ -98,12 +98,10 @@
         };
         wireguardPeers = [
           {
-            wireguardPeerConfig = {
-              PublicKey = "ANd++mjV7kYu/eKOEz17mf65bg8BeJ/ozBmuZxRT3w0=";
-              AllowedIPs = [ "10.0.1.9/32" ];
-              Endpoint = "127.0.0.1:41821";
-              PersistentKeepalive = 15;
-            };
+            PublicKey = "ANd++mjV7kYu/eKOEz17mf65bg8BeJ/ozBmuZxRT3w0=";
+            AllowedIPs = [ "10.0.1.9/32" ];
+            Endpoint = "127.0.0.1:41821";
+            PersistentKeepalive = 15;
           }
         ];
       };

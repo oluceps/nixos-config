@@ -24,7 +24,6 @@
       let
         diskId = map (n: "/dev/disk/by-id/" + n) [
           # "nvme-INTEL_MEMPEK1J016GAH_PHBT82920C53016N"
-          # "ata-INTEL_SSDSC2BF180A4L_CVDA335002FC1802GN"
           "wwn-0x5000cca05838bc98"
           "wwn-0x5000cca0583a5e34"
           "wwn-0x5000cca04608e534"

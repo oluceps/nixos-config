@@ -89,7 +89,6 @@
         "flakes"
         "auto-allocate-uids"
         "cgroups"
-        "repl-flake"
         "recursive-nix"
         "ca-derivations"
       ];
