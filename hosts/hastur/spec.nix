@@ -158,6 +158,7 @@
     radicle.enable = true;
     metrics.enable = true;
     fwupd.enable = true;
+    bpftune.enable = true;
     realm = {
       enable = true;
       settings = {
