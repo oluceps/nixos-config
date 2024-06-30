@@ -211,7 +211,7 @@ with pkgs;
       [Icon Theme]
       Name=Default
       Comment=Default Cursor Theme
-      Inherits=
+      Inherits=graphite-light-nord
     '';
   })
 ]

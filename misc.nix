@@ -39,7 +39,7 @@
     };
   };
   nix = {
-    package = pkgs.nixVersions.stable;
+    package = pkgs.nixVersions.latest;
     registry = {
       nixpkgs.flake = inputs.nixpkgs;
       self.flake = inputs.self;
