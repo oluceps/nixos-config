@@ -21,6 +21,7 @@
     ./network.nix
     ./rekey.nix
     ./spec.nix
+    ./sysctl.nix
     ../../srv
     ../../age.nix
     ../../packages.nix

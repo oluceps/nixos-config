@@ -151,5 +151,18 @@
       };
     };
   };
+
+  fileSystems."/three" = {
+    device = "/dev/disk/by-uuid/134975b6-4ccc-4201-b479-105eb2382945";
+    fsType = "btrfs";
+    options = [
+      "subvolid=5"
+      "compress-force=zstd:5"
+      "noatime"
+      "discard=async"
+      "space_cache=v2"
+    ];
+  };
+
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
 }
