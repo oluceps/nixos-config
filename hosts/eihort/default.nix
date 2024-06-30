@@ -22,6 +22,7 @@
     ./rekey.nix
     ./spec.nix
     ./sysctl.nix
+    ../persist.nix
     ../../srv
     ../../age.nix
     ../../packages.nix
