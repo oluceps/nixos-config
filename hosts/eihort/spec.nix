@@ -92,10 +92,16 @@
 
     snapy.instances = [
       {
-        name = "root";
-        source = "/";
+        name = "persist";
+        source = "/persist";
         keep = "2day";
         timerConfig.onCalendar = "*:0/10";
+      }
+      {
+        name = "var";
+        source = "/var";
+        keep = "7day";
+        timerConfig.onCalendar = "daily";
       }
     ];
 

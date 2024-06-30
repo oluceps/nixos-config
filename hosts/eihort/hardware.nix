@@ -131,16 +131,6 @@
                     ];
                     mountpoint = "/var";
                   };
-                  "/persist/tmp" = {
-                    mountpoint = "/tmp";
-                    mountOptions = [
-                      "relatime"
-                      "nodev"
-                      "nosuid"
-                      "discard=async"
-                      "space_cache=v2"
-                    ];
-                  };
                 };
               };
             };
@@ -154,7 +144,7 @@
             "relatime"
             "nosuid"
             "nodev"
-            "size=2G"
+            "size=4G"
             "mode=755"
           ];
         };
