@@ -4,8 +4,6 @@
   fetchurl,
   stdenvNoCC,
   wrapGAppsHook3,
-  cargo-tauri,
-  autoPatchelfHook,
   mihomo,
   v2ray-domain-list-community,
   v2ray-geoip,
@@ -19,6 +17,7 @@
   fetchFromGitHub,
   pnpm,
   nodejs,
+  buildGoModule,
   rustPlatform,
   darwin,
   rust,
@@ -65,24 +64,33 @@ let
     hash = "sha256-eb5jeWzpP/nblMBGTMDsXSYh/rD5jxk/RWpDNFtyhTs=";
   };
 
-  # using tauri 1.6.0
-  cargo-tauri-160 = cargo-tauri.overrideAttrs (old: rec {
-    version = "1.6.0";
-    src = fetchFromGitHub {
-      owner = "tauri-apps";
-      repo = "tauri";
-      rev = "tauri-v${version}";
-      hash = "sha256-0LKkGpbDT6bRzoggDmTmSB8UaT11OME7OXsr+M67WVU=";
-    };
-    cargoDeps = old.cargoDeps.overrideAttrs (
-      lib.const {
-        inherit src;
-        # otherwise the old "src" will be used.
-        outputHash = "sha256-V08OY6nZQ+0SOQtH8/Q2APnZcOgZkHSBis14rxWkgmQ=";
-      }
-    );
-  });
+  # overrideAttrs not play well with buildGoModule. Simply redefine a drv.
+  mihomo-alpha = buildGoModule rec {
+    pname = "mihomo";
+    version = "1.18.6-unstable-2024-06-28";
 
+    src = fetchFromGitHub {
+      owner = "MetaCubeX";
+      repo = "mihomo";
+      rev = "0e228765fce4d709af1e672426dea5294e6b7544";
+      hash = "sha256-ZrNnFkkvS8hLEW6u9ZOZ9icehkqlpI4iA3lQf7wM0tg=";
+    };
+
+    vendorHash = "sha256-lBHL4vD+0JDOlc6SWFsj0cerE/ypImoh8UFbL736SmA=";
+
+    excludedPackages = [ "./test" ];
+
+    ldflags = [
+      "-s"
+      "-w"
+      "-X github.com/metacubex/mihomo/constant.Version=${version}"
+    ];
+
+    tags = [ "with_gvisor" ];
+
+    # network required
+    doCheck = false;
+  };
 in
 rustPlatform.buildRustPackage rec {
   pname = "clash-verge-rev";
@@ -146,8 +154,8 @@ rustPlatform.buildRustPackage rec {
 
     # install mihomo 
     mkdir -p ./sidecar
-    ln -s ${mihomo}/bin/mihomo sidecar/verge-mihomo-x86_64-unknown-linux-gnu
-    ln -s ${mihomo}/bin/mihomo sidecar/verge-mihomo-alpha-x86_64-unknown-linux-gnu
+    ln -s ${mihomo}/bin/mihomo sidecar/verge-mihomo-${rust.envVars.rustHostPlatform}
+    ln -s ${mihomo-alpha}/bin/mihomo sidecar/verge-mihomo-alpha-${rust.envVars.rustHostPlatform}
 
     # install resources
     mkdir -p ./resources
@@ -166,8 +174,7 @@ rustPlatform.buildRustPackage rec {
     wrapGAppsHook3
     pkg-config
     rustPlatform.cargoSetupHook
-    cargo-tauri-160
-  ] ++ lib.optionals stdenv.isLinux [ autoPatchelfHook ];
+  ];
 
   buildInputs = [
     openssl
@@ -181,7 +188,7 @@ rustPlatform.buildRustPackage rec {
   ];
 
   postInstall = ''
-    install -DT icons/256x256@2x.png $out/share/icons/hicolor/256x256@2/apps/clash-verge.png
+    install -DT icons/128x128@2x.png $out/share/icons/hicolor/128x128@2/apps/clash-verge.png
     install -DT icons/128x128.png $out/share/icons/hicolor/128x128/apps/clash-verge.png
     install -DT icons/32x32.png $out/share/icons/hicolor/32x32/apps/clash-verge.png
   '';
@@ -202,7 +209,7 @@ rustPlatform.buildRustPackage rec {
       name = pname;
       exec = "clash-verge %u";
       icon = pname;
-      desktopName = "PreMiD";
+      desktopName = "Clash Verge Rev";
       genericName = meta.description;
       mimeTypes = [ "x-scheme-handler/clash" ];
       type = "Application";
@@ -214,9 +221,9 @@ rustPlatform.buildRustPackage rec {
 
   meta = with lib; {
     description = "Clash GUI based on tauri";
-    homepage = "https://github.com/zzzgydi/clash-verge";
+    homepage = "https://github.com/clash-verge-rev/clash-verge-rev";
+    maintainers = with maintainers; [ Guanran928 ];
     license = licenses.gpl3Plus;
-    maintainers = with maintainers; [ zendo ];
-    mainProgram = "clash-verge-rev";
+    mainProgram = "clash-verge";
   };
 }
