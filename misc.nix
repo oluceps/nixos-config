@@ -230,6 +230,7 @@
           la = "eza --icons=auto --hyperlink --color=always --color-scale=all --color-scale-mode=gradient --git --git-repos -la";
           l = "eza --icons=auto --hyperlink --color=always --color-scale=all --color-scale-mode=gradient --git --git-repos -lh";
           nd = "cd /home/${user}/Src/nixos";
+          bl = "cd /home/${user}/Src/blog.nyaw.xyz";
           swc = "sudo nixos-rebuild switch --flake /home/${user}/Src/nixos";
           #--log-format internal-json -v 2>&1 | nom --json";
           daso = "sudo";
