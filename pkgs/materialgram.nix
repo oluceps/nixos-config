@@ -13,7 +13,7 @@ telegram-desktop.overrideAttrs (
       repo = "materialgram";
       rev = "v${finalAttrs.version}";
       fetchSubmodules = true;
-      hash = "sha256-ycMebsT/ZQHhAC76dVcL2x21F/chZqKdNl0l0g0W0bM=";
+      hash = "sha256-tofpm5oz4E7UaGw1rD39UF0c22sxhazLm9ZvKX0vHSk=";
     };
     patches = [ (lib.elem 0 previousAttrs.patches) ];
     # patches = [ ];

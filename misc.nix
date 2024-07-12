@@ -128,9 +128,9 @@
     pam = {
       u2f = {
         enable = true;
-        authFile = config.age.secrets."${user}.u2f".path;
+        settings.authFile = config.age.secrets."${user}.u2f".path;
+        settings.cue = true;
         control = "sufficient";
-        cue = true;
       };
       loginLimits = [
         {
@@ -149,7 +149,7 @@
 
   services = {
 
-    bpftune.enable = true;
+    # bpftune.enable = true;
 
     journald.extraConfig = ''
       SystemMaxUse=1G
@@ -209,7 +209,7 @@
     ssh = {
       startAgent = true;
       enableAskPassword = true;
-      askPassword = "${pkgs.gnome.seahorse}/libexec/seahorse/ssh-askpass";
+      askPassword = "${pkgs.seahorse}/libexec/seahorse/ssh-askpass";
     };
 
     git.enable = true;

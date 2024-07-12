@@ -112,7 +112,6 @@ with pkgs;
   kate
   # cinnamon.nemo
   gnome.nautilus
-  gnome.dconf-editor
   gnome.gnome-boxes
   gnome.evince
   # zathura
