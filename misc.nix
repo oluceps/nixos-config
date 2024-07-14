@@ -131,7 +131,6 @@
         settings.authfile = config.age.secrets."${user}.u2f".path;
         settings.cue = true;
         control = "sufficient";
-        debug = true;
       };
       services = {
         sudo.u2fAuth = true;
