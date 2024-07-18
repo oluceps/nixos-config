@@ -27,7 +27,6 @@
     dates = "weekly";
     options = "--delete-older-than 10d";
   };
-  programs.sway.enable = true;
   programs.fish.loginShellInit = ''
     ${pkgs.openssh}/bin/ssh-add ${config.age.secrets.id.path}
   '';
