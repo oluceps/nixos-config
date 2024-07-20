@@ -115,8 +115,8 @@
     vaultwarden.enable = true;
     minecraft-servers.enable = false;
     matrix-conduit.enable = true;
-    coredns.enable = true;
-    # mosproxy.enable = true;
+    # coredns.enable = true;
+    mosproxy.enable = true;
     srs.enable = true;
 
     phantomsocks = {

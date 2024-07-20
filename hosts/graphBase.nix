@@ -115,7 +115,6 @@
             tpm2-tss
             tpm2-tools
             yubikey-manager
-            yubikey-manager-qt
             monero-cli
           ];
 
