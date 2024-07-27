@@ -95,7 +95,7 @@
       "signal": 8,
       "format": "{icon} {percentage}",
       "format-icons": {
-             "mute": "",
+             "mute": "x",
              "default": ["󰕿", "󰖀", "󰕾"]
            }
        },
