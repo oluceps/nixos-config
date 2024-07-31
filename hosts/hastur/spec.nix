@@ -123,6 +123,7 @@
     mosproxy.enable = true;
     srs.enable = true;
     pleroma.enable = true;
+    grafana.enable = true;
 
     phantomsocks = {
       enable = false;
@@ -158,6 +159,7 @@
     };
   };
   services = {
+    # ktistec.enable = true;
     radicle.enable = true;
     metrics.enable = true;
     fwupd.enable = true;

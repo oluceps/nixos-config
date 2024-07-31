@@ -38,7 +38,7 @@ with pkgs;
   # fractal
 
   # yuzu-mainline
-  photoprism
+  # photoprism
 
   virt-manager
   xdg-utils
