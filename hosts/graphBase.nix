@@ -106,8 +106,22 @@
       lib.attrValues (
         with pkgs;
         {
+
+          python = [
+            (python311.withPackages (
+              ps: with ps; [
+                pandas
+                requests
+                absl-py
+                tldextract
+                bleak
+                matplotlib
+                clang
+                pyyaml
+              ]
+            ))
+          ];
           crypt = [
-            # mieru
             minisign
             rage
             age-plugin-yubikey
@@ -116,9 +130,13 @@
             tpm2-tools
             yubikey-manager
             monero-cli
+            yubikey-personalization
           ];
 
-          dev = [ vscode.fhs ];
+          dev = [
+            vscode.fhs
+            nodejs_latest.pkgs.pnpm
+          ];
 
           lang = [
             [

@@ -295,6 +295,25 @@
                       handler = "subroute";
                       routes = [
                         {
+                          handler = "rate_limit";
+                          rate_limits = {
+                            static = {
+                              match = [ { method = [ "GET" ]; } ];
+                              key = "static";
+                              window = "1m";
+                              max_events = 10;
+                            };
+                            dynamic = {
+                              key = "{http.request.remote.host}";
+                              window = "5s";
+                              max_events = 2;
+                            };
+                          };
+                          distributed = { };
+                          log_key = true;
+                        }
+
+                        {
                           handle = [
                             {
                               handler = "reverse_proxy";

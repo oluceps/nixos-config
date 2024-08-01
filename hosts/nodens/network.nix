@@ -137,7 +137,7 @@
         ];
         networkConfig = {
           IPMasquerade = "ipv4";
-          IPForward = true;
+          IPv4Forwarding = true;
         };
       };
 
