@@ -26,10 +26,16 @@
     algorithm = "zstd";
   };
 
-  nix.gc = {
-    automatic = true;
-    dates = "weekly";
-    options = "--delete-older-than 10d";
+  nix = {
+    gc = {
+      automatic = true;
+      dates = "weekly";
+      options = "--delete-older-than 10d";
+    };
+    settings = {
+      trusted-public-keys = [ "cache.nyaw.xyz:wXLX+Wtj9giC/+hybqOEJ4FSZIOgOyk8Q6HJxxcZqKY=" ];
+      substituters = [ "https://cache.nyaw.xyz" ];
+    };
   };
   programs.sway.enable = true;
   programs.gtklock.enable = true;

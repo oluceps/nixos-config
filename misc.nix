@@ -73,7 +73,7 @@
         "cache.lix.systems:aBnZUw8zA7H35Cz2RyKFVs3H4PlGTLawyY5KRbvJR8o="
         "cache.garnix.io:CTFPyKSLcx5RMJKfLo5EEPUObbA78b0YQ2DTCJXqr9g="
         "cosmic.cachix.org-1:Dya9IyXD4xdBehWjrkPv6rtxpmMdRel02smYzA85dPE="
-        "cache.nyaw.xyz:wXLX+Wtj9giC/+hybqOEJ4FSZIOgOyk8Q6HJxxcZqKY="
+        # "cache.nyaw.xyz:wXLX+Wtj9giC/+hybqOEJ4FSZIOgOyk8Q6HJxxcZqKY="
       ];
       extra-substituters = [ "https://cache.lix.systems" ];
       substituters =
@@ -92,7 +92,7 @@
         ++ [
           "https://cache.nixos.org"
           "https://cache.garnix.io"
-          "https://cache.nyaw.xyz"
+          # "https://cache.nyaw.xyz"
           # "https://cache.ngi0.nixos.org"
           # "https://mirror.sjtu.edu.cn/nix-channels/store"
         ];

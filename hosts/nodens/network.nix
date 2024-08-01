@@ -1,9 +1,12 @@
 { config, lib, ... }:
 {
   services.resolved.enable = lib.mkForce false;
+  environment.etc."resolv.conf".text = ''
+    nameserver 127.0.0.1
+  '';
   networking = {
     domain = "nyaw.xyz";
-    resolvconf.useLocalResolver = true;
+    # resolvconf.useLocalResolver = true;
     firewall = {
       checkReversePath = false;
       enable = true;
