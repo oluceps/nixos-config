@@ -230,7 +230,7 @@
                               in
                               {
                                 handler = "file_server";
-                                root = "${pkgs.element-web.override { inherit conf; }}";
+                                root = "${pkgs.cinny.override { inherit conf; }}";
                               }
                             )
                           ];
