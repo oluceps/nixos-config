@@ -28,64 +28,6 @@
                           handle = [
                             {
                               handler = "reverse_proxy";
-                              upstreams = [ { dial = "127.0.0.1:7921"; } ];
-                            }
-                          ];
-                        }
-                      ];
-                    }
-                  ];
-                  match = [ { host = [ "nai.nyaw.xyz" ]; } ];
-                  terminal = true;
-                }
-                {
-                  handle = [
-                    {
-                      handler = "subroute";
-                      routes = [
-                        {
-                          handle = [
-                            {
-                              handler = "vars";
-                              root = "/var/lib/caddy/dist";
-                            }
-                          ];
-                        }
-                        {
-                          handle = [
-                            {
-                              handler = "rewrite";
-                              uri = "{http.matchers.file.relative}";
-                            }
-                          ];
-                          match = [
-                            {
-                              file = {
-                                try_files = [
-                                  "{http.request.uri.path}"
-                                  "{http.request.uri.path}/"
-                                  "/index.html"
-                                ];
-                              };
-                            }
-                          ];
-                        }
-                        { handle = [ { handler = "file_server"; } ]; }
-                      ];
-                    }
-                  ];
-                  match = [ { host = [ "blog.nyaw.xyz" ]; } ];
-                  terminal = true;
-                }
-                {
-                  handle = [
-                    {
-                      handler = "subroute";
-                      routes = [
-                        {
-                          handle = [
-                            {
-                              handler = "reverse_proxy";
                               transport = {
                                 protocol = "http";
                                 tls = {
@@ -127,6 +69,25 @@
                   match = [ { host = [ "cache.nyaw.xyz" ]; } ];
                   terminal = true;
                 }
+                # {
+                #   handle = [
+                #     {
+                #       handler = "subroute";
+                #       routes = [
+                #         {
+                #           handle = [
+                #             {
+                #               handler = "reverse_proxy";
+                #               upstreams = [ { dial = "10.0.1.2:3001"; } ];
+                #             }
+                #           ];
+                #         }
+                #       ];
+                #     }
+                #   ];
+                #   match = [ { host = [ "chat.nyaw.xyz" ]; } ];
+                #   terminal = true;
+                # }
 
                 {
                   handle = [
@@ -137,50 +98,6 @@
                           handle = [
                             {
                               handler = "reverse_proxy";
-                              upstreams = [ { dial = "10.0.1.2:3001"; } ];
-                            }
-                          ];
-                        }
-                      ];
-                    }
-                  ];
-                  match = [ { host = [ "chat.nyaw.xyz" ]; } ];
-                  terminal = true;
-                }
-                {
-                  handle = [
-                    {
-                      handler = "subroute";
-                      routes = [
-                        {
-                          handle = [
-                            {
-                              handler = "reverse_proxy";
-                              upstreams = [ { dial = "10.0.1.2:8084"; } ];
-                            }
-                          ];
-                        }
-                      ];
-                    }
-                  ];
-                  match = [ { host = [ "seed.nyaw.xyz" ]; } ];
-                  terminal = true;
-                }
-                {
-                  handle = [
-                    {
-                      handler = "subroute";
-                      routes = [
-                        {
-                          handle = [
-                            {
-                              handler = "reverse_proxy";
-                              # transport = {
-                              #   protocol = "http";
-                              #   tls = {
-                              #     server_name = "api.atuin.nyaw.xyz";
-                              #   };
-                              # };
                               upstreams = [ { dial = "10.0.1.2:8888"; } ];
                             }
                           ];
@@ -215,6 +132,42 @@
                                 X-XSS-Protection = [ "1; mode=block" ];
                                 Content-Security-Policy = [ "frame-ancestors 'self'" ];
                               };
+                            }
+                            {
+                              handler = "subroute";
+                              routes = [
+                                {
+                                  handle = [
+                                    {
+                                      handler = "rewrite";
+                                      uri = "/olm.wasm";
+                                    }
+                                  ];
+                                  match = [ { path = [ "/*/olm.wasm" ]; } ];
+                                }
+                                {
+                                  handle = [
+                                    {
+                                      handler = "rewrite";
+                                      uri = "/index.html";
+                                    }
+                                  ];
+                                  match = [
+                                    {
+                                      not = [
+                                        { path = [ "/index.html" ]; }
+                                        { path = [ "/public/*" ]; }
+                                        { path = [ "/assets/*" ]; }
+                                        { path = [ "/config.json" ]; }
+                                        { path = [ "/manifest.json" ]; }
+                                        { path = [ "/pdf.worker.min.js" ]; }
+                                        { path = [ "/olm.wasm" ]; }
+                                      ];
+                                      path = [ "/*" ];
+                                    }
+                                  ];
+                                }
+                              ];
                             }
                             (
                               let
@@ -268,25 +221,6 @@
                     }
                   ];
                   match = [ { host = [ "vault.nyaw.xyz" ]; } ];
-                  terminal = true;
-                }
-                {
-                  handle = [
-                    {
-                      handler = "subroute";
-                      routes = [
-                        {
-                          handle = [
-                            {
-                              handler = "reverse_proxy";
-                              upstreams = [ { dial = "10.0.1.2:10002"; } ];
-                            }
-                          ];
-                        }
-                      ];
-                    }
-                  ];
-                  match = [ { host = [ "ctos.magicb.uk" ]; } ];
                   terminal = true;
                 }
                 {
