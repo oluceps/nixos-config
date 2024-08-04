@@ -88,66 +88,80 @@
                 mountpoint = "/efi";
               };
             };
-            root = {
+
+            cryptroot = {
+              label = "CRYPTROOT";
               end = "-32G";
               content = {
-                type = "btrfs";
-                extraArgs = [
-                  "--label nixos"
-                  "-f"
-                  "--csum xxhash64"
-                  "--features"
-                  "block-group-tree"
-                ]; # Override existing partition
-                subvolumes = {
-                  "/persist" = {
-                    mountpoint = "/persist";
-                    mountOptions = [
-                      "compress-force=zstd:1"
-                      "noatime"
-                      "discard=async"
-                      "space_cache=v2"
-                    ];
-                  };
-                  "/nix" = {
-                    mountpoint = "/nix";
-                    mountOptions = [
-                      "compress-force=zstd:1"
-                      "noatime"
-                      "discard=async"
-                      "space_cache=v2"
-                      "nodev"
-                      "nosuid"
-                    ];
-                  };
-                  "/var" = {
-                    mountpoint = "/var";
-                    mountOptions = [
-                      "compress-force=zstd:1"
-                      "noatime"
-                      "discard=async"
-                      "space_cache=v2"
-                    ];
-                  };
-                  "/persist/tmp" = {
-                    mountpoint = "/tmp";
-                    mountOptions = [
-                      "relatime"
-                      "nodev"
-                      "nosuid"
-                      "discard=async"
-                      "space_cache=v2"
-                    ];
+                type = "luks";
+                name = "cryptroot";
+                settings = {
+                  allowDiscards = true;
+                  bypassWorkqueues = true;
+                  crypttabExtraOpts = [
+                    "same-cpu-crypt"
+                    "submit-from-crypt-cpus"
+                    "fido2-device=auto"
+                  ];
+                };
+                content = {
+                  type = "btrfs";
+                  extraArgs = [
+                    "--label nixos"
+                    "-f"
+                    "--csum xxhash64"
+                    "--features"
+                    "block-group-tree"
+                  ];
+                  subvolumes = {
+                    "/persist" = {
+                      mountpoint = "/persist";
+                      mountOptions = [
+                        "compress-force=lzo"
+                        "noatime"
+                        "discard=async"
+                        "space_cache=v2"
+                      ];
+                    };
+                    "/nix" = {
+                      mountpoint = "/nix";
+                      mountOptions = [
+                        "compress-force=lzo"
+                        "noatime"
+                        "discard=async"
+                        "space_cache=v2"
+                        "nodev"
+                        "nosuid"
+                      ];
+                    };
+                    "/var" = {
+                      mountpoint = "/var";
+                      mountOptions = [
+                        "compress-force=lzo"
+                        "noatime"
+                        "discard=async"
+                        "space_cache=v2"
+                      ];
+                    };
+                    "/persist/tmp" = {
+                      mountpoint = "/tmp";
+                      mountOptions = [
+                        "relatime"
+                        "nodev"
+                        "nosuid"
+                        "discard=async"
+                        "space_cache=v2"
+                      ];
+                    };
                   };
                 };
               };
             };
-
-            plainSwap = {
-              size = "100%";
+            encryptedSwap = {
+              size = "16G";
               content = {
                 type = "swap";
-                resumeDevice = true;
+                randomEncryption = true;
               };
             };
           };
@@ -169,6 +183,9 @@
   };
 
   fileSystems."/persist".neededForBoot = true;
+  security.tpm2.enable = true;
+  security.tpm2.pkcs11.enable = true;
+  security.tpm2.tctiEnvironment.enable = true;
 
   hardware.bluetooth.enable = true; # enables support for Bluetooth
   hardware.bluetooth.powerOnBoot = true; # powers up the default Bluetooth controller on boot
