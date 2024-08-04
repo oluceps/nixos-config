@@ -53,7 +53,7 @@ in
       };
       misskey = {
         rekeyFile = ../../sec/misskey.age;
-        mode = "444";
+        mode = "400";
       };
     };
   };

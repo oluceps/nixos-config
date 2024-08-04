@@ -20,6 +20,6 @@
     };
   };
   systemd.tmpfiles.rules = [
-    "C+ /var/lib/misskey/config/default.yml 0755 - - - ${config.age.secrets.misskey.path}"
+    "C+ /var/lib/misskey/config/default.yml 0744 - - - ${config.age.secrets.misskey.path}"
   ];
 }
