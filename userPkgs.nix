@@ -1,6 +1,7 @@
 { pkgs, ... }:
 with pkgs;
 [
+  eva
   paperback
   gtkcord4
   amberol

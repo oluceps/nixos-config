@@ -124,6 +124,7 @@
     srs.enable = true;
     pleroma.enable = true;
     grafana.enable = true;
+    meilisearch.enable = true;
 
     phantomsocks = {
       enable = false;

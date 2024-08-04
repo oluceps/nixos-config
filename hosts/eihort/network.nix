@@ -37,6 +37,8 @@
         8000
         9000
         9001
+
+        6800
       ];
 
       allowedTCPPortRanges = [
@@ -113,7 +115,7 @@
         address = [ "10.0.1.6/24" ];
         networkConfig = {
           IPMasquerade = "ipv4";
-          IPForward = true;
+          IPv4Forwarding = true;
         };
       };
       "5-eth0" = {
