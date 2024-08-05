@@ -197,9 +197,7 @@
       "amd_pstate=active"
       "zswap.enabled=1"
       "zswap.zpool=zsmalloc"
-      "systemd.gpt_auto=0"
       "noresume"
-      "acpi_os_name=\"Microsoft Windows NT\""
     ];
     extraModulePackages =
       let
@@ -213,7 +211,8 @@
       # (import inputs.nixpkgs-pin {
       #   system = "x86_64-linux";
       # })
-      pkgs.linuxPackages_latest;
+      inputs.nyx.packages.${pkgs.system}.linuxPackages_cachyos;
+    # pkgs.linuxPackages_latest;
     # inputs.nyx.packages.${pkgs.system}.linuxPackages_cachyos;
 
     # kernelPatches =

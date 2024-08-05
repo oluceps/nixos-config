@@ -9,16 +9,19 @@
   # Mobile device.
 
   system.stateVersion = "23.05"; # Did you read the comment?
-  users.mutableUsers = true;
-  system.etc.overlay.mutable = true;
+  users.mutableUsers = false;
+  system.etc.overlay.mutable = false;
+  environment.etc."resolv.conf".text = ''
+    nameserver 127.0.0.1
+  '';
 
   hardware.opengl.extraPackages = with pkgs; [
     rocm-opencl-icd
     rocm-opencl-runtime
   ];
-  environment.sessionVariables = {
-    WLR_RENDERER = "vulkan";
-  };
+  # environment.sessionVariables = {
+  #   WLR_RENDERER = "vulkan";
+  # };
   zramSwap = {
     enable = false;
     swapDevices = 1;
