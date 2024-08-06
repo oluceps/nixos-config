@@ -56,7 +56,7 @@ in
                   "nuenv"
                   "agenix-rekey"
                   "android-nixpkgs"
-                  # "nixpkgs-wayland"
+                  "nixpkgs-wayland"
                   "berberman"
                   "attic"
                   "misskey"
