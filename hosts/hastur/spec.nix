@@ -210,7 +210,7 @@
     ];
 
     tailscale = {
-      enable = true;
+      enable = false;
       openFirewall = true;
     };
 
