@@ -24,7 +24,7 @@
     ];
   };
   hardware.hardware.extraPackages = with pkgs; [ amdvlk ];
-  # For 32 bit applications 
+  # For 32 bit applications
   hardware.hardware.extraPackages32 = with pkgs; [ driversi686Linux.amdvlk ];
 
   services.xserver.videoDrivers = [ "amdgpu" ];
