@@ -29,7 +29,7 @@
   srv = {
     openssh.enable = true;
     fail2ban.enable = true;
-    dae.enable = true;
+    dae.enable = false;
     srs.enable = true;
     mosproxy.enable = true;
   };

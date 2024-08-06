@@ -176,10 +176,10 @@
         "tpm_crb"
         "kvm-amd"
         "amdgpu"
-        # "xhci_pci"
-        # "usbhid"
-        # "xhci_hcd"
-        # "atkbd"
+        "xhci_pci"
+        "usbhid"
+        "atkbd"
+        "uhid"
       ];
     };
     kernelModules = [
@@ -215,7 +215,6 @@
     #   in map (name: { inherit name; patch = patchPath + ("/" + name); })
     #     (with builtins;attrNames (readDir patchPath));
   };
-
 
   networking.useDHCP = lib.mkDefault true;
   # networking.interfaces.wlp1s0.useDHCP = lib.mkDefault true;

@@ -7,39 +7,6 @@
 }:
 let
   p = with pkgs; {
-    dev = [
-      gitoxide
-      gitui
-      nushell
-      radicle
-      # friture
-      qemu-utils
-      pv
-      devenv
-      # gnome.dconf-editor
-      rustup
-      linuxPackages_latest.perf
-      [
-        bpf-linker
-        gdb
-        gcc
-        gnumake
-        cmake
-      ]
-      lua
-      delta
-      go
-      nix-tree
-      kotlin
-      inotify-tools
-      tmux
-
-      trunk
-      cargo-expand
-      wasmtime
-      comma
-      nix-update
-    ];
 
     net = [
       # anti-censor
@@ -87,7 +54,6 @@ let
         iftop
       ]
     ];
-
     cmd = [
       eza
       fzf
@@ -106,15 +72,11 @@ let
       yazi
       rclone
 
-      distrobox
-      dmidecode
-
       helix
       srm
       # onagre
       libsixel
       ouch
-      nix-output-monitor
 
       # common
       [
@@ -150,17 +112,6 @@ let
     ];
     # # ripgrep-all 
 
-    info = [
-      parallel-disk-usage # disk space info
-      freshfetch
-      htop
-      onefetch
-      hardinfo
-      imgcat
-      nix-index
-      ccze
-      unar
-    ];
   };
 in
 {
