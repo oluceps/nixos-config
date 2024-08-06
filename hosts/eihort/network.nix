@@ -46,6 +46,16 @@
           from = 10000;
           to = 10010;
         }
+        {
+          from = 6881;
+          to = 6999;
+        }
+      ];
+      allowedUDPPortRanges = [
+        {
+          from = 6881;
+          to = 6999;
+        }
       ];
     };
     hostId = "0bc55a2e";

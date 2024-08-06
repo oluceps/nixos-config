@@ -198,12 +198,7 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     devshell.url = "github:numtide/devshell";
-    nixpkgs-wayland = {
-      url = "github:nix-community/nixpkgs-wayland";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
     tg-online-keeper.url = "github:oluceps/TelegramOnlineKeeper";
-    nix-minecraft.url = "github:Infinidoge/nix-minecraft";
     # tg-online-keeper.url = "/home/elen/Src/tg-online-keeper";
     disko = {
       url = "github:nix-community/disko";
@@ -250,16 +245,10 @@
       url = "github:oddlama/agenix-rekey";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    resign.url = "github:oluceps/resign";
-    nil.url = "github:oxalica/nil";
     nixd.url = "github:nix-community/nixd";
     nix-direnv.url = "github:nix-community/nix-direnv";
     nix-ld = {
       url = "github:Mic92/nix-ld";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-    misskey = {
-      url = "github:Ninlives/misskey.nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     pre-commit-hooks = {
@@ -289,6 +278,5 @@
     };
     helix.url = "github:helix-editor/helix";
     berberman.url = "github:berberman/flakes";
-    # clansty.url = "github:clansty/flake";
   };
 }

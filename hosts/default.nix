@@ -56,11 +56,8 @@ in
                   "nuenv"
                   "agenix-rekey"
                   "android-nixpkgs"
-                  # "nixpkgs-wayland"
                   "berberman"
                   "attic"
-                  "misskey"
-                  "nix-minecraft"
                 ]);
             };
 

@@ -41,7 +41,6 @@
       inputs.niri.nixosModules.niri
       ../../users.nix
 
-      inputs.misskey.nixosModules.default
       ./misskey.nix
     ]
     ++ (with inputs; [
@@ -49,7 +48,6 @@
       disko.nixosModules.default
       attic.nixosModules.atticd
       # niri.nixosModules.niri
-      nix-minecraft.nixosModules.minecraft-servers
       # nixos-cosmic.nixosModules.default
       # inputs.j-link.nixosModule
     ]);
