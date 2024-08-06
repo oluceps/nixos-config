@@ -3,6 +3,7 @@
 # to /etc/nixos/configuration.nix instead.
 {
   inputs',
+  self,
   config,
   lib,
   modulesPath,
@@ -202,7 +203,7 @@
       in
       [
         v4l2loopback
-        (callPackage "${inputs'.self}/pkgs/tcp-brutal.nix" { })
+        (callPackage "${self}/pkgs/tcp-brutal.nix" { })
       ];
     kernelPackages =
       # (import inputs.nixpkgs-pin {

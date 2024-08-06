@@ -6,14 +6,14 @@
 telegram-desktop.overrideAttrs (
   finalAttrs: previousAttrs: {
     pname = "materialgram";
-    version = "5.2.1.1";
+    version = "5.3.0.1";
 
     src = fetchFromGitHub {
       owner = "kukuruzka165";
       repo = "materialgram";
       rev = "v${finalAttrs.version}";
       fetchSubmodules = true;
-      hash = "sha256-tofpm5oz4E7UaGw1rD39UF0c22sxhazLm9ZvKX0vHSk=";
+      hash = "sha256-1nQAWRlzc7uNpBU4CMeWELmSg3ZzrGwo6JdQ0lcLr0M=";
     };
     patches = [ (lib.elem 0 previousAttrs.patches) ];
     # patches = [ ];

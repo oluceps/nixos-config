@@ -112,9 +112,9 @@ with pkgs;
   lapce
   kate
   # cinnamon.nemo
-  gnome.nautilus
+  nautilus
   gnome.gnome-boxes
-  gnome.evince
+  evince
   # zathura
 
   # social

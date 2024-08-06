@@ -15,13 +15,13 @@
     nameserver 127.0.0.1
   '';
 
-  hardware.opengl.extraPackages = with pkgs; [
+  hardware.graphics.extraPackages = with pkgs; [
     rocm-opencl-icd
     rocm-opencl-runtime
   ];
-  # environment.sessionVariables = {
-  #   WLR_RENDERER = "vulkan";
-  # };
+  environment.sessionVariables = {
+    WLR_RENDERER = "vulkan";
+  };
   zramSwap = {
     enable = false;
     swapDevices = 1;
