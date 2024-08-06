@@ -7,6 +7,7 @@
   config,
   lib,
   modulesPath,
+  pkgs,
   ...
 }:
 
@@ -134,24 +135,16 @@
 
   fileSystems."/persist".neededForBoot = true;
 
-  security.tpm2.enable = true;
-  security.tpm2.pkcs11.enable = true;
-  security.tpm2.tctiEnvironment.enable = true;
-
-  # services.scx = {
-  #   enable = true;
-  #   scheduler = "scx_bpfland";
-  # };
+  services.scx = {
+    enable = true;
+    scheduler = "scx_bpfland";
+  };
   boot = {
     loader.efi = {
       canTouchEfiVariables = true;
       efiSysMountPoint = "/efi";
     };
 
-    supportedFilesystems = [
-      "bcachefs"
-      "ntfs"
-    ];
     initrd = {
       systemd = {
         enable = true;
@@ -164,29 +157,15 @@
       availableKernelModules = [
         "nvme"
         "xhci_pci"
-        "ahci"
         "usb_storage"
         "usbhid"
         "sd_mod"
-        "zsmalloc"
       ];
-      kernelModules = [
-        "tpm"
-        "tpm_tis"
-        "tpm_crb"
-        "kvm-amd"
-        "amdgpu"
-        "xhci_pci"
-        "usbhid"
-        "atkbd"
-        "uhid"
-      ];
+      kernelModules = [ "amdgpu" ];
     };
     kernelModules = [
-      "ec_sys"
-      "uhid"
       "kvm-amd"
-      "dm_sflc"
+      # "dm_sflc"
     ];
     kernelParams = [
       "amd_pstate=active"
@@ -195,6 +174,7 @@
       "zswap.enabled=1"
       "zswap.compressor=zstd"
       "zswap.zpool=zsmalloc"
+      "ia32_emulation=0"
     ];
     extraModulePackages =
       let
@@ -204,16 +184,8 @@
         v4l2loopback
         (callPackage "${self}/pkgs/tcp-brutal.nix" { })
       ];
-    kernelPackages =
-      # (import inputs.nixpkgs-pin {
-      #   system = "x86_64-linux";
-      # })
-      inputs'.nyx.packages.linuxPackages_cachyos;
-
-    # kernelPatches =
-    #   let patchPath = ../../.attachs/cachyos-kernel;
-    #   in map (name: { inherit name; patch = patchPath + ("/" + name); })
-    #     (with builtins;attrNames (readDir patchPath));
+    kernelPackages = inputs'.nyx.packages.linuxPackages_cachyos;
+    # pkgs.linuxPackages_latest;
   };
 
   networking.useDHCP = lib.mkDefault true;

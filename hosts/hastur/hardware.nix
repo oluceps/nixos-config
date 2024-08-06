@@ -33,24 +33,12 @@
       availableKernelModules = [
         "nvme"
         "xhci_pci"
-        "ahci"
         "usb_storage"
         "usbhid"
         "sd_mod"
-        "zsmalloc"
-      ];
-      kernelModules = [
-        "tpm"
-        "tpm_tis"
-        "tpm_crb"
-        "kvm-amd"
       ];
     };
-    kernelModules = [
-      "ec_sys"
-      "uhid"
-      "kvm-amd"
-    ];
+    kernelModules = [ "kvm-amd" ];
     # extraModulePackages = with config.boot.kernelPackages; [ v4l2loopback ];
     kernelPackages =
       # pkgs.linuxPackages_latest;
@@ -68,6 +56,7 @@
       "zswap.enabled=1"
       "zswap.compressor=zstd"
       "zswap.zpool=zsmalloc"
+      "ia32_emulation=0"
     ];
   };
 
@@ -183,9 +172,6 @@
   };
 
   fileSystems."/persist".neededForBoot = true;
-  security.tpm2.enable = true;
-  security.tpm2.pkcs11.enable = true;
-  security.tpm2.tctiEnvironment.enable = true;
 
   hardware.bluetooth.enable = true; # enables support for Bluetooth
   hardware.bluetooth.powerOnBoot = true; # powers up the default Bluetooth controller on boot
