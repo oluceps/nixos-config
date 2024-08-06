@@ -120,7 +120,6 @@ with pkgs;
   # social
   # discord
   tdesktop
-  materialgram
   nheko
   element-desktop-wayland
   # thunderbird
