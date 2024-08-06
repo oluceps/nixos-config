@@ -168,9 +168,7 @@
         "usb_storage"
         "usbhid"
         "sd_mod"
-        "lz4"
         "zsmalloc"
-        "xhci_hcd"
       ];
       kernelModules = [
         "tpm"
@@ -178,24 +176,25 @@
         "tpm_crb"
         "kvm-amd"
         "amdgpu"
-        "xhci_pci"
-        "usbhid"
-        "xhci_hcd"
-        "atkbd"
+        # "xhci_pci"
+        # "usbhid"
+        # "xhci_hcd"
+        # "atkbd"
       ];
     };
     kernelModules = [
       "ec_sys"
       "uhid"
       "kvm-amd"
-      # "brutal"
       "dm_sflc"
     ];
     kernelParams = [
       "amd_pstate=active"
+      "amd_iommu=on"
+      "random.trust_cpu=off"
       "zswap.enabled=1"
+      "zswap.compressor=zstd"
       "zswap.zpool=zsmalloc"
-      "noresume"
     ];
     extraModulePackages =
       let
@@ -217,61 +216,7 @@
     #     (with builtins;attrNames (readDir patchPath));
   };
 
-  # fileSystems."/" =
-  #   {
-  #     device = "none";
-  #     fsType = "tmpfs";
-  #     options = [ "defaults" "size=2G" "mode=755" ];
-  #   };
 
-  # fileSystems."/persist" =
-  #   {
-  #     device = "/dev/disk/by-uuid/3a718c71-9404-45ea-8435-2fbd31f46d53";
-  #     fsType = "btrfs";
-  #     options = [ "subvol=/persist" "compress-force=zstd:1" "noatime" "discard=async" "space_cache=v2" ];
-  #     neededForBoot = true;
-  #   };
-
-  # fileSystems."/nix" =
-  #   {
-  #     device = "/dev/disk/by-uuid/3a718c71-9404-45ea-8435-2fbd31f46d53";
-  #     fsType = "btrfs";
-  #     options = [ "subvol=/nix" "compress-force=zstd:1" "noatime" "discard=async" "space_cache=v2" ];
-  #   };
-
-  # fileSystems."/nix/var" =
-  #   {
-  #     device = "/dev/disk/by-uuid/a3df5e05-7a19-4734-89d7-c9bcfd4c2d70";
-  #     fsType = "xfs";
-  #     options = [ "noatime" ];
-  #   };
-
-  # fileSystems."/var" =
-  #   {
-  #     device = "/dev/disk/by-uuid/3a718c71-9404-45ea-8435-2fbd31f46d53";
-  #     fsType = "btrfs";
-  #     options = [ "subvol=/var" "compress-force=zstd:1" "noatime" "discard=async" "space_cache=v2" ];
-  #   };
-
-  # fileSystems."/tmp" = {
-  #   device = "/dev/disk/by-uuid/3a718c71-9404-45ea-8435-2fbd31f46d53";
-  #   fsType = "btrfs";
-  #   options = [ "subvol=/tmp" "noatime" "discard=async" "space_cache=v2" ];
-  # };
-
-  # fileSystems."/efi" =
-  #   {
-  #     device = "/dev/disk/by-partuuid/fe3e996f-7962-1f4b-8bac-e2c8bc420501";
-  #     fsType = "vfat";
-  #   };
-
-  # swapDevices =
-  #   [{ device = "/dev/disk/by-uuid/1bbdbdd0-3527-4de2-95c4-3bc316c90968"; }];
-
-  # Enables DHCP on each ethernet and wireless interface. In case of scripted networking
-  # (the default) this is the recommended approach. When using systemd-networkd it's
-  # still possible to use this option, but it's recommended to use it in conjunction
-  # with explicit per-interface declarations with `networking.interfaces.<interface>.useDHCP`.
   networking.useDHCP = lib.mkDefault true;
   # networking.interfaces.wlp1s0.useDHCP = lib.mkDefault true;
 
