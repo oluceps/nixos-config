@@ -2,11 +2,9 @@
 # and may be overwritten by future invocations.  Please make changes
 # to /etc/nixos/configuration.nix instead.
 {
-  data,
-  inputs,
+  inputs',
   config,
   lib,
-  pkgs,
   modulesPath,
   ...
 }:
@@ -18,14 +16,8 @@
   services.btrfs.autoScrub = {
     enable = true;
     interval = "weekly";
-    fileSystems = [
-      "/persist"
-      "/three"
-    ];
+    fileSystems = [ "/persist" ];
   };
-  hardware.hardware.extraPackages = with pkgs; [ amdvlk ];
-  # For 32 bit applications
-  hardware.hardware.extraPackages32 = with pkgs; [ driversi686Linux.amdvlk ];
 
   services.xserver.videoDrivers = [ "amdgpu" ];
   disko.devices = {
@@ -216,9 +208,7 @@
       # (import inputs.nixpkgs-pin {
       #   system = "x86_64-linux";
       # })
-      # inputs.nyx.packages.${pkgs.system}.linuxPackages_cachyos;
-    pkgs.linuxPackages_latest;
-    # inputs.nyx.packages.${pkgs.system}.linuxPackages_cachyos;
+      inputs'.nyx.packages.linuxPackages_cachyos;
 
     # kernelPatches =
     #   let patchPath = ../../.attachs/cachyos-kernel;
