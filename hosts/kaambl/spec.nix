@@ -37,7 +37,8 @@
     };
     settings = {
       trusted-public-keys = [ "cache.nyaw.xyz:wXLX+Wtj9giC/+hybqOEJ4FSZIOgOyk8Q6HJxxcZqKY=" ];
-      substituters = [ "https://cache.nyaw.xyz" ];
+      # enable when not in same network of hastur
+      # substituters = [ "https://cache.nyaw.xyz" ];
     };
   };
   programs.sway.enable = true;
