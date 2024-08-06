@@ -216,8 +216,8 @@
       # (import inputs.nixpkgs-pin {
       #   system = "x86_64-linux";
       # })
-      inputs.nyx.packages.${pkgs.system}.linuxPackages_cachyos;
-    # pkgs.linuxPackages_latest;
+      # inputs.nyx.packages.${pkgs.system}.linuxPackages_cachyos;
+    pkgs.linuxPackages_latest;
     # inputs.nyx.packages.${pkgs.system}.linuxPackages_cachyos;
 
     # kernelPatches =
