@@ -202,7 +202,7 @@
       in
       [
         v4l2loopback
-        # (callPackage "${inputs.self}/pkgs/tcp-brutal.nix" { })
+        (callPackage "${inputs'.self}/pkgs/tcp-brutal.nix" { })
       ];
     kernelPackages =
       # (import inputs.nixpkgs-pin {
