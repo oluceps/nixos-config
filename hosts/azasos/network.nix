@@ -2,6 +2,7 @@
 {
 
   services.resolved = {
+    enable = lib.mkForce false;
     llmnr = "false";
     dnssec = "false";
     extraConfig = ''
@@ -155,7 +156,7 @@
         ];
         networkConfig = {
           IPMasquerade = "ipv4";
-          IPForward = true;
+          IPv4Forwarding = true;
         };
 
         # routes = [
