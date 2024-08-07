@@ -13,6 +13,7 @@
   system.etc.overlay.enable = true;
   system.switch.enableNg = true;
   system.switch.enable = lib.mkForce false;
+  system.copySystemConfiguration = false;
 
   # system.forbiddenDependenciesRegexes = [ "perl" ];
 
@@ -52,12 +53,11 @@
   };
   nix = {
     package = pkgs.nixVersions.stable;
-    registry = {
-      nixpkgs.flake = inputs.nixpkgs;
-      self.flake = inputs.self;
-    };
+    channel.enable = false;
+    registry = lib.mapAttrs (_: value: { flake = value; }) inputs;
 
     settings = {
+      flake-registry = "";
       nix-path = [ "nixpkgs=${pkgs.path}" ];
       keep-outputs = true;
       keep-derivations = true;

@@ -158,7 +158,6 @@
         "nvme"
         "xhci_pci"
         "usb_storage"
-        "hid_generic"
         "usbhid"
         "sd_mod"
       ];
