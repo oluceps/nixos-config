@@ -5,6 +5,17 @@
     port = 6379;
   };
 
+  systemd.services.podman-misskey = {
+    after = [
+      "dae.service"
+      "mosproxy.service"
+    ];
+    requires = [
+      "dae.service"
+      "mosproxy.service"
+    ];
+  };
+
   virtualisation = {
     oci-containers.backend = "podman";
     oci-containers.containers = {

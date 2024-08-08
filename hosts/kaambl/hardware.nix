@@ -156,9 +156,9 @@
       };
       availableKernelModules = [
         "nvme"
+        "usbhid"
         "xhci_pci"
         "usb_storage"
-        "usbhid"
         "sd_mod"
       ];
       kernelModules = [ "amdgpu" ];
