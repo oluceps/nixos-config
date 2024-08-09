@@ -14,6 +14,9 @@
       "dae.service"
       "mosproxy.service"
     ];
+    serviceConfig = {
+      ExecStartPre = "${pkgs.coreutils}/bin/sleep 3";
+    };
   };
 
   virtualisation = {
