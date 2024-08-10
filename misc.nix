@@ -211,6 +211,28 @@
 
   environment.etc = {
     "machine-id".text = "b08dfa6083e7567a1921a715000001fb\n";
+    "sbctl/sbctl.conf".text = ''
+      keydir: /var/lib/sbctl/keys
+      guid: /var/lib/sbctl/GUID
+      files_db: /var/lib/sbctl/files.json
+      bundles_db: /var/lib/sbctl/bundles.json
+      landlock: true
+      db_additions:
+      - microsoft
+      keys:
+        pk:
+          privkey: /var/lib/sbctl/keys/PK/PK.key
+          pubkey: /var/lib/sbctl/keys/PK/PK.pem
+          type: file
+        kek:
+          privkey: /var/lib/sbctl/keys/KEK/KEK.key
+          pubkey: /var/lib/sbctl/keys/KEK/KEK.pem
+          type: file
+        db:
+          privkey: /var/lib/sbctl/keys/db/db.key
+          pubkey: /var/lib/sbctl/keys/db/db.pem
+          type: file
+    '';
   };
   programs = {
     direnv = {
