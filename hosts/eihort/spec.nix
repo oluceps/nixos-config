@@ -80,6 +80,13 @@
       ];
     };
 
+    hysteria.instances = [
+      {
+        name = "nodens";
+        configFile = config.age.secrets.hyst-us-cli.path;
+      }
+    ];
+
     resolved.enable = lib.mkForce false;
     tailscale = {
       enable = true;
@@ -118,13 +125,6 @@
     #     workingDirectory = "/home/${user}/Src/misskey";
     #   }
     # ];
-
-    hysteria.instances = [
-      {
-        name = "colour";
-        configFile = config.age.secrets.hyst-az-cli.path;
-      }
-    ];
 
     shadowsocks.instances = [
       {

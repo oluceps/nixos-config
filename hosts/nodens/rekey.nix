@@ -30,6 +30,13 @@ in
         group = "users";
         name = "factorio-admin";
       };
+      hyst-us = {
+        rekeyFile = ../../sec/hyst-us.age;
+        mode = "640";
+        owner = "root";
+        group = "users";
+        name = "hyst-us.yaml";
+      };
       factorio-manager-bot = {
         rekeyFile = ../../sec/factorio-manager-bot.age;
         mode = "640";

@@ -33,7 +33,6 @@
       (genProxys [
         "ss"
         "sing"
-        "hyst-us"
         "juic-san"
         "naive"
         "dae.sub"
@@ -93,13 +92,6 @@
           mode = "640";
           owner = "root";
           group = "users";
-        };
-        hyst-us = {
-          rekeyFile = ./sec/hyst-us.age;
-          mode = "640";
-          owner = "root";
-          group = "users";
-          name = "hyst-us.yaml";
         };
         hyst-us-cli = {
           rekeyFile = ./sec/hyst-us-cli.age;

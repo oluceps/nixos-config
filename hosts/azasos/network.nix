@@ -130,6 +130,13 @@
           }
           {
             wireguardPeerConfig = {
+              PublicKey = "69DTVyNbhMN6/cgLCpcZrh/kGoi1IyxV0QwVjDe5IQk=";
+              AllowedIPs = [ "10.0.2.6/32" ];
+              PersistentKeepalive = 15;
+            };
+          }
+          {
+            wireguardPeerConfig = {
               PublicKey = "i7Li/BDu5g5+Buy6m6Jnr09Ne7xGI/CcNAbyK9KKbQg=";
               AllowedIPs = [ "10.0.2.3/32" ];
               PersistentKeepalive = 15;
