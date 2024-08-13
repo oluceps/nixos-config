@@ -17,6 +17,10 @@
     interval = "weekly";
     fileSystems = [ "/persist" ];
   };
+  # hardware.tuxedo-rs = {
+  #   enable = true;
+  #   tailor-gui.enable = true;
+  # };
 
   services.scx = {
     enable = true;

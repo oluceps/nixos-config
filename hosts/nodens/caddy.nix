@@ -317,18 +317,18 @@
                           ];
                           match = [ { path = [ "/.well-known/matrix/*" ]; } ];
                         }
-                        {
-                          handle = [
-                            {
-                              handler = "static_response";
-                              headers = {
-                                Location = [ "https://matrix.to/#/@sec:nyaw.xyz" ];
-                              };
-                              status_code = 302;
-                            }
-                          ];
-                          match = [ { path = [ "/matrix" ]; } ];
-                        }
+                        # {
+                        #   handle = [
+                        #     {
+                        #       handler = "static_response";
+                        #       headers = {
+                        #         Location = [ "https://matrix.to/#/@sec:nyaw.xyz" ];
+                        #       };
+                        #       status_code = 302;
+                        #     }
+                        #   ];
+                        #   match = [ { path = [ "/matrix" ]; } ];
+                        # }
                         {
                           handle = [
                             {

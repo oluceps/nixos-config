@@ -15,6 +15,10 @@
     memoryPercent = 80;
     algorithm = "zstd";
   };
+  hardware.tuxedo-rs = {
+    enable = true;
+    tailor-gui.enable = true;
+  };
 
   boot = {
     loader = {
