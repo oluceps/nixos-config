@@ -57,6 +57,12 @@
     registry = lib.mapAttrs (_: value: { flake = value; }) inputs;
 
     settings = {
+      system-features = [
+        "nixos-test"
+        "benchmark"
+        "big-parallel"
+        "kvm"
+      ] ++ [ "gccarch-znver4" ];
       flake-registry = "";
       nix-path = [ "nixpkgs=${pkgs.path}" ];
       keep-outputs = true;
