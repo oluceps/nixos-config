@@ -194,8 +194,8 @@
 
   nixpkgs.hostPlatform = {
     system = "x86_64-linux";
-    gcc.arch = "znver3";
-    gcc.tune = "znver3";
+    # gcc.arch = "znver3";
+    # gcc.tune = "znver3";
   };
   hardware.cpu.amd.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
   hardware.bluetooth.enable = true; # enables support for Bluetooth

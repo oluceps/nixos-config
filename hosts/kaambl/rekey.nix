@@ -26,6 +26,9 @@ in
         group = "root";
         name = "addr-map";
       };
+      rclone-conf = {
+        rekeyFile = ../../sec/rclone.age;
+      };
     };
   };
   services.openssh.hostKeys = [

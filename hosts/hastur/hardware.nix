@@ -178,8 +178,8 @@
   fileSystems."/persist".neededForBoot = true;
   nixpkgs.hostPlatform = {
     system = "x86_64-linux";
-    gcc.arch = "znver3";
-    gcc.tune = "znver3";
+    # gcc.arch = "znver3";
+    # gcc.tune = "znver3";
   };
 
   hardware.bluetooth.enable = true; # enables support for Bluetooth
