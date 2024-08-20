@@ -75,11 +75,10 @@
         critic = {
           passwordFile = config.age.secrets.wg.path;
           repository = "rclone:sec:crit";
-          rcloneConfigFile = "/home/elen/.config/rclone/rclone.conf";
+          rcloneConfigFile = config.age.secrets.rclone-conf.path;
           paths = map (n: "/home/${user}/${n}") [
             "Books"
             "Pictures"
-            "Documents"
             "Music"
           ];
           extraBackupArgs = [
