@@ -62,7 +62,7 @@
         "benchmark"
         "big-parallel"
         "kvm"
-      ] ++ [ "gccarch-znver4" ];
+      ] ++ [ "gccarch-znver3" ];
       flake-registry = "";
       nix-path = [ "nixpkgs=${pkgs.path}" ];
       keep-outputs = true;
