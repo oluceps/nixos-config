@@ -143,7 +143,7 @@
             gitoxide
             gitui
             nushell
-            radicle
+            # radicle
             # friture
 
             pv
@@ -243,7 +243,6 @@
             e2fsprogs
             fscrypt-experimental
             f2fs-tools
-            compsize
           ];
 
           cmd = [
