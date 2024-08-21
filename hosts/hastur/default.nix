@@ -27,7 +27,7 @@
       ./spec.nix
       ./caddy.nix
       # ./nginx.nix
-      ../graphBase.nix
+      # ../graphBase.nix
 
       ../persist.nix
       ../secureboot.nix
