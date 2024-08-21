@@ -1,35 +1,29 @@
 {
-  telegram-desktop,
   lib,
+  telegram-desktop,
   fetchFromGitHub,
 }:
 telegram-desktop.overrideAttrs (
-  finalAttrs: previousAttrs: {
+  self: super: {
     pname = "materialgram";
-    version = "5.3.0.1";
+    version = "5.4.1.1";
 
     src = fetchFromGitHub {
       owner = "kukuruzka165";
       repo = "materialgram";
-      rev = "v${finalAttrs.version}";
+      rev = "v${self.version}";
       fetchSubmodules = true;
-      hash = "sha256-1nQAWRlzc7uNpBU4CMeWELmSg3ZzrGwo6JdQ0lcLr0M=";
+      hash = "sha256-enA/8mIXcRTPGyZFgZ5Wg4fWq4fD4rtjH7bm/32FZaE";
     };
-    patches = [ (lib.elem 0 previousAttrs.patches) ];
-    # patches = [ ];
 
-    meta = previousAttrs.meta // {
+    meta = super.meta // {
       description = "Telegram Desktop fork with material icons and some improvements";
       longDescription = ''
         Telegram Desktop fork with Material Design and other improvements,
         which is based on the Telegram API and the MTProto secure protocol.
       '';
-      homepage = "https://kukuruzka165.github.io/materialgram/";
-      changelog = "https://github.com/kukuruzka165/materialgram/releases/tag/v${finalAttrs.version}";
-      maintainers = with lib.maintainers; [
-        oluceps
-        aleksana
-      ];
+      homepage = "https://kukuruzka165.github.io/materialgram";
+      changelog = "https://github.com/${self.src.owner}/${self.src.repo}/releases/tag/${self.src.rev}";
       mainProgram = "materialgram";
     };
   }

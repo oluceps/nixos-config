@@ -131,6 +131,50 @@ in
     else
       secs;
 
+  parentsOf =
+    path:
+    let
+      inherit (pkgs.lib)
+        optionalString
+        hasPrefix
+        take
+        length
+        foldl'
+        last
+        filter
+        concatMap
+        head
+        concatStringsSep
+        ;
+      dirListToPath = dirList: (concatStringsSep "/" dirList);
+
+      concatPaths =
+        paths:
+        let
+          prefix = optionalString (hasPrefix "/" (head paths)) "/";
+          path = dirListToPath (splitPath paths);
+        in
+        prefix + path;
+
+      splitPath =
+        paths:
+        (filter (s: builtins.typeOf s == "string" && s != "") (concatMap (builtins.split "/") paths));
+
+      prefix = optionalString (hasPrefix "/" path) "/";
+      split = splitPath [ path ];
+      parents = take ((length split) - 1) split;
+    in
+    foldl' (
+      state: item:
+      state
+      ++ [
+        (concatPaths [
+          (if state != [ ] then last state else prefix)
+          item
+        ])
+      ]
+    ) [ ] parents;
+
   parent =
     let
       inherit (inputs.nixpkgs.lib)

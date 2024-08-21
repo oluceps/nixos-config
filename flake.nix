@@ -271,7 +271,7 @@
     lanzaboote = {
       url = "github:nix-community/lanzaboote";
     };
-    impermanence.url = "github:nix-community/impermanence";
+    impermanence.url = "github:oluceps/impermanence/regular-mount-var";
     prismlauncher = {
       url = "github:PrismLauncher/PrismLauncher";
       inputs.nixpkgs.follows = "nixpkgs";
