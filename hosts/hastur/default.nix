@@ -42,6 +42,7 @@
       ../../users.nix
 
       ./misskey.nix
+      ../dev.nix
     ]
     ++ (with inputs; [
       aagl.nixosModules.default
