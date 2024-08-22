@@ -11,6 +11,11 @@
     # dnsovertls = "true";
   };
   networking = {
+    timeServers = [
+      "ntp1.aliyun.com"
+      "ntp.ntsc.ac.cn"
+      "cn.ntp.org.cn"
+    ];
     usePredictableInterfaceNames = false;
     resolvconf.useLocalResolver = true;
     nameservers = [

@@ -11,6 +11,11 @@
     # dnsovertls = "opportunistic";
   };
   networking = {
+    timeServers = [
+      "ntp1.aliyun.com"
+      "ntp.ntsc.ac.cn"
+      "cn.ntp.org.cn"
+    ];
     hosts = {
       "10.0.1.2" = [ "s3.nyaw.xyz" ];
       "10.0.2.2" = [ "attic.nyaw.xyz" ];

@@ -14,6 +14,12 @@
 {
 
   hardware.pulseaudio.enable = lib.mkForce false;
+  hardware.graphics = {
+    ## amdvlk: an open-source Vulkan driver from AMD
+    extraPackages = [ pkgs.amdvlk ];
+    extraPackages32 = [ pkgs.driversi686Linux.amdvlk ];
+  };
+
   imports = [ (modulesPath + "/installer/scan/not-detected.nix") ];
   services.btrfs.autoScrub = {
     enable = true;

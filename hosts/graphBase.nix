@@ -85,6 +85,7 @@
       package = pkgs.steam.override { extraPkgs = pkgs: [ pkgs.maple-mono-SC-NF ]; };
       remotePlay.openFirewall = true; # Open ports in the firewall for Steam Remote Play
       dedicatedServer.openFirewall = true; # Open ports in the firewall for Source Dedicated Server
+      localNetworkGameTransfers.openFirewall = true;
     };
     firefox = {
       enable = true;
@@ -133,7 +134,6 @@
             yubikey-personalization
           ];
 
-          
           dev = [
             vscode.fhs
             nodejs_latest.pkgs.pnpm
