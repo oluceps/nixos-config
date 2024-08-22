@@ -12,6 +12,7 @@
   };
   networking = {
     timeServers = [
+      "ntp.sjtu.edu.cn"
       "ntp1.aliyun.com"
       "ntp.ntsc.ac.cn"
       "cn.ntp.org.cn"
