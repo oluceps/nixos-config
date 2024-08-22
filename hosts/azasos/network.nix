@@ -13,6 +13,12 @@
   };
   networking.domain = "nyaw.xyz";
   networking = {
+    timeServers = [
+      "ntp.sjtu.edu.cn"
+      "ntp1.aliyun.com"
+      "ntp.ntsc.ac.cn"
+      "cn.ntp.org.cn"
+    ];
     nameservers = [
       "223.5.5.5#dns.alidns.com"
       "120.53.53.53#dot.pub"

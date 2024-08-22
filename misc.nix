@@ -174,6 +174,7 @@
   services = {
 
     # bpftune.enable = true;
+    chrony.enable = true;
 
     journald.extraConfig = ''
       SystemMaxUse=1G
