@@ -3,12 +3,11 @@ with pkgs;
 [
   eva
   paperback
-  gtkcord4
   amberol
   mako
   # qq
   chromium
-  # dissent
+  discord
   celeste
   stellarium
   obsidian
