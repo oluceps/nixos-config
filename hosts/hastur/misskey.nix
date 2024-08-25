@@ -23,7 +23,7 @@
     oci-containers.backend = "podman";
     oci-containers.containers = {
       misskey = {
-        image = "docker.io/misskey/misskey:2024.7.0";
+        image = "docker.io/misskey/misskey:2024.8.0";
         ports = [ "3000:3000/tcp" ];
         volumes = [
           "/var/lib/misskey/files:/misskey/files"
