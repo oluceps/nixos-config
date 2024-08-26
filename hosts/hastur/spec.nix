@@ -165,7 +165,7 @@
     fwupd.enable = true;
     harmonia = {
       enable = true;
-      signKeyPath = config.age.secrets.harmonia.path;
+      signKeyPaths = [ config.age.secrets.harmonia.path ];
     };
     realm = {
       enable = false;
