@@ -6,6 +6,7 @@
     "--upstream-mode parallel"
     "--edns"
     "--http3"
+    "--ipv6-disabled" # :(
   ];
   settings = {
     bootstrap = [ "223.6.6.6:53" ];
