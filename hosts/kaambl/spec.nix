@@ -60,7 +60,8 @@
     phantomsocks.enable = true;
     # srs.enable = true;
     # coredns.enable = true;
-    mosproxy.enable = true;
+    # mosproxy.enable = true;
+    dnsproxy.enable = true;
     dae.enable = true;
     # smartdns.enable = true;
   };
