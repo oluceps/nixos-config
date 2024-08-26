@@ -1,10 +1,10 @@
 {
   lib,
-  buildGoModule,
+  buildGo123Module,
   fetchFromGitHub,
 }:
 
-buildGoModule rec {
+buildGo123Module rec {
   pname = "dnsproxy";
   version = "0.73.1";
 
@@ -15,7 +15,7 @@ buildGoModule rec {
     hash = "sha256-SEjAt/FiVLcLkwYGQkR0iSKcicy5s2vA/1J74pIvv4E=";
   };
 
-  vendorHash = "sha256-zVmoIC7LZfElEgvSq7CkOi1wOCA8ot+8JfW5wTCKwc8=";
+  vendorHash = "sha256-ELGiyKWhR/4bVn5g2OLLe0njavrziD5nvwFUMwSC7s4=";
 
   ldflags = [
     "-s"
