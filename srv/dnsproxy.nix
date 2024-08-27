@@ -3,7 +3,6 @@
   enable = true;
   flags = [
     "--cache"
-    "--upstream-mode parallel"
     "--edns"
     "--http3"
     "--ipv6-disabled" # :(
@@ -12,10 +11,11 @@
     bootstrap = [ "223.6.6.6:53" ];
     listen-addrs = [ "0.0.0.0" ];
     listen-ports = [ 53 ];
+    upstream-mode = "parallel";
     upstream = [
       "quic://dns.alidns.com"
       "tls://dot.pub"
-      "tcp://223.5.5.5"
+      "h3://dns.google/dns-query"
     ];
   };
 }
