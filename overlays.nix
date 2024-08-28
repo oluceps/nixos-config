@@ -31,6 +31,14 @@ inputs': [
         factorio-headless-experimental
         ;
 
+      composefs = prev.composefs.override {
+        src = prev.fetchFromGitHub {
+          owner = "alexlarsson";
+          repo = "composefs";
+          rev = "5f2be1f64f531f520943825ead9d738045234922";
+          hash = "";
+        };
+      };
       helix = inputs'.helix.packages.default.override {
         includeGrammarIf =
           grammar:
