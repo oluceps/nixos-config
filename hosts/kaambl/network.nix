@@ -168,8 +168,8 @@
         #   DNSOverTLS = false;
         # };
         # # REALLY IMPORTANT
-        dhcpV4Config.UseDNS = true;
-        dhcpV6Config.UseDNS = true;
+        dhcpV4Config.UseDNS = false;
+        dhcpV6Config.UseDNS = false;
       };
 
       "30-rndis" = {
