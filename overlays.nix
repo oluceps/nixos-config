@@ -36,7 +36,7 @@ inputs': [
           owner = "alexlarsson";
           repo = "composefs";
           rev = "5f2be1f64f531f520943825ead9d738045234922";
-          hash = "";
+          hash = "sha256-1hypzL7w7kF1FsO2P8CpqRA2Qd6KTfogGNPBETxV+hY=";
         };
       });
       helix = inputs'.helix.packages.default.override {

@@ -66,7 +66,7 @@
   };
   programs = {
     dconf.enable = true;
-    anime-game-launcher.enable = true; # Adds launcher and /etc/hosts rules
+    anime-game-launcher.enable = false; # Adds launcher and /etc/hosts rules
     # niri.enable = true;
     sway = {
       enable = true;
