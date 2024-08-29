@@ -5,7 +5,6 @@
     "--cache"
     "--edns"
     "--http3"
-    "--ipv6-disabled" # :(
   ];
   settings = {
     bootstrap = [ "tcp://223.6.6.6:53" ];
@@ -14,6 +13,7 @@
     upstream-mode = "parallel";
     upstream = [
       "quic://dns.alidns.com"
+      "h3://dns.alidns.com/dns-query"
       "tls://dot.pub"
       "h3://dns.google/dns-query"
     ];
