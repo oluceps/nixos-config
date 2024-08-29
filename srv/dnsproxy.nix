@@ -8,7 +8,7 @@
     "--ipv6-disabled" # :(
   ];
   settings = {
-    bootstrap = [ "223.6.6.6:53" ];
+    bootstrap = [ "tcp://223.6.6.6:53" ];
     listen-addrs = [ "0.0.0.0" ];
     listen-ports = [ 53 ];
     upstream-mode = "parallel";
