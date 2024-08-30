@@ -68,18 +68,12 @@ with pkgs;
 
   koreader
   cliphist
-  # realvnc-vnc-viewer
-  #    mathematica
   pcsctools
   ccid
 
-  # nrfconnect
-  # nrfutil
-  # nrf-command-line-tools
   yubikey-manager
 
   xdeltaUnstable
-  xterm
 
   # feeluown
   # feeluown-bilibili
@@ -126,7 +120,6 @@ with pkgs;
   alacritty
   rio
   appimage-run
-  lutris
   tofi
   # zoom-us
   # gnomecast
