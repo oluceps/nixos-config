@@ -43,13 +43,14 @@ in
               inherit system;
               config = {
                 allowUnfree = true;
-                segger-jlink.acceptLicense = true;
+                permittedInsecurePackages = [
+                  "cinny-4.1.0"
+                  "cinny-unwrapped-4.1.0"
+                ];
                 allowUnsupportedSystem = true;
-                gcc.arch = "x86_64-v4";
-                gcc.tune = "generic";
               };
               overlays =
-                (import ../overlays.nix inputs')
+                (import ../overlays.nix { inherit inputs' inputs; })
                 ++ (lib.genOverlays [
                   "self"
                   "fenix"

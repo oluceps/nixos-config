@@ -1,4 +1,5 @@
-inputs': [
+{ inputs', inputs }:
+[
   (
     final: prev:
     prev.lib.genAttrs [
@@ -22,12 +23,10 @@ inputs': [
       #       inherit system;
       #     }).lazygit;
       inherit
-        (
-          (import inputs'.nixpkgs-master {
-            # inherit system;
-            config.allowUnfree = true;
-          })
-        )
+        (import inputs.nixpkgs-factorio {
+          inherit (prev) system;
+          config.allowUnfree = true;
+        })
         factorio-headless-experimental
         ;
 

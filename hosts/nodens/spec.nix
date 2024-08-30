@@ -86,7 +86,7 @@
     # copilot-gpt4.enable = true;
     factorio-manager = {
       enable = true;
-      factorioPackage = pkgs.factorio-headless;
+      factorioPackage = pkgs.factorio-headless-experimental;
       botConfigPath = config.age.secrets.factorio-manager-bot.path;
       initialGameStartArgs = [
         "--server-settings=${config.age.secrets.factorio-server.path}"

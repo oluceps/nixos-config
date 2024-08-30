@@ -152,8 +152,8 @@
         ];
 
         routes = [
-          { routeConfig.Gateway = "144.126.208.1"; }
-          { routeConfig.Gateway = "2604:a880:4:1d0::1"; }
+          { Gateway = "144.126.208.1"; }
+          { Gateway = "2604:a880:4:1d0::1"; }
         ];
         networkConfig = {
           DNSSEC = true;

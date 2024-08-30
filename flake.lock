@@ -3514,6 +3514,22 @@
         "type": "github"
       }
     },
+    "nixpkgs-factorio": {
+      "locked": {
+        "lastModified": 1724984758,
+        "narHash": "sha256-lHq4yQ6KLMq15RukElKbCFW1KLcLqrmX43YnQo8ZgV4=",
+        "owner": "NixOS",
+        "repo": "nixpkgs",
+        "rev": "1b9bd8dd0fd5b8be7fc3435f7446272354624b01",
+        "type": "github"
+      },
+      "original": {
+        "owner": "NixOS",
+        "repo": "nixpkgs",
+        "rev": "1b9bd8dd0fd5b8be7fc3435f7446272354624b01",
+        "type": "github"
+      }
+    },
     "nixpkgs-lib": {
       "locked": {
         "lastModified": 1722555339,
@@ -5041,6 +5057,7 @@
         "nixos-cosmic": "nixos-cosmic",
         "nixpkgs": "nixpkgs_29",
         "nixpkgs-22": "nixpkgs-22",
+        "nixpkgs-factorio": "nixpkgs-factorio",
         "nixpkgs-master": "nixpkgs-master",
         "nixyDomains": "nixyDomains",
         "nuenv": "nuenv_2",
