@@ -42,7 +42,6 @@
                     }
                   ];
                   match = [ { host = [ "s3.nyaw.xyz" ]; } ];
-                  terminal = true;
                 }
                 {
                   handle = [
@@ -67,7 +66,6 @@
                     }
                   ];
                   match = [ { host = [ "cache.nyaw.xyz" ]; } ];
-                  terminal = true;
                 }
                 # {
                 #   handle = [
@@ -86,7 +84,6 @@
                 #     }
                 #   ];
                 #   match = [ { host = [ "chat.nyaw.xyz" ]; } ];
-                #   terminal = true;
                 # }
 
                 {
@@ -106,7 +103,6 @@
                     }
                   ];
                   match = [ { host = [ "api.atuin.nyaw.xyz" ]; } ];
-                  terminal = true;
                 }
                 {
                   handle = [
@@ -132,42 +128,7 @@
                                 X-XSS-Protection = [ "1; mode=block" ];
                                 Content-Security-Policy = [ "frame-ancestors 'self'" ];
                               };
-                            }
-                            {
-                              handler = "subroute";
-                              routes = [
-                                {
-                                  handle = [
-                                    {
-                                      handler = "rewrite";
-                                      uri = "/olm.wasm";
-                                    }
-                                  ];
-                                  match = [ { path = [ "/*/olm.wasm" ]; } ];
-                                }
-                                {
-                                  handle = [
-                                    {
-                                      handler = "rewrite";
-                                      uri = "/index.html";
-                                    }
-                                  ];
-                                  match = [
-                                    {
-                                      not = [
-                                        { path = [ "/index.html" ]; }
-                                        { path = [ "/public/*" ]; }
-                                        { path = [ "/assets/*" ]; }
-                                        { path = [ "/config.json" ]; }
-                                        { path = [ "/manifest.json" ]; }
-                                        { path = [ "/pdf.worker.min.js" ]; }
-                                        { path = [ "/olm.wasm" ]; }
-                                      ];
-                                      path = [ "/*" ];
-                                    }
-                                  ];
-                                }
-                              ];
+
                             }
                             (
                               let
@@ -186,23 +147,13 @@
                                 root = "${pkgs.element-web.override { inherit conf; }}";
                               }
                             )
+
                           ];
                         }
                       ];
                     }
                   ];
                   match = [ { host = [ "matrix.nyaw.xyz" ]; } ];
-                  terminal = true;
-                }
-                {
-                  match = [ { host = [ "anti-ocr.nyaw.xyz" ]; } ];
-                  terminal = true;
-                  handle = [
-                    {
-                      handler = "file_server";
-                      root = pkgs.anti-ocr;
-                    }
-                  ];
                 }
                 {
                   handle = [
@@ -221,7 +172,6 @@
                     }
                   ];
                   match = [ { host = [ "vault.nyaw.xyz" ]; } ];
-                  terminal = true;
                 }
                 {
                   handle = [
@@ -249,7 +199,6 @@
                     }
                   ];
                   match = [ { host = [ "pb.nyaw.xyz" ]; } ];
-                  terminal = false;
                 }
 
                 {
@@ -289,7 +238,6 @@
                     }
                   ];
                   match = [ { host = [ "ntfy.nyaw.xyz" ]; } ];
-                  terminal = true;
                 }
                 {
                   handle = [
@@ -299,41 +247,12 @@
                         {
                           handle = [
                             {
-                              handler = "headers";
-                              response = {
-                                set = {
-                                  Content-Type = [ "application/json" ];
-                                };
+                              body = builtins.toJSON { "m.server" = "matrix.nyaw.xyz:443"; };
+                              status_code = 200;
+                              headers = {
+                                Access-Control-Allow-Origin = [ "*" ];
+                                Content-Type = [ "application/json" ];
                               };
-                            }
-                            {
-                              handler = "headers";
-                              response = {
-                                set = {
-                                  Access-Control-Allow-Origin = [ "*" ];
-                                };
-                              };
-                            }
-                          ];
-                          match = [ { path = [ "/.well-known/matrix/*" ]; } ];
-                        }
-                        # {
-                        #   handle = [
-                        #     {
-                        #       handler = "static_response";
-                        #       headers = {
-                        #         Location = [ "https://matrix.to/#/@sec:nyaw.xyz" ];
-                        #       };
-                        #       status_code = 302;
-                        #     }
-                        #   ];
-                        #   match = [ { path = [ "/matrix" ]; } ];
-                        # }
-                        {
-                          handle = [
-                            {
-                              body = "{
-                            \"m.server\": \"matrix.nyaw.xyz:443\"}";
                               handler = "static_response";
                             }
                           ];
@@ -342,10 +261,14 @@
                         {
                           handle = [
                             {
-                              body = "{
-                            \"m.homeserver\": {
-                            \"base_url\": \"https://matrix.nyaw.xyz\"},\"org.matrix.msc3575.proxy\": {
-                            \"url\": \"https://matrix.nyaw.xyz\"}}";
+                              body = builtins.toJSON {
+                                "m.homeserver" = {
+                                  base_url = "https://matrix.nyaw.xyz";
+                                };
+                                "org.matrix.msc3575.proxy" = {
+                                  url = "https://syncv3.nyaw.xyz";
+                                };
+                              };
                               handler = "static_response";
                             }
                           ];
@@ -363,7 +286,15 @@
                     }
                   ];
                   match = [ { host = [ "nyaw.xyz" ]; } ];
-                  terminal = true;
+                }
+                {
+                  match = [ { host = [ "syncv3.nyaw.xyz" ]; } ];
+                  handle = [
+                    {
+                      handler = "reverse_proxy";
+                      upstreams = [ { dial = "unix/${config.services.matrix-sliding-sync.settings.SYNCV3_BINDADDR}"; } ];
+                    }
+                  ];
                 }
               ];
             };

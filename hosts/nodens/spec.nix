@@ -25,6 +25,7 @@
     inherit ((import ../sysctl.nix { inherit lib; }).boot) kernel;
   };
 
+  systemd.services.matrix-sliding-sync.serviceConfig.RuntimeDirectory = [ "matrix-sliding-sync" ];
   systemd.services.trojan-server.serviceConfig.LoadCredential = (map (lib.genCredPath config)) [
     "nyaw.cert"
     "nyaw.key"
@@ -34,6 +35,7 @@
     openssh.enable = true;
     fail2ban.enable = true;
     rustypaste.enable = true;
+    matrix-sliding-sync.enable = true;
     coredns = {
       enable = true;
       override = {
