@@ -67,25 +67,6 @@
                   ];
                   match = [ { host = [ "cache.nyaw.xyz" ]; } ];
                 }
-                # {
-                #   handle = [
-                #     {
-                #       handler = "subroute";
-                #       routes = [
-                #         {
-                #           handle = [
-                #             {
-                #               handler = "reverse_proxy";
-                #               upstreams = [ { dial = "10.0.1.2:3001"; } ];
-                #             }
-                #           ];
-                #         }
-                #       ];
-                #     }
-                #   ];
-                #   match = [ { host = [ "chat.nyaw.xyz" ]; } ];
-                # }
-
                 {
                   handle = [
                     {
@@ -155,6 +136,77 @@
                   ];
                   match = [ { host = [ "matrix.nyaw.xyz" ]; } ];
                 }
+                {
+                  handle = [
+                    {
+                      handler = "subroute";
+                      routes = [
+                        {
+                          handle = [
+                            {
+                              body = builtins.toJSON { "m.server" = "matrix.nyaw.xyz:443"; };
+                              status_code = 200;
+                              headers = {
+                                Access-Control-Allow-Origin = [ "*" ];
+                                Content-Type = [ "application/json" ];
+                              };
+                              handler = "static_response";
+                            }
+                          ];
+                          match = [ { path = [ "/.well-known/matrix/server" ]; } ];
+                        }
+                        {
+                          handle = [
+                            {
+                              body = builtins.toJSON {
+                                "m.homeserver" = {
+                                  base_url = "https://matrix.nyaw.xyz";
+                                };
+                                "org.matrix.msc3575.proxy" = {
+                                  url = "https://syncv3.nyaw.xyz";
+                                };
+                              };
+                              handler = "static_response";
+                            }
+                          ];
+                          match = [ { path = [ "/.well-known/matrix/client" ]; } ];
+                        }
+                        {
+                          match = [ { path = [ "/.well-known/webfinger" ]; } ];
+                          handle = [
+                            {
+                              handler = "static_response";
+                              status_code = "302";
+                              headers = {
+                                Access-Control-Allow-Origin = [ "*" ];
+                                Location = [ "https://nyaw.xyz/{http.request.uri}" ];
+                              };
+                            }
+                          ];
+                        }
+                        {
+                          handle = [
+                            {
+                              handler = "reverse_proxy";
+                              upstreams = [ { dial = "10.0.1.2:3000"; } ];
+                            }
+                          ];
+                        }
+                      ];
+                    }
+                  ];
+                  match = [ { host = [ "nyaw.xyz" ]; } ];
+                }
+                {
+                  match = [ { host = [ "syncv3.nyaw.xyz" ]; } ];
+                  handle = [
+                    {
+                      handler = "reverse_proxy";
+                      upstreams = [ { dial = "unix/${config.services.matrix-sliding-sync.settings.SYNCV3_BINDADDR}"; } ];
+                    }
+                  ];
+                }
+
                 {
                   handle = [
                     {
@@ -238,63 +290,6 @@
                     }
                   ];
                   match = [ { host = [ "ntfy.nyaw.xyz" ]; } ];
-                }
-                {
-                  handle = [
-                    {
-                      handler = "subroute";
-                      routes = [
-                        {
-                          handle = [
-                            {
-                              body = builtins.toJSON { "m.server" = "matrix.nyaw.xyz:443"; };
-                              status_code = 200;
-                              headers = {
-                                Access-Control-Allow-Origin = [ "*" ];
-                                Content-Type = [ "application/json" ];
-                              };
-                              handler = "static_response";
-                            }
-                          ];
-                          match = [ { path = [ "/.well-known/matrix/server" ]; } ];
-                        }
-                        {
-                          handle = [
-                            {
-                              body = builtins.toJSON {
-                                "m.homeserver" = {
-                                  base_url = "https://matrix.nyaw.xyz";
-                                };
-                                "org.matrix.msc3575.proxy" = {
-                                  url = "https://syncv3.nyaw.xyz";
-                                };
-                              };
-                              handler = "static_response";
-                            }
-                          ];
-                          match = [ { path = [ "/.well-known/matrix/client" ]; } ];
-                        }
-                        {
-                          handle = [
-                            {
-                              handler = "reverse_proxy";
-                              upstreams = [ { dial = "10.0.1.2:3000"; } ];
-                            }
-                          ];
-                        }
-                      ];
-                    }
-                  ];
-                  match = [ { host = [ "nyaw.xyz" ]; } ];
-                }
-                {
-                  match = [ { host = [ "syncv3.nyaw.xyz" ]; } ];
-                  handle = [
-                    {
-                      handler = "reverse_proxy";
-                      upstreams = [ { dial = "unix/${config.services.matrix-sliding-sync.settings.SYNCV3_BINDADDR}"; } ];
-                    }
-                  ];
                 }
               ];
             };
