@@ -42,7 +42,6 @@ with pkgs;
 
   virt-manager
   xdg-utils
-  fluffychat
   hyfetch
 
   # microsoft-edge
@@ -112,14 +111,13 @@ with pkgs;
   kate
   # cinnamon.nemo
   nautilus
-  gnome.gnome-boxes
+  gnome-boxes
   evince
   # zathura
 
   # social
   # discord
   tdesktop
-  nheko
   element-desktop-wayland
   # thunderbird
   # fluffychat
