@@ -180,7 +180,7 @@
       "zswap.enabled=1"
       "zswap.compressor=zstd"
       "zswap.zpool=zsmalloc"
-      "ia32_emulation=0"
+      # "ia32_emulation=0"
     ];
     extraModulePackages =
       let
