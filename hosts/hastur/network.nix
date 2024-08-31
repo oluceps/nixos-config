@@ -40,7 +40,7 @@
     interfaces.eth0.wakeOnLan.enable = true;
     wireless.iwd.enable = true;
     useNetworkd = true;
-    useDHCP = true;
+    useDHCP = false;
     firewall = {
       enable = true;
       trustedInterfaces = [
