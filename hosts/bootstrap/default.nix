@@ -33,7 +33,8 @@
       };
       modules = [
         ./configuration.nix
-        ./UEFI
+        # ./UEFI
+        ./BIOS
         inputs.disko.nixosModules.disko
         {
           nixpkgs = {
