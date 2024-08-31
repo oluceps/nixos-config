@@ -34,6 +34,7 @@
           dev = [
             vscode.fhs
             nodejs_latest.pkgs.pnpm
+            nodejs_latest
             qemu-utils
             rustup
             linuxPackages_latest.perf

@@ -30,7 +30,6 @@ let
         netcat
         dog
         wget
-        mtr-gui
         socat
         miniserve
         mtr

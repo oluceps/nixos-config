@@ -217,6 +217,7 @@
   i18n.defaultLocale = "en_GB.UTF-8";
 
   environment.etc = {
+    "NIXOS".text = "";
     "machine-id".text = "b08dfa6083e7567a1921a715000001fb\n";
     "sbctl/sbctl.conf".text = ''
       keydir: /var/lib/sbctl/keys
