@@ -37,7 +37,8 @@
     domain = "nyaw.xyz";
     # replicates the default behaviour.
     enableIPv6 = true;
-    interfaces.eth0.wakeOnLan.enable = true;
+    # WARNING: THIS FAILED MY DHCP
+    # interfaces.eth0.wakeOnLan.enable = true;
     wireless.iwd.enable = true;
     useNetworkd = true;
     useDHCP = false;
@@ -202,7 +203,7 @@
         address = [ "192.168.1.2/24" ];
         routes = [
           # create default routes for both IPv6 and IPv4
-          { routeConfig.Gateway = "192.18.1.1"; }
+          { routeConfig.Gateway = "192.168.1.1"; }
           { routeConfig.Gateway = "fe80::5e02:14ff:fea5:ad05"; }
         ];
       };
