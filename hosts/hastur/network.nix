@@ -110,18 +110,18 @@
     };
 
     netdevs = {
-      bond0 = {
-        netdevConfig = {
-          Kind = "bond";
-          Name = "bond0";
-          # MTUBytes = "1300";
-        };
-        bondConfig = {
-          Mode = "active-backup";
-          PrimaryReselectPolicy = "always";
-          MIIMonitorSec = "1s";
-        };
-      };
+      # bond0 = {
+      #   netdevConfig = {
+      #     Kind = "bond";
+      #     Name = "bond0";
+      #     # MTUBytes = "1300";
+      #   };
+      #   bondConfig = {
+      #     Mode = "active-backup";
+      #     PrimaryReselectPolicy = "always";
+      #     MIIMonitorSec = "1s";
+      #   };
+      # };
 
       wg0 = {
         netdevConfig = {
