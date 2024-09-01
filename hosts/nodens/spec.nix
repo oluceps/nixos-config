@@ -35,7 +35,7 @@
     openssh.enable = true;
     fail2ban.enable = true;
     rustypaste.enable = true;
-    matrix-sliding-sync.enable = true;
+    
     coredns = {
       enable = true;
       override = {

@@ -282,10 +282,10 @@
         name = "nodens";
         configFile = config.age.secrets.hyst-us-cli.path;
       }
-      # {
-      #   name = "colour";
-      #   configFile = config.age.secrets.hyst-az-cli.path;
-      # }
+      {
+        name = "abhoth";
+        configFile = config.age.secrets.hyst-la-cli.path;
+      }
     ];
 
     shadowsocks.instances = [

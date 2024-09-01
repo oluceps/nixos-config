@@ -100,12 +100,12 @@
           group = "users";
           name = "hyst-us-cli.yaml";
         };
-        hyst-az-cli = {
-          rekeyFile = ./sec/hyst-az-cli.age;
+        hyst-la-cli = {
+          rekeyFile = ./sec/hyst-la-cli.age;
           mode = "640";
           owner = "root";
           group = "users";
-          name = "hyst-az-cli.yaml";
+          name = "hyst-la-cli.yaml";
         };
       }
     );

@@ -31,6 +31,10 @@
   # systemd.oomd.enable = lib.mkForce false;
 
   # srv.earlyoom.enable = true;
+  environment.systemPackages = [
+    pkgs.atuin
+    pkgs.eza
+  ];
 
   boot.tmp.useTmpfs = true;
   # powerManagement.powertop.enable = true;

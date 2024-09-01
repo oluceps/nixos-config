@@ -148,18 +148,15 @@
           {
             PublicKey = "+fuA9nUmFVKy2Ijfh5xfcnO9tpA/SkIL4ttiWKsxyXI=";
             AllowedIPs = [ "10.0.1.0/24" ];
-            Endpoint = "[2604:a880:4:1d0::5b:6000]:51820";
+            Endpoint = "127.0.0.1:41820";
             PersistentKeepalive = 15;
           }
-
-          # {
-          #   wireguardPeerConfig = {
-          #     PublicKey = "ANd++mjV7kYu/eKOEz17mf65bg8BeJ/ozBmuZxRT3w0=";
-          #     AllowedIPs = [ "10.0.1.9/32" "10.0.1.0/24" ];
-          #     Endpoint = "127.0.0.1:41821";
-          #     PersistentKeepalive = 15;
-          #   };
-          # }
+          {
+            PublicKey = "49xNnrpNKHAvYCDikO3XhiK94sUaSQ4leoCnTOQjWno=";
+            AllowedIPs = [ "10.0.3.0/24" ];
+            Endpoint = "127.0.0.1:41821";
+            PersistentKeepalive = 15;
+          }
         ];
       };
     };
@@ -171,6 +168,7 @@
         address = [
           "10.0.1.2/24"
           "10.0.2.2/24"
+          "10.0.3.2/24"
         ];
         DHCP = "no";
       };

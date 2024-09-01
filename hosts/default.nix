@@ -19,7 +19,7 @@ let
     # "colour"
     "nodens"
     "kaambl"
-    # "abhoth"
+    "abhoth"
     "azasos"
     "eihort"
   ];
