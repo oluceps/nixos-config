@@ -1,5 +1,6 @@
 {
   config,
+  inputs,
   pkgs,
   modulesPath,
   ...
@@ -36,8 +37,8 @@
     fsType = "ext4";
   };
 
-  kernelModules = [ "brutal" ];
-  extraModulePackages = with config.boot.kernelPackages; [
+  boot.kernelModules = [ "brutal" ];
+  boot.extraModulePackages = with config.boot.kernelPackages; [
     (callPackage "${inputs.self}/pkgs/tcp-brutal.nix" { })
   ];
 }

@@ -27,6 +27,7 @@
         51820
         3330
         8880
+        34197 # factorio realm
       ];
       allowedTCPPorts = [
         80
