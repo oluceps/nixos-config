@@ -40,7 +40,7 @@
     interfaces.eth0.wakeOnLan.enable = true;
     wireless.iwd.enable = true;
     useNetworkd = true;
-    useDHCP = true;
+    useDHCP = false;
     firewall = {
       enable = true;
       checkReversePath = false;
@@ -88,10 +88,10 @@
       ];
     };
 
-    links."10-eth0" = {
-      matchConfig.MACAddress = "3c:7c:3f:22:49:80";
-      linkConfig.Name = "eth0";
-    };
+    # links."10-eth0" = {
+    #   matchConfig.MACAddress = "3c:7c:3f:22:49:80";
+    #   linkConfig.Name = "eth0";
+    # };
 
     links."30-rndis" = {
       matchConfig.Driver = "rndis_host";
@@ -109,10 +109,10 @@
         MACAddressPolicy = "persistent";
       };
     };
-    links."40-wlan0" = {
-      matchConfig.MACAddress = "70:66:55:e7:1c:b1";
-      linkConfig.Name = "wlan0";
-    };
+    # links."40-wlan0" = {
+    #   matchConfig.MACAddress = "70:66:55:e7:1c:b1";
+    #   linkConfig.Name = "wlan0";
+    # };
 
     netdevs = {
       # bond0 = {
@@ -147,7 +147,7 @@
           {
             PublicKey = "+fuA9nUmFVKy2Ijfh5xfcnO9tpA/SkIL4ttiWKsxyXI=";
             AllowedIPs = [ "10.0.1.0/24" ];
-            Endpoint = "127.0.0.1:41820";
+            Endpoint = "[2604:a880:4:1d0::5b:6000]:51820";
             PersistentKeepalive = 15;
           }
 
@@ -192,19 +192,19 @@
 
       "8-eth0" = {
         matchConfig.Name = "eth0";
-        DHCP = "yes";
+        networkConfig = {
+          DHCP = "ipv4";
+          IPv6AcceptRA = true;
+        };
+        linkConfig.RequiredForOnline = "routable";
         # dhcpV4Config.RouteMetric = 2046;
         # dhcpV6Config.RouteMetric = 2046;
-        dhcpV4Config.UseDNS = false;
-        dhcpV6Config.UseDNS = false;
-        # address = [ "192.168.0.2/24" ];
-
-        # networkConfig = {
-        #   BindCarrier = [
-        #     "eth0"
-        #     "wlan0"
-        #   ];
-        # };
+        address = [ "192.168.1.2/24" ];
+        routes = [
+          # create default routes for both IPv6 and IPv4
+          { routeConfig.Gateway = "192.18.1.1"; }
+          { routeConfig.Gateway = "fe80::5e02:14ff:fea5:ad05"; }
+        ];
       };
 
       "25-ncm" = {
