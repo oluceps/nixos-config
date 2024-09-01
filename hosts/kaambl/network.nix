@@ -77,7 +77,7 @@
       enable = true;
       anyInterface = true;
       ignoredInterfaces = [
-        "wlan"
+        "wlan0"
         "wg*"
       ];
     };

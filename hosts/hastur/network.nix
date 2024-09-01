@@ -43,6 +43,7 @@
     useDHCP = true;
     firewall = {
       enable = true;
+      checkReversePath = false;
       trustedInterfaces = [
         "virbr0"
         "wg*"
@@ -73,6 +74,7 @@
     };
     nftables.enable = true;
     networkmanager.enable = lib.mkForce false;
+    networkmanager.dns = "none";
   };
   systemd.network = {
     enable = true;
@@ -80,7 +82,10 @@
     wait-online = {
       enable = true;
       anyInterface = true;
-      ignoredInterfaces = [ "wlan0" ];
+      ignoredInterfaces = [
+        "wlan0"
+        "wg*"
+      ];
     };
 
     links."10-eth0" = {
@@ -190,8 +195,8 @@
         DHCP = "yes";
         # dhcpV4Config.RouteMetric = 2046;
         # dhcpV6Config.RouteMetric = 2046;
-        # dhcpV4Config.UseDNS = false;
-        # dhcpV6Config.UseDNS = false;
+        dhcpV4Config.UseDNS = false;
+        dhcpV6Config.UseDNS = false;
         # address = [ "192.168.0.2/24" ];
 
         # networkConfig = {
