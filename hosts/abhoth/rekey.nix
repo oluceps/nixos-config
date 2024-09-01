@@ -26,6 +26,9 @@ in
       syncv3 = {
         rekeyFile = ../../sec/syncv3.age;
       };
+      wgab = {
+        rekeyFile = ../../sec/wgab.age;
+      };
     };
   };
 }
