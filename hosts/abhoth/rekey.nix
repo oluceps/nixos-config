@@ -28,6 +28,9 @@ in
       };
       wgab = {
         rekeyFile = ../../sec/wgab.age;
+        owner = "systemd-network";
+        group = "root";
+        mode = "400";
       };
     };
   };

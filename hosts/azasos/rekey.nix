@@ -12,5 +12,13 @@ in
   age = {
     identityPaths = [ hostPrivKey ];
     rekey.hostPubkey = data.keys.azasosHostPubKey;
+    secrets = {
+      wga = {
+        rekeyFile = ../../sec/wga.age;
+        owner = "systemd-network";
+        group = "root";
+        mode = "400";
+      };
+    };
   };
 }

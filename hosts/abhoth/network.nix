@@ -75,8 +75,8 @@
       enable = true;
       anyInterface = true;
       ignoredInterfaces = [
-        "wg0"
-        "wg1"
+        # "wg0"
+        # "wg1"
       ];
     };
 

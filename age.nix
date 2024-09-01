@@ -64,14 +64,7 @@
         "db.key"
         "db.pem"
       ])
-      // (genWg [
-        "wg"
-        "wgk"
-        "wgy"
-        "wga"
-        "wgc-warp"
-        "wge"
-      ])
+      // (genWg [ "wg" ])
       // (genGlobalR [ "ntfy-token" ])
       // {
         dae = {
