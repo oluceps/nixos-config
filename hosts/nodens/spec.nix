@@ -25,7 +25,7 @@
     inherit ((import ../sysctl.nix { inherit lib; }).boot) kernel;
   };
 
-  systemd.services.matrix-sliding-sync.serviceConfig.RuntimeDirectory = [ "matrix-sliding-sync" ];
+  # systemd.services.matrix-sliding-sync.serviceConfig.RuntimeDirectory = [ "matrix-sliding-sync" ];
   systemd.services.trojan-server.serviceConfig.LoadCredential = (map (lib.genCredPath config)) [
     "nyaw.cert"
     "nyaw.key"
