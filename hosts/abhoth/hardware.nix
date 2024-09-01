@@ -1,4 +1,9 @@
-{ pkgs, modulesPath, ... }:
+{
+  config,
+  pkgs,
+  modulesPath,
+  ...
+}:
 {
   imports = [ (modulesPath + "/profiles/qemu-guest.nix") ];
   boot.loader.grub.device = "/dev/vda";
@@ -30,4 +35,9 @@
     device = "/dev/vda2";
     fsType = "ext4";
   };
+
+  kernelModules = [ "brutal" ];
+  extraModulePackages = with config.boot.kernelPackages; [
+    (callPackage "${inputs.self}/pkgs/tcp-brutal.nix" { })
+  ];
 }
