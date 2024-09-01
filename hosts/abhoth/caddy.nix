@@ -69,15 +69,6 @@
                   ];
                   match = [ { host = [ "matrix.nyaw.xyz" ]; } ];
                 }
-                {
-                  match = [ { host = [ "syncv3.nyaw.xyz" ]; } ];
-                  handle = [
-                    {
-                      handler = "reverse_proxy";
-                      upstreams = [ { dial = "unix/${config.services.matrix-sliding-sync.settings.SYNCV3_BINDADDR}"; } ];
-                    }
-                  ];
-                }
               ];
             };
           };
