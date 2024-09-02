@@ -61,6 +61,13 @@ in
       syncv3 = {
         rekeyFile = ../../sec/syncv3.age;
       };
+
+      wgn = {
+        rekeyFile = ../../sec/wgn.age;
+        owner = "systemd-network";
+        group = "root";
+        mode = "400";
+      };
     };
   };
 }

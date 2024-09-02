@@ -98,7 +98,7 @@
           MTUBytes = "1300";
         };
         wireguardConfig = {
-          PrivateKeyFile = config.age.secrets.wgy.path;
+          PrivateKeyFile = config.age.secrets.wgn.path;
           ListenPort = 51820;
         };
         wireguardPeers = [
