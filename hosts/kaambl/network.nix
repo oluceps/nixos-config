@@ -74,7 +74,7 @@
     enable = true;
 
     wait-online = {
-      enable = true;
+      enable = false;
       anyInterface = true;
       ignoredInterfaces = [
         "wlan0"
