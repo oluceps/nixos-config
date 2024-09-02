@@ -69,6 +69,25 @@
                   ];
                   match = [ { host = [ "matrix.nyaw.xyz" ]; } ];
                 }
+
+                {
+                  handle = [
+                    {
+                      handler = "subroute";
+                      routes = [
+                        {
+                          handle = [
+                            {
+                              handler = "reverse_proxy";
+                              upstreams = [ { dial = "10.0.3.2:8003"; } ];
+                            }
+                          ];
+                        }
+                      ];
+                    }
+                  ];
+                  match = [ { host = [ "vault.nyaw.xyz" ]; } ];
+                }
               ];
             };
           };
