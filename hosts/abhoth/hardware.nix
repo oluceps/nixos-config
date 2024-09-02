@@ -7,38 +7,42 @@
 }:
 {
   imports = [ (modulesPath + "/profiles/qemu-guest.nix") ];
-  boot.loader.grub.device = "/dev/vda";
-  boot.initrd.availableKernelModules = [
-    "ata_piix"
-    "uhci_hcd"
-    "xen_blkfront"
-    "vmw_pvscsi"
-  ];
-  boot.initrd.kernelModules = [ "nvme" ];
-  boot.initrd = {
-    systemd.enable = true;
-    compressor = "zstd";
-    compressorArgs = [
-      "-19"
-      "-T0"
+  boot = {
+    loader.grub.device = "/dev/vda";
+    initrd = {
+      availableKernelModules = [
+        "ata_piix"
+        "uhci_hcd"
+        "xen_blkfront"
+        "vmw_pvscsi"
+      ];
+      kernelModules = [ "nvme" ];
+
+      systemd.enable = true;
+      compressor = "zstd";
+      compressorArgs = [
+        "-19"
+        "-T0"
+      ];
+
+    };
+    kernelPackages = pkgs.linuxPackages_latest;
+    kernelParams = [
+      "audit=0"
+      "net.ifnames=0"
+
+      "console=ttyS0"
+      "earlyprintk=ttyS0"
+      "rootdelay=300"
+    ];
+
+    kernelModules = [ "brutal" ];
+    extraModulePackages = with config.boot.kernelPackages; [
+      (callPackage "${inputs.self}/pkgs/tcp-brutal.nix" { })
     ];
   };
-  boot.kernelPackages = pkgs.linuxPackages_latest;
-  boot.kernelParams = [
-    "audit=0"
-    "net.ifnames=0"
-
-    "console=ttyS0"
-    "earlyprintk=ttyS0"
-    "rootdelay=300"
-  ];
   fileSystems."/" = {
     device = "/dev/vda2";
     fsType = "ext4";
   };
-
-  boot.kernelModules = [ "brutal" ];
-  boot.extraModulePackages = with config.boot.kernelPackages; [
-    (callPackage "${inputs.self}/pkgs/tcp-brutal.nix" { })
-  ];
 }

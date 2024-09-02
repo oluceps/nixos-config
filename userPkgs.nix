@@ -166,6 +166,7 @@ with pkgs;
   rust-analyzer
   # nil
   nixd
+  nil
   shfmt
   nixfmt-rfc-style
   # taplo
