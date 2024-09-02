@@ -91,10 +91,10 @@
 
     netdevs = {
 
-      wg1 = {
+      wg0 = {
         netdevConfig = {
           Kind = "wireguard";
-          Name = "wg1";
+          Name = "wg0";
           MTUBytes = "1300";
         };
         wireguardConfig = {
@@ -119,12 +119,13 @@
           }
           {
             PublicKey = "49xNnrpNKHAvYCDikO3XhiK94sUaSQ4leoCnTOQjWno=";
-            AllowedIPs = [ "10.0.2.0/24" ];
+            AllowedIPs = [ "10.0.2.1/32" ];
             PersistentKeepalive = 15;
           }
           {
             PublicKey = "jQGcU+BULglJ9pUz/MmgOWhGRjpimogvEudwc8hMR0A=";
-            AllowedIPs = [ "10.0.3.0/24" ];
+            AllowedIPs = [ "10.0.3.1/32" ];
+            Endpoint = "38.47.119.151:51820";
             PersistentKeepalive = 15;
           }
         ];
@@ -132,8 +133,8 @@
     };
 
     networks = {
-      "10-wg1" = {
-        matchConfig.Name = "wg1";
+      "10-wg0" = {
+        matchConfig.Name = "wg0";
         address = [
           "10.0.1.1/24"
         ];
@@ -141,6 +142,21 @@
           IPMasquerade = "ipv4";
           IPv4Forwarding = true;
         };
+
+        routes = [
+          {
+            routeConfig = {
+              Destination = "10.0.2.0/24";
+              Scope = "link";
+            };
+          }
+          {
+            routeConfig = {
+              Destination = "10.0.3.0/24";
+              Scope = "link";
+            };
+          }
+        ];
       };
 
       "20-eth0" = {

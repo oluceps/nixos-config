@@ -111,13 +111,13 @@
           }
           {
             PublicKey = "+fuA9nUmFVKy2Ijfh5xfcnO9tpA/SkIL4ttiWKsxyXI=";
-            AllowedIPs = [ "10.0.1.0/24" ];
+            AllowedIPs = [ "10.0.1.1/32" ];
             Endpoint = "144.126.208.183:51820";
             PersistentKeepalive = 15;
           }
           {
             PublicKey = "49xNnrpNKHAvYCDikO3XhiK94sUaSQ4leoCnTOQjWno=";
-            AllowedIPs = [ "10.0.2.0/24" ];
+            AllowedIPs = [ "10.0.2.1/32" ];
             PersistentKeepalive = 15;
           }
         ];
@@ -134,6 +134,21 @@
           IPMasquerade = "ipv4";
           IPv4Forwarding = true;
         };
+
+        routes = [
+          {
+            routeConfig = {
+              Destination = "10.0.2.0/24";
+              Scope = "link";
+            };
+          }
+          {
+            routeConfig = {
+              Destination = "10.0.1.0/24";
+              Scope = "link";
+            };
+          }
+        ];
       };
       "20-eth0" = {
         matchConfig.Name = "eth0";

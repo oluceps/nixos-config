@@ -144,13 +144,13 @@
           }
           {
             PublicKey = "+fuA9nUmFVKy2Ijfh5xfcnO9tpA/SkIL4ttiWKsxyXI=";
-            AllowedIPs = [ "10.0.1.0/24" ];
+            AllowedIPs = [ "10.0.1.1/32" ];
             Endpoint = "127.0.0.1:41820";
             PersistentKeepalive = 15;
           }
           {
             PublicKey = "jQGcU+BULglJ9pUz/MmgOWhGRjpimogvEudwc8hMR0A=";
-            AllowedIPs = [ "10.0.3.0/24" ];
+            AllowedIPs = [ "10.0.3.1/32" ];
             Endpoint = "127.0.0.1:41821";
             PersistentKeepalive = 15;
           }
@@ -169,15 +169,21 @@
           IPv4Forwarding = true;
         };
 
-        # routes = [
-        #   {
-        #     routeConfig = {
-        #       Destination = "192.168.1.0/24";
-        #       Gateway = "10.0.2.8";
-        #       Scope = "link";
-        #     };
-        #   }
-        # ];
+        routes = [
+          {
+            routeConfig = {
+              Destination = "10.0.3.0/24";
+              Scope = "link";
+            };
+          }
+          {
+            routeConfig = {
+              Destination = "10.0.1.0/24";
+              Scope = "link";
+            };
+          }
+        ];
+
       };
 
       "20-wired" = {
