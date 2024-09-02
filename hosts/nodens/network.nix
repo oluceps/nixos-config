@@ -119,7 +119,7 @@
           }
           {
             PublicKey = "49xNnrpNKHAvYCDikO3XhiK94sUaSQ4leoCnTOQjWno=";
-            AllowedIPs = [ "10.0.0.0/16" ];
+            AllowedIPs = [ "10.0.2.0/24" ];
           }
           # {
           #   wireguardPeerConfig = {
@@ -136,7 +136,6 @@
         matchConfig.Name = "wg1";
         address = [
           "10.0.1.1/24"
-          "10.0.2.1/24"
         ];
         networkConfig = {
           IPMasquerade = "ipv4";

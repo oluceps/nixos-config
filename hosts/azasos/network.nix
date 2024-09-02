@@ -144,7 +144,7 @@
           }
           {
             PublicKey = "+fuA9nUmFVKy2Ijfh5xfcnO9tpA/SkIL4ttiWKsxyXI=";
-            AllowedIPs = [ "10.0.0.0/16" ];
+            AllowedIPs = [ "10.0.1.0/24" ];
             Endpoint = "127.0.0.1:41820";
             PersistentKeepalive = 15;
           }
@@ -156,9 +156,7 @@
       "10-wg0" = {
         matchConfig.Name = "wg0";
         address = [
-          "10.0.1.8/24"
-          "10.0.2.8/24"
-          "10.0.3.8/24"
+          "10.0.2.1/24"
         ];
         networkConfig = {
           IPMasquerade = "ipv4";
