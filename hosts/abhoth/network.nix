@@ -115,6 +115,11 @@
             Endpoint = "144.126.208.183:51820";
             PersistentKeepalive = 15;
           }
+          {
+            PublicKey = "49xNnrpNKHAvYCDikO3XhiK94sUaSQ4leoCnTOQjWno=";
+            AllowedIPs = [ "10.0.2.0/24" ];
+            PersistentKeepalive = 15;
+          }
         ];
       };
     };
