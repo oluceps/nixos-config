@@ -143,7 +143,6 @@
       };
     };
 
-    prom-ntfy-bridge.enable = true;
     # xserver.videoDrivers = [ "nvidia" ];
 
     # xserver.enable = true;
