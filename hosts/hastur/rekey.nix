@@ -58,7 +58,6 @@ in
       notifychan = {
         rekeyFile = ../../sec/notifychan.age;
         mode = "400";
-        name = "notifychan.yml";
       };
     };
   };
