@@ -116,7 +116,7 @@
     vaultwarden.enable = true;
     matrix-conduit.enable = true;
     # coredns.enable = true;
-    mosproxy.enable = true;
+    dnsproxy.enable = true;
     srs.enable = true;
     pleroma.enable = true;
     grafana.enable = true;
