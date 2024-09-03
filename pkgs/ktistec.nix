@@ -1,11 +1,8 @@
 {
   lib,
   fetchFromGitHub,
-  fetchpatch,
   crystal,
-  jq,
   libxml2,
-  makeWrapper,
   gmp,
   sqlite,
   pkg-config,

@@ -11,6 +11,9 @@ let
     );
 
   shadowedPkgs = [
+    "patch"
+    "result"
+
     "tcp-brutal"
     "shufflecake"
 
