@@ -121,7 +121,7 @@ in
           telegram_configs = [
             {
               bot_token_file = "/run/credentials/alertmanager.service/notifychan";
-              chat_id = "-1002215131569";
+              chat_id = -1002215131569;
             }
           ];
         }
