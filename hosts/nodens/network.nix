@@ -1,4 +1,9 @@
-{ config, lib, ... }:
+{
+  inputs,
+  config,
+  lib,
+  ...
+}:
 {
   services.resolved.enable = lib.mkForce false;
   environment.etc."resolv.conf".text = ''
@@ -45,7 +50,6 @@
     useDHCP = false;
 
     hostName = "nodens";
-    enableIPv6 = true;
 
     nftables = {
       enable = true;
@@ -84,10 +88,10 @@
       matchConfig.MACAddress = "62:16:bf:7c:57:a3";
       linkConfig.Name = "eth0";
     };
-    links."20-eth1" = {
-      matchConfig.MACAddress = "22:48:a2:5b:0b:f0";
-      linkConfig.Name = "eth1";
-    };
+    # links."20-eth1" = {
+    #   matchConfig.MACAddress = "22:48:a2:5b:0b:f0";
+    #   linkConfig.Name = "eth1";
+    # };
 
     netdevs = {
 
@@ -161,20 +165,24 @@
 
       "20-eth0" = {
         matchConfig.Name = "eth0";
-        address = [
-          "144.126.208.183/20"
-          "2604:a880:4:1d0::5b:6000/64"
-        ];
+        DHCP = "no";
+        address =
+          [
+            "144.126.208.183/20"
+          ]
+          ++ (map (n: "2604:a880:4:1d0::5b:600${n}/124") (
+            (map inputs.ascii2char.asciiToChar ((lib.range 97 102))) ++ (map toString (lib.range 0 9))
+          ));
 
         routes = [
           { Gateway = "144.126.208.1"; }
           { Gateway = "2604:a880:4:1d0::1"; }
         ];
-        networkConfig = {
-          DNSSEC = true;
-          MulticastDNS = true;
-          DNSOverTLS = true;
-        };
+        # networkConfig = {
+        #   DNSSEC = true;
+        #   MulticastDNS = true;
+        #   DNSOverTLS = true;
+        # };
         # # REALLY IMPORTANT
         dhcpV4Config.UseDNS = false;
         dhcpV6Config.UseDNS = false;

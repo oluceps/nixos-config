@@ -126,6 +126,21 @@
         "type": "github"
       }
     },
+    "ascii2char": {
+      "locked": {
+        "lastModified": 1725378676,
+        "narHash": "sha256-/Xhcyzov67AlpszcvRqn6ryjJeiRqRFrvjqVIQN0fOs=",
+        "owner": "oluceps",
+        "repo": "nix-ascii2char",
+        "rev": "75a946cb599a74f9576eb87814231967f629202e",
+        "type": "github"
+      },
+      "original": {
+        "owner": "oluceps",
+        "repo": "nix-ascii2char",
+        "type": "github"
+      }
+    },
     "attic": {
       "inputs": {
         "crane": "crane",
@@ -5022,6 +5037,7 @@
         "agenix-rekey": "agenix-rekey",
         "android-nixpkgs": "android-nixpkgs",
         "anyrun": "anyrun",
+        "ascii2char": "ascii2char",
         "attic": "attic",
         "atuin": "atuin",
         "berberman": "berberman",

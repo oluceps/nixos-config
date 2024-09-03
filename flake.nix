@@ -181,6 +181,9 @@
       url = "github:zhaofengli/colmena";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    ascii2char = {
+      url = "github:oluceps/nix-ascii2char";
+    };
     lix = {
       url = "git+https://git.lix.systems/lix-project/lix";
       flake = false;
