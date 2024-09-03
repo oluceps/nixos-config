@@ -118,7 +118,6 @@
     # coredns.enable = true;
     dnsproxy.enable = true;
     srs.enable = true;
-    pleroma.enable = true;
     grafana.enable = true;
     meilisearch.enable = true;
 
