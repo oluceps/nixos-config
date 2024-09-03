@@ -29,18 +29,16 @@ in
       wantedBy = [ "multi-user.target" ];
       requires = [
         "dae.service"
-        "mosproxy.service"
+        "nss-lookup.target"
       ];
       after = [
         "network-online.target"
         "nss-lookup.target"
         "dae.service"
-        "mosproxy.service"
       ];
       wants = [
         "network-online.target"
         "nss-lookup.target"
-        "mosproxy.service"
       ];
       description = "prom-ntfy-bridge Daemon";
       serviceConfig = {
