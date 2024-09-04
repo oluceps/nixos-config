@@ -10,13 +10,13 @@ image/webp=org.gnome.Loupe.desktop
 inode/directory=org.gnome.Nautilus
 inode/mount-point=org.gnome.Nautilus
 ppt/pptx=wps-office-wpp.desktop
-text/html=firefox.desktop
+text/html=google-chrome.desktop
 tg=org.telegram.desktop.desktop
-x-scheme-handler/about=firefox.desktop
-x-scheme-handler/http=firefox.desktop
-x-scheme-handler/https=firefox.desktop
-x-scheme-handler/mailto=firefox.desktop
-x-scheme-handler/unknown=firefox.desktop
+x-scheme-handler/about=google-chrome.desktop
+x-scheme-handler/http=google-chrome.desktop
+x-scheme-handler/https=google-chrome.desktop
+x-scheme-handler/mailto=google-chrome.desktop
+x-scheme-handler/unknown=google-chrome.desktop
 xls/xlsx=wps-office-et.desktop
 
 [Removed Associations]

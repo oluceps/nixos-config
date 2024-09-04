@@ -1,8 +1,6 @@
 {
   pkgs,
-  data,
   config,
-  lib,
   user,
   ...
 }:
