@@ -29,7 +29,7 @@
                     Type=Application
                     Categories=Network;WebBrowser;
                     MimeType=application/pdf;application/rdf+xml;application/rss+xml;application/xhtml+xml;application/xhtml_xml;application/xml;image/gif;image/jpeg;image/png;image/webp;text/html;text/xml;x-scheme-handler/http;x-scheme-handler/https;
-                    Actions=new-window;new-private-window;" > $out/share/applications/google-chrome.desktop''
+                    Actions=new-window;new-private-window;" > $out/share/applications/google-chrome-dev.desktop''
     )
 
   ];
@@ -55,7 +55,7 @@
             "text/html"
           ]
           # (_: "brave-browser.desktop")
-          (_: "google-chrome.desktop")
+          (_: "google-chrome-dev.desktop")
         // lib.genAttrs [
           "image/gif"
           "image/webp"
