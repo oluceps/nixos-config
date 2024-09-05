@@ -401,7 +401,7 @@
 
         git_branch = {
           format = "[$branch]($style) ";
-          style = "#f1c4cd";
+          style = "#F17C67";
         };
 
         git_commit = {
