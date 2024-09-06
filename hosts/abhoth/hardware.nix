@@ -45,7 +45,6 @@
     device = "/dev/vda2";
     fsType = "btrfs";
     options = [
-      "subvol=root"
       "compress-force=zstd:4"
       "noatime"
     ];
