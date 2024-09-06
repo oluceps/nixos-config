@@ -1,5 +1,11 @@
 { pkgs, lib, ... }:
 {
+
+  ssh = {
+    startAgent = true;
+    enableAskPassword = true;
+    askPassword = "${pkgs.seahorse}/libexec/seahorse/ssh-askpass";
+  };
   environment.systemPackages =
     lib.flatten (
       lib.attrValues (

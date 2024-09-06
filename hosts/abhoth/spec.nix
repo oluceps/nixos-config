@@ -28,14 +28,14 @@
 
   srv = {
     openssh.enable = true;
-    fail2ban.enable = true;
+    # fail2ban.enable = true;
     # dnsproxy.enable = true;
 
     # rustypaste.enable = true;
   };
   services = {
-    metrics.enable = true;
-    trojan-server.enable = true;
+    # metrics.enable = true;
+    # trojan-server.enable = true;
     hysteria.instances = [
       {
         name = "only";

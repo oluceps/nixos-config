@@ -37,7 +37,7 @@
 
   boot.tmp.useTmpfs = true;
   # powerManagement.powertop.enable = true;
-  
+
   nix = {
     package = pkgs.nixVersions.stable;
     channel.enable = false;
@@ -135,7 +135,7 @@
   };
   security = {
     pki.certificateFiles = [ "${pkgs.cacert}/etc/ssl/certs/ca-bundle.crt" ];
-    
+
     sudo.extraConfig = ''
       Defaults lecture="never"
     '';
@@ -156,8 +156,8 @@
 
   documentation = {
     enable = false;
-    nixos.enable = true;
-    man.enable = true;
+    nixos.enable = false;
+    man.enable = false;
   };
 
   systemd.tmpfiles.rules = [
@@ -214,11 +214,6 @@
     '';
   };
   programs = {
-    ssh = {
-      startAgent = true;
-      enableAskPassword = true;
-      askPassword = "${pkgs.seahorse}/libexec/seahorse/ssh-askpass";
-    };
     bash = {
       blesh.enable = true;
     };
@@ -319,7 +314,7 @@
     };
 
     starship = {
-      enable = true;
+      enable = false;
       settings = {
         add_newline = false;
 
