@@ -14,7 +14,7 @@
     ./rekey.nix
     ./spec.nix
     ../../age.nix
-    # ./caddy.nix
+    ./caddy.nix
     # ../../packages.nix
     ../../misc.nix
     ../../users.nix

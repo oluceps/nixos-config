@@ -17,7 +17,7 @@
 
   # system.forbiddenDependenciesRegexes = [ "perl" ];
 
-  # system.disableInstallerTools = true;
+  system.disableInstallerTools = true;
   programs.less.lessopen = null;
   programs.command-not-found.enable = false;
   boot.enableContainers = false;
@@ -139,13 +139,13 @@
     sudo.extraConfig = ''
       Defaults lecture="never"
     '';
-    # polkit.enable = true;
+    polkit.enable = true;
   };
 
   services = {
 
     # bpftune.enable = true;
-    # chrony.enable = true;
+    chrony.enable = true;
 
     journald.extraConfig = ''
       SystemMaxUse=1G
@@ -314,7 +314,7 @@
     };
 
     starship = {
-      enable = false;
+      enable = true;
       settings = {
         add_newline = false;
 

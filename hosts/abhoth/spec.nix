@@ -21,21 +21,20 @@
     inherit ((import ../sysctl.nix { inherit lib; }).boot) kernel;
   };
 
-  # systemd.services.trojan-server.serviceConfig.LoadCredential = (map (lib.genCredPath config)) [
-  #   "nyaw.cert"
-  #   "nyaw.key"
-  # ];
+  systemd.services.trojan-server.serviceConfig.LoadCredential = (map (lib.genCredPath config)) [
+    "nyaw.cert"
+    "nyaw.key"
+  ];
 
   srv = {
     openssh.enable = true;
-    # fail2ban.enable = true;
-    # dnsproxy.enable = true;
+    fail2ban.enable = true;
 
     # rustypaste.enable = true;
   };
   services = {
-    # metrics.enable = true;
-    # trojan-server.enable = true;
+    metrics.enable = true;
+    trojan-server.enable = true;
     hysteria.instances = [
       {
         name = "only";
@@ -51,21 +50,21 @@
       }
     ];
 
-    # realm = {
-    #   enable = true;
-    #   settings = {
-    #     log.level = "warn";
-    #     network = {
-    #       no_tcp = false;
-    #       use_udp = true;
-    #     };
-    #     endpoints = [
-    #       {
-    #         listen = "[::]:34197";
-    #         remote = "144.126.208.183:34197";
-    #       }
-    #     ];
-    #   };
-    # };
+    realm = {
+      enable = true;
+      settings = {
+        log.level = "warn";
+        network = {
+          no_tcp = false;
+          use_udp = true;
+        };
+        endpoints = [
+          {
+            listen = "[::]:34197";
+            remote = "144.126.208.183:34197";
+          }
+        ];
+      };
+    };
   };
 }
