@@ -29,7 +29,7 @@
   srv = {
     openssh.enable = true;
     fail2ban.enable = true;
-    dnsproxy.enable = true;
+    # dnsproxy.enable = true;
 
     # rustypaste.enable = true;
   };
