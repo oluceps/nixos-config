@@ -51,21 +51,21 @@
       }
     ];
 
-    realm = {
-      enable = true;
-      settings = {
-        log.level = "warn";
-        network = {
-          no_tcp = false;
-          use_udp = true;
-        };
-        endpoints = [
-          {
-            listen = "[::]:34197";
-            remote = "144.126.208.183:34197";
-          }
-        ];
-      };
-    };
+    # realm = {
+    #   enable = true;
+    #   settings = {
+    #     log.level = "warn";
+    #     network = {
+    #       no_tcp = false;
+    #       use_udp = true;
+    #     };
+    #     endpoints = [
+    #       {
+    #         listen = "[::]:34197";
+    #         remote = "144.126.208.183:34197";
+    #       }
+    #     ];
+    #   };
+    # };
   };
 }
