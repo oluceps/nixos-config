@@ -139,13 +139,13 @@
     sudo.extraConfig = ''
       Defaults lecture="never"
     '';
-    polkit.enable = true;
+    # polkit.enable = true;
   };
 
   services = {
 
     # bpftune.enable = true;
-    chrony.enable = true;
+    # chrony.enable = true;
 
     journald.extraConfig = ''
       SystemMaxUse=1G

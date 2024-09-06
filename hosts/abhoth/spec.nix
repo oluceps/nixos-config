@@ -21,10 +21,10 @@
     inherit ((import ../sysctl.nix { inherit lib; }).boot) kernel;
   };
 
-  systemd.services.trojan-server.serviceConfig.LoadCredential = (map (lib.genCredPath config)) [
-    "nyaw.cert"
-    "nyaw.key"
-  ];
+  # systemd.services.trojan-server.serviceConfig.LoadCredential = (map (lib.genCredPath config)) [
+  #   "nyaw.cert"
+  #   "nyaw.key"
+  # ];
 
   srv = {
     openssh.enable = true;
