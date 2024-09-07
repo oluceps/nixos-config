@@ -35,7 +35,7 @@ withSystem "x86_64-linux" (
             allowUnfree = true;
           };
           overlays =
-            (import ../../overlays.nix inputs)
+            (import ../../overlays.nix { inherit inputs inputs'; })
             ++ (lib.genOverlays [
               "self"
               "fenix"
@@ -50,6 +50,7 @@ withSystem "x86_64-linux" (
       ./network.nix
       ./rekey.nix
       ./spec.nix
+      ../../srv
       ../../age.nix
       ../../packages.nix
       ../../misc.nix

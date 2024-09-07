@@ -18,7 +18,7 @@
   ...
 }:
 let
-  regularHosts = with builtins; fromJSON (readFile ./sum.json);
+  regularHosts = with builtins; (fromTOML (readFile ./sum.toml)).hosts;
 in
 {
   flake.nixosConfigurations = self.lib.genAttrs regularHosts (
