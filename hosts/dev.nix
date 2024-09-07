@@ -15,8 +15,8 @@
     };
     nh = {
       enable = true;
-      clean.enable = true;
-      clean.extraArgs = "--keep-since 4d --keep 7";
+      # clean.enable = true;
+      # clean.extraArgs = "--keep-since 4d --keep 7";
       flake = "/home/${user}/Src/nixos";
     };
 
