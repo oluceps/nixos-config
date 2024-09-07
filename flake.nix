@@ -14,9 +14,7 @@
             devshell.flakeModule
             agenix-rekey.flakeModule
           ])
-          ++ [
-            ./hosts
-          ];
+          ++ [ ./hosts ];
         debug = false;
         systems = [
           "x86_64-linux"
