@@ -9,6 +9,7 @@
 
   users.mutableUsers = false;
   system.etc.overlay.mutable = false;
+  system.forbiddenDependenciesRegexes = [ "perl" ];
 
   nix.gc = {
     automatic = true;
