@@ -32,13 +32,13 @@ test-bootstrap:
 
 build-all-host:
     #!/usr/bin/env nu
-    open hosts/host.json
+    open hosts/sum.json
     | par-each { || nix build $'.#nixosConfigurations.($in).config.system.build.toplevel' -L; }
 
 build:
     #!/usr/bin/env nu
     use {{loc}}/util.nu
-    open hosts/host.json
+    open hosts/sum.json
     | reduce {|it, acc| $it + (char newline) + $acc }
     | fzf
     | util b $in
