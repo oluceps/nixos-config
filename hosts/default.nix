@@ -6,7 +6,7 @@
 }:
 let
   inherit (builtins) readFile fromTOML;
-  inherit (self.lib) pipe;
+  inherit (self.lib) pipe genAttrs;
   inherit
     (pipe ./sum.toml [
       readFile
@@ -16,7 +16,7 @@ let
     ;
 in
 {
-  flake.nixosConfigurations = self.lib.genAttrs hosts (
+  flake.nixosConfigurations = genAttrs hosts (
     n: import ./${n} { inherit withSystem self inputs; } # TODO: weird.. @ pattern not work here
   );
 }
