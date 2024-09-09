@@ -141,19 +141,19 @@
         wireguardPeers = [
           {
             PublicKey = "49xNnrpNKHAvYCDikO3XhiK94sUaSQ4leoCnTOQjWno=";
-            AllowedIPs = [ "10.0.2.0/16" ];
+            AllowedIPs = [ "10.0.2.0/24" ];
             Endpoint = "116.196.112.43:51820";
             PersistentKeepalive = 15;
           }
           {
             PublicKey = "+fuA9nUmFVKy2Ijfh5xfcnO9tpA/SkIL4ttiWKsxyXI=";
-            AllowedIPs = [ "10.0.1.0/16" ];
+            AllowedIPs = [ "10.0.1.0/24" ];
             Endpoint = "127.0.0.1:41820";
             PersistentKeepalive = 15;
           }
           {
             PublicKey = "jQGcU+BULglJ9pUz/MmgOWhGRjpimogvEudwc8hMR0A=";
-            AllowedIPs = [ "10.0.3.0/16" ];
+            AllowedIPs = [ "10.0.3.0/24" ];
             Endpoint = "127.0.0.1:41821";
             PersistentKeepalive = 15;
           }
