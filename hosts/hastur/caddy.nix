@@ -58,15 +58,6 @@
                         {
                           handle = [
                             {
-                              handler = "authentication";
-                              providers.http_basic.accounts = [
-                                {
-                                  username = "prometheus";
-                                  password = "$2b$05$bKuO7ehC6wKR28/pfhJZOuNyQFUtF7FwhkPFLwcbCMhfLRNUV54vm";
-                                }
-                              ];
-                            }
-                            {
                               handler = "reverse_proxy";
                               upstreams = [ { dial = "localhost:9090"; } ];
                             }

@@ -33,7 +33,7 @@ in
 {
   enable = true;
   webExternalUrl = "https://${config.networking.fqdn}/prom";
-  listenAddress = "0.0.0.0";
+  listenAddress = "127.0.0.1";
   port = 9090;
   retentionTime = "7d";
   globalConfig = {
