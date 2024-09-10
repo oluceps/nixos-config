@@ -43,6 +43,7 @@ let
     "screen-recorder-toggle"
     "systemd-run-app"
   ];
+
 in
 ''
   input {
@@ -247,6 +248,11 @@ in
       Mod+D { spawn "fuzzel" "-I" "-l" "7" "-x" "8" "-y" "7" "-P" "9" "-b" "ede3e7d9" "-r" "3" "-t" "8b614db3" "-C" "ede3e7d9" "-f" "Maple Mono SC NF:style=Regular:size=15" "-P" "10" "-B" "7"; }
       Mod+Alt+L { spawn "swaylock"; }
 
+      Mod+WheelScrollDown cooldown-ms=150 { focus-workspace-down; }
+      Mod+WheelScrollUp   cooldown-ms=150 { focus-workspace-up; }
+      Mod+WheelScrollRight                { focus-column-right; }
+      Mod+WheelScrollLeft                 { focus-column-left; }
+
       XF86AudioMute allow-when-locked=true { spawn "${pw-volume}" "mute" "toggle"; }
 
       // Example volume keys mappings for PipeWire & WirePlumber.
@@ -255,7 +261,7 @@ in
 
       XF86MonBrightnessUp { spawn "brightnessctl" "set" "3%+"; }
       XF86MonBrightnessdown { spawn "brightnessctl" "set" "3%-"; }
-      // Mod4+Ctrl+P { spawn "${deps.cliphist}" "list" | ${deps.fuzzel} -d -I -l 7 -x 8 -y 7 -P 9 -b ede3e7d9 -r 3 -t 8b614db3 -C ede3e7d9 -f 'Maple Mono SC NF:style=Regular:size=15' -P 10 -B 7 -w 50 | ${deps.cliphist} decode | ${wl-copy} }
+      Mod+Ctrl+P { spawn "sh" "-c" "${deps.cliphist} list | ${deps.fuzzel} -d -I -l 7 -x 8 -y 7 -P 9 -b ede3e7d9 -r 3 -t 8b614db3 -C ede3e7d9 -f 'Maple Mono SC NF:style=Regular:size=15' -P 10 -B 7 -w 50 | ${deps.cliphist} decode | ${wl-copy}"; }
 
       Mod+Q { close-window; }
 
