@@ -24,13 +24,9 @@
   ];
 
   systemd.user.services.swaybg = {
-    unitConfig = {
-      Description = "swaybg session";
-      Documentation = [ "man:systemd.special(7)" ];
-      PartOf = [ "graphical-session.target" ];
-      Wants = [ "graphical-session.target" ];
-      Requisite = [ "graphical-session.target" ];
-    };
+    wantedBy = [ "niri.service" ];
+    wants = [ "graphical-session.target" ];
+    after = [ "graphical-session.target" ];
     serviceConfig = {
       ExecStart = "${lib.getExe pkgs.swaybg} -i %h/Pictures/109066252_p0.jpg -m fill";
       Restart = "on-failure";
