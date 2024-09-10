@@ -2,7 +2,7 @@
 
 const map = [
     [name,addr];
-    [hastur,root@10.0.1.2],
+    [hastur,riro@10.0.1.2],
     [kaambl,elen@10.0.1.3],
     [abhoth,elen@38.47.119.151],
     [azasos,elen@116.196.112.43],
