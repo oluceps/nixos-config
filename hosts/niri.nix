@@ -5,8 +5,8 @@
   ...
 }:
 {
-  niri.enable = true;
-  greetd = {
+  programs.niri.enable = true;
+  services.greetd = {
     enable = true;
     settings = rec {
       initial_session = {
@@ -22,4 +22,18 @@
     "L+ /home/${user}/.config/systemd/user/niri.service - - - - ${pkgs.niri}/share/systemd/user/niri.service"
     "L+ /home/${user}/.config/systemd/user/niri-shutdown.target - - - - ${pkgs.niri}/share/systemd/user/niri-shutdown.target"
   ];
+
+  systemd.user.services.swaybg = {
+    unitConfig = {
+      Description = "swaybg session";
+      Documentation = [ "man:systemd.special(7)" ];
+      PartOf = [ "graphical-session.target" ];
+      Wants = [ "graphical-session.target" ];
+      Requisite = [ "graphical-session.target" ];
+    };
+    serviceConfig = {
+      ExecStart = "${lib.getExe pkgs.swaybg} -i %h/Pictures/109066252_p0.jpg -m fill";
+      Restart = "on-failure";
+    };
+  };
 }
