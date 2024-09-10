@@ -61,9 +61,7 @@ export def d [
   let builder_addr = do $get_addr $builder
 
   if ($nodes == null) {
-    (sudo nixos-rebuild $mode
-        --flake .#
-        --build-host $builder_addr)
+    (nh os switch .)
   } else {
     $nodes | par-each {||
       (nixos-rebuild $mode
