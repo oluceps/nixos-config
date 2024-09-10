@@ -54,38 +54,30 @@ input {
 
 window-rule {
     match app-id="Alacritty"
+    match app-id="foot"
     match is-active=true
     match is-focused=true
-    opacity 0.96
+    opacity 0.92
 }
 
 window-rule {
     match title="Firefox"
     match app-id="org.telegram.desktop"
+    match app-id="google-chrome-beta"
+    match app-id="google-chrome"
     open-maximized true
 }
 
-// You can configure outputs by their name, which you can find
-// by running `niri msg outputs` while inside a niri instance.
-// The built-in laptop monitor is usually called "eDP-1".
-// Remember to uncommend the node by removing "/-"!
-// output "eDP-1" {
-    // Uncomment this line to disable this output.
-    // off
+output "eDP-1" {
+ // off
 
-    // Scale is a floating-point number, but at the moment only integer values work.
-    // scale 2.0
+ // Scale is a floating-point number, but at the moment only integer values work.
+ scale 2.0
 
-    // Resolution and, optionally, refresh rate of the output.
-    // The format is "<width>x<height>" or "<width>x<height>@<refresh rate>".
-    // If the refresh rate is omitted, niri will pick the highest refresh rate
-    // for the resolution.
-    // If the mode is omitted altogether or is invalid, niri will pick one automatically.
-    // Run `niri msg outputs` while inside a niri instance to list all outputs and their modes.
-    // mode "2160x1440@60.001"
+ mode "2160x1440@60.001"
 
-    // position x=1080 y=0
-// }
+ // position x=1080 y=0
+}
 
 layout {
     // You can change how the focus ring looks.
@@ -159,7 +151,7 @@ layout {
 // Add lines like this to spawn processes at startup.
 // Note that running niri as a session supports xdg-desktop-autostart,
 // which may be more convenient to use.
-spawn-at-startup "alacritty" "-e" "fish"
+spawn-at-startup "foot"
 spawn-at-startup "firefox"
 spawn-at-startup "fcitx5" "-dr"
 
