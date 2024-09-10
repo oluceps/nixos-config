@@ -250,11 +250,11 @@ in
       Mod+WheelScrollRight                { focus-column-right; }
       Mod+WheelScrollLeft                 { focus-column-left; }
 
-      XF86AudioMute allow-when-locked=true { spawn "${pw-volume}" "mute" "toggle"; }
+      XF86AudioMute allow-when-locked=true { spawn "sh" "-c" "${pw-volume} mute toggle; pkill -RTMIN+8 waybar"; }
 
       // Example volume keys mappings for PipeWire & WirePlumber.
-      XF86AudioRaiseVolume { spawn "${pw-volume}" "change" "+0.5%"; }
-      XF86AudioLowerVolume { spawn "${pw-volume}" "change" "-0.5%"; }
+      XF86AudioRaiseVolume { spawn "sh" "-c" "${pw-volume} change +0.5%; pkill -RTMIN+8 waybar"; }
+      XF86AudioLowerVolume { spawn "sh" "-c" "${pw-volume} change -0.5%; pkill -RTMIN+8 waybar"; }
 
       XF86MonBrightnessUp { spawn "brightnessctl" "set" "3%+"; }
       XF86MonBrightnessdown { spawn "brightnessctl" "set" "3%-"; }

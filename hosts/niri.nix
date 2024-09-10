@@ -32,4 +32,14 @@
       Restart = "on-failure";
     };
   };
+  systemd.user.services.waybar = {
+    wantedBy = [ "niri.service" ];
+    wants = [ "graphical-session.target" ];
+    after = [ "graphical-session.target" ];
+    path = [ (lib.makeBinPath [ pkgs.pw-volume ]) ];
+    serviceConfig = {
+      ExecStart = lib.getExe pkgs.waybar;
+      Restart = "on-failure";
+    };
+  };
 }
