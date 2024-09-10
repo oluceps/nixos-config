@@ -190,10 +190,6 @@
       url = "git+https://seed.radicle.xyz/z3gqcJUoA1n9HaHKufZs5FCSGazv5.git";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    attic = {
-      url = "github:zhaofengli/attic";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
     devshell.url = "github:numtide/devshell";
     tg-online-keeper.url = "github:oluceps/TelegramOnlineKeeper";
     # tg-online-keeper.url = "/home/elen/Src/tg-online-keeper";
