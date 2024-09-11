@@ -77,6 +77,7 @@ builtins.toJSON (
         tooltip = false;
         on-scroll-up = "${lib.getExe pkgs.brightnessctl} set 1%+";
         on-scroll-down = "${lib.getExe pkgs.brightnessctl} set 1%-";
+        on-click = "loginctl lock-session";
       };
       "group/time" = {
         modules = [
