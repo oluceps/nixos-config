@@ -27,6 +27,25 @@ builtins.toJSON [
       interval = 1;
       tooltip = false;
     };
+    pulseaudio = {
+      tooltip = false;
+      scroll-step = 1;
+      format = "{volume}";
+      format-muted = "=";
+      on-click = lib.getExe (
+        pkgs.nuenv.writeScriptBin {
+          name = "switch-mute";
+          script =
+            let
+              pamixer = pkgs.lib.getExe pkgs.pamixer;
+            in
+            ''
+              ${pamixer} --get-mute | str trim | if $in == "false" { ${pamixer} -m } else { ${pamixer} -u }
+            '';
+        }
+      );
+
+    };
     cpu = {
       format = "{usage}";
       min-length = 3;
@@ -67,7 +86,7 @@ builtins.toJSON [
       "cpu"
       "memory"
       "battery"
-      "custom/pipewire"
+      "pulseaudio"
     ];
     modules-left = [ ];
     modules-right = [ ];
