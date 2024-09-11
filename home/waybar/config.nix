@@ -58,7 +58,7 @@ builtins.toJSON [
       return-type = "json";
       signal = 8;
     };
-    "custom/niri-ctl" =
+    "custom/nirictl" =
       let
         niri = lib.getExe pkgs.niri;
       in
@@ -93,13 +93,13 @@ builtins.toJSON [
       tooltip = false;
     };
     modules-center = [
+      "custom/nirictl"
       "group/time"
       "temperature"
       "cpu"
       "memory"
       "battery"
       "pulseaudio"
-      "custom/niri-ctl"
     ];
     modules-left = [ ];
     modules-right = [ ];
