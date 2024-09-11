@@ -101,6 +101,10 @@ in
       // disable-power-key-handling
   }
 
+  environment {
+      DISPLAY ":0"
+  }
+
   window-rule {
       match app-id="Alacritty"
       match app-id="foot"
