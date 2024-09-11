@@ -35,6 +35,7 @@ let
     "pulsemixer"
     "slurp"
     "swaybg"
+    "swaylock"
     "hyprpicker"
     "cliphist"
     "firefox"
@@ -243,7 +244,7 @@ in
       // Suggested binds for running programs: terminal, app launcher, screen locker.
       Mod+Return { spawn "${systemd-run-app}" "foot"; }
       Mod+D { spawn "fuzzel" "-I" "-l" "7" "-x" "8" "-y" "7" "-P" "9" "-b" "ede3e7d9" "-r" "3" "-t" "8b614db3" "-C" "ede3e7d9" "-f" "Maple Mono SC NF:style=Regular:size=15" "-P" "10" "-B" "7"; }
-      Mod+Alt+L { spawn "swaylock"; }
+      Mod+Alt+L { spawn "${deps.swaylock}"; }
 
       Mod+WheelScrollDown cooldown-ms=150 { focus-workspace-down; }
       Mod+WheelScrollUp   cooldown-ms=150 { focus-workspace-up; }
