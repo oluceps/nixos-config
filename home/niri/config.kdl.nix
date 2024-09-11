@@ -112,7 +112,6 @@ in
 
   window-rule {
       match title="Firefox"
-      match app-id="org.telegram.desktop"
       match app-id="google-chrome-beta"
       match app-id="google-chrome"
       open-maximized true
@@ -199,8 +198,9 @@ in
   // Note that running niri as a session supports xdg-desktop-autostart,
   // which may be more convenient to use.
   spawn-at-startup "foot"
-  spawn-at-startup "firefox"
   spawn-at-startup "fcitx5" "-dr"
+  spawn-at-startup "google-chrome-beta"
+  spawn-at-startup "materialgram"
   spawn-at-startup "${wl-paste}" "--type" "text" "--watch" "${deps.cliphist}" "store"
   spawn-at-startup "${wl-paste}" "--type" "image" "--watch" "${deps.cliphist}" "store"
   cursor {
