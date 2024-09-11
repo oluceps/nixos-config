@@ -58,14 +58,18 @@ builtins.toJSON [
       return-type = "json";
       signal = 8;
     };
-    "custom/niri-ctl" = {
-      on-click = "${lib.getExe pkgs.niri} msg action focus-workspace-up";
-      on-click-right = "${lib.getExe pkgs.niri} msg action focus-workspace-down";
-      on-scroll-up = "${lib.getExe pkgs.niri} msg action focus-column-left";
-      on-scroll-down = "${lib.getExe pkgs.niri} msg action focus-column-right";
-      format = "";
-      tooltip = false;
-    };
+    "custom/niri-ctl" =
+      let
+        niri = lib.getExe pkgs.niri;
+      in
+      {
+        on-click = "${niri} msg action focus-workspace-up";
+        on-click-right = "${niri} msg action focus-workspace-down";
+        on-scroll-up = "${niri} msg action focus-column-left";
+        on-scroll-down = "${niri} msg action focus-column-right";
+        format = "";
+        tooltip = false;
+      };
     "group/time" = {
       modules = [
         "clock#1"
