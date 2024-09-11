@@ -71,17 +71,16 @@
         "pre-commit-hooks": "pre-commit-hooks"
       },
       "locked": {
-        "lastModified": 1725722682,
-        "narHash": "sha256-AzBlGNCl20Rb3XQQNcTofntkZnaYolanvMJrADH11vM=",
-        "owner": "oddlama",
-        "repo": "agenix-rekey",
-        "rev": "10ea05a0077aefe03b443fdb63b58ab78d0440f3",
-        "type": "github"
+        "dirtyRev": "aef02fec5f38598ea5a8940ab24af72acf034488-dirty",
+        "dirtyShortRev": "aef02fe-dirty",
+        "lastModified": 1726065414,
+        "narHash": "sha256-Jr+ygRyh8hsvrGoSoYAkR8jNMwEkMnIeFgtKjNLkMaE=",
+        "type": "git",
+        "url": "file:///home/elen/Src/agenix-rekey"
       },
       "original": {
-        "owner": "oddlama",
-        "repo": "agenix-rekey",
-        "type": "github"
+        "type": "git",
+        "url": "file:///home/elen/Src/agenix-rekey"
       }
     },
     "android-nixpkgs": {
