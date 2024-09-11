@@ -71,10 +71,10 @@
         "pre-commit-hooks": "pre-commit-hooks"
       },
       "locked": {
-        "dirtyRev": "aef02fec5f38598ea5a8940ab24af72acf034488-dirty",
-        "dirtyShortRev": "aef02fe-dirty",
-        "lastModified": 1726065414,
-        "narHash": "sha256-Jr+ygRyh8hsvrGoSoYAkR8jNMwEkMnIeFgtKjNLkMaE=",
+        "dirtyRev": "a94d721bf6d7fbcddb5a5bc443527aec59411f9b-dirty",
+        "dirtyShortRev": "a94d721-dirty",
+        "lastModified": 1726066453,
+        "narHash": "sha256-XTORlnrN1Yv8JVf4ZGSJVHmtvLjyapYT6HkQ97BUvKQ=",
         "type": "git",
         "url": "file:///home/elen/Src/agenix-rekey"
       },
