@@ -65,3 +65,10 @@ window#waybar {
     color: rgba(215, 196, 187, 1);
     padding: 0px 4px 0px 4px;
 }
+
+#niri-ctl {
+    margin: 0px 0px 0px 0px;
+    border-radius: 0px;
+    color: rgba(215, 196, 177, 0.9);
+    padding: 0px 4px 0px 4px;
+}

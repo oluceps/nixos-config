@@ -58,6 +58,14 @@ builtins.toJSON [
       return-type = "json";
       signal = 8;
     };
+    "custom/niri-ctl" = {
+      on-click = "${lib.getExe pkgs.niri} msg action focus-workspace-up";
+      on-click-right = "${lib.getExe pkgs.niri} msg action focus-workspace-down";
+      on-scroll-up = "${lib.getExe pkgs.niri} msg action focus-column-left";
+      on-scroll-down = "${lib.getExe pkgs.niri} msg action focus-column-right";
+      format = "";
+      tooltip = false;
+    };
     "group/time" = {
       modules = [
         "clock#1"
@@ -87,6 +95,7 @@ builtins.toJSON [
       "memory"
       "battery"
       "pulseaudio"
+      "custom/niri-ctl"
     ];
     modules-left = [ ];
     modules-right = [ ];
