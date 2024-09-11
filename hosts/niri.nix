@@ -18,11 +18,6 @@
       default_session = initial_session;
     };
   };
-  systemd.tmpfiles.rules = [
-    "L+ /home/${user}/.config/systemd/user/niri.service - - - - ${pkgs.niri}/share/systemd/user/niri.service"
-    "L+ /home/${user}/.config/systemd/user/niri-shutdown.target - - - - ${pkgs.niri}/share/systemd/user/niri-shutdown.target"
-  ];
-
   systemd.user.services.swaybg = {
     wantedBy = [ "niri.service" ];
     wants = [ "graphical-session.target" ];
