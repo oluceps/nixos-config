@@ -2,6 +2,12 @@
 builtins.toJSON (
   let
     niri = lib.getExe pkgs.niri;
+    niriCtlArg = {
+      on-click = "${niri} msg action focus-workspace-up";
+      on-click-right = "${niri} msg action focus-workspace-down";
+      on-scroll-up = "${niri} msg action focus-column-left";
+      on-scroll-down = "${niri} msg action focus-column-right";
+    };
   in
   [
     {
@@ -23,22 +29,14 @@ builtins.toJSON (
       };
       "clock#1" = {
         format = "{:%H}";
-        on-click = "${niri} msg action focus-workspace-up";
-        on-click-right = "${niri} msg action focus-workspace-down";
-        on-scroll-up = "${niri} msg action focus-column-left";
-        on-scroll-down = "${niri} msg action focus-column-right";
         interval = 1;
         tooltip = false;
-      };
+      } // niriCtlArg;
       "clock#2" = {
         format = "{:%M}";
-        on-click = "${niri} msg action focus-workspace-up";
-        on-click-right = "${niri} msg action focus-workspace-down";
-        on-scroll-up = "${niri} msg action focus-column-left";
-        on-scroll-down = "${niri} msg action focus-column-right";
         interval = 1;
         tooltip = false;
-      };
+      } // niriCtlArg;
       pulseaudio = {
         tooltip = false;
         scroll-step = 1;
@@ -62,7 +60,7 @@ builtins.toJSON (
         format = "{usage}";
         min-length = 3;
         interval = 1;
-      };
+      } // niriCtlArg;
       "custom/pipewire" = {
         exec = "${lib.getExe pkgs.pw-volume} status";
         format = "{percentage}";
@@ -71,13 +69,9 @@ builtins.toJSON (
         signal = 8;
       };
       "custom/nirictl" = {
-        on-click = "${niri} msg action focus-workspace-up";
-        on-click-right = "${niri} msg action focus-workspace-down";
-        on-scroll-up = "${niri} msg action focus-column-left";
-        on-scroll-down = "${niri} msg action focus-column-right";
         format = "";
         tooltip = false;
-      };
+      } // niriCtlArg;
       "group/time" = {
         modules = [
           "clock#1"
@@ -99,7 +93,7 @@ builtins.toJSON (
         format = "{}";
         interval = 1;
         tooltip = false;
-      };
+      } // niriCtlArg;
       modules-center = [
         "custom/nirictl"
         "group/time"
@@ -136,7 +130,7 @@ builtins.toJSON (
         hwmon-path = "/sys/class/hwmon/hwmon1/temp1_input";
         interval = 2;
         tooltip = false;
-      };
+      } // niriCtlArg;
       tray = {
         icon-size = 15;
         spacing = 5;
