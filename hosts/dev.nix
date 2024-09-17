@@ -87,7 +87,6 @@
             # friture
 
             pv
-            devenv
             # gnome.dconf-editor
 
             [
