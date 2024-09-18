@@ -142,7 +142,7 @@
   fileSystems."/persist".neededForBoot = true;
 
   services.scx = {
-    enable = config.boot.kernelPackages == inputs'.nyx.packages.linuxPackages_cachyos;
+    enable = true;
     scheduler = "scx_bpfland";
   };
   boot = {

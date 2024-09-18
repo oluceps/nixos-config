@@ -15,6 +15,7 @@
     nameserver 127.0.0.1
   '';
 
+  services.logind.lidSwitch = "lock";
   hardware.graphics.extraPackages = with pkgs; [
     rocm-opencl-icd
     rocm-opencl-runtime
