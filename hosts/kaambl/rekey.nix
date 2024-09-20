@@ -25,9 +25,6 @@ in
       garage = {
         rekeyFile = ../../sec/garage.age;
       };
-      restic-envs-dc3 = {
-        rekeyFile = ../../sec/restic-envs-dc3.age;
-      };
       wgk = {
         rekeyFile = ../../sec/wgk.age;
         owner = "systemd-network";
