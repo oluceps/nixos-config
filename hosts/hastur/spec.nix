@@ -218,6 +218,27 @@
         #     Persistent = true;
         #   };
         # };
+        critic = {
+          passwordFile = config.age.secrets.wg.path;
+          repository = "s3:http://10.0.1.3:3900/crit";
+          environmentFile = config.age.secrets.restic-envs-dc3.path;
+          paths = [
+            "/var/lib/backup"
+            "/var/lib/private/matrix-conduit"
+          ];
+          extraBackupArgs = [
+            "--exclude-caches"
+            "--no-scan"
+            "--retry-lock 2h"
+          ];
+          pruneOpts = [ "--keep-daily 3" ];
+          timerConfig = {
+            OnCalendar = "daily";
+            RandomizedDelaySec = "4h";
+            FixedRandomDelay = true;
+            Persistent = true;
+          };
+        };
       };
     };
     # cloudflared = {
