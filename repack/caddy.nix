@@ -14,7 +14,7 @@ in
 
   options = {
     repack.caddy = {
-      enable = lib.mkEnableOption "caddy api gateway";
+      # enable = lib.mkEnableOption "caddy api gateway";
       package = lib.mkPackageOption pkgs "caddy-lim" { };
       settings = lib.mkOption {
         type = lib.types.submodule { freeformType = format.type; };
