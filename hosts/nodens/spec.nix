@@ -1,9 +1,7 @@
 {
-  inputs,
   pkgs,
   config,
   lib,
-  user,
   ...
 }:
 {
@@ -24,18 +22,12 @@
     supportedFilesystems = [ "tcp_bbr" ];
     inherit ((import ../sysctl.nix { inherit lib; }).boot) kernel;
   };
-
-  systemd.services.matrix-sliding-sync.serviceConfig.RuntimeDirectory = [ "matrix-sliding-sync" ];
-  systemd.services.trojan-server.serviceConfig.LoadCredential = (map (lib.genCredPath config)) [
-    "nyaw.cert"
-    "nyaw.key"
-  ];
-
   repack = {
     openssh.enable = true;
     fail2ban.enable = true;
     rustypaste.enable = true;
     matrix-sliding-sync.enable = true;
+    trojan-server.enable = true;
     dnsproxy = {
       enable = true;
     };
@@ -73,7 +65,6 @@
       };
     };
     metrics.enable = true;
-    trojan-server.enable = true;
     do-agent.enable = true;
     # copilot-gpt4.enable = true;
     factorio-manager = {

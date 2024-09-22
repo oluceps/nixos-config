@@ -32,7 +32,7 @@ let
 
 in
 reIf {
-  systemd = {
+  systemd.services = {
     alertmanager.serviceConfig.LoadCredential = [
       "notifychan:${config.age.secrets.notifychan.path}"
     ];
