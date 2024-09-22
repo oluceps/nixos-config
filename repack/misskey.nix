@@ -1,5 +1,10 @@
-{ config, pkgs, ... }:
 {
+  reIf,
+  config,
+  pkgs,
+  ...
+}:
+reIf {
   services.redis.servers.misskey = {
     enable = true;
     port = 6379;

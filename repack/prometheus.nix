@@ -32,6 +32,14 @@ let
 
 in
 reIf {
+  systemd = {
+    alertmanager.serviceConfig.LoadCredential = [
+      "notifychan:${config.age.secrets.notifychan.path}"
+    ];
+    prometheus.serviceConfig.LoadCredential = (map (lib.genCredPath config)) [
+      "prom"
+    ];
+  };
   services.prometheus = {
     enable = true;
     webExternalUrl = "https://${config.networking.fqdn}/prom";

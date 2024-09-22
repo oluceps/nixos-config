@@ -32,20 +32,7 @@
     ${pkgs.openssh}/bin/ssh-add ${config.age.secrets.id.path}
   '';
   systemd = {
-    services = {
-      alertmanager.serviceConfig.LoadCredential = [
-        "notifychan:${config.age.secrets.notifychan.path}"
-      ];
-
-      atuin.serviceConfig.Environment = [ "RUST_LOG=debug" ];
-
-      prometheus.serviceConfig.LoadCredential = (map (lib.genCredPath config)) [
-        "prom"
-      ];
-    };
-
     enableEmergencyMode = false;
-
     watchdog = {
       runtimeTime = "20s";
       rebootTime = "30s";
@@ -80,6 +67,7 @@
     vaultwarden.enable = true;
     matrix-conduit.enable = true;
     # coredns.enable = true;
+    misskey.enable = true;
     dnsproxy.enable = true;
     srs.enable = true;
     grafana.enable = true;

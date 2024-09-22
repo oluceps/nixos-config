@@ -68,7 +68,6 @@ withSystem "x86_64-linux" (
         inputs.niri.nixosModules.niri
         ../../users.nix
 
-        ./misskey.nix
         ../dev.nix
       ]
       ++ (with inputs; [
