@@ -16,5 +16,5 @@ in
   options.repack = lib.genAttrs repackNames (n: {
     enable = lib.mkEnableOption "enable repacked ${n} module";
   });
-  imports = map (n: import ./${n}.nix (args // { inherit reIf pkgs; })) repackNames;
+  imports = map (n: import ./${n}.nix (args // { inherit reIf; })) repackNames;
 }
