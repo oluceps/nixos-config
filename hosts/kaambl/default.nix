@@ -49,6 +49,7 @@ withSystem "x86_64-linux" (
       ./spec.nix
       ../persist.nix
       ../secureboot.nix
+      ./restic.nix
       # inputs.home-manager.nixosModules.default
       # ../../home
       ../sysctl.nix
