@@ -1,10 +1,13 @@
 { config, lib, ... }:
 {
-  systemd.services =
-    lib.genAttrs (map (n: "restic-backups-${n}") (lib.attrNames config.services.restic.backups))
-      {
+  systemd.services = lib.listToAttrs (
+    map (name: {
+      name = "restic-backups-${name}";
+      value = {
         serviceConfig.Environment = [ "GOGC=20" ];
       };
+    }) (lib.attrNames config.services.restic.backups)
+  );
 
   services.restic = {
     backups = {
