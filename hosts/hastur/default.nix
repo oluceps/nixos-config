@@ -51,8 +51,7 @@ withSystem "x86_64-linux" (
         ./rekey.nix
         ./spec.nix
         ./caddy.nix
-        # ./nginx.nix
-        # ../graphBase.nix
+        ./restic.nix
 
         ../persist.nix
         ../secureboot.nix
