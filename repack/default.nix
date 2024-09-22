@@ -3,7 +3,7 @@
   config,
   pkgs,
   ...
-}:
+}@args:
 let
   repackNames = (
     map (lib.removeSuffix ".nix") (
@@ -16,5 +16,5 @@ in
   options.repack = lib.genAttrs repackNames (n: {
     enable = lib.mkEnableOption "enable repacked ${n} module";
   });
-  imports = map (n: ./${n}.nix) repackNames;
+  imports = map (n: import ./${n}.nix (args // { inherit reIf pkgs; })) repackNames;
 }

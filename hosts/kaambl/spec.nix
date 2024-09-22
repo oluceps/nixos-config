@@ -66,9 +66,9 @@
     # coredns.enable = true;
     # mosproxy.enable = true;
     dnsproxy.enable = true;
-    dae.enable = true;
     # smartdns.enable = true;
   };
+  repack.dae.enable = true;
 
   services = {
     metrics.enable = true;
