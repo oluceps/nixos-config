@@ -43,7 +43,6 @@ withSystem "x86_64-linux" (
       user = "elen";
     };
     modules = lib.sharedModules ++ [
-      self.nixosModules.repack
       ../../srv
       ./hardware.nix
       ./network.nix

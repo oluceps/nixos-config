@@ -65,7 +65,7 @@
   ] ++ [ config.services.photoprism.port ];
 
   services.smartd.notifications.systembus-notify.enable = true;
-  srv = {
+  repack = {
     openssh.enable = true;
     fail2ban.enable = true;
     dae.enable = true;
@@ -85,39 +85,6 @@
     grafana.enable = true;
     meilisearch.enable = true;
     radicle.enable = true;
-
-    phantomsocks = {
-      enable = false;
-      override = {
-        settings.interfaces = [
-          {
-            device = "bond0";
-            dns = "tcp://208.67.220.220:5353";
-            hint = "w-seq,https,w-md5";
-            name = "default";
-          }
-          {
-            device = "bond0";
-            dns = "tcp://208.67.220.220:443";
-            hint = "ipv6,w-seq,w-md5";
-            name = "v6";
-          }
-          {
-            device = "bond0";
-            dns = "tcp://208.67.220.220:443";
-            hint = "df";
-            name = "df";
-          }
-          {
-            device = "bond0";
-            dns = "tcp://208.67.220.220:5353";
-            hint = "http,ttl";
-            name = "http";
-            ttl = 15;
-          }
-        ];
-      };
-    };
   };
   services = {
     # ktistec.enable = true;
