@@ -5,7 +5,7 @@
   reIf,
   ...
 }:
-reIf "dae" {
+reIf {
   services.dae = {
     enable = true;
     disableTxChecksumIpGeneric = false;

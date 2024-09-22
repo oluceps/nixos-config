@@ -2,7 +2,7 @@
   reIf,
   ...
 }:
-reIf "atuin" {
+reIf {
   services.atuin = {
     enable = true;
     host = "0.0.0.0";
