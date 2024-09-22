@@ -31,33 +31,31 @@
     "nyaw.key"
   ];
 
-  srv = {
+  repack = {
     openssh.enable = true;
     fail2ban.enable = true;
     rustypaste.enable = true;
     matrix-sliding-sync.enable = true;
-
     dnsproxy = {
       enable = true;
-      override = {
-        settings = {
-          bootstrap = [
-            "1.1.1.1"
-            "8.8.8.8"
-          ];
-          listen-addrs = [ "0.0.0.0" ];
-          listen-ports = [ 53 ];
-          upstream-mode = "parallel";
-          upstream = [
-            "1.1.1.1"
-            "8.8.8.8"
-            "https://dns.google/dns-query"
-          ];
-        };
-      };
     };
   };
   services = {
+    # override repack
+    dnsproxy.settings = lib.mkForce {
+      bootstrap = [
+        "1.1.1.1"
+        "8.8.8.8"
+      ];
+      listen-addrs = [ "0.0.0.0" ];
+      listen-ports = [ 53 ];
+      upstream-mode = "parallel";
+      upstream = [
+        "1.1.1.1"
+        "8.8.8.8"
+        "https://dns.google/dns-query"
+      ];
+    };
     realm = {
       enable = true;
       settings = {
