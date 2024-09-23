@@ -2,22 +2,17 @@
   kernel,
   stdenv,
   fetchFromGitHub,
-  cmake,
 }:
 stdenv.mkDerivation (finalAttrs: {
   name = "pico-rng";
   src = fetchFromGitHub {
-    owner = "polhenarejos";
+    owner = "oluceps";
     repo = finalAttrs.name;
-    rev = "f009dc267ce995761a4b5e0d3846af664aa094de";
-    hash = "sha256-KvDSAlMSRhfPSKtpe4hjThoc3nSxsS2S2dQxga2owUk=";
+    rev = "16173a7c0b9f2c97816fddd583686ccaa6385656";
+    hash = "sha256-pynB5nYHFz5drlQMvSaTG6up2xSQMdXbnVhNvr+fcnE=";
   };
 
   sourceRoot = "${finalAttrs.src.name}/driver";
-  # makeFlags = kernel.makeFlags ++ [
-    # "KERNEL_DIR=${kernel.dev}/lib/modules/${kernel.modDirVersion}/build"
-    # "INSTALL_MOD_PATH=$(out)"
-  # ];
   buildPhase = ''
     runHook preBuild
     mkdir -p $out/src
@@ -28,6 +23,7 @@ stdenv.mkDerivation (finalAttrs: {
   '';
   nativeBuildInputs = kernel.moduleBuildDependencies;
   installPhase = ''
-    install -D pico_rng.ko $out/lib/modules/${kernel.modDirVersion}/driver/pico_rng.ko
+    install -D $out/src/pico_rng.ko $out/lib/modules/${kernel.modDirVersion}/driver/pico_rng.ko
+    rm -r $out/src
   '';
 })
