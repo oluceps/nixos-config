@@ -6,6 +6,7 @@
 }:
 {
   programs.niri = {
+    # aligh waybar rpc etc
     package = pkgs.niri;
     enable = true;
   };
