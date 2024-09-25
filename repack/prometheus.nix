@@ -135,6 +135,10 @@ reIf {
                 alert = "UnitFailed";
                 expr = ''node_systemd_unit_state{state="failed"} == 1'';
               }
+              {
+                alert = "BtrfsDevErr";
+                expr = ''sum(rate(node_btrfs_device_errors_total[2m])) > 0'';
+              }
             ];
           }
         ];
