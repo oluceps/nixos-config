@@ -102,6 +102,7 @@ reIf {
             {
               targets = [
                 "https://nyaw.xyz"
+                "https://blog.nyaw.xyz"
                 "https://ntfy.nyaw.xyz"
                 "https://matrix.nyaw.xyz"
                 "https://pb.nyaw.xyz"
