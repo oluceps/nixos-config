@@ -94,8 +94,12 @@
                             };
                           in
                           {
-                            handler = "file_server";
-                            root = "${pkgs.cinny.override { inherit conf; }}";
+                            handle = [
+                              {
+                                handler = "file_server";
+                                root = "${pkgs.cinny.override { inherit conf; }}";
+                              }
+                            ];
                           }
                         )
                       ];
