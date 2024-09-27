@@ -3,7 +3,7 @@
   self,
   inputs,
   ...
-}:
+}@args:
 let
   inherit (builtins) readFile fromTOML;
   inherit (self.lib) pipe genAttrs;
@@ -18,6 +18,6 @@ let
 in
 {
   flake.nixosConfigurations = genAttrs hosts (
-    n: import ./${n} { inherit withSystem self inputs; } # TODO: weird.. @ pattern not work here
+    n: import ./${n} args # TODO: weird.. @ pattern not work here
   );
 }
