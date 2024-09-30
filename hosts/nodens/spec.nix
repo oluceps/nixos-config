@@ -119,6 +119,7 @@
       only = {
         enable = true;
         serve = true;
+        openFirewall = 4432;
         credentials = [
           "key:${config.age.secrets."nyaw.key".path}"
           "cert:${config.age.secrets."nyaw.cert".path}"

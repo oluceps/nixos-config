@@ -1,5 +1,6 @@
-{ pkgs, ... }:
+{ pkgs, modulesPath, ... }:
 {
+  imports = [ (modulesPath + "/profiles/qemu-guest.nix") ];
   boot = {
     kernelParams = [
       "audit=0"

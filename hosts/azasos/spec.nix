@@ -68,6 +68,10 @@
       enable = true;
       configFile = config.age.secrets.hyst-la-cli.path;
     };
+    yidhra = {
+      enable = true;
+      configFile = config.age.secrets.hyst-hk-cli.path;
+    };
   };
 
   networking.firewall = {

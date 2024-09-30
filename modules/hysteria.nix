@@ -45,7 +45,7 @@ in
             serve = mkEnableOption "using `hysteria-server` instead of `hysteria-client`";
             configFile = mkOption {
               type = types.str;
-              default = "/etc/hysteria/server.json";
+              default = "/etc/hysteria/config.yaml";
               description = "Config file location, absolute path";
             };
           };
@@ -83,7 +83,7 @@ in
             Type = "simple";
             DynamicUser = true;
             ExecStart = "${lib.getExe' opts.package "hysteria"} ${binSuffix} --disable-update-check -c $\{CREDENTIALS_DIRECTORY}/config.yaml";
-            LoadCredential = [ "config:${opts.configFile}" ] ++ opts.credentials;
+            LoadCredential = [ "config.yaml:${opts.configFile}" ] ++ opts.credentials;
             AmbientCapabilities = [
               "CAP_NET_ADMIN"
               "CAP_NET_BIND_SERVICE"

@@ -47,6 +47,7 @@ withSystem "x86_64-linux" (
       }
 
       ./disk.nix
+      ../persist-base.nix
       ./boot.nix
       ./network.nix
       ./rekey.nix
