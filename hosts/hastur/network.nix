@@ -161,7 +161,7 @@
             PersistentKeepalive = 15;
           }
           {
-            PublicKey = "jQGcU+BULglJ9pUz/MmgOWhGRjpimogvEudwc8hMR0A=";
+            PublicKey = "V3J9d8lUOk4WXj+dIiAZsuKJv3HxUl8J4HvX/s4eElY=";
             AllowedIPs = [ "10.0.4.0/24" ];
             Endpoint = "127.0.0.1:41822";
             PersistentKeepalive = 15;
