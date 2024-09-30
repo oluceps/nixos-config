@@ -115,20 +115,17 @@
       };
     };
 
-    hysteria.instances = [
-      {
-        name = "only";
-        serve = {
-          enable = true;
-          port = 4432;
-        };
+    hysteria.instances = {
+      only = {
+        enable = true;
+        serve = true;
         credentials = [
           "key:${config.age.secrets."nyaw.key".path}"
           "cert:${config.age.secrets."nyaw.cert".path}"
         ];
         configFile = config.age.secrets.hyst-us.path;
-      }
-    ];
+      };
+    };
   };
 
   programs = {

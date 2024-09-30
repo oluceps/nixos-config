@@ -8,7 +8,10 @@
 {
   # server.
 
-  system.stateVersion = "22.11";
+  system.stateVersion = "24.11";
+
+  users.mutableUsers = false;
+  system.etc.overlay.mutable = false;
 
   nix.gc = {
     automatic = true;
@@ -24,21 +27,37 @@
   repack = {
     openssh.enable = true;
     fail2ban.enable = true;
+    dnsproxy = {
+      enable = true;
+    };
   };
   services = {
+    metrics.enable = true;
 
-    juicity.instances = [
-      {
-        name = "only";
+    dnsproxy.settings = lib.mkForce {
+      bootstrap = [
+        "1.1.1.1"
+        "8.8.8.8"
+      ];
+      listen-addrs = [ "0.0.0.0" ];
+      listen-ports = [ 53 ];
+      upstream-mode = "parallel";
+      upstream = [
+        "1.1.1.1"
+        "8.8.8.8"
+        "https://dns.google/dns-query"
+      ];
+    };
+    hysteria.instances = {
+      only = {
+        serve = true;
         credentials = [
           "key:${config.age.secrets."nyaw.key".path}"
           "cert:${config.age.secrets."nyaw.cert".path}"
         ];
-        serve = true;
-        openFirewall = 23180;
-        configFile = config.age.secrets.juic-san.path;
-      }
-    ];
+        configFile = config.age.secrets.hyst-us.path;
+      };
+    };
     rustypaste = {
       enable = true;
       settings = {

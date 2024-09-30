@@ -104,16 +104,17 @@
     #     configFile = config.age.secrets.ss.path;
     #   }
     # ];
-    hysteria.instances = [
-      {
-        name = "nodens";
+
+    hysteria.instances = {
+      nodens = {
         configFile = config.age.secrets.hyst-us-cli.path;
-      }
-      {
-        name = "abhoth";
+        enable = true;
+      };
+      abhoth = {
+        enable = true;
         configFile = config.age.secrets.hyst-la-cli.path;
-      }
-    ];
+      };
+    };
 
     factorio = {
       enable = false;

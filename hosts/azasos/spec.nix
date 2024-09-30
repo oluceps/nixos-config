@@ -58,16 +58,16 @@
         ];
       };
     };
-    hysteria.instances = [
-      {
-        name = "nodens";
-        configFile = config.age.secrets.hyst-us-cli.path;
-      }
-      {
-        name = "abhoth";
-        configFile = config.age.secrets.hyst-la-cli.path;
-      }
-    ];
+  };
+  services.hysteria.instances = {
+    nodens = {
+      enable = true;
+      configFile = config.age.secrets.hyst-us-cli.path;
+    };
+    abhoth = {
+      enable = true;
+      configFile = config.age.secrets.hyst-la-cli.path;
+    };
   };
 
   networking.firewall = {
