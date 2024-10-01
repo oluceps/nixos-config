@@ -60,7 +60,7 @@
       "zswap.compressor=zstd"
       "zswap.zpool=zsmalloc"
       "ia32_emulation=0"
-      "bdev_allow_write_mounted=0"
+      # "bdev_allow_write_mounted=0"
     ];
   };
 
