@@ -24,6 +24,10 @@
                         {
                           handle = [
                             {
+                              handler = "encode";
+                              encodings = "zstd";
+                            }
+                            {
                               handler = "reverse_proxy";
                               upstreams = [ { dial = "localhost:5000"; } ];
                             }
@@ -78,6 +82,10 @@
                 }
                 {
                   handle = [
+                    {
+                      handler = "encode";
+                      encodings = "zstd";
+                    }
                     {
                       handler = "reverse_proxy";
                       upstreams = [ { dial = "localhost:9000"; } ];
