@@ -70,21 +70,6 @@
                                 };
                               };
                               show_labs_settings = true;
-
-                              # defaultHomeserver = 0;
-                              # homeserverList = [
-                              #   "nyaw.xyz"
-                              #   "converser.eu"
-                              #   "envs.net"
-                              #   "matrix.org"
-                              #   "monero.social"
-                              #   "mozilla.org"
-                              #   "xmr.se"
-                              # ];
-                              # hashRouter = {
-                              #   enabled = true;
-                              #   basename = "/";
-                              # };
                             };
                           in
                           {
@@ -198,11 +183,6 @@
                           handle = [
                             {
                               body = builtins.toJSON { "m.server" = "matrix.nyaw.xyz:443"; };
-                              # status_code = 200;
-                              # headers = {
-                              #   Access-Control-Allow-Origin = [ "*" ];
-                              #   Content-Type = [ "application/json" ];
-                              # };
                               handler = "static_response";
                             }
                           ];
