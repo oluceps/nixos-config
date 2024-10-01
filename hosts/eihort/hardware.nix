@@ -31,9 +31,6 @@
     kernelParams = [
       "audit=0"
       "net.ifnames=0"
-      "zswap.enabled=1"
-      "zswap.compressor=zstd"
-      "zswap.zpool=zsmalloc"
       "ia32_emulation=0"
     ];
 
