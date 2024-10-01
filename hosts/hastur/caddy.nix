@@ -25,7 +25,11 @@
                           handle = [
                             {
                               handler = "encode";
-                              encodings = "zstd";
+                              encodings = {
+                                zstd = {
+                                  level = "better";
+                                };
+                              };
                             }
                             {
                               handler = "reverse_proxy";
@@ -84,7 +88,11 @@
                   handle = [
                     {
                       handler = "encode";
-                      encodings = "zstd";
+                      encodings = {
+                        zstd = {
+                          level = "better";
+                        };
+                      };
                     }
                     {
                       handler = "reverse_proxy";
