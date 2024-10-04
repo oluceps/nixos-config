@@ -100,7 +100,8 @@ in
             ];
             LimitNPROC = 512;
             LimitNOFILE = "infinity";
-            Restart = "on-failure";
+            Restart = "always";
+            RestartSec = 1;
           };
       }
     ) (lib.filterAttrs (_: v: v.enable) cfg.instances);
