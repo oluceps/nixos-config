@@ -8,12 +8,7 @@ let
   inherit (builtins) readFile fromTOML;
   inherit (self.lib) pipe genAttrs;
   hosts =
-    pipe ./sum.toml [
-      readFile
-      fromTOML
-      (i: i.host)
-      (map (i: i.name))
-    ]
+    (./sum.toml |> readFile |> fromTOML |> (i: i.host) |> (map (i: i.name)))
     ++ [
       "bootstrap"
       "livecd"
