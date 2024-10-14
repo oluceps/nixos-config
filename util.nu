@@ -57,18 +57,17 @@ export def d [
     use std log;
 
     $nodes | par-each {|per|
-      mut table = []
       let per_node_addr = do $get_addr $per;
       let out_path = (nom build $'.#nixosConfigurations.($per).config.system.build.toplevel'
          --no-link --json |
          from json |
          $in.0.outputs.out)
-      $table ++= [["name","addr","path"];[$per, $per_node_addr, $out_path]]
+
       nix copy --substitute-on-destination --to $'ssh://($per_node_addr)' $out_path
 
       log info "copy closure complete";
-      return $table.0;
-    } | each {|i|
+      return [$per, $per_node_addr, $out_path];
+    } | par-each {|| {name: $in.0, addr: $in.1, path: $in.2}} | each {|i|
           log info $'deploying ($i.path)(char newline)-> ($i.name) | ($i.addr)'
           ssh -t $'ssh://($i.addr)' $'sudo ($i.path)/bin/switch-to-configuration ($mode)'
         }
