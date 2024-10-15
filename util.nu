@@ -45,6 +45,7 @@ export def d [
   nodes?: list<string>
   mode?: string = "switch"
   --builder (-b): string = "hastur"
+  --sod
 ] {
 
   let get_addr = {|x| do $env.get_addr ($env.map) ($x)}
@@ -63,8 +64,8 @@ export def d [
          from json |
          $in.0.outputs.out)
 
-     # --substitute-on-destination
-     nix copy  --to $'ssh://($per_node_addr)' $out_path
+     let sub = if ($sod) { "--substitute-on-destination" } else {""}
+     nix copy $sub --to $'ssh://($per_node_addr)' $out_path
 
       log info "copy closure complete";
       return [$per, $per_node_addr, $out_path];
