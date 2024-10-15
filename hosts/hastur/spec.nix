@@ -10,7 +10,9 @@
 
   system.stateVersion = "22.11"; # Did you read the comment?
   users.mutableUsers = false;
-  system.etc.overlay.mutable = false;
+  # services.userborn.enable = true;
+  # system.etc.overlay.enable = false;
+  # system.etc.overlay.mutable = false;
   # system.forbiddenDependenciesRegexes = [ "perl" ];
   environment.etc."resolv.conf".text = ''
     nameserver 127.0.0.1
@@ -24,7 +26,7 @@
   };
 
   nix.gc = {
-    automatic = true;
+    # automatic = true;
     dates = "weekly";
     options = "--delete-older-than 10d";
   };
