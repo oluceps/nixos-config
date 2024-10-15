@@ -14,7 +14,7 @@ reIf (
         cond = (config.services.trojan-server.enable);
       }
       {
-        name = "hysteria";
+        name = "hysteria-only";
         cond = (builtins.any (i: i.serve) (lib.attrValues config.services.hysteria.instances));
       }
     ];
