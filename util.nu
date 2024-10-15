@@ -52,7 +52,7 @@ export def d [
 
   let builder_addr = do $get_addr $builder
 
-  if ($nodes == null) {
+  if ($nodes == null or $nodes == []) {
     (nh os switch .)
   } else {
     use std log;
