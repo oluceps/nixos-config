@@ -75,6 +75,7 @@
     meilisearch.enable = true;
     radicle.enable = true;
     xmrig.enable = true;
+    reuse-cert.enable = true;
   };
   services = {
     # ktistec.enable = true;
