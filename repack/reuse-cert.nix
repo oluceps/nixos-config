@@ -26,11 +26,11 @@ reIf (
         acc
         // {
           ${i.name} = {
-            serviceConfig.BindReadOnlyPaths = lib.mkIf i.cond (
+            serviceConfig.LoadCredential = lib.mkIf i.cond (
               map
                 (
                   s:
-                  "-/var/lib/caddy/certificates/acme-v02.api.letsencrypt.org-directory/wildcard_.nyaw.xyz/wildcard_.nyaw.xyz.${s}"
+                  "${s}:/var/lib/caddy/certificates/acme-v02.api.letsencrypt.org-directory/wildcard_.nyaw.xyz/wildcard_.nyaw.xyz.${s}"
                 )
                 [
                   "key"
