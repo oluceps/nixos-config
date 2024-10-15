@@ -54,20 +54,19 @@ export def d [
   print $extra_builder_args
 
   if ($nodes == null or $nodes == []) {
-    (nh os switch .)
+    (nh os switch . -- ...($extra_builder_args))
   } else {
     use std log;
 
     $nodes | par-each {|per|
       let per_node_addr = do $get_addr $per;
-      let out_path = (nom build $'.#nixosConfigurations.($per).config.system.build.toplevel'
-         ...($extra_builder_args)
+      let out_path = (nom build $'.#nixosConfigurations.($per).config.system.build.toplevel' ...($extra_builder_args)
          --no-link --json |
          from json |
          $in.0.outputs.out)
 
-     let sub = if ($sod) { [--substitute-on-destination] } else {[]}
-     nix copy ...($sub) --to $'ssh://($per_node_addr)' $out_path
+      let sub = if ($sod) { [--substitute-on-destination] } else {[]}
+      nix copy ...($sub) --to $'ssh://($per_node_addr)' $out_path
 
       log info "copy closure complete";
       return [$per, $per_node_addr, $out_path];
