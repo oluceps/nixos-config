@@ -44,13 +44,14 @@ export def b [
 export def d [
   nodes?: list<string>
   mode?: string = "switch"
-  --builder (-b): string = "hastur"
+  --builder: string
   --sod
 ] {
 
   let get_addr = {|x| do $env.get_addr ($env.map) ($x)}
 
-  let builder_addr = do $get_addr $builder
+  let extra_builder_args = if ($builder != null) { [--max-jobs 0 --builders (do $get_addr $builder)] } else {[]}
+  print $extra_builder_args
 
   if ($nodes == null or $nodes == []) {
     (nh os switch .)
@@ -60,12 +61,13 @@ export def d [
     $nodes | par-each {|per|
       let per_node_addr = do $get_addr $per;
       let out_path = (nom build $'.#nixosConfigurations.($per).config.system.build.toplevel'
+         ...($extra_builder_args)
          --no-link --json |
          from json |
          $in.0.outputs.out)
 
-     let sub = if ($sod) { "--substitute-on-destination" } else {""}
-     nix copy $sub --to $'ssh://($per_node_addr)' $out_path
+     let sub = if ($sod) { [--substitute-on-destination] } else {[]}
+     nix copy ...($sub) --to $'ssh://($per_node_addr)' $out_path
 
       log info "copy closure complete";
       return [$per, $per_node_addr, $out_path];
