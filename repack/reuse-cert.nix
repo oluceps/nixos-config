@@ -45,25 +45,25 @@ reIf (
       ) { } nameCondPair)
       // {
         caddy.serviceConfig.EnvironmentFile = config.age.secrets.porkbun-api.path;
-        hysteria-only.serviceConfig.LoadCredential = [
-          "crt:${config.age.secrets."nyaw.cert".path}"
-          "key:${config.age.secrets."nyaw.key".path}"
-        ];
-        # hysteria-only.serviceConfig.LoadCredential =
-        #   lib.mkIf (builtins.any (i: i.serve) (lib.attrValues config.services.hysteria.instances))
-        #     (
-        #       map
-        #         (
-        #           s:
-        #           s
-        #           + ":"
-        #           + "/var/lib/caddy/certificates/acme-v02.api.letsencrypt.org-directory/nyaw.xyz/nyaw.xyz.${s}"
-        #         )
-        #         [
-        #           "key"
-        #           "crt"
-        #         ]
-        #     );
+        # hysteria-only.serviceConfig.LoadCredential = [
+        #   "crt:${config.age.secrets."nyaw.cert".path}"
+        #   "key:${config.age.secrets."nyaw.key".path}"
+        # ];
+        hysteria-only.serviceConfig.LoadCredential =
+          lib.mkIf (builtins.any (i: i.serve) (lib.attrValues config.services.hysteria.instances))
+            (
+              map
+                (
+                  s:
+                  s
+                  + ":"
+                  + "/var/lib/caddy/certificates/acme-v02.api.letsencrypt.org-directory/nyaw.xyz/nyaw.xyz.${s}"
+                )
+                [
+                  "key"
+                  "crt"
+                ]
+            );
       };
   }
 )
