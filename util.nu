@@ -55,7 +55,7 @@ export def d [
   print $extra_builder_args
 
   if ($nodes == null or $nodes == []) {
-    (nh os switch . -- ...($extra_builder_args))
+    (nh os $mode . -- ...($extra_builder_args))
   } else {
     use std log;
 
