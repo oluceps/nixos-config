@@ -202,13 +202,13 @@
                     #   ];
                     #   match = [ { host = [ "cdn.nyaw.xyz" ]; } ];
                     # }
-
                     {
                       handle = [
                         {
                           body = builtins.toJSON {
                             "misskey_online" = {
                               url = "https://blog.nyaw.xyz/api/online";
+                              type = "bool";
                               description = "";
                             };
                           };
