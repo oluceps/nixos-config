@@ -109,24 +109,6 @@
                       ];
                       match = [ { host = [ "cache.nyaw.xyz" ]; } ];
                     }
-                    {
-                      handle = [
-                        {
-                          handler = "subroute";
-                          routes = [
-                            {
-                              handle = [
-                                {
-                                  handler = "reverse_proxy";
-                                  upstreams = [ { dial = "10.0.1.2:8888"; } ];
-                                }
-                              ];
-                            }
-                          ];
-                        }
-                      ];
-                      match = [ { host = [ "api.atuin.nyaw.xyz" ]; } ];
-                    }
 
                     {
                       handle = [
@@ -155,6 +137,7 @@
                       ];
                       match = [ { host = [ "pb.nyaw.xyz" ]; } ];
                     }
+
                     {
                       handle = [
                         {
@@ -202,49 +185,37 @@
                       ];
                       match = [ { host = [ "seed.nyaw.xyz" ]; } ];
                     }
-                    {
-                      handle = [
-                        {
-                          handler = "subroute";
-                          routes = [
-                            {
-                              allowed_ports = [
-                                80
-                                443
-                              ];
-                              auth_credentials = [ "" ];
-                              handler = "forward_proxy";
-                              hide_ip = true;
-                              hide_via = true;
-                              probe_resistance = { };
-                            }
-                            {
-                              handler = "reverse_proxy";
-                              headers = {
-                                request = {
-                                  set = {
-                                    Host = [ "{http.reverse_proxy.upstream.hostport}" ];
-                                    X-Forwarded-Host = [ "{http.request.host}" ];
-                                  };
-                                };
-                              };
-                              transport = {
-                                protocol = "http";
-                                tls = { };
-                              };
-                              upstreams = [
-                                { dial = "www.apple.com:443"; }
-                              ];
-                            }
-                          ];
-                        }
-                      ];
-                      match = [ { host = [ "jail.nyaw.xyz" ]; } ];
-                    }
+                    # {
+                    #   handle = [
+                    #     {
+                    #       handler = "forward_proxy";
+                    #       # auth_credentials = [ "{env.NAIVE_AUTH}" ];
+                    #       auth_credentials = [ "bear encode 2ce" ];
+                    #       hide_ip = true;
+                    #       hide_via = true;
+                    #       probe_resistance = { };
+                    #     }
+                    #     {
+                    #       body = builtins.toJSON { "u" = "wot m8?"; };
+                    #       handler = "static_response";
+                    #     }
+                    #   ];
+                    #   match = [ { host = [ "cdn.nyaw.xyz" ]; } ];
+                    # }
                   ];
                 }
               ];
               match = [ { host = [ "*.nyaw.xyz" ]; } ];
+            }
+
+            {
+              handle = [
+                {
+                  handler = "reverse_proxy";
+                  upstreams = [ { dial = "10.0.1.2:8888"; } ];
+                }
+              ];
+              match = [ { host = [ "api.atuin.nyaw.xyz" ]; } ];
             }
 
             {

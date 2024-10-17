@@ -3,6 +3,7 @@
   data,
   lib,
   user,
+  self,
   ...
 }:
 {
@@ -11,9 +12,9 @@
 
     rekey = {
       extraEncryptionPubkeys = [ data.keys.ageKey ];
-      masterIdentities = [ ./sec/age-yubikey-identity-7d5d5540.txt.pub ];
+      masterIdentities = [ (self + "/sec/age-yubikey-identity-7d5d5540.txt.pub") ];
       storageMode = "local";
-      localStorageDir = ./sec/rekeyed/${config.networking.hostName};
+      localStorageDir = self + "/sec/rekeyed/${config.networking.hostName}";
     };
 
     secrets = (
@@ -42,6 +43,9 @@
         "caddy"
       ])
       // (genMaterial [
+
+        "nyaw.cert"
+        "nyaw.key"
         "atuin"
         "atuin_key"
         "ssh-cfg"
@@ -67,40 +71,28 @@
       // (genGlobalR [ "ntfy-token" ])
       // {
         dae = {
-          rekeyFile = ./sec/dae.age;
+          rekeyFile = ../sec/dae.age;
           mode = "640";
           owner = "root";
           group = "users";
           name = "d.dae";
         };
-        "nyaw.key" = {
-          rekeyFile = ./sec/nyaw.key.age;
-          mode = "640";
-          owner = "root";
-          group = "users";
-        };
-        "nyaw.cert" = {
-          rekeyFile = ./sec/nyaw.cert.age;
-          mode = "640";
-          owner = "root";
-          group = "users";
-        };
         hyst-us-cli = {
-          rekeyFile = ./sec/hyst-us-cli.age;
+          rekeyFile = ../sec/hyst-us-cli.age;
           mode = "640";
           owner = "root";
           group = "users";
           name = "hyst-us-cli.yaml";
         };
         hyst-la-cli = {
-          rekeyFile = ./sec/hyst-la-cli.age;
+          rekeyFile = ../sec/hyst-la-cli.age;
           mode = "640";
           owner = "root";
           group = "users";
           name = "hyst-la-cli.yaml";
         };
         hyst-hk-cli = {
-          rekeyFile = ./sec/hyst-hk-cli.age;
+          rekeyFile = ../sec/hyst-hk-cli.age;
           mode = "640";
           owner = "root";
           group = "users";
