@@ -21,7 +21,7 @@
         gen =
           ns: owner: group: mode:
           lib.genAttrs ns (n: {
-            rekeyFile = ./sec/${n}.age;
+            rekeyFile = ../sec/${n}.age;
             inherit owner group mode;
           });
         genHard = i: gen i "root" "users" "400";
@@ -39,7 +39,7 @@
         "jc-do"
         "ss-az"
         "trojan-server"
-        "porkbun-api"
+        "caddy"
       ])
       // (genMaterial [
         "atuin"

@@ -109,7 +109,6 @@
                       ];
                       match = [ { host = [ "cache.nyaw.xyz" ]; } ];
                     }
-
                     {
                       handle = [
                         {
@@ -203,7 +202,45 @@
                       ];
                       match = [ { host = [ "seed.nyaw.xyz" ]; } ];
                     }
-
+                    {
+                      handle = [
+                        {
+                          handler = "subroute";
+                          routes = [
+                            {
+                              allowed_ports = [
+                                80
+                                443
+                              ];
+                              auth_credentials = [ "" ];
+                              handler = "forward_proxy";
+                              hide_ip = true;
+                              hide_via = true;
+                              probe_resistance = { };
+                            }
+                            {
+                              handler = "reverse_proxy";
+                              headers = {
+                                request = {
+                                  set = {
+                                    Host = [ "{http.reverse_proxy.upstream.hostport}" ];
+                                    X-Forwarded-Host = [ "{http.request.host}" ];
+                                  };
+                                };
+                              };
+                              transport = {
+                                protocol = "http";
+                                tls = { };
+                              };
+                              upstreams = [
+                                { dial = "www.apple.com:443"; }
+                              ];
+                            }
+                          ];
+                        }
+                      ];
+                      match = [ { host = [ "jail.nyaw.xyz" ]; } ];
+                    }
                   ];
                 }
               ];
