@@ -57,10 +57,10 @@
         "minio"
         "prism"
         "aws-s3-cred"
-        "restic-repo"
-        "restic-repo-crit"
-        "restic-envs"
-        "restic-envs-crit"
+        # "rustic-repo"
+        # "rustic-repo-crit"
+        # "rustic-envs"
+        # "rustic-envs-crit"
         "attic"
       ])
       // (genBoot [
