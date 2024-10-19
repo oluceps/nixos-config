@@ -84,9 +84,7 @@ in
         description = "rustic ${name} backup";
         serviceConfig = {
           Type = "oneshot";
-          RuntimeDirectory = "rustic-backups-${name}";
-          CacheDirectory = "rustic-backups-${name}";
-          CacheDirectoryMode = "0700";
+          Environment = [ "RUSTIC_CACHE_DIR=/var/cache/rustic" ];
           PrivateTmp = true;
           ExecStart =
             let
