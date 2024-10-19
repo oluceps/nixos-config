@@ -64,7 +64,7 @@ in
   config = mkIf (cfg.backups != [ ]) {
     environment.systemPackages = [ pkgs.rustic ];
     environment.etc = listToAttrs (
-      map (n: nameValuePair ("rustic/" + removeSuffix ".toml" (baseNameOf n)) { source = n; }) (
+      map (n: nameValuePair ("rustic/" + (baseNameOf n)) { source = n; }) (
         foldl' (acc: i: acc ++ i.profiles) [ ] (attrValues cfg.backups)
       )
     );
