@@ -14,7 +14,6 @@ let
     types
     removeSuffix
     mkPackageOption
-    attrNames
     attrValues
     mkIf
     mapAttrs'
