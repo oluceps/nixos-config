@@ -12,7 +12,9 @@
 
     rekey = {
       extraEncryptionPubkeys = [ data.keys.ageKey ];
-      masterIdentities = [ (self + "/sec/age-yubikey-identity-7d5d5540.txt.pub") ];
+      masterIdentities = [
+        (self + "/sec/age-yubikey-identity-7d5d5540.txt.pub")
+      ];
       storageMode = "local";
       localStorageDir = self + "/sec/rekeyed/${config.networking.hostName}";
     };
