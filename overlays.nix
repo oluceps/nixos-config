@@ -15,11 +15,6 @@
     # prev.lib.genAttrs [ "hyprland" ] (n: (import inputs.nixpkgs-gui { inherit system; }).${n})
 
     // {
-      # lazygit =
-      #   (import inputs.nixpkgs-gui
-      #     {
-      #       inherit system;
-      #     }).lazygit;
       inherit
         (import inputs.nixpkgs-factorio {
           inherit (prev) system;
@@ -70,71 +65,7 @@
 
       # sha256 = "0000000000000000000000000000000000000000000000000000";
 
-      gnome = prev.gnome.overrideScope' (
-        gnomeFinal: gnomePrev: {
-          mutter = gnomePrev.mutter.overrideAttrs (old: {
-            src = prev.fetchgit {
-              url = "https://gitlab.gnome.org/vanvugt/mutter.git";
-              # GNOME 45: triple-buffering-v4-45
-              rev = "0b896518b2028d9c4d6ea44806d093fd33793689";
-              sha256 = "sha256-mzNy5GPlB2qkI2KEAErJQzO//uo8yO0kPQUwvGDwR4w=";
-            };
-          });
-        }
-      );
-
-      blesh = prev.blesh.overrideAttrs (old: {
-        src = prev.fetchzip {
-          url = "https://github.com/akinomyoga/ble.sh/releases/download/v0.4.0-devel3/ble-0.4.0-devel3.tar.xz";
-          sha256 = "kGLp8RaInYSrJEi3h5kWEOMAbZV/gEPFUjOLgBuMhCI=";
-        };
-      });
-
-      # BUGGY
-      # swaylock = prev.swaylock.overrideAttrs (old: {
-      #   src = prev.fetchFromGitHub {
-      #     owner = "mortie";
-      #     repo = "swaylock-effects";
-      #     rev = "v1.6-4";
-      #     sha256 = "sha256-nYA8W7iabaepiIsxDrCkG/WIFNrVdubk/AtFhIvYJB8=";
-      #   };
-      # });
-      # sway-unwrapped = inputs'.nixpkgs-wayland.packages.sway-unwrapped;
-      # sway-unwrapped = prev.callPackage "${inputs.RyanGibb}/pkgs/sway-im/package.nix" {
-      #   libdrm = final.libdrm;
-      #   wlroots = prev.callPackage "${inputs.RyanGibb}/pkgs/wlroots/default.nix" {
-      #     # for libdrm >=2.4.120
-      #     mesa = final.mesa;
-      #     wayland-protocols = prev.wayland-protocols.overrideAttrs (old: rec {
-      #       pname = "wayland-protocols";
-      #       version = "1.33";
-      #       src = prev.fetchurl {
-      #         url = "https://gitlab.freedesktop.org/wayland/${pname}/-/releases/${version}/downloads/${pname}-${version}.tar.xz";
-      #         hash = "sha256-lPDFCwkNbmGgP2IEhGexmrvoUb5OEa57NvZfi5jDljo=";
-      #       };
-      #     });
-      #   };
-      # };
-
-      # sway-unwrapped =
-      #   (import inputs.nixpkgs-gui
-      #     {
-      #       inherit system;
-      #     }).sway-unwrapped;
-
-      # fd_iuBrGE = (import
-      #   inputs.nixpkgs-22
-      #   {
-      #     system = "x86_64-linux";
-      #   }).pkgsCross.aarch64-multiplatform.OVMF.fd;
-
       scx = inputs'.nyx.packages.scx;
-      # fishPlugins.foreign-env = prev.fishPlugins.foreign-env.overrideAttrs
-      #   (old: {
-      #     preInstall = old.preInstall + (with prev; ''
-      #       sed -e "s|'env'|'${coreutils}/bin/env'|" -i functions/*
-      #     '');
-      #   });
 
       picom = prev.picom.overrideAttrs (old: {
         src = prev.fetchFromGitHub {
