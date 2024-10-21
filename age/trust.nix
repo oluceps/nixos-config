@@ -2,6 +2,7 @@
   hard,
   userRo,
   rootRo,
+  lib,
   # sdnetRo,
   # rrr,
   ...
@@ -11,7 +12,6 @@
   "dae.sub"
   "jc-do"
   "ss-az"
-  "juic-san"
   "naive"
 ])
 // (userRo [
@@ -39,25 +39,28 @@
     group = "users";
     name = "d.dae";
   };
-  hyst-us-cli = {
-    rekeyFile = ../sec/hyst-us-cli.age;
-    mode = "640";
-    owner = "root";
-    group = "users";
-    name = "hyst-us-cli.yaml";
-  };
-  hyst-la-cli = {
-    rekeyFile = ../sec/hyst-la-cli.age;
-    mode = "640";
-    owner = "root";
-    group = "users";
-    name = "hyst-la-cli.yaml";
-  };
-  hyst-hk-cli = {
-    rekeyFile = ../sec/hyst-hk-cli.age;
-    mode = "640";
-    owner = "root";
-    group = "users";
-    name = "hyst-hk-cli.yaml";
-  };
+
 }
+// (
+  let
+    inherit (lib) listToAttrs nameValuePair;
+  in
+  listToAttrs (
+    map
+      (
+        n:
+        nameValuePair "hyst-${n}-cli" {
+          rekeyFile = ../sec/hyst-${n}-cli.age;
+          mode = "640";
+          owner = "root";
+          group = "users";
+          name = "hyst-${n}-cli.yaml";
+        }
+      )
+      [
+        "la"
+        "us"
+        "hk"
+      ]
+  )
+)

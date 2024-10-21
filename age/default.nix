@@ -6,6 +6,7 @@
   data,
   user,
   self,
+  lib,
   ...
 }:
 {
@@ -41,6 +42,7 @@
             rootRo
             sdnetRo
             rrr
+            lib
             ;
         };
       in
