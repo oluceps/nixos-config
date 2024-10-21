@@ -53,7 +53,7 @@ withSystem "x86_64-linux" (
       # inputs.home-manager.nixosModules.default
       # ../../home
       ../sysctl.nix
-      (import ../../age { type = "trust"; })
+      (lib.iage "trust")
       ../../packages.nix
       ../../misc.nix
       ../../users.nix

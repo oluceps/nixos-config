@@ -2,7 +2,8 @@
   hard,
   userRo,
   rootRo,
-# sdnetRo,
-# rrr,
+  # sdnetRo,
+  # rrr,
+  ...
 }:
 ({ })

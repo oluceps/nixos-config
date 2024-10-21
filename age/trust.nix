@@ -20,7 +20,6 @@
   "ssh-cfg"
   "riro.u2f"
   "elen.u2f"
-  "gh-token"
   "age"
   "pub"
   "minio"

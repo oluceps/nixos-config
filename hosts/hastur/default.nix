@@ -61,7 +61,7 @@ withSystem "x86_64-linux" (
         ../../packages.nix
         ../../misc.nix
         ../sysvars.nix
-        (import ../../age { type = "trust"; })
+        (lib.iage "trust")
 
         ../sysctl.nix
         ../pam.nix

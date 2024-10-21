@@ -53,6 +53,7 @@
       // (userRo [
         "nyaw.cert"
         "nyaw.key"
+        "gh-token"
       ])
       // (sdnetRo [ "wg" ])
       // (rrr [ "ntfy-token" ])
