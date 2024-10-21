@@ -46,7 +46,7 @@ withSystem "x86_64-linux" (
       ./caddy.nix
       ./sysctl.nix
       ../persist.nix
-      ../../age
+      (import ../../age { type = "trust"; })
       ../../packages.nix
       ../../misc.nix
       ../../users.nix
