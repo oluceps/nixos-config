@@ -17,7 +17,7 @@
           "on-eihort.toml"
         ];
         timerConfig = {
-          OnCalendar = "*-*-* 3,15:00:00";
+          OnCalendar = "*-*-* 3:00:00";
           RandomizedDelaySec = "4h";
           FixedRandomDelay = true;
           Persistent = true;
