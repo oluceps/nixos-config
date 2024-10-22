@@ -185,7 +185,8 @@
       events = [
         {
           event = "lock";
-          command = "${pkgs.hyprlock}/bin/hyprlock --immediate";
+          # command = "${pkgs.hyprlock}/bin/hyprlock --immediate";
+          command = "${pkgs.swaylock}/bin/swaylock";
         }
         {
           event = "before-sleep";
