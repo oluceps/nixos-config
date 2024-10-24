@@ -11,7 +11,7 @@ reIf {
     address = "[::]";
     passwordFile = config.age.secrets.wg.path;
     settings = {
-      PHOTOPRISM_ADMIN_USER = "riro";
+      PHOTOPRISM_ADMIN_USER = "prism";
       PHOTOPRISM_DEFAULT_LOCALE = "en";
       PHOTOPRISM_DATABASE_NAME = "photoprism";
       PHOTOPRISM_DATABASE_SERVER = "/run/mysqld/mysqld.sock";
