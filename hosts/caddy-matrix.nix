@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ pkgs, matrix-upstream, ... }:
 {
   handle = [
     {
@@ -8,7 +8,7 @@
           handle = [
             {
               handler = "reverse_proxy";
-              upstreams = [ { dial = "10.0.1.2:6167"; } ];
+              upstreams = [ { dial = matrix-upstream; } ];
             }
           ];
           match = [
