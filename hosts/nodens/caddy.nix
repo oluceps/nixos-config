@@ -36,7 +36,7 @@
                     #     }
                     #   ];
                     # }
-                    # (import ../caddy-matrix.nix { inherit pkgs; })
+                    (import ../caddy-matrix.nix { inherit pkgs; })
                     {
                       handle = [
                         {
@@ -240,9 +240,9 @@
                             "m.homeserver" = {
                               base_url = "https://matrix.nyaw.xyz";
                             };
-                            "org.matrix.msc3575.proxy" = {
-                              url = "https://syncv3.nyaw.xyz";
-                            };
+                            # "org.matrix.msc3575.proxy" = {
+                            #   url = "https://syncv3.nyaw.xyz";
+                            # };
                           };
                           handler = "static_response";
                         }
