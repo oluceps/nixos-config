@@ -49,4 +49,5 @@
     )
   ];
   match = [ { host = [ "matrix.nyaw.xyz" ]; } ];
+  terminal = true;
 }

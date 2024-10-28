@@ -200,7 +200,6 @@
                 }
               ];
               match = [ { host = [ "*.nyaw.xyz" ]; } ];
-              terminal = true;
             }
 
             {
