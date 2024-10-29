@@ -19,7 +19,6 @@ let
     hosts = import ./hosts.nix;
   };
 
-
   genModules = map (
     let
       m = i: inputs.${i}.nixosModules;
