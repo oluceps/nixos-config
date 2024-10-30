@@ -9,10 +9,10 @@
       { ... }:
       {
         imports =
-          (with inputs; [
-            pre-commit-hooks.flakeModule
-            devshell.flakeModule
-            agenix-rekey.flakeModule
+          (map (n: inputs.${n}.flakeModule) [
+            "pre-commit-hooks"
+            "devshell"
+            "agenix-rekey"
           ])
           ++ [ ./hosts ];
         debug = false;
@@ -32,11 +32,11 @@
 
             _module.args.pkgs = import inputs.nixpkgs {
               inherit system;
-              overlays = with inputs; [
-                agenix-rekey.overlays.default
-                fenix.overlays.default
-                self.overlays.default
-                nuenv.overlays.default
+              overlays = map (n: inputs.${n}.overlays.default) [
+                "agenix-rekey"
+                "fenix"
+                "self"
+                "nuenv"
               ];
               config = {
                 allowUnfreePredicate =
