@@ -4,12 +4,14 @@
     inputs@{ flake-parts, self, ... }:
     let
       extraLibs = (import ./hosts/lib.nix inputs);
+      flakeModules = map (n: inputs.${n}.flakeModule);
+      defaultOverlays = map (n: inputs.${n}.overlays.default);
     in
     flake-parts.lib.mkFlake { inherit inputs; } (
       { ... }:
       {
         imports =
-          (map (n: inputs.${n}.flakeModule) [
+          (flakeModules [
             "pre-commit-hooks"
             "devshell"
             "agenix-rekey"
@@ -32,7 +34,7 @@
 
             _module.args.pkgs = import inputs.nixpkgs {
               inherit system;
-              overlays = map (n: inputs.${n}.overlays.default) [
+              overlays = defaultOverlays [
                 "agenix-rekey"
                 "fenix"
                 "self"
