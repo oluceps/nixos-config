@@ -15,9 +15,11 @@
             "pre-commit-hooks"
             "devshell"
             "agenix-rekey"
-            "vaultix"
           ])
-          ++ [ ./hosts ];
+          ++ [
+            ./hosts
+            inputs.vaultix.flakeModules.default
+          ];
         debug = false;
         systems = [
           "x86_64-linux"
