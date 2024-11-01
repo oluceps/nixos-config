@@ -11,6 +11,9 @@
 }:
 {
 
+  vaultix = {
+    settings.storageDirRelative = "./sec/rekeyed/${config.networking.hostName}";
+  };
   age = {
 
     rekey = {

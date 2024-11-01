@@ -51,6 +51,15 @@ withSystem "x86_64-linux" (
       ../persist.nix
       ../secureboot.nix
       ./backup.nix
+      (
+        { lib, ... }:
+        {
+          options.test = lib.mkOption {
+            type = lib.types.path;
+          };
+        }
+      )
+
       # inputs.home-manager.nixosModules.default
       # ../../home
       ../sysctl.nix
@@ -68,6 +77,7 @@ withSystem "x86_64-linux" (
       ../virt.nix
 
       inputs.aagl.nixosModules.default
+      inputs.vaultix.nixosModules.default
       inputs.disko.nixosModules.default
       inputs.tg-online-keeper.nixosModules.default
       # inputs.attic.nixosModules.atticd

@@ -15,6 +15,7 @@
             "pre-commit-hooks"
             "devshell"
             "agenix-rekey"
+            "vaultix"
           ])
           ++ [ ./hosts ];
         debug = false;
@@ -79,6 +80,19 @@
                 };
               };
             formatter = pkgs.nixfmt-rfc-style;
+            vaultix.nodes =
+              let
+                inherit (inputs.nixpkgs.lib) filterAttrs elem;
+              in
+              filterAttrs (
+                n: _:
+                elem n [
+                  # "resq"
+                  # "livecd"
+                  # "bootstrap"
+                  "kaambl"
+                ]
+              ) self.nixosConfigurations;
             agenix-rekey.nodes =
               let
                 inherit (inputs.nixpkgs.lib) filterAttrs elem;
@@ -142,6 +156,7 @@
       url = "github:nix-community/browser-previews";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    vaultix.url = "/home/elen/Src/vaultix";
     nixos-cosmic = {
       url = "github:lilyinstarlight/nixos-cosmic";
       inputs.nixpkgs.follows = "nixpkgs";
