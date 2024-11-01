@@ -9,7 +9,7 @@ in
 
     secrets = {
       wge = {
-        rekeyFile = ../../sec/wge.age;
+        file = ../../sec/wge.age;
         owner = "systemd-network";
         group = "root";
         mode = "400";

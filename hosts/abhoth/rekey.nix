@@ -17,14 +17,14 @@ in
 
     secrets = {
       hyst-us = {
-        rekeyFile = ../../sec/hyst-us.age;
+        file = ../../sec/hyst-us.age;
         mode = "640";
         owner = "root";
         group = "users";
         name = "hyst-us.yaml";
       };
       wgab = {
-        rekeyFile = ../../sec/wgab.age;
+        file = ../../sec/wgab.age;
         owner = "systemd-network";
         group = "root";
         mode = "400";

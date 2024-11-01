@@ -6,14 +6,14 @@
 
     secrets = {
       prom = {
-        rekeyFile = ../../sec/prom.age;
+        file = ../../sec/prom.age;
         mode = "640";
         owner = "prometheus";
         group = "users";
       };
 
       wgc-warp = {
-        rekeyFile = ../../sec/wgc-warp.age;
+        file = ../../sec/wgc-warp.age;
         owner = "systemd-network";
         group = "root";
         mode = "400";

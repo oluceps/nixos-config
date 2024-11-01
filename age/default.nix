@@ -10,19 +10,13 @@
   ...
 }:
 {
-
   vaultix = {
-    settings.storageDirRelative = "./sec/rekeyed/${config.networking.hostName}";
-  };
-  age = {
-
-    rekey = {
-      extraEncryptionPubkeys = [ data.keys.ageKey ];
+    settings = {
+      storageDirRelative = "./sec/rekeyed/${config.networking.hostName}";
+      extraReceipients = [ data.keys.ageKey ];
       masterIdentities = [
         (self + "/sec/age-yubikey-identity-7d5d5540.txt.pub")
       ];
-      storageMode = "local";
-      localStorageDir = self + "/sec/rekeyed/${config.networking.hostName}";
     };
 
     secrets = (
@@ -30,7 +24,7 @@
         gen =
           ns: owner: group: mode:
           self.lib.genAttrs ns (n: {
-            rekeyFile = ../sec/${n}.age;
+            file = ../sec/${n}.age;
             inherit owner group mode;
           });
         hard = i: gen i "root" "users" "400";

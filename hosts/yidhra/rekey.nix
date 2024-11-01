@@ -14,14 +14,14 @@ in
     rekey.hostPubkey = data.keys.yidhraHostPubKey;
     secrets = {
       wgy = {
-        rekeyFile = ../../sec/wgy.age;
+        file = ../../sec/wgy.age;
         owner = "systemd-network";
         group = "root";
         mode = "400";
       };
 
       hyst-us = {
-        rekeyFile = ../../sec/hyst-us.age;
+        file = ../../sec/hyst-us.age;
         mode = "640";
         owner = "root";
         group = "users";
