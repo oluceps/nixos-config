@@ -10,6 +10,7 @@
   ...
 }:
 {
+  systemd.services.vaultix-install-secrets.serviceConfig.Environment = [ "SPDLOG_RS_LEVEL=debug" ];
   vaultix = {
     settings = {
       storageDirRelative = "./sec/rekeyed/${config.networking.hostName}";

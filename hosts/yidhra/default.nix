@@ -45,6 +45,7 @@ withSystem "x86_64-linux" (
             ]);
         };
       }
+      inputs.vaultix.nixosModules.default
 
       ./disk.nix
       ./caddy.nix

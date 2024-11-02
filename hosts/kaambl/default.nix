@@ -51,15 +51,6 @@ withSystem "x86_64-linux" (
       ../persist.nix
       ../secureboot.nix
       ./backup.nix
-      (
-        { lib, ... }:
-        {
-          options.test = lib.mkOption {
-            type = lib.types.path;
-          };
-        }
-      )
-
       # inputs.home-manager.nixosModules.default
       # ../../home
       ../sysctl.nix

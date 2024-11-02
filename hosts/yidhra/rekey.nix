@@ -9,9 +9,8 @@ in
       type = "ed25519";
     }
   ];
-  age = {
-    identityPaths = [ hostPrivKey ];
-    rekey.hostPubkey = data.keys.yidhraHostPubKey;
+  vaultix = {
+    settings.hostPubkey = data.keys.yidhraHostPubKey;
     secrets = {
       wgy = {
         file = ../../sec/wgy.age;

@@ -93,6 +93,7 @@
                   # "livecd"
                   # "bootstrap"
                   "kaambl"
+                  "yidhra"
                 ]
               ) self.nixosConfigurations;
             agenix-rekey.nodes =

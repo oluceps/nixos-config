@@ -85,7 +85,7 @@
             nodejs_latest.pkgs.pnpm
             nodejs_latest
             qemu-utils
-            rustup
+            # rustup
             linuxPackages_latest.perf
             strace
             gitoxide
