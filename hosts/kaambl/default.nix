@@ -68,7 +68,6 @@ withSystem "x86_64-linux" (
       ../virt.nix
 
       inputs.aagl.nixosModules.default
-      inputs.vaultix.nixosModules.default
       inputs.disko.nixosModules.default
       inputs.tg-online-keeper.nixosModules.default
       # inputs.attic.nixosModules.atticd

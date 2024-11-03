@@ -14,9 +14,8 @@ in
       type = "ed25519";
     }
   ];
-  age = {
-    identityPaths = [ hostPrivKey ];
-    rekey.hostPubkey = data.keys.azasosHostPubKey;
+  vaultix = {
+    settings.hostPubkey = data.keys.azasosHostPubKey;
     secrets =
       {
         wga = {

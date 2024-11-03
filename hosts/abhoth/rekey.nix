@@ -11,9 +11,8 @@ in
       type = "ed25519";
     }
   ];
-  age = {
-    identityPaths = [ hostPrivKey ];
-    rekey.hostPubkey = data.keys.abhothHostPubKey;
+  vaultix = {
+    settings.hostPubkey = data.keys.abhothHostPubKey;
 
     secrets = {
       hyst-us = {

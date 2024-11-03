@@ -88,12 +88,10 @@
               in
               filterAttrs (
                 n: _:
-                elem n [
-                  # "resq"
-                  # "livecd"
-                  # "bootstrap"
-                  "kaambl"
-                  "yidhra"
+                !elem n [
+                  "resq"
+                  "livecd"
+                  "bootstrap"
                 ]
               ) self.nixosConfigurations;
             agenix-rekey.nodes =

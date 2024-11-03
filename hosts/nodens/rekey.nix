@@ -11,9 +11,8 @@ in
       type = "ed25519";
     }
   ];
-  age = {
-    identityPaths = [ hostPrivKey ];
-    rekey.hostPubkey = data.keys.nodensHostPubKey;
+  vaultix = {
+    settings.hostPubkey = data.keys.nodensHostPubKey;
 
     secrets = {
       factorio-server = {

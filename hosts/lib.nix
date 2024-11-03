@@ -41,7 +41,7 @@ in
   sharedModules =
     [ inputs.self.nixosModules.repack ]
     ++ (genModules [
-      # "agenix-rekey"
+      "vaultix"
       "ragenix"
       "lanzaboote"
       "catppuccin"
