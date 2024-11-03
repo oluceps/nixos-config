@@ -14,7 +14,6 @@
           (flakeModules [
             "pre-commit-hooks"
             "devshell"
-            "agenix-rekey"
           ])
           ++ [
             ./hosts
@@ -38,7 +37,6 @@
             _module.args.pkgs = import inputs.nixpkgs {
               inherit system;
               overlays = defaultOverlays [
-                "agenix-rekey"
                 "fenix"
                 "self"
                 "nuenv"
@@ -62,7 +60,6 @@
 
             devshells.default.devshell = {
               packages = with pkgs; [
-                agenix-rekey
                 just
                 rage
                 b3sum
@@ -83,18 +80,6 @@
               };
             formatter = pkgs.nixfmt-rfc-style;
             vaultix.nodes =
-              let
-                inherit (inputs.nixpkgs.lib) filterAttrs elem;
-              in
-              filterAttrs (
-                n: _:
-                !elem n [
-                  "resq"
-                  "livecd"
-                  "bootstrap"
-                ]
-              ) self.nixosConfigurations;
-            agenix-rekey.nodes =
               let
                 inherit (inputs.nixpkgs.lib) filterAttrs elem;
               in
@@ -221,11 +206,6 @@
     nixyDomains.url = "github:oluceps/nixyDomains";
     nixyDomains.flake = false;
     nuenv.url = "github:DeterminateSystems/nuenv";
-    agenix-rekey = {
-      url = "github:oddlama/agenix-rekey?rev=b15db59e2d2b27c094820d7d34bf4cefce109f45";
-      # url = "/home/elen/Src/agenix-rekey";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
     nixd.url = "github:nix-community/nixd";
     nix-direnv.url = "github:nix-community/nix-direnv";
     nix-ld = {
