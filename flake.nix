@@ -19,7 +19,7 @@
             ./hosts
             inputs.vaultix.flakeModules.default
           ];
-        debug = false;
+        debug = true;
         systems = [
           "x86_64-linux"
           "aarch64-linux"
@@ -142,7 +142,8 @@
       url = "github:nix-community/browser-previews";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    vaultix.url = "github:oluceps/vaultix/dev";
+    # vaultix.url = "github:oluceps/vaultix/dev";
+    vaultix.url = "/home/elen/Src/vaultix";
     nixos-cosmic = {
       url = "github:lilyinstarlight/nixos-cosmic";
       inputs.nixpkgs.follows = "nixpkgs";
