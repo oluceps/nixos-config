@@ -226,7 +226,7 @@
       url = "github:PrismLauncher/PrismLauncher";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    helix.url = "github:helix-editor/helix";
+    # helix.url = "github:helix-editor/helix";
     berberman.url = "github:berberman/flakes";
   };
 }
