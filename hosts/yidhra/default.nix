@@ -35,7 +35,7 @@ withSystem "x86_64-linux" (
             # contentAddressedByDefault = true;
             allowUnfree = true;
           };
-          overlays = (import ../../overlays.nix { inherit inputs inputs'; });
+          overlays = (import "${self}/overlays.nix" { inherit inputs' inputs; }) ++ [ self.overlays.default ];
         };
       }
 

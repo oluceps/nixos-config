@@ -18,7 +18,7 @@ withSystem "x86_64-linux" (
     pkgs = import inputs.nixpkgs {
       inherit system;
       config = { };
-      overlays = (import "${self}/overlays.nix" { inherit inputs' inputs; });
+      overlays = (import "${self}/overlays.nix" { inherit inputs' inputs; }) ++ [ self.overlays.default ];
     };
     specialArgs = {
       inherit

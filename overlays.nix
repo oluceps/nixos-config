@@ -1,7 +1,7 @@
-{ inputs' }:
+{ inputs', inputs }:
 # Go: https://github.com/NixOS/nixpkgs/issues/86349#issuecomment-624489806
 # Rust:
-(inputs'.self.lib.genOverlays [
+(inputs.self.lib.genOverlays [
   "fenix"
   "nuenv"
   "dae"
