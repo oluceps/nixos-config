@@ -28,7 +28,7 @@ withSystem "x86_64-linux" (
             "factorio-headless"
           ];
       };
-      overlays = (import "${self}/overlays.nix" { inherit inputs' inputs; }) ++ [ self.overlays.default ];
+      overlays = lib.hostOverlays { inherit inputs inputs'; };
     };
     specialArgs = {
       inherit

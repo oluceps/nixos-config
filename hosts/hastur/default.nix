@@ -30,7 +30,7 @@ withSystem "x86_64-linux" (
           "olm-3.2.16"
         ];
       };
-      overlays = (import "${self}/overlays.nix" { inherit inputs' inputs; }) ++ [ self.overlays.default ];
+      overlays = lib.hostOverlays { inherit inputs inputs'; };
     };
     specialArgs = {
       inherit

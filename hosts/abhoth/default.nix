@@ -21,7 +21,7 @@ withSystem "x86_64-linux" (
         allowUnfree = true;
         allowUnsupportedSystem = true;
       };
-      overlays = (import "${self}/overlays.nix" { inherit inputs' inputs; });
+      overlays = lib.hostOverlays { inherit inputs inputs'; };
     };
     specialArgs = {
       inherit
