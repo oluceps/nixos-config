@@ -45,6 +45,19 @@
       no-auth = true;
       realm = config.networking.fqdn;
     };
+
+    # factorio-manager = {
+    #   enable = true;
+    #   factorioPackage = pkgs.factorio-headless-experimental.override {
+    #     versionsJson = ./factorio-version.json;
+    #   };
+    #   botConfigPath = config.vaultix.secrets.factorio-manager-bot.path;
+    #   initialGameStartArgs = [
+    #     "--server-settings=${config.vaultix.secrets.factorio-server.path}"
+    #     "--server-adminlist=${config.vaultix.secrets.factorio-admin.path}"
+    #   ];
+    # };
+
     ntfy-sh = {
       enable = true;
       settings = {

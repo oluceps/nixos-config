@@ -6,8 +6,8 @@
 
   repack.caddy = {
     enable = true;
-    settings.apps.http = {
-      servers.srv0.routes = [
+    settings.apps = {
+      http.servers.srv0.routes = [
         {
           handle = [
             {
@@ -50,7 +50,7 @@
                   handle = [
                     {
                       handler = "reverse_proxy";
-                      upstreams = [ { dial = "10.0.1.2:8003"; } ];
+                      upstreams = [ { dial = "10.0.4.2:8003"; } ];
                     }
                   ];
                   match = [ { host = [ "vault.nyaw.xyz" ]; } ];
@@ -83,7 +83,7 @@
                                   server_name = "s3.nyaw.xyz";
                                 };
                               };
-                              upstreams = [ { dial = "10.0.1.2:443"; } ];
+                              upstreams = [ { dial = "10.0.4.2:443"; } ];
                             }
                           ];
                         }
@@ -103,13 +103,13 @@
                           handle = [
                             {
                               handler = "reverse_proxy";
-                              transport = {
-                                protocol = "http";
-                                tls = {
-                                  server_name = "cache.nyaw.xyz";
-                                };
-                              };
-                              upstreams = [ { dial = "10.0.1.2:443"; } ];
+                              # transport = {
+                              #   protocol = "http";
+                              #   tls = {
+                              #     server_name = "cache.nyaw.xyz";
+                              #   };
+                              # };
+                              upstreams = [ { dial = "10.0.4.2:443"; } ];
                             }
                           ];
                         }
@@ -192,7 +192,7 @@
                   handle = [
                     {
                       handler = "reverse_proxy";
-                      upstreams = [ { dial = "10.0.1.2:8084"; } ];
+                      upstreams = [ { dial = "10.0.4.2:8084"; } ];
                     }
                   ];
                   match = [ { host = [ "seed.nyaw.xyz" ]; } ];
@@ -208,7 +208,7 @@
           handle = [
             {
               handler = "reverse_proxy";
-              upstreams = [ { dial = "10.0.1.2:8888"; } ];
+              upstreams = [ { dial = "10.0.4.2:8888"; } ];
             }
           ];
           match = [ { host = [ "api.atuin.nyaw.xyz" ]; } ];
@@ -265,7 +265,7 @@
                   handle = [
                     {
                       handler = "reverse_proxy";
-                      upstreams = [ { dial = "10.0.1.2:3000"; } ];
+                      upstreams = [ { dial = "10.0.4.2:3000"; } ];
                     }
                   ];
                 }
@@ -277,30 +277,28 @@
         }
       ];
 
-      tls = {
-        automation.policies = [
-          {
-            subjects = [
-              "*.nyaw.xyz"
-              "nyaw.xyz"
-            ];
-            issuers = [
-              {
-                module = "acme";
-                challenges = {
-                  dns = {
-                    provider = {
-                      name = "porkbun";
-                      api_key = "{env.PORKBUN_API_KEY}";
-                      api_secret_key = "{env.PORKBUN_API_SECRET_KEY}";
-                    };
+      tls.automation.policies = [
+        {
+          subjects = [
+            "*.nyaw.xyz"
+            "nyaw.xyz"
+          ];
+          issuers = [
+            {
+              module = "acme";
+              challenges = {
+                dns = {
+                  provider = {
+                    name = "porkbun";
+                    api_key = "{env.PORKBUN_API_KEY}";
+                    api_secret_key = "{env.PORKBUN_API_SECRET_KEY}";
                   };
                 };
-              }
-            ];
-          }
-        ];
-      };
+              };
+            }
+          ];
+        }
+      ];
     };
   };
 }
