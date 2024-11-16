@@ -4272,15 +4272,15 @@
       "locked": {
         "lastModified": 1731764267,
         "narHash": "sha256-zH7mCCa8TbH8XIhUqzci8X+GZoiSRd0gVuRje4JXwiU=",
-        "ref": "refs/heads/main",
+        "owner": "oluceps",
+        "repo": "vaultix",
         "rev": "5a70824c90f94cd59effbca10b3e4d4e4ce974b3",
-        "revCount": 102,
-        "type": "git",
-        "url": "file:///home/elen/Src/vaultix"
+        "type": "github"
       },
       "original": {
-        "type": "git",
-        "url": "file:///home/elen/Src/vaultix"
+        "owner": "oluceps",
+        "repo": "vaultix",
+        "type": "github"
       }
     },
     "xwayland-satellite-stable": {
