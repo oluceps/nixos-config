@@ -30,13 +30,13 @@
                             }
                             {
                               handler = "reverse_proxy";
-                              transport = {
-                                protocol = "http";
-                                tls = {
-                                  server_name = "s3.nyaw.xyz";
-                                };
-                              };
-                              upstreams = [ { dial = "10.0.4.2:443"; } ];
+                              # transport = {
+                              #   protocol = "http";
+                              #   tls = {
+                              #     server_name = "s3.nyaw.xyz";
+                              #   };
+                              # };
+                              upstreams = [ { dial = "10.0.4.2:9000"; } ];
                             }
                           ];
                         }
