@@ -4273,7 +4273,7 @@
         "dirtyRev": "c7e1ed17bda38241f084afe657432b81501697e0-dirty",
         "dirtyShortRev": "c7e1ed1-dirty",
         "lastModified": 1732120710,
-        "narHash": "sha256-6jgHV7E3lctpOSa9iMG0Pv0HBIwnDLtS0fFfrx+GPGc=",
+        "narHash": "sha256-G1Rpv/h3l4fZTzXGpopKmRCOQQ6U784acieaLxek/Bc=",
         "type": "git",
         "url": "file:///home/elen/Src/vaultix"
       },
