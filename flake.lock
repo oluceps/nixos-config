@@ -4270,10 +4270,10 @@
         "rust-overlay": "rust-overlay_6"
       },
       "locked": {
-        "dirtyRev": "c7e1ed17bda38241f084afe657432b81501697e0-dirty",
-        "dirtyShortRev": "c7e1ed1-dirty",
-        "lastModified": 1732120710,
-        "narHash": "sha256-G1Rpv/h3l4fZTzXGpopKmRCOQQ6U784acieaLxek/Bc=",
+        "dirtyRev": "6c31f5774ced23d83db259880db79b41fd755216-dirty",
+        "dirtyShortRev": "6c31f57-dirty",
+        "lastModified": 1732192076,
+        "narHash": "sha256-le9jvZny07E14sLOg6R9YIq+wcThHwxWNcHA7CZpwqM=",
         "type": "git",
         "url": "file:///home/elen/Src/vaultix"
       },
