@@ -147,7 +147,6 @@
     };
     browser-previews = {
       url = "github:nix-community/browser-previews";
-      inputs.nixpkgs.follows = "nixpkgs";
     };
     vaultix.url = "github:oluceps/vaultix";
     # vaultix.url = "/home/elen/Src/vaultix";
