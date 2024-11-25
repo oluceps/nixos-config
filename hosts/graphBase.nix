@@ -10,27 +10,27 @@
   environment.systemPackages =
     with inputs'.browser-previews.packages;
     [
-      # google-chrome-beta # Beta Release
+      google-chrome-beta # Beta Release
 
-      # (pkgs.runCommand "chrome-entry" { } ''
-      #   mkdir -p $out/share/applications/
-      #   echo "[Desktop Entry]
-      #         Version=1.0
-      #         Name=Google Chrome
-      #         # Only KDE 4 seems to use GenericName, so we reuse the KDE strings.
-      #         # From Ubuntu's language-pack-kde-XX-base packages, version 9.04-20090413.
-      #         GenericName=Web Browser
-      #         GenericName[en_GB]=Web Browser
-      #         GenericName[zh_CN]=网页浏览器
-      #         Comment[zh_CN]=访问互联网
-      #         Exec=${lib.getExe google-chrome-beta} --enable-features=UseOzonePlatform --ozone-platform=wayland --enable-wayland-ime --wayland-text-input-version=3 --video-capture-use-gpu-memory-buffer --force-color-profile=display-p3-d65 --use-gl=angle --use-angle=vulkan --enable-zero-copy --enable-features=CanvasOopRasterization,Vulkan,VulkanFromANGLE,DefaultANGLEVulkan,VaapiVideoEncoder,ScrollableTabStrip,OverlayScrollbar %U
-      #         StartupNotify=true
-      #         Terminal=false
-      #         Icon=google-chrome
-      #         Type=Application
-      #         Categories=Network;WebBrowser;
-      #         MimeType=application/pdf;application/rdf+xml;application/rss+xml;application/xhtml+xml;application/xhtml_xml;application/xml;image/gif;image/jpeg;image/png;image/webp;text/html;text/xml;x-scheme-handler/http;x-scheme-handler/https;
-      #         Actions=new-window;new-private-window;" > $out/share/applications/google-chrome-dev.desktop'')
+      (pkgs.runCommand "chrome-entry" { } ''
+        mkdir -p $out/share/applications/
+        echo "[Desktop Entry]
+              Version=1.0
+              Name=Google Chrome
+              # Only KDE 4 seems to use GenericName, so we reuse the KDE strings.
+              # From Ubuntu's language-pack-kde-XX-base packages, version 9.04-20090413.
+              GenericName=Web Browser
+              GenericName[en_GB]=Web Browser
+              GenericName[zh_CN]=网页浏览器
+              Comment[zh_CN]=访问互联网
+              Exec=${lib.getExe google-chrome-beta} --enable-features=UseOzonePlatform --ozone-platform=wayland --enable-wayland-ime --wayland-text-input-version=3 --video-capture-use-gpu-memory-buffer --force-color-profile=display-p3-d65 --use-gl=angle --use-angle=vulkan --enable-zero-copy --enable-features=CanvasOopRasterization,Vulkan,VulkanFromANGLE,DefaultANGLEVulkan,VaapiVideoEncoder,ScrollableTabStrip,OverlayScrollbar %U
+              StartupNotify=true
+              Terminal=false
+              Icon=google-chrome
+              Type=Application
+              Categories=Network;WebBrowser;
+              MimeType=application/pdf;application/rdf+xml;application/rss+xml;application/xhtml+xml;application/xhtml_xml;application/xml;image/gif;image/jpeg;image/png;image/webp;text/html;text/xml;x-scheme-handler/http;x-scheme-handler/https;
+              Actions=new-window;new-private-window;" > $out/share/applications/google-chrome-dev.desktop'')
 
     ]
     ++ [
@@ -323,16 +323,19 @@
 
     inputMethod = {
       type = "fcitx5";
-      fcitx5.waylandFrontend = true;
       enable = true;
-      fcitx5.addons = with pkgs; [
-        fcitx5-chinese-addons
-        fcitx5-mozc
-        fcitx5-gtk
-        fcitx5-configtool
-        fcitx5-pinyin-zhwiki
-        fcitx5-pinyin-moegirl
-      ];
+      fcitx5 = {
+        plasma6Support = true;
+        waylandFrontend = true;
+        addons = with pkgs; [
+          fcitx5-chinese-addons
+          fcitx5-mozc
+          fcitx5-gtk
+          fcitx5-configtool
+          fcitx5-pinyin-zhwiki
+          fcitx5-pinyin-moegirl
+        ];
+      };
     };
   };
 }
