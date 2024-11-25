@@ -129,14 +129,14 @@
     sing-box.enable = true;
 
     hysteria.instances = {
-      nodens = {
-        enable = true;
-        configFile = config.vaultix.secrets.hyst-us-cli.path;
-      };
-      abhoth = {
-        enable = true;
-        configFile = config.vaultix.secrets.hyst-la-cli.path;
-      };
+      # nodens = {
+      #   enable = true;
+      #   configFile = config.vaultix.secrets.hyst-us-cli.path;
+      # };
+      # abhoth = {
+      #   enable = true;
+      #   configFile = config.vaultix.secrets.hyst-la-cli.path;
+      # };
       yidhra = {
         enable = true;
         configFile = config.vaultix.secrets.hyst-hk-cli.path;
