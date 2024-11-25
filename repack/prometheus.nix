@@ -14,7 +14,7 @@ let
     # "kaambl"
     # "abhoth"
     # "yidhra"
-    "azasos"
+    # "azasos"
     "hastur"
   ];
   relabel_configs = [
