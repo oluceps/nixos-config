@@ -121,10 +121,10 @@
     # ];
 
     hysteria.instances = {
-      nodens = {
-        configFile = config.vaultix.secrets.hyst-us-cli.path;
-        enable = true;
-      };
+      # nodens = {
+      #   configFile = config.vaultix.secrets.hyst-us-cli.path;
+      #   enable = true;
+      # };
       # abhoth = {
       #   enable = true;
       #   configFile = config.vaultix.secrets.hyst-la-cli.path;
