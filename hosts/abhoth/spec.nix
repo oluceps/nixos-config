@@ -5,7 +5,7 @@
 }:
 {
 
-  system.stateVersion = "24.05";
+  system.stateVersion = "25.05";
 
   users.mutableUsers = false;
   services.userborn.enable = true;
@@ -28,7 +28,6 @@
     fail2ban.enable = true;
     dnsproxy = {
       enable = true;
-      extraFlags = [ "--ipv6-disabled" ];
     };
     # rustypaste.enable = true;
   };
@@ -48,36 +47,20 @@
       ];
     };
     metrics.enable = true;
-    trojan-server.enable = true;
+    # trojan-server.enable = true;
 
-    hysteria.instances = {
-      only = {
-        enable = true;
-        serve = true;
-        openFirewall = 4432;
-        credentials = [
-          "key:${config.vaultix.secrets."nyaw.key".path}"
-          "crt:${config.vaultix.secrets."nyaw.cert".path}"
-        ];
-        configFile = config.vaultix.secrets.hyst-us.path;
-      };
-    };
+    # hysteria.instances = {
+    #   only = {
+    #     enable = true;
+    #     serve = true;
+    #     openFirewall = 4432;
+    #     credentials = [
+    #       "key:${config.vaultix.secrets."nyaw.key".path}"
+    #       "crt:${config.vaultix.secrets."nyaw.cert".path}"
+    #     ];
+    #     configFile = config.vaultix.secrets.hyst-us.path;
+    #   };
+    # };
 
-    realm = {
-      enable = true;
-      settings = {
-        log.level = "warn";
-        network = {
-          no_tcp = false;
-          use_udp = true;
-        };
-        endpoints = [
-          {
-            listen = "[::]:34197";
-            remote = "144.126.208.183:34197";
-          }
-        ];
-      };
-    };
   };
 }
