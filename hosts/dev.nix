@@ -206,7 +206,7 @@
             # ubt-rv-run
             #opulr-a-run
             lunar-run
-            virt-viewer
+            # virt-viewer
           ];
           fs = [
             gparted
