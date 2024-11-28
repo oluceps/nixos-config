@@ -32,26 +32,19 @@
   "db.pem"
   "dae"
 ])
-// (
-  let
-    inherit (lib) listToAttrs nameValuePair;
-  in
-  listToAttrs (
-    map
-      (
-        n:
-        nameValuePair "hyst-${n}-cli" {
-          file = ../sec/hyst-${n}-cli.age;
-          mode = "640";
-          owner = "root";
-          group = "users";
-          name = "hyst-${n}-cli.yaml";
-        }
-      )
-      [
-        "la"
-        "us"
-        "hk"
-      ]
-  )
-)
+// {
+  hyst-osa-cli = {
+    file = ../sec/hyst-osa-cli.age;
+    mode = "640";
+    owner = "root";
+    group = "users";
+    name = "hyst-osa-cli.yaml";
+  };
+  hyst-hk-cli = {
+    file = ../sec/hyst-hk-cli.age;
+    mode = "640";
+    owner = "root";
+    group = "users";
+    name = "hyst-hk-cli.yaml";
+  };
+}

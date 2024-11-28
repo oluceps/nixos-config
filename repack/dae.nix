@@ -39,7 +39,7 @@ reIf {
           dip(1.1.1.1, 8.8.8.8, 1.0.0.1, 8.8.4.4) -> all
           dip(224.0.0.0/3, 'ff00::/8', 10.0.0.0/8) -> direct
 
-          #ipversion(6) && !dip(geoip:CN) -> v6
+          ipversion(6) && !dip(geoip:CN) -> v6
 
           domain(geosite:google-gemini,openai,geosite:category-ai-chat-!cn,cloudflare) -> v6
 

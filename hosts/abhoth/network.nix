@@ -75,8 +75,7 @@
       enable = true;
       anyInterface = true;
       ignoredInterfaces = [
-        # "wg0"
-        # "wg1"
+        "wg0"
       ];
     };
 
@@ -156,10 +155,7 @@
       };
       "20-eth0" = {
         matchConfig.Name = "eth0";
-        address = [ "172.234.94.136/24" ];
-        routes = [
-          { Gateway = "172.234.94.1"; }
-        ];
+        DHCP = "yes";
       };
     };
   };

@@ -148,8 +148,8 @@
     browser-previews = {
       url = "github:nix-community/browser-previews";
     };
-    vaultix.url = "github:oluceps/vaultix";
-    # vaultix.url = "/home/elen/Src/vaultix";
+    # vaultix.url = "github:oluceps/vaultix";
+    vaultix.url = "/home/elen/Src/vaultix";
     nixos-cosmic = {
       url = "github:lilyinstarlight/nixos-cosmic";
       inputs.nixpkgs.follows = "nixpkgs";

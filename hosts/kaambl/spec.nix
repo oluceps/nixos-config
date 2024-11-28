@@ -125,10 +125,10 @@
       #   configFile = config.vaultix.secrets.hyst-us-cli.path;
       #   enable = true;
       # };
-      # abhoth = {
-      #   enable = true;
-      #   configFile = config.vaultix.secrets.hyst-la-cli.path;
-      # };
+      abhoth = {
+        enable = true;
+        configFile = config.vaultix.secrets.hyst-osa-cli.path;
+      };
       yidhra = {
         enable = true;
         configFile = config.vaultix.secrets.hyst-hk-cli.path;
