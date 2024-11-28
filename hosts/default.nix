@@ -7,10 +7,12 @@
 let
   inherit (builtins) readFile fromTOML;
   inherit (self.lib) genAttrs;
-  hosts = (./sum.toml |> readFile |> fromTOML |> (i: i.host) |> (map (i: i.name))) ++ [
-    "bootstrap"
-    # "livecd"
-  ];
+  hosts =
+    # (./sum.toml |> readFile |> fromTOML |> (i: i.host) |> (map (i: i.name))) ++ 
+    [
+      "bootstrap"
+      "livecd"
+    ];
 in
 {
   flake.nixosConfigurations = genAttrs hosts (

@@ -1,8 +1,10 @@
 {
   fileSystems."/persist".neededForBoot = true;
+  disko.memSize = 4096;
   disko.devices = {
     disk = {
       main = {
+        imageSize = "2G";
         device = "/dev/vda";
         type = "disk";
         content = {
@@ -14,8 +16,8 @@
               start = "0";
               end = "+1M";
             };
-            root = {
-              label = "ROOT";
+            solid = {
+              label = "SOLID";
               end = "-0";
               content = {
                 type = "btrfs";
@@ -79,7 +81,7 @@
     #       "relatime"
     #       "nosuid"
     #       "nodev"
-    #       "size=2G"
+    #       "size=200M"
     #       "mode=755"
     #     ];
     #   };
