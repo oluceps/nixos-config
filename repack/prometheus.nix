@@ -9,10 +9,10 @@ let
   targets = map (n: "${n}.nyaw.xyz") [
     # "nodens"
     "yidhra"
+    "abhoth"
   ];
   targets_notls = map (n: "${n}.nyaw.xyz") [
     # "kaambl"
-    "abhoth"
     # "yidhra"
     # "azasos"
     "hastur"
