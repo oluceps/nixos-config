@@ -12,7 +12,7 @@ let
   ];
   targets_notls = map (n: "${n}.nyaw.xyz") [
     # "kaambl"
-    # "abhoth"
+    "abhoth"
     # "yidhra"
     # "azasos"
     "hastur"
