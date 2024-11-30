@@ -6,9 +6,17 @@
   ...
 }:
 reIf {
-  vaultix.templates.dae-sep = {
-    name = "merged.dae";
-    content = ''
+  systemd.tmpfiles.rules = [
+    "L+ /etc/dae/secret.dae - - - - ${config.vaultix.secrets.dae.path}"
+  ];
+
+  services.dae = {
+    enable = true;
+    disableTxChecksumIpGeneric = false;
+    config = ''
+      include {
+          secret.dae
+      }
       global {
           tproxy_port: 12345
           log_level: info
@@ -27,7 +35,6 @@ reIf {
           utls_imitate: chrome_auto
           lan_interface: podman0,podman1
       }
-      ${config.vaultix.placeholder.dae}
       routing {
           pname(systemd-networkd, systemd-resolved, smartdns,
                 dnsproxy, coredns, mosdns, naive, hysteria, tuic-client, sing-box, juicity, mosproxy) -> must_direct
@@ -55,11 +62,6 @@ reIf {
           fallback: all
       }
     '';
-  };
-  services.dae = {
-    enable = true;
-    disableTxChecksumIpGeneric = false;
-    configFile = config.vaultix.templates.dae-sep.path;
     package = pkgs.dae-unstable;
     assetsPath = toString (
       pkgs.symlinkJoin {
