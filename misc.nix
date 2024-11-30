@@ -17,6 +17,7 @@
     copySystemConfiguration = false;
 
     disableInstallerTools = true;
+    tools.nixos-rebuild.enable = false;
   };
   programs = {
     less.lessopen = null;
