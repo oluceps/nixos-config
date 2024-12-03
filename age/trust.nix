@@ -11,6 +11,7 @@
   "general.toml"
   "on-kaambl.toml"
   "on-eihort.toml"
+  "on-hastur.toml"
   "jc-do"
   "ss-az"
   "naive"

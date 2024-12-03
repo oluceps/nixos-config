@@ -49,6 +49,23 @@ reIf {
           ipversion(6) && !dip(geoip:CN) -> v6
 
           domain(geosite:google-gemini,openai,geosite:category-ai-chat-!cn,cloudflare) -> v6
+          domain(suffix: copilot.microsoft.com,
+              suffix: gateway-copilot.bingviz.microsoftapp.net,
+              suffix: mobile.events.data.microsoft.com,
+              suffix: graph.microsoft.com,
+              suffix: analytics.adjust.com,
+              suffix: analytics.adjust.net.in,
+              suffix: api.revenuecat.com,
+              suffix: t-msedge.net,
+              suffix: cloudapp.azure.com,
+              suffix: browser-intake-datadoghq.com,
+              suffix: in.appcenter.ms,
+              suffix: guzzoni.apple.com,
+              suffix: smoot.apple.com,
+              suffix: apple-relay.cloudflare.com,
+              suffix: apple-relay.fastly-edge.com,
+              suffix: cp4.cloudflare.com,
+              suffix: apple-relay.apple.com) -> v6
 
           domain(geosite:cn) -> direct
           dip(geoip:private,geoip:cn) -> direct
