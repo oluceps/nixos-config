@@ -1,3 +1,10 @@
+name: Sensitive
+on:
+  pull_request:
+    branches: ["*"]
+  push:
+    branches: ["*"]
+
 jobs:
   check-sensitive:
     name: Key Material Check
@@ -16,9 +23,3 @@ jobs:
             [ -z "$(grep -r "$per" --exclude="sensitive.yaml" ./)" ] || exit 1
           done
         shell: bash
-name: Sensitive check
-on:
-  pull_request:
-    branches: ["*"]
-  push:
-    branches: ["*"]
