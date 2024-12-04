@@ -18,7 +18,7 @@
         imports =
           (flakeModules [
             "pre-commit-hooks"
-            "devshell"
+            "flake-root"
           ])
           ++ [
             ./hosts
@@ -66,8 +66,10 @@
               };
             };
 
-            devshells.default.devshell = {
-              packages = with pkgs; [
+            # flake-root.projectRootFile = ".top";
+            devShells.default = pkgs.mkShell {
+              inputsFrom = [ config.flake-root.devShell ];
+              buildInputs = with pkgs; [
                 just
                 rage
                 b3sum
@@ -170,7 +172,6 @@
       url = "git+https://seed.radicle.xyz/z3gqcJUoA1n9HaHKufZs5FCSGazv5.git";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    devshell.url = "github:numtide/devshell";
     tg-online-keeper.url = "github:oluceps/TelegramOnlineKeeper";
     # tg-online-keeper.url = "/home/elen/Src/tg-online-keeper";
     disko = {
@@ -233,5 +234,6 @@
       url = "github:PrismLauncher/PrismLauncher";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    flake-root.url = "github:srid/flake-root";
   };
 }
