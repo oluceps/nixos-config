@@ -1,6 +1,6 @@
 jobs:
   check-sensitive:
-    name: key material check
+    name: Key Material Check
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -16,7 +16,7 @@ jobs:
             [ -z "$(grep -r "$per" --exclude="sensitive.yaml" ./)" ] || exit 1
           done
         shell: bash
-name: sensitive check
+name: Sensitive check
 on:
   pull_request:
     branches: ["*"]
