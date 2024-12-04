@@ -21,11 +21,13 @@
       extraPackages32 = [ pkgs.driversi686Linux.amdvlk ];
     };
     cpu.amd.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
-    bluetooth.enable = true; # enables support for Bluetooth
-    bluetooth.powerOnBoot = true; # powers up the default Bluetooth controller on boot
-    bluetooth.settings = {
-      General = {
-        Enable = "Source,Sink,Media,Socket";
+    bluetooth = {
+      enable = true; # enables support for Bluetooth
+      powerOnBoot = true; # powers up the default Bluetooth controller on boot
+      settings = {
+        General = {
+          Enable = "Source,Sink,Media,Socket";
+        };
       };
     };
   };
