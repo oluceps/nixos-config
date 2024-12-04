@@ -32,7 +32,7 @@ let
             if lib.hasSuffix ".nix" f then
               (writeText (removeSuffix ".nix" f) (import (toPath f) args))
             else
-              (toPath f)
+              toPath f
           )
 
         )
