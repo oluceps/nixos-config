@@ -101,7 +101,7 @@
   services = {
     sing-box = {
       enable = true;
-      configFile = lib.readToStore "/run/agenix/sing";
+      configFile = lib.readToStore "/run/vaultix/sing";
     };
     pcscd.enable = true;
     openssh.enable = true;
