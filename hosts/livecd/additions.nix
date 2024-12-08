@@ -99,10 +99,10 @@
   };
 
   services = {
-    sing-box = {
-      enable = true;
-      configFile = lib.readToStore "/run/vaultix/sing";
-    };
+    # sing-box = {
+    #   enable = true;
+    #   configFile = lib.readToStore "/run/vaultix/sing";
+    # };
     pcscd.enable = true;
     openssh.enable = true;
   };
