@@ -15,7 +15,7 @@ jobs:
       - name: Build Livecd
         run: |
           ls -lha
-          nix build '.rev=$(cat .git/refs/heads/trival)#nixosConfigurations.livecd.config.system.build.isoImage' --show-trace -L
+          nix build '.?rev=$(cat .git/refs/heads/trival)#nixosConfigurations.livecd.config.system.build.isoImage' --show-trace -L
       - name: Compress Build Craft
         run: |
           tar cvf "./$(date -I).tar" ./result/*
