@@ -111,7 +111,7 @@
         hint_margin = 2;
       };
       shell_login_flag = "short";
-      system_shell = "/bin/sh";
+      system_shell = lib.getExe pkgs.bash;
       tty = 2;
       username_field = {
         remember = true;
