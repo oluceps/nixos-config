@@ -9,7 +9,7 @@
 
 {
   imports = [
-    (inputs.nixpkgs + "/nixos/modules/installer/cd-dvd/installation-cd-minimal-new-kernel-no-zfs.nix")
+    (inputs.nixpkgs.outPath + "/nixos/modules/installer/cd-dvd/installation-cd-minimal-new-kernel-no-zfs.nix")
   ];
   networking = {
     wireless.iwd.enable = true;
