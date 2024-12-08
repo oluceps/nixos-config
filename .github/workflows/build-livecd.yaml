@@ -11,6 +11,9 @@ jobs:
         uses: actions/checkout@main
       - name: Install Nix
         uses: DeterminateSystems/nix-installer-action@main
+        with:
+          extra-conf: |
+            experimental-features = nix-command flakes auto-allocate-uids cgroups recursive-nix ca-derivations pipe-operators
       - uses: DeterminateSystems/magic-nix-cache-action@main
       - name: Build Livecd
         run: |
