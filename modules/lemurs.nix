@@ -63,21 +63,21 @@ in
     services.displayManager.enable = true;
     security.pam.services.lemurs = {
       allowNullPassword = true;
-      startSession = true;
       # See https://github.com/coastalwhite/lemurs/issues/166
       setLoginUid = false;
       enableGnomeKeyring = lib.mkDefault config.services.gnome.gnome-keyring.enable;
     };
 
-    systemd = {
-      defaultUnit = "graphical.target";
-      services = {
+    systemd =
+      let
+        tty = "tty${toString cfg.settings.tty}";
+      in
+      {
+        defaultUnit = "graphical.target";
+        services = {
+          "autovt@${tty}".enable = false;
 
-        lemurs =
-          let
-            tty = "tty${toString cfg.settings.tty}";
-          in
-          {
+          lemurs = {
             aliases = [ "display-manager.service" ];
 
             unitConfig = {
@@ -100,10 +100,11 @@ in
               ExecStart =
                 let
                   args = lib.cli.toGNUCommandLineShell { } {
+                    config = settingsFormat.generate "lemurs.toml" cfg.settings;
                     wlsessions = cfg.settings.wayland.wayland_sessions_path;
                   };
                 in
-                "${cfg.package}/bin/lemurs --config ${settingsFormat.generate "lemurs.toml" cfg.settings} ${args}";
+                "${cfg.package}/bin/lemurs ${args}";
 
               StandardInput = "tty";
               TTYPath = "/dev/${tty}";
@@ -115,7 +116,7 @@ in
             restartIfChanged = false;
             wantedBy = [ "graphical.target" ];
           };
+        };
       };
-    };
   };
 }
