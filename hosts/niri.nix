@@ -23,9 +23,6 @@
   #     default_session = initial_session;
   #   };
   # };
-  # environment.etc."lemurs/wayland/niri".source = pkgs.writeShellScript "niri-start" ''
-  #   niri-session
-  # '';
 
   services.lemurs = {
     enable = true;
@@ -74,7 +71,7 @@
         toggle_hint_color = "dark gray";
         toggle_hint_modifiers = "";
       };
-      focus_behaviour = "username";
+      focus_behaviour = "password";
       main_log_path = "/var/log/lemurs.log";
       pam_service = "lemurs";
       password_field = {
