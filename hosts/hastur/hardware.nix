@@ -13,7 +13,7 @@
 
   services.btrfs.autoScrub = {
     enable = true;
-    interval = "1hr";
+    interval = "hourly";
     fileSystems = [ "/persist" ];
   };
   # hardware.tuxedo-rs = {
