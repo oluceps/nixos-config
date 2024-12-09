@@ -12,8 +12,8 @@
   imports = [ (modulesPath + "/installer/scan/not-detected.nix") ];
 
   services.btrfs.autoScrub = {
-    enable = true;
-    interval = "hourly";
+    enable = false;
+    interval = "weekly";
     fileSystems = [ "/persist" ];
   };
   # hardware.tuxedo-rs = {
