@@ -415,15 +415,16 @@
       "locked": {
         "lastModified": 1734454186,
         "narHash": "sha256-K4ZO7yF89QK+VyTLznSrZHMd7+gpXDqv8IWX6OvrW8s=",
-        "ref": "refs/heads/emergency-fix",
+        "owner": "daeuniverse",
+        "repo": "flake.nix",
         "rev": "6b28d23b788329791c0a92cb63c0c9f32eea17df",
-        "revCount": 64,
-        "type": "git",
-        "url": "file:///home/elen/Src/flake.nix"
+        "type": "github"
       },
       "original": {
-        "type": "git",
-        "url": "file:///home/elen/Src/flake.nix"
+        "owner": "daeuniverse",
+        "ref": "emergency-fix",
+        "repo": "flake.nix",
+        "type": "github"
       }
     },
     "devenv": {
