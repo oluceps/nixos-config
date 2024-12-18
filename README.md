@@ -1,8 +1,7 @@
 # Nix flake
 
-
-[![nixos cfg](https://img.shields.io/badge/NixOS%20infra-3A8FB7?style=for-the-badge&logo=nixos&logoColor=BBDDE5)](https://wiki.nixos.org/wiki/Comparison_of_secret_managing_schemes)
-![works](https://img.shields.io/badge/works-on%20my%20machines-FEDFE1)
+[![nixos cfg](https://img.shields.io/badge/NixOS%20cfg-3A8FB7?style=for-the-badge&logo=nixos&logoColor=BBDDE5)](https://wiki.nixos.org/wiki/Comparison_of_secret_managing_schemes)
+![works](https://img.shields.io/badge/works-on%20my%20machines-FEDFE1?style=for-the-badge)
 [![lint status](https://img.shields.io/github/actions/workflow/status/oluceps/nixos-config/lint.yaml?branch=trival&style=for-the-badge&label=lint&color=00AA90)](https://github.com/oluceps/nixos-config/actions?query=branch%3Atrival)
 
 NixOS configurations. ~100% config Nixfied.
