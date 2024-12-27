@@ -2,7 +2,7 @@
   pkgs ? import <nixpkgs> { },
 }:
 let
-  emptyWithWarn =
+  genEmptyWithWarn =
     n:
     pkgs.callPackage (
       { stdenvNoCC, lib }:
@@ -17,4 +17,4 @@ let
 in
 pkgs.lib.genAttrs (map (pkgs.lib.removeSuffix ".nix") (
   builtins.attrNames (builtins.readDir ./pkgs/by-name)
-)) emptyWithWarn
+)) genEmptyWithWarn
