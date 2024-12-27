@@ -23,7 +23,6 @@ jobs:
           - nixos-config
         nixChannel:
           - nixos-unstable
-          - nixpkgs-unstable
     runs-on: ubuntu-latest
     steps:
     - name: Checkout repository
