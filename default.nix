@@ -15,7 +15,6 @@ let
       )
     ) { };
 in
-
 pkgs.lib.genAttrs (map (pkgs.lib.removeSuffix ".nix") (
   builtins.attrNames (builtins.readDir ./pkgs/by-name)
 )) emptyWithWarn
