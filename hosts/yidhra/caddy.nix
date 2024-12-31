@@ -52,6 +52,15 @@
                   handle = [
                     {
                       handler = "reverse_proxy";
+                      headers = {
+                        request = {
+                          set = {
+                            "X-Scheme" = [
+                              "https"
+                            ];
+                          };
+                        };
+                      };
                       upstreams = [ { dial = "10.0.4.3:8083"; } ];
                     }
                   ];
