@@ -413,16 +413,16 @@
         "nixpkgs": "nixpkgs_9"
       },
       "locked": {
-        "lastModified": 1734454186,
-        "narHash": "sha256-K4ZO7yF89QK+VyTLznSrZHMd7+gpXDqv8IWX6OvrW8s=",
+        "lastModified": 1735747501,
+        "narHash": "sha256-cZSgCIHW2KnAqD3tQ4eALej4m4VVnxty2tdFxGXs3EU=",
         "owner": "daeuniverse",
         "repo": "flake.nix",
-        "rev": "6b28d23b788329791c0a92cb63c0c9f32eea17df",
+        "rev": "2a938aa9e69cc125cfead05ef4b8d716fa00b02d",
         "type": "github"
       },
       "original": {
         "owner": "daeuniverse",
-        "ref": "emergency-fix",
+        "ref": "more-strict",
         "repo": "flake.nix",
         "type": "github"
       }

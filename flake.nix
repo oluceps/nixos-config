@@ -212,7 +212,7 @@
       url = "github:tadfisher/android-nixpkgs";
     };
     # path:/home/riro/Src/flake.nix
-    dae.url = "github:daeuniverse/flake.nix/emergency-fix";
+    dae.url = "github:daeuniverse/flake.nix/more-strict";
     # dae.url = "/home/elen/Src/flake.nix";
     nixyDomains.url = "github:oluceps/nixyDomains";
     nixyDomains.flake = false;
