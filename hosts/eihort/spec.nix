@@ -12,7 +12,7 @@
     etc.overlay.enable = true;
     etc.overlay.mutable = false;
 
-    stateVersion = "24.05";
+    stateVersion = "25.05";
   };
   services.userborn.enable = true;
   virtualisation.podman = {
@@ -43,8 +43,8 @@
     dae.enable = true;
     dnsproxy.enable = true;
     scrutiny.enable = true;
-    postgresql.enable = true;
-    photoprism.enable = true;
+    # postgresql.enable = true;
+    # photoprism.enable = true;
     mysql.enable = true;
   };
 
@@ -66,9 +66,9 @@
     };
 
     hysteria.instances = {
-      nodens = {
+      abhoth = {
         enable = true;
-        configFile = config.vaultix.secrets.hyst-us-cli.path;
+        configFile = config.vaultix.secrets.hyst-osa-cli.path;
       };
       yidhra = {
         enable = true;

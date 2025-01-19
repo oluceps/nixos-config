@@ -8,6 +8,7 @@
 }:
 
 {
+  facter.reportPath = ./facter.json;
 
   zramSwap = {
     enable = true;
@@ -26,12 +27,13 @@
       timeout = 3;
     };
 
-    supportedFilesystems = [ "bcachefs" ];
-
     kernelParams = [
       "audit=0"
       "net.ifnames=0"
       "ia32_emulation=0"
+      "zswap.enabled=1"
+      "zswap.compressor=zstd"
+      "zswap.zpool=zsmalloc"
     ];
 
     initrd = {
@@ -41,21 +43,6 @@
         "-T0"
       ];
       systemd.enable = true;
-      availableKernelModules = [
-        "nvme"
-        "xhci_pci"
-        "ahci"
-        "usb_storage"
-        "usbhid"
-        "sd_mod"
-        "mpt3sas"
-      ];
-      kernelModules = [
-        "tpm"
-        "tpm_tis"
-        "tpm_crb"
-        "mpt3sas" # IMPORTANT
-      ];
     };
 
     kernelPackages = pkgs.linuxPackages_latest;
@@ -64,17 +51,11 @@
   disko = {
     devices = {
       disk.main = {
-        device = "/dev/disk/by-id/ata-SanDisk_SD8SBAT032G_153873411000";
+        device = "/dev/disk/by-id/nvme-eui.00000000000000008ce38e10014c244a";
         type = "disk";
         content = {
           type = "gpt";
           partitions = {
-            boot = {
-              size = "1M";
-              type = "EF02"; # for grub MBR
-              priority = 0;
-            };
-
             ESP = {
               name = "ESP";
               size = "512M";
@@ -96,12 +77,15 @@
               content = {
                 type = "btrfs";
                 extraArgs = [
+                  "--label nixos"
                   "-f"
                   "--csum xxhash64"
+                  "--features"
+                  "block-group-tree"
                 ];
                 subvolumes = {
 
-                  "/persist" = {
+                  "persist" = {
                     mountpoint = "/persist";
                     mountOptions = [
                       "compress-force=zstd:1"
@@ -110,7 +94,7 @@
                       "space_cache=v2"
                     ];
                   };
-                  "/nix" = {
+                  "nix" = {
                     mountOptions = [
                       "compress-force=zstd:1"
                       "noatime"
@@ -121,7 +105,7 @@
                     ];
                     mountpoint = "/nix";
                   };
-                  "/var" = {
+                  "var" = {
                     mountOptions = [
                       "compress-force=zstd:1"
                       "noatime"
@@ -132,7 +116,7 @@
                     ];
                     mountpoint = "/var";
                   };
-                  "/persist/tmp" = {
+                  "persist/tmp" = {
                     mountpoint = "/tmp";
                     mountOptions = [
                       "relatime"
@@ -143,6 +127,14 @@
                     ];
                   };
                 };
+              };
+            };
+            plainSwap = {
+              size = "32G";
+              content = {
+                type = "swap";
+                discardPolicy = "both";
+                resumeDevice = true;
               };
             };
           };
