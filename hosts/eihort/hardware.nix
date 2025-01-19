@@ -90,6 +90,7 @@
                 ];
               };
             };
+
             root = {
               size = "100%";
               content = {
@@ -100,15 +101,15 @@
                 ];
                 subvolumes = {
 
-                  # "/persist" = {
-                  #   mountpoint = "/persist";
-                  #   mountOptions = [
-                  #     "compress-force=zstd:1"
-                  #     "noatime"
-                  #     "discard=async"
-                  #     "space_cache=v2"
-                  #   ];
-                  # };
+                  "/persist" = {
+                    mountpoint = "/persist";
+                    mountOptions = [
+                      "compress-force=zstd:1"
+                      "noatime"
+                      "discard=async"
+                      "space_cache=v2"
+                    ];
+                  };
                   "/nix" = {
                     mountOptions = [
                       "compress-force=zstd:1"
@@ -120,17 +121,27 @@
                     ];
                     mountpoint = "/nix";
                   };
-                  # "/var" = {
-                  #   mountOptions = [
-                  #     "compress-force=zstd:1"
-                  #     "noatime"
-                  #     "discard=async"
-                  #     "space_cache=v2"
-                  #     "nosuid"
-                  #     "nodev"
-                  #   ];
-                  #   mountpoint = "/var";
-                  # };
+                  "/var" = {
+                    mountOptions = [
+                      "compress-force=zstd:1"
+                      "noatime"
+                      "discard=async"
+                      "space_cache=v2"
+                      "nosuid"
+                      "nodev"
+                    ];
+                    mountpoint = "/var";
+                  };
+                  "/persist/tmp" = {
+                    mountpoint = "/tmp";
+                    mountOptions = [
+                      "relatime"
+                      "nodev"
+                      "nosuid"
+                      "discard=async"
+                      "space_cache=v2"
+                    ];
+                  };
                 };
               };
             };
@@ -144,59 +155,26 @@
             "relatime"
             "nosuid"
             "nodev"
-            "size=4G"
+            "size=2G"
             "mode=755"
           ];
         };
       };
     };
   };
-  fileSystems = {
 
-    "/persist".neededForBoot = true;
+  fileSystems."/persist".neededForBoot = true;
 
-    "/three" = {
-      device = "/dev/disk/by-uuid/134975b6-4ccc-4201-b479-105eb2382945";
-      fsType = "btrfs";
-      options = [
-        "subvolid=5"
-        "compress-force=zstd:5"
-        "noatime"
-        "discard=async"
-        "space_cache=v2"
-      ];
-    };
-    "/var" = {
-      device = "/dev/disk/by-id/nvme-eui.00000000000000008ce38e10014c244a";
-      fsType = "btrfs";
-      options = [
-        "compress-force=zstd:3"
-        "noatime"
-        "subvol=var"
-        "nosuid"
-        "nodev"
-      ];
-    };
-    # fileSystems."/nix" = {
-    #   device = "/dev/disk/by-id/nvme-eui.00000000000000008ce38e10014c244a";
-    #   fsType = "btrfs";
-    #   options = [
-    #     "compress-force=zstd:3"
-    #     "noatime"
-    #     "subvol=nix"
-    #     "nosuid"
-    #     "nodev"
-    #   ];
-    # };
-    "/persist" = {
-      device = "/dev/disk/by-id/nvme-eui.00000000000000008ce38e10014c244a";
-      fsType = "btrfs";
-      options = [
-        "compress-force=zstd:3"
-        "noatime"
-        "subvol=persist"
-      ];
-    };
+  fileSystems."/three" = {
+    device = "/dev/disk/by-uuid/134975b6-4ccc-4201-b479-105eb2382945";
+    fsType = "btrfs";
+    options = [
+      "subvolid=5"
+      "compress-force=zstd:5"
+      "noatime"
+      "discard=async"
+      "space_cache=v2"
+    ];
   };
 
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
