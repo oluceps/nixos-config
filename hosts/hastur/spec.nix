@@ -156,15 +156,10 @@
     # ddns-go.enable = true;
     # atticd.enable = true;
     atuin.enable = true;
-    postgresql.enable = true;
     # photoprism.enable = true;
     # mysql.enable = true;
     prometheus.enable = true;
-    vaultwarden.enable = true;
-    conduwuit.enable = true;
-    mautrix-telegram.enable = true;
     # coredns.enable = true;
-    misskey.enable = true;
     dnsproxy.enable = true;
     # srs.enable = true;
     grafana.enable = true;
@@ -172,6 +167,13 @@
     radicle.enable = true;
     # xmrig.enable = true;
     reuse-cert.enable = true;
+
+
+    postgresql.enable = true;
+    misskey.enable = true;
+    vaultwarden.enable = true;
+    conduwuit.enable = true;
+    mautrix-telegram.enable = true;
     calibre.enable = true;
   };
 }
