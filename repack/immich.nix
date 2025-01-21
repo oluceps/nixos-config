@@ -8,10 +8,11 @@ reIf {
       database.createDB = false;
       machine-learning.enable = true;
       redis.enable = true;
+      settings.server.externalDomain = "https://photo.nyaw.xyz";
     };
     immich-public-proxy = {
       enable = true;
-      immichUrl = "https://photo.nyaw.xyz";
+      immichUrl = "http://localhost:2283";
       port = 3001;
     };
   };

@@ -186,6 +186,65 @@
           terminal = true;
         }
 
+        # {
+        #   handle = [
+        #     {
+        #       handler = "reverse_proxy";
+        #       upstreams = [ { dial = "10.0.4.6:2283"; } ];
+        #     }
+        #   ];
+        #   match = [ { host = [ "photo.nyaw.xyz" ]; } ];
+        #   terminal = true;
+        # }
+        {
+          handle = [
+            {
+              handler = "subroute";
+              routes = [
+                {
+                  handle = [
+                    {
+                      handler = "reverse_proxy";
+                      upstreams = [ { dial = "10.0.4.6:3001"; } ];
+                    }
+                  ];
+                  match = [
+                    {
+                      path = [
+                        "/share/*"
+                        "/share"
+                      ];
+                    }
+                  ];
+                }
+                {
+                  handle = [
+                    {
+                      handler = "authentication";
+                      providers.http_basic.accounts = [
+                        {
+                          username = "immich";
+                          password = "$2b$05$bKuO7ehC6wKR28/pfhJZOuNyQFUtF7FwhkPFLwcbCMhfLRNUV54vm";
+                        }
+                      ];
+                    }
+                    {
+                      handler = "reverse_proxy";
+                      upstreams = [ { dial = "10.0.4.6:2283"; } ];
+                    }
+                  ];
+                }
+              ];
+            }
+
+          ];
+          match = [
+            {
+              host = [ "photo.nyaw.xyz" ];
+            }
+          ];
+          terminal = true;
+        }
         {
           handle = [
             {
