@@ -22,13 +22,7 @@
                           handle = [
                             {
                               handler = "reverse_proxy";
-                              # transport = {
-                              #   protocol = "http";
-                              #   tls = {
-                              #     server_name = "s3.nyaw.xyz";
-                              #   };
-                              # };
-                              upstreams = [ { dial = "10.0.4.2:9000"; } ];
+                              upstreams = [ { dial = "10.0.4.6:9000"; } ];
                             }
                           ];
                         }
@@ -42,7 +36,7 @@
                   handle = [
                     {
                       handler = "reverse_proxy";
-                      upstreams = [ { dial = "10.0.4.2:8003"; } ];
+                      upstreams = [ { dial = "10.0.4.6:8003"; } ];
                     }
                   ];
                   match = [ { host = [ "vault.nyaw.xyz" ]; } ];
@@ -61,7 +55,7 @@
                           };
                         };
                       };
-                      upstreams = [ { dial = "10.0.4.2:8083"; } ];
+                      upstreams = [ { dial = "10.0.4.6:8083"; } ];
                     }
                   ];
                   match = [ { host = [ "book.nyaw.xyz" ]; } ];
@@ -69,7 +63,7 @@
                 }
                 (import ../caddy-matrix.nix {
                   inherit pkgs;
-                  matrix-upstream = "10.0.4.2:6167";
+                  matrix-upstream = "10.0.4.6:6167";
                 })
                 {
                   handle = [
@@ -169,7 +163,7 @@
                   handle = [
                     {
                       handler = "reverse_proxy";
-                      upstreams = [ { dial = "10.0.4.2:8084"; } ];
+                      upstreams = [ { dial = "10.0.4.6:8084"; } ];
                     }
                   ];
                   match = [ { host = [ "seed.nyaw.xyz" ]; } ];
@@ -185,7 +179,7 @@
           handle = [
             {
               handler = "reverse_proxy";
-              upstreams = [ { dial = "10.0.4.2:8888"; } ];
+              upstreams = [ { dial = "10.0.4.6:8888"; } ];
             }
           ];
           match = [ { host = [ "api.atuin.nyaw.xyz" ]; } ];
@@ -242,7 +236,7 @@
                   handle = [
                     {
                       handler = "reverse_proxy";
-                      upstreams = [ { dial = "10.0.4.2:3000"; } ];
+                      upstreams = [ { dial = "10.0.4.6:3000"; } ];
                     }
                   ];
                 }
