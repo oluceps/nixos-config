@@ -12,6 +12,7 @@ reIf {
     immich-public-proxy = {
       enable = true;
       immichUrl = "https://photo.nyaw.xyz";
+      port = 3001;
     };
   };
 }
