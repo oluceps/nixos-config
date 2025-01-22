@@ -18,7 +18,7 @@ let
 
       [
         # rustscan
-        # stun
+        stun
         # bandwhich
         fscan
         iperf3
