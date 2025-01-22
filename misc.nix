@@ -254,7 +254,7 @@
   documentation.info.enable = false;
 
   systemd.services.nix-daemon.serviceConfig = {
-    LimitNOFILE = lib.mkForce 500000000;
+    # LimitNOFILE = lib.mkForce 500000000;
     Environment = [ "TMPDIR=/var/tmp/nix-daemon" ];
   };
 
@@ -262,18 +262,12 @@
   # powerManagement.powertop.enable = true;
 
   nix = {
-    package = pkgs.lix;
+    package = pkgs.nixVersions.stable;
     nixPath = [ "nixpkgs=${inputs.nixpkgs}" ];
     channel.enable = false;
     registry = lib.mapAttrs (_: value: { flake = value; }) inputs;
 
     settings = {
-      system-features = [
-        "nixos-test"
-        "benchmark"
-        "big-parallel"
-        "kvm"
-      ];
       flake-registry = "";
       nix-path = [ "nixpkgs=${pkgs.path}" ];
       keep-outputs = true;
@@ -296,7 +290,6 @@
           "nixpkgs-wayland"
         ]);
       substituters = [
-        "https://cache.nixos.org"
         # "https://cache.garnix.io"
       ];
       auto-optimise-store = true;
@@ -307,7 +300,8 @@
         "cgroups"
         "recursive-nix"
         "ca-derivations"
-        "pipe-operator"
+        # "pipe-operator"
+        "pipe-operators"
       ];
       auto-allocate-uids = true;
       use-cgroups = true;
@@ -317,15 +311,15 @@
         "${user}"
       ];
       # Avoid disk full
-      max-free = lib.mkDefault (1000 * 1000 * 1000);
-      min-free = lib.mkDefault (128 * 1000 * 1000);
-      builders-use-substitutes = true;
-      allow-import-from-derivation = true;
+      # max-free = lib.mkDefault (1000 * 1000 * 1000);
+      # min-free = lib.mkDefault (128 * 1000 * 1000);
+      # builders-use-substitutes = true;
+      # allow-import-from-derivation = true;
     };
 
-    daemonCPUSchedPolicy = lib.mkDefault "batch";
-    daemonIOSchedClass = lib.mkDefault "idle";
-    daemonIOSchedPriority = lib.mkDefault 7;
+    # daemonCPUSchedPolicy = lib.mkDefault "batch";
+    # daemonIOSchedClass = lib.mkDefault "idle";
+    # daemonIOSchedPriority = lib.mkDefault 7;
 
     extraOptions = ''
       !include ${config.vaultix.secrets.gh-token.path}
