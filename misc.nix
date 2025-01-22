@@ -301,7 +301,7 @@
         "recursive-nix"
         "ca-derivations"
         # "pipe-operator"
-        "pipe-operators"
+        # "pipe-operators"
       ];
       auto-allocate-uids = true;
       use-cgroups = true;
