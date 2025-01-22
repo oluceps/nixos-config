@@ -254,6 +254,7 @@
   documentation.info.enable = false;
 
   systemd.services.nix-daemon.serviceConfig = {
+    # WARNING: THIS makes nix-daemon build extremely slow
     # LimitNOFILE = lib.mkForce 500000000;
     Environment = [ "TMPDIR=/var/tmp/nix-daemon" ];
   };
@@ -301,7 +302,7 @@
         "recursive-nix"
         "ca-derivations"
         # "pipe-operator"
-        # "pipe-operators"
+        "pipe-operators"
       ];
       auto-allocate-uids = true;
       use-cgroups = true;

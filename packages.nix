@@ -12,18 +12,18 @@ let
       # anti-censor
       [
         sing-box
-        # tor
+        tor
         arti
       ]
 
       [
-        # rustscan
+        rustscan
         stun
-        # bandwhich
+        bandwhich
         fscan
         iperf3
-        # i2p
-        # ethtool
+        i2p
+        ethtool
         dnsutils
         tcpdump
         netcat
