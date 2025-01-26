@@ -350,7 +350,7 @@
           JnKJ63hPDuCvx1YlB6enilL3BMAs2CX2Dg==
           -----END CERTIFICATE-----
         '')
-        (pkgs.writeText "intermediate-ca-crt" ''
+        (pkgs.writeText "intermediate-ca-root-signed-crt" ''
           -----BEGIN CERTIFICATE-----
           MIIBjjCCAUCgAwIBAgIUAf5RM0UXJbedoKBU9/Y0EVmqSbIwBQYDK2VwMC4xETAP
           BgNVBAoMCE1pbGlldWltMRkwFwYDVQQDDBBNaWxpZXVpbSBSb290IENBMB4XDTI1
