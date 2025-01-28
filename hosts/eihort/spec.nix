@@ -57,9 +57,13 @@
     calibre.enable = true;
     immich.enable = true;
     radicle.enable = true;
+    autosign.enable = true;
   };
 
   services = {
+    autosign = {
+      enable = true;
+    };
     rsyncd = {
       enable = true;
       socketActivated = true;
