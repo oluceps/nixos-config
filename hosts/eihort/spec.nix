@@ -61,9 +61,6 @@
   };
 
   services = {
-    autosign = {
-      enable = true;
-    };
     rsyncd = {
       enable = true;
       socketActivated = true;

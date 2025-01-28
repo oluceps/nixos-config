@@ -5,16 +5,16 @@
   ...
 }:
 let
-  inherit (lib) mkOption types mkIf;
+  inherit (lib)
+    mkOption
+    types
+    mkIf
+    ;
 
   cfg = config.repack.autosign;
 in
 {
   options.repack.autosign = {
-    enable = mkOption {
-      type = types.bool;
-      default = false;
-    };
     environmentFile = mkOption {
       type = types.nullOr types.str;
       default = config.vaultix.secrets.autosign.path;
