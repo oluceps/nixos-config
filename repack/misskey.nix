@@ -23,7 +23,7 @@ reIf {
     };
     serviceConfig = {
       LoadCredential = [ "config:${config.vaultix.secrets.misskey.path}" ];
-      ExecStart = "${pkgs.misskey}/bin/misskey migrateandstart";
+      ExecStart = "${pkgs.sharkey}/bin/misskey migrateandstart";
       RuntimeDirectory = "misskey";
       RuntimeDirectoryMode = "700";
       StateDirectory = "misskey";
