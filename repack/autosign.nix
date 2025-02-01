@@ -26,20 +26,10 @@ in
       description = "autosign";
       wantedBy = [ "timers.target" ];
       timerConfig = {
-        OnCalendar = "*-*-* 11:30:00";
-        RandomizedDelaySec = "5m";
-        Persistent = true;
+        OnCalendar = "*-*-* 13:10:00";
       };
     };
     systemd.user.services.autosign = {
-      after = [
-        "network-online.target"
-        "nss-lookup.target"
-      ];
-      wants = [
-        "network-online.target"
-        "nss-lookup.target"
-      ];
       description = "autosign Daemon";
       restartIfChanged = false;
       serviceConfig = {
@@ -52,7 +42,10 @@ in
           "${lib.getExe pkgs.deno} run --allow-env --allow-net --no-check ${scriptPath}";
         EnvironmentFile = cfg.environmentFile;
         Environment = [ "HOME=/home/${user}" ];
-        Restart = "no";
+        Restart = "on-failure";
+        RestartSec = "5s";
+        StartLimitBurst = 3;
+        StartLimitInterval = "60s";
       };
     };
   };
