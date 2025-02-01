@@ -338,7 +338,7 @@
     pki = {
       certificateFiles = [
         "${pkgs.cacert}/etc/ssl/certs/ca-bundle.crt"
-        (pkgs.writeText "root-ca-crt" ''
+        (pkgs.writeText "my-fullchain.crt" ''
           -----BEGIN CERTIFICATE-----
           MIIBZTCCARegAwIBAgIUK5cIP43nYTxkSom4car51xB2fyUwBQYDK2VwMC4xETAP
           BgNVBAoMCE1pbGlldWltMRkwFwYDVQQDDBBNaWxpZXVpbSBSb290IENBMCAXDTI1
@@ -349,8 +349,6 @@
           BQYDK2VwA0EAek7DrIzml/QbQ0pvtKXtIguAu1LkS7dJEH11ywG60ZcNsSaASp4t
           JnKJ63hPDuCvx1YlB6enilL3BMAs2CX2Dg==
           -----END CERTIFICATE-----
-        '')
-        (pkgs.writeText "intermediate-ca-root-signed-crt" ''
           -----BEGIN CERTIFICATE-----
           MIIBjjCCAUCgAwIBAgIUAf5RM0UXJbedoKBU9/Y0EVmqSbIwBQYDK2VwMC4xETAP
           BgNVBAoMCE1pbGlldWltMRkwFwYDVQQDDBBNaWxpZXVpbSBSb290IENBMB4XDTI1
