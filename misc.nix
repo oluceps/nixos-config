@@ -338,7 +338,7 @@
     pki = {
       certificateFiles = [
         "${pkgs.cacert}/etc/ssl/certs/ca-bundle.crt"
-        (pkgs.writeText "my-fullchain.crt" ''
+        (pkgs.writeText "root.crt" ''
           -----BEGIN CERTIFICATE-----
           MIIBZTCCARegAwIBAgIUK5cIP43nYTxkSom4car51xB2fyUwBQYDK2VwMC4xETAP
           BgNVBAoMCE1pbGlldWltMRkwFwYDVQQDDBBNaWxpZXVpbSBSb290IENBMCAXDTI1
@@ -349,16 +349,18 @@
           BQYDK2VwA0EAek7DrIzml/QbQ0pvtKXtIguAu1LkS7dJEH11ywG60ZcNsSaASp4t
           JnKJ63hPDuCvx1YlB6enilL3BMAs2CX2Dg==
           -----END CERTIFICATE-----
+        '')
+        (pkgs.writeText "intermediate.crt" ''
           -----BEGIN CERTIFICATE-----
-          MIIBjjCCAUCgAwIBAgIUAf5RM0UXJbedoKBU9/Y0EVmqSbIwBQYDK2VwMC4xETAP
+          MIIBmTCCAUugAwIBAgIUAf5RM0UXJbedoKBU9/Y0EVmqSbMwBQYDK2VwMC4xETAP
           BgNVBAoMCE1pbGlldWltMRkwFwYDVQQDDBBNaWxpZXVpbSBSb290IENBMB4XDTI1
-          MDEyNjA3MzMyNVoXDTM1MDEyNDA3MzMyNVowODERMA8GA1UECgwITWlsaWV1aW0x
-          IzAhBgNVBAMMGk1pbGlldWltIEludGVybWVkaWF0ZSBDQSAwMCowBQYDK2VwAyEA
-          GLT327XsEKf1mNCGfn/x3r9dyaCtENRPL3p8puVLDx6jZjBkMB0GA1UdDgQWBBQF
-          jIgHb+pqPg8LItiOJ1Bxz0GvezASBgNVHRMBAf8ECDAGAQH/AgEAMA4GA1UdDwEB
-          /wQEAwIBBjAfBgNVHSMEGDAWgBTYWAMqJV8SLM1gHpSjy/4kpWjhVTAFBgMrZXAD
-          QQCcIPEDv+MnFYdJbieRm1G71nEqLIX2rkM7YS/x/bTGxHULU+xXrd58HxnvgsEC
-          6W6K1xxOgeRgbxm9SR8eWuYK
+          MDIwMTEzMjYxMFoXDTM1MDEzMDEzMjYxMFowODERMA8GA1UECgwITWlsaWV1aW0x
+          IzAhBgNVBAMMGk1pbGlldWltIEludGVybWVkaWF0ZSBDQSAwMFkwEwYHKoZIzj0C
+          AQYIKoZIzj0DAQcDQgAEOUhNYWn7tf0AeKajjrnbPeUtxy+gPSm6243USRSQ6UNA
+          Wtoqd08YLydE7mWn3GXfQK4kCvuCijHuOSfvPI5D7KNCMEAwHQYDVR0OBBYEFFLg
+          cYw1Qz+gD42r/EC7+Mar3UcEMB8GA1UdIwQYMBaAFNhYAyolXxIszWAelKPL/iSl
+          aOFVMAUGAytlcANBAOuABDp5JMJDeYCYGqQjRftDnPNSONS2bkdv5s6v8+3SMNj1
+          ezs4wjnvCxPqYoHg62hv72fEMqQg5INO2i/5qw0=
           -----END CERTIFICATE-----
         '')
       ];
