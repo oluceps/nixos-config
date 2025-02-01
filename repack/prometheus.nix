@@ -11,11 +11,11 @@ let
     "yidhra"
     "hastur"
     "eihort"
+    "abhoth"
   ];
   targets_notls = map (n: "${n}.nyaw.xyz") [
     # "kaambl"
     # "yidhra"
-    "abhoth"
     "azasos"
   ];
   relabel_configs = [
