@@ -9,13 +9,13 @@ let
   targets = map (n: "${n}.nyaw.xyz") [
     # "nodens"
     "yidhra"
-    "abhoth"
     "hastur"
     "eihort"
   ];
   targets_notls = map (n: "${n}.nyaw.xyz") [
     # "kaambl"
     # "yidhra"
+    "abhoth"
     "azasos"
   ];
   relabel_configs = [
