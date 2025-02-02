@@ -401,7 +401,7 @@
   };
 
   systemd.tmpfiles.rules = [
-    "C+ /home/${user}/.ssh/config - - - - ${''
+    "L /home/${user}/.ssh/config - - - - ${pkgs.writeText "ssh-config" ''
       ${builtins.concatStringsSep "\n" (
         let
           inherit (builtins) elemAt;
@@ -411,10 +411,7 @@
               let
                 where = lib.splitString "@" addr;
               in
-              ''
-                HostName ${elemAt where 1}
-                User ${elemAt where 0}
-              ''
+              "HostName ${elemAt where 1}\n    User ${elemAt where 0}"
             );
           hosts = (fromTOML (builtins.readFile ./hosts/sum.toml)).host;
         in
