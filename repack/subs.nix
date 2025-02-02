@@ -26,18 +26,13 @@ in
       unitConfig = {
         StartLimitIntervalSec = 0;
       };
-      serviceConfig =
-        let
-          scriptPath = "${cfg.package}/bin/subs";
-        in
-        {
-          Type = "simple";
-          ExecStart = "${lib.getExe pkgs.deno} run --allow-env --allow-net --no-check ${scriptPath}";
-          AmbientCapabilities = [ "CAP_NET_BIND_SERVICE" ];
-          Environment = [ "HOME=/home/${user}" ];
-          Restart = "always";
-          RestartSec = 1;
-        };
+      serviceConfig = {
+        Type = "simple";
+        ExecStart = "${lib.getExe pkgs.deno} run --allow-env --allow-net --no-check ${cfg.scriptPath}";
+        Environment = [ "HOME=/home/${user}" ];
+        Restart = "always";
+        RestartSec = 1;
+      };
       wantedBy = [ "default.target" ];
       after = [
         "network.target"

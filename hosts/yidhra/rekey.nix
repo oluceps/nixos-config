@@ -70,7 +70,7 @@ in
       };
       subs = {
         file = ../../sec/subs.age;
-        mode = "640";
+        mode = "740";
         owner = user;
         group = "root";
         name = "subs.ts";
