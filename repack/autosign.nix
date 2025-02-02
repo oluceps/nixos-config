@@ -22,19 +22,12 @@ in
     };
   };
   config = mkIf cfg.enable {
-    systemd.user.timers.autosign = {
-      description = "autosign";
-      wantedBy = [ "timers.target" ];
-      timerConfig = {
-        OnCalendar = "*-*-* 13:10:00";
-        # OnCalendar = "*-*-* *:*:00";
-      };
-    };
     systemd.user.services.autosign = {
       description = "autosign Daemon";
-      # restartIfChanged = false;
+      restartIfChanged = false;
+      startAt = "*-*-* 13:10:00";
       serviceConfig = {
-        Type = "simple";
+        Type = "oneshot";
         ExecStart =
           let
             scriptPath = ../script/autosign.ts;
