@@ -99,7 +99,9 @@
         wireguardPeers = [
           {
             PublicKey = "BCbrvvMIoHATydMkZtF8c+CHlCpKUy1NW+aP0GnYfRM=";
-            AllowedIPs = [ "10.0.3.2/32" ];
+            AllowedIPs = [
+              "10.0.3.2/32"
+            ];
             PersistentKeepalive = 15;
           }
           {
