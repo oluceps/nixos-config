@@ -7,9 +7,6 @@
   ...
 }:
 {
-  systemd.tmpfiles.rules = [
-    "L+ /home/${user}/.ssh/config - - - - ${config.vaultix.secrets.ssh-cfg.path}"
-  ];
   programs = {
 
     ssh = {
