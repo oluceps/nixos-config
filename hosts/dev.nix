@@ -29,8 +29,8 @@
               ForwardAgent yes
         '') hosts
       )}
-      Host gitee.com 
-          HostName gitee.com 
+      Host gitee.com
+          HostName gitee.com
           User riro
 
       Host github.com
