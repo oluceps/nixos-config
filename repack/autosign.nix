@@ -27,14 +27,14 @@ in
       wantedBy = [ "timers.target" ];
       timerConfig = {
         OnCalendar = "*-*-* 13:10:00";
+        # OnCalendar = "*-*-* *:*:00";
       };
     };
     systemd.user.services.autosign = {
       description = "autosign Daemon";
-      restartIfChanged = false;
+      # restartIfChanged = false;
       serviceConfig = {
-        Type = "oneshot";
-        # DynamicUser = true;
+        Type = "simple";
         ExecStart =
           let
             scriptPath = ../script/autosign.ts;
