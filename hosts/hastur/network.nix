@@ -1,5 +1,15 @@
 { lib, config, ... }:
 {
+  services.babeld = {
+    enable = true;
+    extraConfig = ''
+      router-id 3c:7c:3f:22:49:80
+      interface wg0 type tunnel rtt-max 512
+      redistribute ip fdcc::/64 ge 64 le 128 local allow
+      redistribute proto 42
+      redistribute local deny
+    '';
+  };
   services.resolved = {
     enable = lib.mkForce false;
     llmnr = "false";
@@ -40,7 +50,7 @@
       checkReversePath = false;
       trustedInterfaces = [
         "virbr0"
-        "wg0"
+        "wg*"
         "podman*"
         "dae0"
       ];
@@ -108,145 +118,95 @@
         MACAddressPolicy = "persistent";
       };
     };
-    # links."40-wlan0" = {
-    #   matchConfig.MACAddress = "70:66:55:e7:1c:b1";
-    #   linkConfig.Name = "wlan0";
-    # };
 
-    netdevs = {
-      # bond0 = {
-      #   netdevConfig = {
-      #     Kind = "bond";
-      #     Name = "bond0";
-      #     # MTUBytes = "1300";
-      #   };
-      #   bondConfig = {
-      #     Mode = "active-backup";
-      #     PrimaryReselectPolicy = "always";
-      #     MIIMonitorSec = "1s";
-      #   };
-      # };
-
-      wg0 = {
-        netdevConfig = {
-          Kind = "wireguard";
-          Name = "wg0";
-          MTUBytes = "1300";
-        };
-        wireguardConfig = {
-          PrivateKeyFile = config.vaultix.secrets.wg.path;
+    netdevs.wg0 = {
+      netdevConfig = {
+        Kind = "wireguard";
+        Name = "wg0";
+        MTUBytes = "1300";
+      };
+      wireguardConfig = {
+        PrivateKeyFile = config.vaultix.secrets.wg.path;
+        RouteTable = false;
+      };
+      wireguardPeers = [
+        {
+          # abhoth
+          PublicKey = "jQGcU+BULglJ9pUz/MmgOWhGRjpimogvEudwc8hMR0A=";
+          AllowedIPs = [
+            "::/0"
+          ];
+          Endpoint = "127.0.0.1:41821";
+          PersistentKeepalive = 15;
           RouteTable = false;
-        };
-        wireguardPeers = [
-          {
-            # azasos
-            PublicKey = "49xNnrpNKHAvYCDikO3XhiK94sUaSQ4leoCnTOQjWno=";
-            AllowedIPs = [
-              "10.0.2.0/24"
-            ];
-            Endpoint = "116.196.112.43:51820";
-            PersistentKeepalive = 15;
-          }
-          # {
-          #   PublicKey = "+fuA9nUmFVKy2Ijfh5xfcnO9tpA/SkIL4ttiWKsxyXI=";
-          #   AllowedIPs = [ "10.0.1.0/24" ];
-          #   Endpoint = "127.0.0.1:41820";
-          #   PersistentKeepalive = 15;
-          # }
-          {
-            # abhoth
-            PublicKey = "jQGcU+BULglJ9pUz/MmgOWhGRjpimogvEudwc8hMR0A=";
-            AllowedIPs = [
-              "10.0.3.0/24"
-            ];
-            Endpoint = "127.0.0.1:41821";
-            PersistentKeepalive = 15;
-          }
-          {
-            # yidhra
-            PublicKey = "V3J9d8lUOk4WXj+dIiAZsuKJv3HxUl8J4HvX/s4eElY=";
-            AllowedIPs = [
-              "10.0.4.0/24"
-            ];
-            # Endpoint = "8.210.47.13:51820";
-            Endpoint = "127.0.0.1:41822";
-            PersistentKeepalive = 15;
-          }
-        ];
-      };
+        }
+      ];
     };
 
-    networks = {
-      "10-wg0" = {
-        matchConfig.Name = "wg0";
-        # IP addresses the client interface will have
-        address = [
-          # "10.0.1.2/24"
-          "10.0.2.2/24"
-          "10.0.3.2/24"
-          "10.0.4.2/24"
-        ];
+    networks."10-wg0" = {
+      matchConfig.Name = "wg0";
+      addresses = [
+        {
+          Address = "fdcc::1/128";
+          Peer = "fdcc::2/128";
+        }
+        {
+          Address = "fe80::216:3eff:fe0f:37d8/64";
+          Peer = "fe80::216:3eff:fe15:ec52/64";
+          Scope = "link";
+        }
+      ];
+      # address = [
+      #   "fdcc::1/128"
+      #   "fe80::216:3eff:fe0f:37d8/64"
+      # ];
+      networkConfig = {
+        DHCP = false;
+      };
+      #   IPMasquerade = "both";
+      #   IPv4Forwarding = true;
+      #   IPv6Forwarding = true;
+      # };
+    };
+
+    networks."8-eth0" = {
+      matchConfig.Name = "eth0";
+      networkConfig = {
         DHCP = "no";
-        networkConfig = {
-          IPMasquerade = "ipv4";
-          IPv4Forwarding = true;
-        };
+        IPv4Forwarding = true;
+        IPv6Forwarding = true;
+        IPv6AcceptRA = "yes";
       };
+      linkConfig.RequiredForOnline = "routable";
+      address = [ "192.168.1.2/24" ];
+      routes = [
+        { Gateway = "192.168.1.1"; }
+      ];
+    };
 
-      # "20-wired-bond0" = {
-      #   matchConfig.Name = "eth0";
-
-      #   networkConfig = {
-      #     Bond = "bond0";
-      #     PrimarySlave = true;
-      #   };
-      # };
-
-      # "40-wireless-bond1" = {
-      #   matchConfig.Name = "wlan0";
-      #   networkConfig = {
-      #     Bond = "bond1";
-      #   };
-      # };
-
-      "8-eth0" = {
-        matchConfig.Name = "eth0";
-        networkConfig = {
-          DHCP = "no";
-          IPv4Forwarding = true;
-          IPv6Forwarding = true;
-          IPv6AcceptRA = "yes";
-        };
-        linkConfig.RequiredForOnline = "routable";
-        address = [ "192.168.1.2/24" ];
-        routes = [
-          { Gateway = "192.168.1.1"; }
-        ];
-      };
-
-      "25-ncm" = {
-        matchConfig.Name = "ncm";
-        DHCP = "yes";
-        dhcpV4Config.RouteMetric = 2044;
-        dhcpV6Config.RouteMetric = 2044;
-        dhcpV4Config.UseDNS = false;
-        dhcpV6Config.UseDNS = false;
-        networkConfig = {
-          DNSSEC = true;
-        };
-      };
-
-      "30-rndis" = {
-        matchConfig.Name = "rndis";
-        DHCP = "yes";
-        dhcpV4Config.RouteMetric = 2044;
-        dhcpV6Config.RouteMetric = 2044;
-        dhcpV4Config.UseDNS = false;
-        dhcpV6Config.UseDNS = false;
-        networkConfig = {
-          DNSSEC = false;
-        };
+    networks."25-ncm" = {
+      matchConfig.Name = "ncm";
+      DHCP = "yes";
+      dhcpV4Config.RouteMetric = 2044;
+      dhcpV6Config.RouteMetric = 2044;
+      dhcpV4Config.UseDNS = false;
+      dhcpV6Config.UseDNS = false;
+      networkConfig = {
+        DNSSEC = true;
       };
     };
+
+    networks."30-rndis" = {
+      matchConfig.Name = "rndis";
+      DHCP = "yes";
+      dhcpV4Config.RouteMetric = 2044;
+      dhcpV6Config.RouteMetric = 2044;
+      dhcpV4Config.UseDNS = false;
+      dhcpV6Config.UseDNS = false;
+      networkConfig = {
+        DNSSEC = false;
+      };
+    };
+
   };
 }
