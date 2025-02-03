@@ -168,7 +168,8 @@
             AllowedIPs = [
               "10.0.4.0/24"
             ];
-            Endpoint = "127.0.0.1:41822";
+            Endpoint = "8.210.47.13:51820";
+            # Endpoint = "127.0.0.1:41822";
             PersistentKeepalive = 15;
           }
         ];
