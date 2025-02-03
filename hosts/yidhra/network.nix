@@ -9,6 +9,7 @@
     firewall = {
       checkReversePath = false;
       enable = true;
+      extraForwardRules = "iifname wg0 accept";
       trustedInterfaces = [
         "virbr0"
         "wg0"
