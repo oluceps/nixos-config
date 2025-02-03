@@ -130,17 +130,9 @@
           Scope = "link";
         }
       ];
-      # networkConfig = {
-      #   IPMasquerade = "both";
-      #   IPv4Forwarding = true;
-      #   IPv6Forwarding = true;
-      # };
       networkConfig = {
         DHCP = false;
       };
-      # routes = [
-
-      # ];
     };
 
     networks."20-eth0" = {
