@@ -26,6 +26,12 @@
         "virbr0"
         "wg*"
       ];
+      allowedUDPPortRanges = [
+        {
+          from = 51820;
+          to = 51830;
+        }
+      ];
       allowedUDPPorts = [
         80
         443
@@ -33,7 +39,6 @@
         5173
         23180
         4444
-        51820
         3330
         8880
         34197 # factorio realm
@@ -109,9 +114,7 @@
       wireguardPeers = [
         {
           PublicKey = "BCbrvvMIoHATydMkZtF8c+CHlCpKUy1NW+aP0GnYfRM=";
-          AllowedIPs = [
-            "::/0"
-          ];
+          AllowedIPs = [ "::/0" ];
           RouteTable = false;
         }
       ];
@@ -127,6 +130,45 @@
         {
           Address = "fe80::216:3eff:fe15:ec52/64";
           Peer = "fe80::216:3eff:fe0f:37d8/64";
+          Scope = "link";
+        }
+      ];
+      networkConfig = {
+        DHCP = false;
+      };
+    };
+
+    # azasos
+    netdevs.wg2 = {
+      netdevConfig = {
+        Kind = "wireguard";
+        Name = "wg2";
+        MTUBytes = "1300";
+      };
+      wireguardConfig = {
+        PrivateKeyFile = config.vaultix.secrets.wgab.path;
+        ListenPort = 51821;
+        RouteTable = false;
+      };
+      wireguardPeers = [
+        {
+          PublicKey = "49xNnrpNKHAvYCDikO3XhiK94sUaSQ4leoCnTOQjWno=";
+          AllowedIPs = [ "::/0" ];
+          RouteTable = false;
+        }
+      ];
+    };
+
+    networks."10-wg2" = {
+      matchConfig.Name = "wg2";
+      addresses = [
+        {
+          Address = "fdcc::2/128";
+          Peer = "fdcc::3/128";
+        }
+        {
+          Address = "fe80::216:3eff:fe15:ec52/64";
+          Peer = "fe80::216:3eff:fe7b:d228/64";
           Scope = "link";
         }
       ];

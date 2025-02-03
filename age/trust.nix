@@ -37,13 +37,11 @@
     mode = "640";
     owner = "root";
     group = "users";
-    name = "hyst-osa-cli.yaml";
   };
   hyst-hk-cli = {
     file = ../sec/hyst-hk-cli.age;
     mode = "640";
     owner = "root";
     group = "users";
-    name = "hyst-hk-cli.yaml";
   };
 }
