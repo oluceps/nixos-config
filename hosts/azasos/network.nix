@@ -1,5 +1,15 @@
 { lib, config, ... }:
 {
+  services.babeld = {
+    enable = true;
+    extraConfig = ''
+      router-id fa:16:3e:d3:09:f8
+      interface wg0 type tunnel rtt-max 512
+      redistribute ip fdcc::/64 ge 64 le 128 local allow
+      redistribute proto 42
+      redistribute local deny
+    '';
+  };
 
   services.resolved = {
     enable = lib.mkForce false;
@@ -31,6 +41,12 @@
         "virbr0"
         "wg0"
       ];
+      allowedUDPPortRanges = [
+        {
+          from = 51820;
+          to = 51830;
+        }
+      ];
       allowedUDPPorts = [
         80
         443
@@ -38,7 +54,6 @@
         5173
         23180
         4444
-        51820
         8448
         34197
         8083 # streaming
@@ -111,100 +126,102 @@
       linkConfig.Name = "eth0";
     };
 
-    netdevs = {
+    # hastur
+    netdevs.wg0 = {
+      netdevConfig = {
+        Kind = "wireguard";
+        Name = "wg0";
+        MTUBytes = "1300";
+      };
+      wireguardConfig = {
+        PrivateKeyFile = config.vaultix.secrets.wga.path;
+        ListenPort = 51820;
+        RouteTable = false;
+      };
+      wireguardPeers = [
+        {
+          PublicKey = "BCbrvvMIoHATydMkZtF8c+CHlCpKUy1NW+aP0GnYfRM=";
+          AllowedIPs = [ "::/0" ];
+          RouteTable = false;
+          PersistentKeepalive = 15;
+        }
+      ];
+    };
 
-      wg0 = {
-        netdevConfig = {
-          Kind = "wireguard";
-          Name = "wg0";
-          MTUBytes = "1300";
-        };
-        wireguardConfig = {
-          PrivateKeyFile = config.vaultix.secrets.wga.path;
-          ListenPort = 51820;
-        };
-        wireguardPeers = [
-          {
-            PublicKey = "BCbrvvMIoHATydMkZtF8c+CHlCpKUy1NW+aP0GnYfRM=";
-            AllowedIPs = [ "10.0.2.2/32" ];
-            PersistentKeepalive = 15;
-          }
-          {
-            PublicKey = "69DTVyNbhMN6/cgLCpcZrh/kGoi1IyxV0QwVjDe5IQk=";
-            AllowedIPs = [ "10.0.2.6/32" ];
-            PersistentKeepalive = 15;
-          }
-          {
-            PublicKey = "i7Li/BDu5g5+Buy6m6Jnr09Ne7xGI/CcNAbyK9KKbQg=";
-            AllowedIPs = [ "10.0.2.3/32" ];
-            PersistentKeepalive = 15;
-          }
-          {
-            PublicKey = "+fuA9nUmFVKy2Ijfh5xfcnO9tpA/SkIL4ttiWKsxyXI=";
-            AllowedIPs = [ "10.0.1.1/24" ];
-            Endpoint = "127.0.0.1:41820";
-            PersistentKeepalive = 15;
-          }
-          {
-            PublicKey = "jQGcU+BULglJ9pUz/MmgOWhGRjpimogvEudwc8hMR0A=";
-            AllowedIPs = [ "10.0.3.1/24" ];
-            Endpoint = "127.0.0.1:41821";
-            PersistentKeepalive = 15;
-          }
-          {
-            PublicKey = "V3J9d8lUOk4WXj+dIiAZsuKJv3HxUl8J4HvX/s4eElY=";
-            AllowedIPs = [ "10.0.4.0/24" ];
-            Endpoint = "127.0.0.1:41822";
-            PersistentKeepalive = 15;
-          }
-        ];
+    networks."10-wg0" = {
+      matchConfig.Name = "wg0";
+      addresses = [
+        {
+          Address = "fdcc::3/128";
+          Peer = "fdcc::1/128";
+        }
+        {
+          Address = "fe80::216:3eff:fe7b:d228/64";
+          Peer = "fe80::216:3eff:fe0f:37d8/64";
+          Scope = "link";
+        }
+      ];
+      networkConfig = {
+        DHCP = false;
       };
     };
 
-    networks = {
-      "10-wg0" = {
-        matchConfig.Name = "wg0";
-        address = [
-          "10.0.2.1/24"
-        ];
-        networkConfig = {
-          IPMasquerade = "ipv4";
-          IPv4Forwarding = true;
-        };
-
-        routes = [
-          {
-            Destination = "10.0.3.0/24";
-            Scope = "link";
-          }
-          {
-            Destination = "10.0.1.0/24";
-            Scope = "link";
-          }
-          {
-            Destination = "10.0.4.0/24";
-            Scope = "link";
-          }
-        ];
-
+    # abhoth
+    netdevs.wg1 = {
+      netdevConfig = {
+        Kind = "wireguard";
+        Name = "wg1";
+        MTUBytes = "1300";
       };
-
-      "20-wired" = {
-        matchConfig.Name = "eth0";
-        DHCP = "yes";
-        dhcpV4Config.RouteMetric = 2046;
-        dhcpV6Config.RouteMetric = 2046;
-        networkConfig = {
-          # Bond = "bond1";
-          # PrimarySlave = true;
-          DNSSEC = true;
-          MulticastDNS = true;
-          DNSOverTLS = true;
-        };
-        # # REALLY IMPORTANT
-        dhcpV4Config.UseDNS = false;
-        dhcpV6Config.UseDNS = false;
+      wireguardConfig = {
+        PrivateKeyFile = config.vaultix.secrets.wga.path;
+        # ListenPort = 51820;
+        RouteTable = false;
       };
+      wireguardPeers = [
+        {
+          PublicKey = "jQGcU+BULglJ9pUz/MmgOWhGRjpimogvEudwc8hMR0A=";
+          AllowedIPs = [ "::/0" ];
+          Endpoint = "127.0.0.1:41821";
+          RouteTable = false;
+          PersistentKeepalive = 15;
+        }
+      ];
+    };
+
+    networks."10-wg1" = {
+      matchConfig.Name = "wg1";
+      addresses = [
+        {
+          Address = "fdcc::3/128";
+          Peer = "fdcc::2/128";
+        }
+        {
+          Address = "fe80::216:3eff:fe7b:d228/64";
+          Peer = "fe80::216:3eff:fe15:ec52/64";
+          Scope = "link";
+        }
+      ];
+      networkConfig = {
+        DHCP = false;
+      };
+    };
+
+    networks."20-wired" = {
+      matchConfig.Name = "eth0";
+      DHCP = "yes";
+      dhcpV4Config.RouteMetric = 2046;
+      dhcpV6Config.RouteMetric = 2046;
+      networkConfig = {
+        # Bond = "bond1";
+        # PrimarySlave = true;
+        DNSSEC = true;
+        MulticastDNS = true;
+        DNSOverTLS = true;
+      };
+      # # REALLY IMPORTANT
+      dhcpV4Config.UseDNS = false;
+      dhcpV6Config.UseDNS = false;
     };
   };
 }

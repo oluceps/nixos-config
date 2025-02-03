@@ -5,6 +5,40 @@
   ...
 }:
 {
+  vaultix.templates = {
+    hyst-osa = {
+      content =
+        config.vaultix.placeholder.hyst-osa-cli
+        + ''
+          udpForwarding:
+            - listen: 127.0.0.1:41821
+              remote: 127.0.0.1:51820
+              timeout: 120s
+          socks5:
+            listen: 127.0.0.1:1091
+        '';
+      owner = "root";
+      group = "users";
+      name = "osa.yaml";
+      trim = false;
+    };
+    hyst-hk = {
+      content =
+        config.vaultix.placeholder.hyst-hk-cli
+        + ''
+          udpForwarding:
+            - listen: 127.0.0.1:41822
+              remote: 127.0.0.1:51820
+              timeout: 120s
+          socks5:
+            listen: 127.0.0.1:1092
+        '';
+      owner = "root";
+      group = "users";
+      name = "hk.yaml";
+      trim = false;
+    };
+  };
   system = {
     # This headless machine uses to perform heavy task.
     # Running database and web services.
@@ -82,11 +116,11 @@
       # };
       abhoth = {
         enable = true;
-        configFile = config.vaultix.secrets.hyst-osa-cli.path;
+        configFile = config.vaultix.templates.hyst-osa.path;
       };
       yidhra = {
         enable = true;
-        configFile = config.vaultix.secrets.hyst-hk-cli.path;
+        configFile = config.vaultix.templates.hyst-hk.path;
       };
     };
     # shadowsocks.instances = [
@@ -165,7 +199,6 @@
     grafana.enable = true;
     # xmrig.enable = true;
     reuse-cert.enable = true;
-
 
     # postgresql.enable = true;
     # misskey.enable = true;
