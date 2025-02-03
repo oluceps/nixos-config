@@ -156,17 +156,9 @@
           Scope = "link";
         }
       ];
-      # address = [
-      #   "fdcc::1/128"
-      #   "fe80::216:3eff:fe0f:37d8/64"
-      # ];
       networkConfig = {
         DHCP = false;
       };
-      #   IPMasquerade = "both";
-      #   IPv4Forwarding = true;
-      #   IPv6Forwarding = true;
-      # };
     };
 
     networks."8-eth0" = {
