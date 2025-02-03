@@ -104,12 +104,12 @@
                           match = [ { method = [ "GET" ]; } ];
                           key = "static";
                           window = "1m";
-                          max_events = 10;
+                          max_events = 60;
                         };
                         dynamic = {
                           key = "{http.request.remote.host}";
                           window = "5s";
-                          max_events = 2;
+                          max_events = 5;
                         };
                       };
                       distributed = { };
