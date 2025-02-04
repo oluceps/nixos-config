@@ -12,14 +12,22 @@
     hyst-osa = {
       content =
         config.vaultix.placeholder.hyst-osa-cli
-        + ''
-          udpForwarding:
-            - listen: 127.0.0.1:41821
-              remote: 127.0.0.1:51821
-              timeout: 120s
-          socks5:
-            listen: 127.0.0.1:1091
-        '';
+        + builtins.toJSON {
+          udpForwarding =
+            let
+              port = toString (lib.conn { }).${config.networking.hostName}.abhoth;
+            in
+            [
+              {
+                listen = "127.0.0.1:${port}";
+                remote = "127.0.0.1:${port}";
+                timeout = "120s";
+              }
+            ];
+          socks5 = {
+            listen = "127.0.0.1:1091";
+          };
+        };
       owner = "root";
       group = "users";
       name = "osa.yaml";
@@ -28,14 +36,22 @@
     hyst-hk = {
       content =
         config.vaultix.placeholder.hyst-hk-cli
-        + ''
-          udpForwarding:
-            - listen: 127.0.0.1:41822
-              remote: 127.0.0.1:51821
-              timeout: 120s
-          socks5:
-            listen: 127.0.0.1:1092
-        '';
+        + builtins.toJSON {
+          udpForwarding =
+            let
+              port = toString (lib.conn { }).${config.networking.hostName}.yidhra;
+            in
+            [
+              {
+                listen = "127.0.0.1:${port}";
+                remote = "127.0.0.1:${port}";
+                timeout = "120s";
+              }
+            ];
+          socks5 = {
+            listen = "127.0.0.1:1092";
+          };
+        };
       owner = "root";
       group = "users";
       name = "hk.yaml";
