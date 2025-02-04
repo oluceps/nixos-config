@@ -200,6 +200,7 @@
     '';
   };
   repack = {
+    plugIn.enable = true;
     openssh.enable = true;
     fail2ban.enable = true;
     dae.enable = true;

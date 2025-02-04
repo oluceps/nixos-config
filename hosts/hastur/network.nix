@@ -122,93 +122,93 @@
       };
     };
 
-    # abhoth
-    netdevs.wg0 = {
-      netdevConfig = {
-        Kind = "wireguard";
-        Name = "wg0";
-        MTUBytes = "1300";
-      };
-      wireguardConfig = {
-        PrivateKeyFile = config.vaultix.secrets.wg.path;
-        RouteTable = false;
-      };
-      wireguardPeers = [
-        {
-          # abhoth
-          PublicKey = "jQGcU+BULglJ9pUz/MmgOWhGRjpimogvEudwc8hMR0A=";
-          AllowedIPs = [
-            "::/0"
-            "0.0.0.0/0"
-          ];
-          Endpoint = "127.0.0.1:41821";
-          PersistentKeepalive = 15;
-          RouteTable = false;
-        }
-      ];
-    };
+    # # abhoth
+    # netdevs.wg0 = {
+    #   netdevConfig = {
+    #     Kind = "wireguard";
+    #     Name = "wg0";
+    #     MTUBytes = "1300";
+    #   };
+    #   wireguardConfig = {
+    #     PrivateKeyFile = config.vaultix.secrets.wg.path;
+    #     RouteTable = false;
+    #   };
+    #   wireguardPeers = [
+    #     {
+    #       # abhoth
+    #       PublicKey = "jQGcU+BULglJ9pUz/MmgOWhGRjpimogvEudwc8hMR0A=";
+    #       AllowedIPs = [
+    #         "::/0"
+    #         "0.0.0.0/0"
+    #       ];
+    #       Endpoint = "127.0.0.1:41821";
+    #       PersistentKeepalive = 15;
+    #       RouteTable = false;
+    #     }
+    #   ];
+    # };
 
-    networks."10-wg0" = {
-      matchConfig.Name = "wg0";
-      addresses = [
-        {
-          Address = "fdcc::1/128";
-          Peer = "fdcc::2/128";
-        }
-        {
-          Address = "fe80::216:3eff:fe0f:37d8/64";
-          Peer = "fe80::216:3eff:fe15:ec52/64";
-          Scope = "link";
-        }
-      ];
-      networkConfig = {
-        DHCP = false;
-      };
-    };
+    # networks."10-wg0" = {
+    #   matchConfig.Name = "wg0";
+    #   addresses = [
+    #     {
+    #       Address = "fdcc::1/128";
+    #       Peer = "fdcc::2/128";
+    #     }
+    #     {
+    #       Address = "fe80::216:3eff:fe0f:37d8/64";
+    #       Peer = "fe80::216:3eff:fe15:ec52/64";
+    #       Scope = "link";
+    #     }
+    #   ];
+    #   networkConfig = {
+    #     DHCP = false;
+    #   };
+    # };
 
-    # azasos
-    netdevs.wg2 = {
-      netdevConfig = {
-        Kind = "wireguard";
-        Name = "wg2";
-        MTUBytes = "1300";
-      };
-      wireguardConfig = {
-        PrivateKeyFile = config.vaultix.secrets.wg.path;
-        RouteTable = false;
-      };
-      wireguardPeers = [
-        {
-          # abhoth
-          PublicKey = "49xNnrpNKHAvYCDikO3XhiK94sUaSQ4leoCnTOQjWno=";
-          AllowedIPs = [
-            "::/0"
-            "0.0.0.0/0"
-          ];
-          Endpoint = "116.196.112.43:51820";
-          PersistentKeepalive = 15;
-          RouteTable = false;
-        }
-      ];
-    };
+    # # azasos
+    # netdevs.wg2 = {
+    #   netdevConfig = {
+    #     Kind = "wireguard";
+    #     Name = "wg2";
+    #     MTUBytes = "1300";
+    #   };
+    #   wireguardConfig = {
+    #     PrivateKeyFile = config.vaultix.secrets.wg.path;
+    #     RouteTable = false;
+    #   };
+    #   wireguardPeers = [
+    #     {
+    #       # abhoth
+    #       PublicKey = "49xNnrpNKHAvYCDikO3XhiK94sUaSQ4leoCnTOQjWno=";
+    #       AllowedIPs = [
+    #         "::/0"
+    #         "0.0.0.0/0"
+    #       ];
+    #       Endpoint = "116.196.112.43:51820";
+    #       PersistentKeepalive = 15;
+    #       RouteTable = false;
+    #     }
+    #   ];
+    # };
 
-    networks."10-wg2" = {
-      matchConfig.Name = "wg2";
-      addresses = [
-        {
-          Address = "fdcc::1/128";
-          Peer = "fdcc::3/128";
-        }
-        {
-          Address = "fe80::216:3eff:fe0f:37d8/64";
-          Peer = "fe80::216:3eff:fe7b:d228/64";
-          Scope = "link";
-        }
-      ];
-      networkConfig = {
-        DHCP = false;
-      };
-    };
+    # networks."10-wg2" = {
+    #   matchConfig.Name = "wg2";
+    #   addresses = [
+    #     {
+    #       Address = "fdcc::1/128";
+    #       Peer = "fdcc::3/128";
+    #     }
+    #     {
+    #       Address = "fe80::216:3eff:fe0f:37d8/64";
+    #       Peer = "fe80::216:3eff:fe7b:d228/64";
+    #       Scope = "link";
+    #     }
+    #   ];
+    #   networkConfig = {
+    #     DHCP = false;
+    #   };
+    # };
 
     networks."8-eth0" = {
       matchConfig.Name = "eth0";
