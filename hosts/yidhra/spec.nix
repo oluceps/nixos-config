@@ -28,6 +28,7 @@
   };
 
   repack = {
+    plugIn.enable = true;
     openssh.enable = true;
     fail2ban.enable = true;
     sing-server.enable = true;

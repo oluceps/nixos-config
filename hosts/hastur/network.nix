@@ -6,8 +6,9 @@
       skip-kernel-setup true
       local-path /var/run/babeld/ro.sock
       router-id 3c:7c:3f:22:49:80
-      interface wg0 type tunnel rtt-max 512
-      interface wg2 type tunnel rtt-max 512
+      ${lib.concatStringsSep "\n" (
+        map (n: "interface wg-${n} type tunnel rtt-max 512") (builtins.attrNames (lib.conn { }))
+      )}
       redistribute ip fdcc::/64 ge 64 le 128 local allow
       redistribute proto 42
       redistribute local deny

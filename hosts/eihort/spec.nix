@@ -11,22 +11,19 @@
     hyst-osa = {
       content =
         config.vaultix.placeholder.hyst-osa-cli
-        + builtins.toJSON {
-          udpForwarding =
-            let
-              port = toString (lib.conn { }).${config.networking.hostName}.abhoth;
-            in
-            [
-              {
-                listen = "127.0.0.1:${port}";
-                remote = "127.0.0.1:${port}";
-                timeout = "120s";
-              }
-            ];
-          socks5 = {
-            listen = "127.0.0.1:1091";
-          };
-        };
+        + (
+          let
+            port = toString (lib.conn { }).${config.networking.hostName}.abhoth;
+          in
+          ''
+            socks5:
+              listen: 127.0.0.1:1091
+            udpForwarding:
+            - listen: 127.0.0.1:${port}
+              remote: 127.0.0.1:${port}
+              timeout: 120s
+          ''
+        );
       owner = "root";
       group = "users";
       name = "osa.yaml";
@@ -35,22 +32,19 @@
     hyst-hk = {
       content =
         config.vaultix.placeholder.hyst-hk-cli
-        + builtins.toJSON {
-          udpForwarding =
-            let
-              port = toString (lib.conn { }).${config.networking.hostName}.yidhra;
-            in
-            [
-              {
-                listen = "127.0.0.1:${port}";
-                remote = "127.0.0.1:${port}";
-                timeout = "120s";
-              }
-            ];
-          socks5 = {
-            listen = "127.0.0.1:1092";
-          };
-        };
+        + (
+          let
+            port = toString (lib.conn { }).${config.networking.hostName}.yidhra;
+          in
+          ''
+            socks5:
+              listen: 127.0.0.1:1092
+            udpForwarding:
+            - listen: 127.0.0.1:${port}
+              remote: 127.0.0.1:${port}
+              timeout: 120s
+          ''
+        );
       owner = "root";
       group = "users";
       name = "hk.yaml";
@@ -87,6 +81,7 @@
   };
   # environment.systemPackages = with pkgs;[ zfs ];
   repack = {
+    plugIn.enable = true;
     openssh.enable = true;
     fail2ban.enable = true;
     # phantomsocks.enable = true;
