@@ -8,7 +8,7 @@
       enable = true;
       trustedInterfaces = [
         "virbr0"
-        "wg0"
+        "wg*"
       ];
       allowedUDPPorts = [
         80
@@ -78,7 +78,7 @@
       enable = true;
       anyInterface = true;
       ignoredInterfaces = [
-        "wg0"
+        "wg*"
       ];
     };
 

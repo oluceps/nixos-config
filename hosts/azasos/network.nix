@@ -2,9 +2,12 @@
 {
   services.babeld = {
     enable = true;
-    extraConfig = ''
+    config = ''
+      skip-kernel-setup true
+      local-path /var/run/babeld/ro.sock
       router-id fa:16:3e:d3:09:f8
       interface wg0 type tunnel rtt-max 512
+      interface wg1 type tunnel rtt-max 512
       redistribute ip fdcc::/64 ge 64 le 128 local allow
       redistribute proto 42
       redistribute local deny
@@ -35,8 +38,8 @@
     ];
     resolvconf.useLocalResolver = true;
     firewall = {
-      checkReversePath = false;
       enable = true;
+      checkReversePath = false;
       trustedInterfaces = [
         "virbr0"
         "wg0"
@@ -141,7 +144,10 @@
       wireguardPeers = [
         {
           PublicKey = "BCbrvvMIoHATydMkZtF8c+CHlCpKUy1NW+aP0GnYfRM=";
-          AllowedIPs = [ "::/0" ];
+          AllowedIPs = [
+            "::/0"
+            "0.0.0.0/0"
+          ];
           RouteTable = false;
           PersistentKeepalive = 15;
         }
@@ -175,16 +181,18 @@
       };
       wireguardConfig = {
         PrivateKeyFile = config.vaultix.secrets.wga.path;
-        # ListenPort = 51820;
+        ListenPort = 51821;
         RouteTable = false;
       };
       wireguardPeers = [
         {
           PublicKey = "jQGcU+BULglJ9pUz/MmgOWhGRjpimogvEudwc8hMR0A=";
-          AllowedIPs = [ "::/0" ];
-          Endpoint = "127.0.0.1:41821";
+          AllowedIPs = [
+            "::/0"
+            "0.0.0.0/0"
+          ];
+          Endpoint = "172.234.92.148:51821";
           RouteTable = false;
-          PersistentKeepalive = 15;
         }
       ];
     };
