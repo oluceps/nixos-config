@@ -1,13 +1,15 @@
 { lib, config, ... }:
 {
+
   services.babeld = {
     enable = true;
     config = ''
       skip-kernel-setup true
       local-path /var/run/babeld/ro.sock
       router-id fa:16:3e:d3:09:f8
-      interface wg0 type tunnel rtt-max 512
-      interface wg1 type tunnel rtt-max 512
+      ${lib.concatStringsSep "\n" (
+        map (n: "interface wg-${n} type tunnel rtt-max 512") (builtins.attrNames (lib.conn { }))
+      )}
       redistribute ip fdcc::/64 ge 64 le 128 local allow
       redistribute proto 42
       redistribute local deny
@@ -129,91 +131,6 @@
       linkConfig.Name = "eth0";
     };
 
-    # hastur
-    netdevs.wg0 = {
-      netdevConfig = {
-        Kind = "wireguard";
-        Name = "wg0";
-        MTUBytes = "1300";
-      };
-      wireguardConfig = {
-        PrivateKeyFile = config.vaultix.secrets.wga.path;
-        ListenPort = 51820;
-        RouteTable = false;
-      };
-      wireguardPeers = [
-        {
-          PublicKey = "BCbrvvMIoHATydMkZtF8c+CHlCpKUy1NW+aP0GnYfRM=";
-          AllowedIPs = [
-            "::/0"
-            "0.0.0.0/0"
-          ];
-          RouteTable = false;
-          PersistentKeepalive = 15;
-        }
-      ];
-    };
-
-    networks."10-wg0" = {
-      matchConfig.Name = "wg0";
-      addresses = [
-        {
-          Address = "fdcc::3/128";
-          Peer = "fdcc::1/128";
-        }
-        {
-          Address = "fe80::216:3eff:fe7b:d228/64";
-          Peer = "fe80::216:3eff:fe0f:37d8/64";
-          Scope = "link";
-        }
-      ];
-      networkConfig = {
-        DHCP = false;
-      };
-    };
-
-    # abhoth
-    netdevs.wg1 = {
-      netdevConfig = {
-        Kind = "wireguard";
-        Name = "wg1";
-        MTUBytes = "1300";
-      };
-      wireguardConfig = {
-        PrivateKeyFile = config.vaultix.secrets.wga.path;
-        ListenPort = 51821;
-        RouteTable = false;
-      };
-      wireguardPeers = [
-        {
-          PublicKey = "jQGcU+BULglJ9pUz/MmgOWhGRjpimogvEudwc8hMR0A=";
-          AllowedIPs = [
-            "::/0"
-            "0.0.0.0/0"
-          ];
-          Endpoint = "172.234.92.148:51821";
-          RouteTable = false;
-        }
-      ];
-    };
-
-    networks."10-wg1" = {
-      matchConfig.Name = "wg1";
-      addresses = [
-        {
-          Address = "fdcc::3/128";
-          Peer = "fdcc::2/128";
-        }
-        {
-          Address = "fe80::216:3eff:fe7b:d228/64";
-          Peer = "fe80::216:3eff:fe15:ec52/64";
-          Scope = "link";
-        }
-      ];
-      networkConfig = {
-        DHCP = false;
-      };
-    };
 
     networks."20-wired" = {
       matchConfig.Name = "eth0";

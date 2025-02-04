@@ -16,14 +16,39 @@ let
 
   allowedUDPPorts = attrValues allConn;
 
-  genPeerCfg =
+  genPeerNetwork =
     peerName: port:
     let
       peerNode = node.${peerName};
       thisNode = node.${hostName};
     in
     {
-      netdevs."wg-${peerName}" = {
+      "10-wg-${peerName}" = {
+        matchConfig.Name = "wg-${peerName}";
+        addresses = [
+          {
+            Address = thisNode.unique_addr;
+            Peer = peerNode.unique_addr;
+          }
+          {
+            Address = thisNode.link_local_addr;
+            Peer = peerNode.link_local_addr;
+            Scope = "link";
+          }
+        ];
+        networkConfig = {
+          DHCP = false;
+        };
+      };
+    };
+  genPeerNetdev =
+    peerName: port:
+    let
+      peerNode = node.${peerName};
+      thisNode = node.${hostName};
+    in
+    {
+      "wg-${peerName}" = {
         netdevConfig = {
           Kind = "wireguard";
           Name = "wg-${peerName}";
@@ -57,24 +82,6 @@ let
           }
         );
       };
-
-      networks."10-wg-${peerName}" = {
-        matchConfig.Name = "wg-${peerName}";
-        addresses = [
-          {
-            Address = thisNode.unique_addr;
-            Peer = peerNode.unique_addr;
-          }
-          {
-            Address = thisNode.link_local_addr;
-            Peer = peerNode.link_local_addr;
-            Scope = "link";
-          }
-        ];
-        networkConfig = {
-          DHCP = false;
-        };
-      };
     };
 
 in
@@ -83,6 +90,8 @@ in
 
     networking.firewall = { inherit allowedUDPPorts; };
 
-    systemd.network = concatMapAttrs genPeerCfg allConn;
+    # it dont recursiveUpdate :\
+    systemd.network.netdevs = concatMapAttrs genPeerNetdev allConn;
+    systemd.network.networks = concatMapAttrs genPeerNetwork allConn;
   };
 }
