@@ -11,7 +11,7 @@
     "L /home/${user}/.ssh/config - - - - ${pkgs.writeText "ssh-config" ''
       ${builtins.concatStringsSep "\n" (
         let
-          hosts = (fromTOML (builtins.readFile ./sum.toml)).host;
+          hosts = (fromTOML (builtins.readFile ./sum.toml)).node;
         in
         lib.mapAttrsToList (n: v: ''
           Host ${n}

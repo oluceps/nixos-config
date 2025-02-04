@@ -8,7 +8,6 @@
 {
   system = {
     # server.
-
     stateVersion = "24.11";
     etc.overlay.enable = true;
     etc.overlay.mutable = false;
