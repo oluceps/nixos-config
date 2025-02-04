@@ -2,9 +2,12 @@
 {
   services.babeld = {
     enable = true;
-    extraConfig = ''
+    config = ''
+      skip-kernel-setup true
+      local-path /var/run/babeld/ro.sock
       router-id f2:3c:95:50:a1:73
       interface wg0 type tunnel rtt-max 512
+      interface wg2 type tunnel rtt-max 512
       redistribute ip fdcc::/64 ge 64 le 128 local allow
       redistribute proto 42
       redistribute local deny
@@ -20,8 +23,8 @@
     domain = "nyaw.xyz";
     # resolvconf.useLocalResolver = true;
     firewall = {
-      checkReversePath = false;
       enable = true;
+      checkReversePath = false;
       trustedInterfaces = [
         "virbr0"
         "wg*"
@@ -114,7 +117,10 @@
       wireguardPeers = [
         {
           PublicKey = "BCbrvvMIoHATydMkZtF8c+CHlCpKUy1NW+aP0GnYfRM=";
-          AllowedIPs = [ "::/0" ];
+          AllowedIPs = [
+            "::/0"
+            "0.0.0.0/0"
+          ];
           RouteTable = false;
         }
       ];
@@ -153,7 +159,11 @@
       wireguardPeers = [
         {
           PublicKey = "49xNnrpNKHAvYCDikO3XhiK94sUaSQ4leoCnTOQjWno=";
-          AllowedIPs = [ "::/0" ];
+          AllowedIPs = [
+            "::/0"
+            "0.0.0.0/0"
+          ];
+          Endpoint = "116.196.112.43:51821";
           RouteTable = false;
         }
       ];

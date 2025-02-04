@@ -64,7 +64,7 @@
                     }
                     {
                       handler = "reverse_proxy";
-                      upstreams = [ { dial = "localhost:8004"; } ];
+                      upstreams = [ { dial = "[::1]:8004"; } ];
                     }
                   ];
                   match = [ { host = [ "subs.nyaw.xyz" ]; } ];

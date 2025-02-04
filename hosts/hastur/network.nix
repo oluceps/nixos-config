@@ -2,9 +2,12 @@
 {
   services.babeld = {
     enable = true;
-    extraConfig = ''
+    config = ''
+      skip-kernel-setup true
+      local-path /var/run/babeld/ro.sock
       router-id 3c:7c:3f:22:49:80
       interface wg0 type tunnel rtt-max 512
+      interface wg2 type tunnel rtt-max 512
       redistribute ip fdcc::/64 ge 64 le 128 local allow
       redistribute proto 42
       redistribute local deny
@@ -119,6 +122,7 @@
       };
     };
 
+    # abhoth
     netdevs.wg0 = {
       netdevConfig = {
         Kind = "wireguard";
@@ -133,7 +137,10 @@
         {
           # abhoth
           PublicKey = "jQGcU+BULglJ9pUz/MmgOWhGRjpimogvEudwc8hMR0A=";
-          AllowedIPs = [ "::/0" ];
+          AllowedIPs = [
+            "::/0"
+            "0.0.0.0/0"
+          ];
           Endpoint = "127.0.0.1:41821";
           PersistentKeepalive = 15;
           RouteTable = false;
@@ -159,6 +166,7 @@
       };
     };
 
+    # azasos
     netdevs.wg2 = {
       netdevConfig = {
         Kind = "wireguard";
@@ -173,7 +181,10 @@
         {
           # abhoth
           PublicKey = "49xNnrpNKHAvYCDikO3XhiK94sUaSQ4leoCnTOQjWno=";
-          AllowedIPs = [ "::/0" ];
+          AllowedIPs = [
+            "::/0"
+            "0.0.0.0/0"
+          ];
           Endpoint = "116.196.112.43:51820";
           PersistentKeepalive = 15;
           RouteTable = false;
