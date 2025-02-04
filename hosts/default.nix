@@ -7,7 +7,7 @@
 let
   inherit (builtins) readFile fromTOML attrNames;
   inherit (self.lib) genAttrs;
-  hosts = (./sum.toml |> readFile |> fromTOML |> (i: i.host) |> attrNames) ++ [
+  hosts = (./sum.toml |> readFile |> fromTOML |> (i: i.node) |> attrNames) ++ [
     "bootstrap"
     "livecd"
   ];
