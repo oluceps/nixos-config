@@ -1,9 +1,15 @@
 {
   config,
   lib,
+  pkgs,
   ...
 }:
 {
+  environment.systemPackages = with pkgs; [
+    lsof
+    wireguard-tools
+    tcpdump
+  ];
   system = {
     stateVersion = "25.05";
     etc.overlay.enable = true;
