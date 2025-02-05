@@ -83,7 +83,6 @@
     };
     nftables = {
       enable = true;
-      ruleset = '''';
     };
     networkmanager.enable = lib.mkForce false;
     networkmanager.dns = "none";
