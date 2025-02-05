@@ -59,7 +59,7 @@ let
             PrivateKeyFile = config.vaultix.secrets."wg-${hostName}".path;
             RouteTable = false;
           }
-          // (optionalAttrs thisNode.censor {
+          // (optionalAttrs (thisNode.nat -> peerNode.nat) {
             ListenPort = port;
           });
         wireguardPeers = singleton (
@@ -69,13 +69,20 @@ let
               "::/0"
               "0.0.0.0/0"
             ];
+
+            RouteTable = false;
+          }
+          // optionalAttrs (thisNode.nat || !peerNode.nat) {
             Endpoint =
               let
                 port = toString allConn.${peerName};
-                addr = if (thisNode.censor || peerNode.censor) then "127.0.0.1" else peerNode.addr;
+                addr =
+                  if ((thisNode.nat && peerNode.nat) || (thisNode.censor == peerNode.censor)) then
+                    peerNode.addr
+                  else
+                    "127.0.0.1";
               in
               (addr + ":" + port);
-            RouteTable = false;
           }
           // optionalAttrs thisNode.censor {
             PersistentKeepalive = 15;

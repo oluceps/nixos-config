@@ -6,6 +6,11 @@
   ...
 }:
 {
+  environment.systemPackages = with pkgs; [
+    lsof
+    wireguard-tools
+    tcpdump
+  ];
   system = {
     # server.
     stateVersion = "24.11";

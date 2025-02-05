@@ -3,6 +3,7 @@
 id = 0 # ro, for Cantor Pair Function
 addr = "192.168.1.2"
 censor = true
+nat = true
 user = "riro"
 
 unique_addr = "fdcc::1/128"
@@ -14,6 +15,7 @@ pub_key = "BCbrvvMIoHATydMkZtF8c+CHlCpKUy1NW+aP0GnYfRM="
 id = 1
 addr = "192.168.1.187"
 censor = true
+nat = true
 user = "elen"
 
 unique_addr = "fdcc::2/128"
@@ -25,6 +27,7 @@ pub_key = "i7Li/BDu5g5+Buy6m6Jnr09Ne7xGI/CcNAbyK9KKbQg="
 id = 2
 addr = "192.168.1.16"
 censor = true
+nat = true
 user = "elen"
 
 unique_addr = "fdcc::3/128"
@@ -35,6 +38,7 @@ pub_key = "69DTVyNbhMN6/cgLCpcZrh/kGoi1IyxV0QwVjDe5IQk="
 id = 3
 addr = "8.210.47.13"
 censor = false
+nat = false
 user = "elen"
 
 unique_addr = "fdcc::4/128"
@@ -46,6 +50,7 @@ pub_key = "V3J9d8lUOk4WXj+dIiAZsuKJv3HxUl8J4HvX/s4eElY="
 id = 4
 addr = "172.234.92.148"
 censor = false
+nat = false
 user = "elen"
 
 unique_addr = "fdcc::5/128"
@@ -56,7 +61,8 @@ pub_key = "jQGcU+BULglJ9pUz/MmgOWhGRjpimogvEudwc8hMR0A="
 # tencent cloud | censored
 id = 5
 addr = "116.196.112.43"
-censor = false # pretend
+censor = true
+nat = false
 user = "elen"
 
 unique_addr = "fdcc::6/128"
