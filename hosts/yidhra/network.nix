@@ -26,8 +26,6 @@
       extraForwardRules = "iifname wg0 accept";
       trustedInterfaces = [
         "virbr0"
-        "wg0"
-        "wg1"
       ];
       allowedUDPPorts = [
         80
@@ -90,8 +88,6 @@
       enable = true;
       anyInterface = true;
       ignoredInterfaces = [
-        "wg0"
-        "wg1"
       ];
     };
 
@@ -100,11 +96,46 @@
       linkConfig.Name = "eth0";
     };
 
+    netdevs.wg-warp = {
+      netdevConfig = {
+        Kind = "wireguard";
+        Name = "wg-warp";
+        MTUBytes = "1300";
+      };
+      wireguardConfig = {
+        PrivateKeyFile = config.vaultix.secrets.wgy-warp.path;
+      };
+      wireguardPeers = [
+        {
+          PublicKey = "bmXOC+F1FxEMF9dyiK2H5/1SUtzH0JuVo51h2wPfgyo=";
+          Endpoint = "162.159.192.1:2408";
+          AllowedIPs = [ "::/0" ];
+          PersistentKeepalive = 15;
+        }
+      ];
+    };
     networks = {
 
       "20-eth0" = {
         matchConfig.Name = "eth0";
         DHCP = "yes";
+      };
+      "15-wg-warp" = {
+        matchConfig.Name = "wg-warp";
+        address = [
+          "2606:4700:110:80ef:47c4:b370:7dbd:2a72/128"
+        ];
+        networkConfig = {
+          IPMasquerade = "ipv6";
+          IPv4Forwarding = true;
+        };
+
+        routes = [
+          {
+            Destination = "::/0";
+            Gateway = "fe80::1";
+          }
+        ];
       };
     };
   };

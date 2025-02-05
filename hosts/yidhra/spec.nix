@@ -65,7 +65,7 @@
         endpoints = [
           {
             listen = "[::]:8776";
-            remote = "10.0.4.6:8776";
+            remote = "[fdcc::3]:8776";
           }
         ];
       };
@@ -97,7 +97,7 @@
         "1.1.1.1"
         "8.8.8.8"
       ];
-      listen-addrs = [ "0.0.0.0" ];
+      listen-addrs = [ "::" ];
       listen-ports = [ 53 ];
       upstream-mode = "parallel";
       upstream = [

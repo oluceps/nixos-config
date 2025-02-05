@@ -19,11 +19,10 @@
     hosts = lib.data.hosts.${config.networking.hostName};
     firewall = {
       checkReversePath = false;
-      enable = true;
+      enable = false;
       trustedInterfaces = [
         "virbr0"
-        "wg*"
-      ];
+      ] ++ map (n: "wg-${n}") (builtins.attrNames (lib.conn { }));
       allowedUDPPorts = [
         80
         443
