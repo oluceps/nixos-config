@@ -54,10 +54,9 @@
       checkReversePath = false;
       trustedInterfaces = [
         "virbr0"
-        "wg*"
         "podman*"
         "dae0"
-      ];
+      ] ++ map (n: "wg-${n}") (builtins.attrNames (lib.conn { }));
       allowedUDPPorts = [
         8080
         5173

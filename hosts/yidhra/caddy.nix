@@ -307,7 +307,13 @@
                   handle = [
                     {
                       handler = "reverse_proxy";
-                      upstreams = [ { dial = "[fdcc::3]:3000"; } ];
+                      transport = {
+                        protocol = "http";
+                        tls = {
+                          server_name = "nyaw.xyz";
+                        };
+                      };
+                      upstreams = [ { dial = "[fdcc::3]:443"; } ];
                     }
                   ];
                 }

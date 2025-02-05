@@ -45,9 +45,8 @@
       enable = true;
       trustedInterfaces = [
         "virbr0"
-        "wg0"
         "podman*"
-      ];
+      ] ++ map (n: "wg-${n}") (builtins.attrNames (lib.conn { }));
       allowedUDPPorts = [
         8080
         5173
@@ -114,7 +113,6 @@
         linkConfig.Name = "wlan0";
       };
     };
-
 
     networks = {
 
