@@ -19,7 +19,7 @@
     hosts = lib.data.hosts.${config.networking.hostName};
     firewall = {
       checkReversePath = false;
-      enable = false;
+      enable = true;
       trustedInterfaces = [
         "virbr0"
       ] ++ map (n: "wg-${n}") (builtins.attrNames (lib.conn { }));
