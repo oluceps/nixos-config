@@ -1,8 +1,8 @@
 let
   common = {
-    "116.196.112.43" = [ "azasos.nyaw.xyz" ];
-    "172.234.92.148" = [ "abhoth.nyaw.xyz" ];
-    "8.210.47.13" = [ "yidhra.nyaw.xyz" ];
+    "fdcc::6" = [ "azasos.nyaw.xyz" ];
+    "fdcc::5" = [ "abhoth.nyaw.xyz" ];
+    "fdcc::4" = [ "yidhra.nyaw.xyz" ];
   };
 
   srvOnEihort = [
