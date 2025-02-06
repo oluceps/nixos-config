@@ -10,7 +10,7 @@ on:
 
 jobs:
   generate:
-    name: Fmt Check
+    name: Gen
     runs-on: ubuntu-latest
     steps: 
       - name: Generate GitHub auth token
