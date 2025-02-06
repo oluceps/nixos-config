@@ -50,32 +50,15 @@
         "virbr0"
         "wg0"
       ];
-      allowedUDPPortRanges = [
-        {
-          from = 51820;
-          to = 51830;
-        }
-      ];
       allowedUDPPorts = [
         80
         443
-        8080
         5173
-        23180
-        4444
-        8448
-        34197
         8083 # streaming
       ];
       allowedTCPPorts = [
         80
         443
-        8080
-        9900
-        2222
-        5173
-        8448
-        32193 # ss
         8083 # streaming
       ];
     };
