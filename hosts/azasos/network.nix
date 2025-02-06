@@ -48,8 +48,7 @@
       checkReversePath = false;
       trustedInterfaces = [
         "virbr0"
-        "wg0"
-      ];
+      ] ++ map (n: "wg-${n}") (builtins.attrNames (lib.conn { }));
       allowedUDPPorts = [
         80
         443
@@ -60,6 +59,7 @@
         80
         443
         8083 # streaming
+        32193 # stls - ss
       ];
     };
 
