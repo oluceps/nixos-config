@@ -105,6 +105,9 @@
     autosign.enable = true;
   };
 
+  systemd.services.minio.serviceConfig.Environment = [
+    "MINIO_BROWSER_REDIRECT_URL=https://eihort.nyaw.xyz/minio"
+  ];
   services = {
     rsyncd = {
       enable = true;
