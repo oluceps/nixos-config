@@ -106,7 +106,7 @@
   };
 
   systemd.services.minio.serviceConfig.Environment = [
-    "MINIO_BROWSER_REDIRECT_URL=https://eihort.nyaw.xyz/minio"
+    "MINIO_BROWSER_REDIRECT_URL=https://${config.networking.fqdn}"
   ];
   services = {
     rsyncd = {
