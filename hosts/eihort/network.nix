@@ -3,7 +3,7 @@
   services.babeld = {
     enable = true;
     config = ''
-      # skip-kernel-setup true
+      skip-kernel-setup true
       local-path /var/run/babeld/ro.sock
       router-id ac:1f:6b:e5:fe:3a
 
