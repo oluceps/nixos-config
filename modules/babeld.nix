@@ -37,6 +37,15 @@ in
 
     networking.firewall.allowedUDPPorts = [ 6696 ];
 
+    boot.kernel.sysctl = lib.foldr (
+      i: acc:
+      acc
+      // {
+        "net.ipv4.conf.wg-${i}.rp_filter" = 0;
+        "net.ipv6.conf.wg-${i}.rp_filter" = 0;
+      }
+    ) { } (builtins.attrNames (lib.conn { }).${config.networking.hostName});
+
     systemd.services.babeld = {
       description = "Babel routing daemon";
       after = [ "network.target" ];
