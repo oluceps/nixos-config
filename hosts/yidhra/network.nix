@@ -1,22 +1,23 @@
 { config, lib, ... }:
 {
-  services.babeld = {
-    enable = true;
-    config = ''
-      skip-kernel-setup true
-      local-path /var/run/babeld/ro.sock
-      router-id 00:16:3e:0c:cd:5d
+  imports = [ ./bird2.nix ];
+  # services.babeld = {
+  #   enable = true;
+  #   config = ''
+  #     skip-kernel-setup true
+  #     local-path /var/run/babeld/ro.sock
+  #     router-id 00:16:3e:0c:cd:5d
 
-      interface wg-abhoth type tunnel rtt-min 64 rtt-max 256
-      interface wg-hastur type tunnel rtt-min 55 rtt-max 256
-      interface wg-azasos type tunnel rtt-min 42 rtt-max 256
-      interface wg-kaambl type tunnel rtt-min 70 rtt-max 256 rtt-decay 120
-      interface wg-eihort type tunnel rtt-min 48 rtt-max 256 rtt-decay 60
+  #     interface wg-abhoth type tunnel rtt-min 64 rtt-max 256
+  #     interface wg-hastur type tunnel rtt-min 55 rtt-max 256
+  #     interface wg-azasos type tunnel rtt-min 42 rtt-max 256
+  #     interface wg-kaambl type tunnel rtt-min 70 rtt-max 256 rtt-decay 120
+  #     interface wg-eihort type tunnel rtt-min 48 rtt-max 256 rtt-decay 60
 
-      redistribute ip fdcc::/64 ge 64 le 128 local allow
-      redistribute local deny
-    '';
-  };
+  #     redistribute ip fdcc::/64 ge 64 le 128 local allow
+  #     redistribute local deny
+  #   '';
+  # };
 
   environment.etc."resolv.conf".text = ''
     nameserver 127.0.0.1

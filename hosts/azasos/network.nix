@@ -1,24 +1,44 @@
 { lib, config, ... }:
 {
 
-  services.babeld = {
+  imports = [ ./bird2.nix ];
+  # services.babeld = {
+  #   enable = true;
+  #   config = ''
+  #     skip-kernel-setup true
+  #     local-path /var/run/babeld/ro.sock
+  #     router-id fa:16:3e:d3:09:f8
+
+  #     interface wg-abhoth type tunnel rtt-min 98 rtt-max 256
+  #     interface wg-hastur type tunnel rtt-min 46 rtt-max 256
+  #     interface wg-yidhra type tunnel rtt-min 42 rtt-max 256
+  #     interface wg-kaambl type tunnel rtt-min 94 rtt-max 256 rtt-decay 68
+  #     interface wg-eihort type tunnel rtt-min 40 rtt-max 256
+
+  #     redistribute ip fdcc::/64 ge 64 le 128 local allow
+  #     redistribute local deny
+  #   '';
+  # };
+
+  services.bird2 = {
     enable = true;
     config = ''
-      skip-kernel-setup true
-      local-path /var/run/babeld/ro.sock
-      router-id fa:16:3e:d3:09:f8
-
-      interface wg-abhoth type tunnel rtt-min 98 rtt-max 256
-      interface wg-hastur type tunnel rtt-min 46 rtt-max 256
-      interface wg-yidhra type tunnel rtt-min 42 rtt-max 256
-      interface wg-kaambl type tunnel rtt-min 94 rtt-max 256 rtt-decay 68
-      interface wg-eihort type tunnel rtt-min 40 rtt-max 256
-
-      redistribute ip fdcc::/64 ge 64 le 128 local allow
-      redistribute local deny
+      router id 10.0.0.6;
+      protocol babel {
+        interface "wg-*" {
+          port 6696;
+          hello interval 3s;
+          update interval 10s;
+          check link yes;
+          type tunnel;
+          extended next hop yes;
+        };
+        ipv6 {
+          export where (source = RTS_DEVICE) || (source = RTS_BABEL);
+        };
+      };
     '';
   };
-
   services.resolved = {
     enable = lib.mkForce false;
     llmnr = "false";
