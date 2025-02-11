@@ -17,6 +17,8 @@ let
   inherit (fromTOML (readFile ../hosts/sum.toml)) node;
   inherit (config.networking) hostName;
   allConn = (lib.conn { }).${hostName};
+  thisInfo = node.${hostName};
+  getAddrFromCIDR = i: builtins.elemAt (lib.splitString "/" i) 0;
 
   allowedUDPPorts = attrValues allConn;
   trustedInterfaces = map (n: "wg-" + n) (attrNames allConn);
@@ -103,7 +105,27 @@ in
     networking.firewall = { inherit allowedUDPPorts trustedInterfaces; };
 
     # it dont recursiveUpdate :\
-    systemd.network.netdevs = concatMapAttrs genPeerNetdev allConn;
-    systemd.network.networks = concatMapAttrs genPeerNetwork allConn;
+    systemd.network.netdevs = (concatMapAttrs genPeerNetdev allConn) // {
+      "dummy-if" = {
+        enable = true;
+        netdevConfig = {
+          Kind = "dummy";
+          Name = "dummy-if";
+        };
+      };
+    };
+    systemd.network.networks = (concatMapAttrs genPeerNetwork allConn) // {
+      "dummy-if" = {
+        enable = true;
+        DHCP = "no";
+        name = "dummy-if";
+        matchConfig = {
+          Name = "dummy-if";
+        };
+        address = [
+          "${getAddrFromCIDR thisInfo.unique_addr}/64"
+        ];
+      };
+    };
   };
 }
