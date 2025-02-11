@@ -8,6 +8,12 @@
       protocol device {}
       protocol direct {
           ipv6;
+          interface "wlan0";
+      };
+      protocol kernel {
+        ipv6 {
+            export where proto = "wg";
+        };
       };
       protocol babel {
         interface "wg-hastur" {
