@@ -16,12 +16,12 @@ let
   inherit (lib) concatMapAttrs optionalAttrs singleton;
   inherit (fromTOML (readFile ../hosts/sum.toml)) node;
   inherit (config.networking) hostName;
-  allConn = (lib.conn { }).${hostName};
+  thisConn = (lib.conn { }).${hostName};
   thisInfo = node.${hostName};
   getAddrFromCIDR = i: builtins.elemAt (lib.splitString "/" i) 0;
 
-  allowedUDPPorts = attrValues allConn;
-  trustedInterfaces = map (n: "wg-" + n) (attrNames allConn);
+  allowedUDPPorts = attrValues thisConn;
+  trustedInterfaces = map (n: "wg-" + n) (attrNames thisConn);
 
   genPeerNetwork =
     peerName: port:
@@ -82,7 +82,7 @@ let
           // optionalAttrs (thisNode.nat || !peerNode.nat) {
             Endpoint =
               let
-                port = toString allConn.${peerName};
+                port = toString thisConn.${peerName};
                 addr =
                   if ((thisNode.nat && peerNode.nat) || (thisNode.censor == peerNode.censor)) then
                     peerNode.addr
@@ -105,7 +105,7 @@ in
     networking.firewall = { inherit allowedUDPPorts trustedInterfaces; };
 
     # it dont recursiveUpdate :\
-    systemd.network.netdevs = (concatMapAttrs genPeerNetdev allConn) // {
+    systemd.network.netdevs = (concatMapAttrs genPeerNetdev thisConn) // {
       "dummy-if" = {
         enable = true;
         netdevConfig = {
@@ -114,7 +114,7 @@ in
         };
       };
     };
-    systemd.network.networks = (concatMapAttrs genPeerNetwork allConn) // {
+    systemd.network.networks = (concatMapAttrs genPeerNetwork thisConn) // {
       "dummy-if" = {
         enable = true;
         DHCP = "no";
