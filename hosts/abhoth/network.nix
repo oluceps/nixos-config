@@ -18,25 +18,6 @@
   #     redistribute local deny
   #   '';
   # };
-  services.bird2 = {
-    enable = true;
-    config = ''
-      router id 10.0.0.5;
-      protocol babel {
-        interface "wg-*" {
-          port 6696;
-          hello interval 3s;
-          update interval 10s;
-          check link yes;
-          type tunnel;
-          extended next hop yes;
-        };
-        ipv6 {
-          export where (source = RTS_DEVICE) || (source = RTS_BABEL);
-        };
-      };
-    '';
-  };
   services = {
     resolved.enable = lib.mkForce false;
   };

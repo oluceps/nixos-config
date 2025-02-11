@@ -2,7 +2,13 @@
   services.bird = {
     enable = true;
     config = ''
+      log syslog all;
+      debug protocols all;
       router id 10.0.0.3;
+      protocol device {}
+      protocol direct {
+          ipv6;
+      };
       protocol babel {
         interface "wg-kaambl" {
           port 6696;
