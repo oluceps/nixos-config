@@ -185,7 +185,7 @@
             # languages related
             [
               zig
-              lldb
+              # lldb
               # haskell-language-server
               gopls
               cmake-language-server
@@ -211,7 +211,7 @@
               # haskell-language-server
               cmake-language-server
               arduino-language-server
-              typst-lsp
+              
               vhdl-ls
               delve
               python311Packages.python-lsp-server

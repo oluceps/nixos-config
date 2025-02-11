@@ -1,5 +1,5 @@
 {
-  services.bird2 = {
+  services.bird = {
     enable = true;
     config = ''
       router id 10.0.0.4;

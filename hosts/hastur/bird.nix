@@ -1,5 +1,5 @@
 {
-  services.bird2 = {
+  services.bird = {
     enable = true;
     config = ''
       log syslog all;
