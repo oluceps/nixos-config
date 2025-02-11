@@ -8,12 +8,7 @@
       protocol device {}
       protocol direct {
           ipv6;
-          interface "eth0";
-      };
-      protocol kernel {
-        ipv6 {
-            export where proto = "wg";
-        };
+          interface "dummy-*";
       };
 
       protocol babel {
