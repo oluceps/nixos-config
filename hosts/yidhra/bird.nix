@@ -4,6 +4,7 @@
     config = ''
       log syslog all;
       debug protocols all;
+      timeformat protocol iso long;
       router id 10.0.0.4;
       protocol device {}
       protocol direct {
@@ -14,17 +15,14 @@
       {
         return net ~ SELFSET;
       }
-      protocol kernel kernel_v6 {
-       ipv6 {
-         import none;
-         export filter {
-           if source = RTS_STATIC then reject;
-           if net ~ SELFSET then {
-               krt_prefsrc = fdcc::4;
-           }
-           accept;
-         };
-       };
+      protocol kernel {
+        ipv6 {
+          import none;
+          export filter {
+            if source = RTS_STATIC then reject;
+            accept;
+          };
+        };
       };
 
       protocol babel {
