@@ -89,10 +89,10 @@
       linkConfig.Name = "eth0";
     };
 
-    netdevs.wg-warp = {
+    netdevs.warp = {
       netdevConfig = {
         Kind = "wireguard";
-        Name = "wg-warp";
+        Name = "warp";
         MTUBytes = "1300";
       };
       wireguardConfig = {
@@ -113,8 +113,8 @@
         matchConfig.Name = "eth0";
         DHCP = "yes";
       };
-      "15-wg-warp" = {
-        matchConfig.Name = "wg-warp";
+      "15-warp" = {
+        matchConfig.Name = "warp";
         address = [
           "2606:4700:110:80ef:47c4:b370:7dbd:2a72/128"
         ];
