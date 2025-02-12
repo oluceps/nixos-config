@@ -33,6 +33,7 @@
           rtt min 10ms;
           rtt max 256ms;
           rtt decay 90;
+          update interval 8s;
           extended next hop yes;
         };
         interface "wg-eihort" {
@@ -41,6 +42,7 @@
           rtt min 5ms;
           rtt max 256ms;
           rtt decay 90;
+          update interval 8s;
           extended next hop yes;
         };
         interface "wg-yidhra" {
@@ -48,6 +50,7 @@
           type tunnel;
           rtt min 60ms;
           rtt max 256ms;
+          update interval 8s;
           extended next hop yes;
         };
         interface "wg-abhoth" {
@@ -55,6 +58,7 @@
           type tunnel;
           rtt min 205ms;
           rtt max 512ms;
+          update interval 8s;
           extended next hop yes;
         };
         interface "wg-azasos" {
@@ -62,6 +66,7 @@
           type tunnel;
           rtt min 55ms;
           rtt max 512ms;
+          update interval 8s;
           extended next hop yes;
         };
         ipv6 {

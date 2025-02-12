@@ -23,7 +23,6 @@ let
   genPeerNetwork =
     peerName: port:
     let
-      peerNode = node.${peerName};
       thisNode = node.${hostName};
     in
     {
@@ -32,17 +31,13 @@ let
         addresses = [
           {
             Address = thisNode.unique_addr;
-            # Peer = peerNode.unique_addr;
           }
           {
             Address = thisNode.link_local_addr;
-            # Peer = peerNode.link_local_addr;
             Scope = "link";
           }
         ];
-        networkConfig = {
-          DHCP = false;
-        };
+        networkConfig.DHCP = false;
       };
     };
   genPeerNetdev =
