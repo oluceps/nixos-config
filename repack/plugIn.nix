@@ -32,11 +32,11 @@ let
         addresses = [
           {
             Address = thisNode.unique_addr;
-            Peer = peerNode.unique_addr;
+            # Peer = peerNode.unique_addr;
           }
           {
             Address = thisNode.link_local_addr;
-            Peer = peerNode.link_local_addr;
+            # Peer = peerNode.link_local_addr;
             Scope = "link";
           }
         ];
@@ -100,6 +100,15 @@ in
   config = lib.mkIf cfg.enable {
 
     networking.firewall = { inherit allowedUDPPorts trustedInterfaces; };
+
+    boot.kernel.sysctl = lib.foldr (
+      i: acc:
+      acc
+      // {
+        "net.ipv4.conf.wg-${i}.rp_filter" = 0;
+        "net.ipv6.conf.wg-${i}.rp_filter" = 0;
+      }
+    ) { } (builtins.attrNames thisConn);
 
     # it dont recursiveUpdate :\
     systemd.network.netdevs = (concatMapAttrs genPeerNetdev thisConn);
