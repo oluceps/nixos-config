@@ -1,6 +1,6 @@
 { config, lib, ... }:
 {
-  imports = [ ./bird.nix ];
+  # imports = [ ./bird.nix ];
   # services.babeld = {
   #   enable = true;
   #   config = ''

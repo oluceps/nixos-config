@@ -13,12 +13,20 @@ let
     attrNames
     attrValues
     ;
-  inherit (lib) concatMapAttrs optionalAttrs singleton;
+  inherit (lib)
+    concatMapAttrs
+    optionalAttrs
+    singleton
+    concatMapStrings
+    getAddrFromCIDR
+    ;
   inherit (fromTOML (readFile ../hosts/sum.toml)) node;
   inherit (config.networking) hostName;
-  thisConn = (lib.conn { }).${hostName};
-  allowedUDPPorts = attrValues thisConn;
-  trustedInterfaces = map (n: "wg-" + n) (attrNames thisConn);
+  peerPortsMap = (lib.conn { }).${hostName};
+  thisHost = node.${hostName};
+  thisId = toString (thisHost.id + 1);
+  allowedUDPPorts = attrValues peerPortsMap;
+  trustedInterfaces = map (n: "wg-" + n) (attrNames peerPortsMap);
 
   genPeerNetwork =
     peerName: port:
@@ -73,13 +81,12 @@ let
               "::/0"
               "0.0.0.0/0"
             ];
-
             RouteTable = false;
           }
           // optionalAttrs (thisNode.nat || !peerNode.nat) {
             Endpoint =
               let
-                port = toString thisConn.${peerName};
+                port = toString peerPortsMap.${peerName};
                 addr =
                   if ((thisNode.nat && peerNode.nat) || (thisNode.censor == peerNode.censor)) then
                     peerNode.addr
@@ -101,8 +108,56 @@ in
 
     networking.firewall = { inherit allowedUDPPorts trustedInterfaces; };
 
+    services.bird = {
+      enable = true;
+      config =
+        let
+          ifcs = concatMapStrings (n: ''
+            interface "wg-${n}" {
+                type ptmp;
+                neighbors {
+                    ${getAddrFromCIDR node.${n}.link_local_addr};
+                };
+            };
+          '') (attrNames peerPortsMap);
+        in
+        ''
+          log syslog all;
+          debug protocols all;
+          router id 10.0.0.${thisId};
+          protocol device {}
+          protocol direct {
+              ipv6;
+          };
+
+          define SELFSET = [ fdcc::/64+ ];
+          function is_self_net() -> bool
+          {
+            return net ~ SELFSET;
+          }
+          protocol kernel kernel_v6 {
+           ipv6 {
+             import none;
+             export filter {
+               if source = RTS_STATIC then reject;
+               if net ~ SELFSET then {
+                   krt_prefsrc = fdcc::${thisId};
+               }
+               accept;
+             };
+           };
+          };
+
+          protocol ospf v3 {
+              area 0.0.0.0 {
+              ${ifcs}
+              };
+          };
+        '';
+    };
+
     # it dont recursiveUpdate :\
-    systemd.network.netdevs = (concatMapAttrs genPeerNetdev thisConn);
-    systemd.network.networks = (concatMapAttrs genPeerNetwork thisConn);
+    systemd.network.netdevs = (concatMapAttrs genPeerNetdev peerPortsMap);
+    systemd.network.networks = (concatMapAttrs genPeerNetwork peerPortsMap);
   };
 }
