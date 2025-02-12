@@ -29,42 +29,9 @@
 
 
       protocol babel {
-        interface "wg-kaambl" {
+        interface "wg-*" {
           port 6696;
           type tunnel;
-          rtt min 94ms;
-          rtt max 256ms;
-          rtt decay 68;
-          extended next hop yes;
-        };
-        interface "wg-eihort" {
-          port 6696;
-          type tunnel;
-          rtt min 40ms;
-          rtt max 380ms;
-          rtt decay 60;
-          extended next hop yes;
-        };
-        interface "wg-hastur" {
-          port 6696;
-          type tunnel;
-          rtt min 45ms;
-          rtt max 256ms;
-          extended next hop yes;
-        };
-        interface "wg-yidhra" {
-          port 6696;
-          type tunnel;
-          rtt min 40ms;
-          rtt max 256ms;
-          extended next hop yes;
-        };
-        interface "wg-abhoth" {
-          port 6696;
-          type tunnel;
-          rtt min 95ms;
-          rtt max 256ms;
-          extended next hop yes;
         };
         ipv6 {
           export where is_self_net();
