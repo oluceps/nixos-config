@@ -18,7 +18,7 @@ let
       acc: name: value:
       acc
       // {
-        "${builtins.elemAt (lib.splitString "/" value.unique_addr) 0}" = lib.singleton "${name}.nyaw.xyz";
+        "${lib.getAddrFromCIDR value.unique_addr}" = lib.singleton "${name}.nyaw.xyz";
       }
     ) { } nodes)
     {

@@ -8,8 +8,25 @@
       protocol device {}
       protocol direct {
           ipv6;
-          interface "dummy-*";
       };
+      define SELFSET = [ fdcc::/64+ ];
+      function is_self_net() -> bool
+      {
+        return net ~ SELFSET;
+      }
+      protocol kernel kernel_v6 {
+       ipv6 {
+         import none;
+         export filter {
+           if source = RTS_STATIC then reject;
+           if net ~ SELFSET then {
+               krt_prefsrc = fdcc::3;
+           }
+           accept;
+         };
+       };
+      };
+
       protocol babel {
         interface "wg-kaambl" {
           port 6696;
@@ -49,7 +66,7 @@
           extended next hop yes;
         };
         ipv6 {
-          export where (source = RTS_DEVICE) || (source = RTS_BABEL);
+          export where is_self_net();
         };
       };
     '';

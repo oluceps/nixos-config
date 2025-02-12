@@ -17,9 +17,6 @@ let
   inherit (fromTOML (readFile ../hosts/sum.toml)) node;
   inherit (config.networking) hostName;
   thisConn = (lib.conn { }).${hostName};
-  thisInfo = node.${hostName};
-  getAddrFromCIDR = i: builtins.elemAt (lib.splitString "/" i) 0;
-
   allowedUDPPorts = attrValues thisConn;
   trustedInterfaces = map (n: "wg-" + n) (attrNames thisConn);
 
@@ -59,14 +56,14 @@ let
         netdevConfig = {
           Kind = "wireguard";
           Name = "wg-${peerName}";
-          MTUBytes = "1300";
+          MTUBytes = "1440";
         };
         wireguardConfig =
           {
             PrivateKeyFile = config.vaultix.secrets."wg-${hostName}".path;
             RouteTable = false;
           }
-          // (optionalAttrs (thisNode.nat -> peerNode.nat) {
+          // (optionalAttrs ((thisNode.nat -> peerNode.nat) && (thisNode.censor -> peerNode.censor)) {
             ListenPort = port;
           });
         wireguardPeers = singleton (
@@ -105,27 +102,7 @@ in
     networking.firewall = { inherit allowedUDPPorts trustedInterfaces; };
 
     # it dont recursiveUpdate :\
-    systemd.network.netdevs = (concatMapAttrs genPeerNetdev thisConn) // {
-      "dummy-if" = {
-        enable = true;
-        netdevConfig = {
-          Kind = "dummy";
-          Name = "dummy-if";
-        };
-      };
-    };
-    systemd.network.networks = (concatMapAttrs genPeerNetwork thisConn) // {
-      "dummy-if" = {
-        enable = true;
-        DHCP = "no";
-        name = "dummy-if";
-        matchConfig = {
-          Name = "dummy-if";
-        };
-        address = [
-          "${getAddrFromCIDR thisInfo.unique_addr}/64"
-        ];
-      };
-    };
+    systemd.network.netdevs = (concatMapAttrs genPeerNetdev thisConn);
+    systemd.network.networks = (concatMapAttrs genPeerNetwork thisConn);
   };
 }
