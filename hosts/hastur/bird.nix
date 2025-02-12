@@ -28,8 +28,6 @@
          };
        };
       };
-
-
       protocol babel {
         interface "wg-kaambl" {
           port 6696;
