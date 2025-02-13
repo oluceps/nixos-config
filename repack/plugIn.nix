@@ -68,7 +68,7 @@ let
               "::/0"
               "0.0.0.0/0"
             ];
-
+            PresharedKeyFile = config.vaultix.secrets.psk.path;
             RouteTable = false;
           }
           // optionalAttrs (thisNode.nat || !peerNode.nat) {
