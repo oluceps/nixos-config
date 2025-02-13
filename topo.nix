@@ -32,7 +32,7 @@ extraLibs:
                   value = mkInternet {
                     connections = mkConnection n "eth0";
                   };
-                }) ((builtins.attrNames (lib.filterAttrs (_: v: !v.nat) extraLibs.data.meta)) ++ [ "router" ])
+                }) ((builtins.attrNames (lib.filterAttrs (_: v: !v.nat) extraLibs.data.node)) ++ [ "router" ])
               ))
               // (lib.listToAttrs (
                 map (n: {

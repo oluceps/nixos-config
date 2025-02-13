@@ -1,78 +1,54 @@
 {
-  services.bird = {
+  repack.bird = {
     enable = true;
     config = ''
-      log syslog all;
-      debug protocols all;
-      timeformat protocol iso long;
-      router id 10.0.0.6;
-      protocol device {}
-      protocol direct {
-          ipv6;
-      };
-      define SELFSET = [ fdcc::/64+ ];
-      function is_self_net() -> bool
-      {
-        return net ~ SELFSET;
-      }
-      protocol kernel {
-       ipv6 {
-         import none;
-         export filter {
-           if source = RTS_STATIC then reject;
-           accept;
+      protocol babel {
+         interface "wg-kaambl" {
+           type tunnel;
+           rtt min 94ms;
+           rtt max 256ms;
+           rtt decay 68;
+           hello interval 1s;
+           update interval 4s;
+           extended next hop yes;
+         };
+         interface "wg-eihort" {
+           type tunnel;
+           rtt min 40ms;
+           rtt max 380ms;
+           rtt decay 60;
+           hello interval 1s;
+           update interval 4s;
+           extended next hop yes;
+         };
+         interface "wg-hastur" {
+           type tunnel;
+           rtt min 45ms;
+           rtt max 256ms;
+           hello interval 1s;
+           update interval 4s;
+           extended next hop yes;
+         };
+         interface "wg-yidhra" {
+           type tunnel;
+           rtt min 40ms;
+           rtt max 256ms;
+           hello interval 1s;
+           update interval 4s;
+           extended next hop yes;
+         };
+         interface "wg-abhoth" {
+           type tunnel;
+           rtt min 95ms;
+           rtt max 256ms;
+           hello interval 1s;
+           update interval 4s;
+           extended next hop yes;
+         };
+         ipv6 {
+          export where is_self_net();
          };
        };
-      };
-
-
-      protocol babel {
-        interface "wg-kaambl" {
-          port 6696;
-          type tunnel;
-          rtt min 94ms;
-          rtt max 256ms;
-          rtt decay 68;
-          update interval 8s;
-          extended next hop yes;
-        };
-        interface "wg-eihort" {
-          port 6696;
-          type tunnel;
-          rtt min 40ms;
-          rtt max 380ms;
-          rtt decay 60;
-          update interval 8s;
-          extended next hop yes;
-        };
-        interface "wg-hastur" {
-          port 6696;
-          type tunnel;
-          rtt min 45ms;
-          rtt max 256ms;
-          update interval 8s;
-          extended next hop yes;
-        };
-        interface "wg-yidhra" {
-          port 6696;
-          type tunnel;
-          rtt min 40ms;
-          rtt max 256ms;
-          update interval 8s;
-          extended next hop yes;
-        };
-        interface "wg-abhoth" {
-          port 6696;
-          type tunnel;
-          rtt min 95ms;
-          rtt max 256ms;
-          update interval 8s;
-          extended next hop yes;
-        };
-        ipv6 {
-          export where is_self_net();
-        };
-      };
     '';
   };
 

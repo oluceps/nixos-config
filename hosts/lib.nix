@@ -37,7 +37,7 @@ rec {
         inherit getAddrFromCIDR;
       };
     };
-    meta = (fromTOML (builtins.readFile ./sum.toml)).node;
+    inherit (fromTOML (builtins.readFile ./sum.toml)) node;
   };
 
   genOverlays = map (i: inputs.${i}.overlays.default or inputs.${i}.overlays.${i});
