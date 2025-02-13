@@ -11,12 +11,11 @@ const COMMON_HEADERS = {
 
 const NTFY_CONFIG = {
   url: 'https://ntfy.nyaw.xyz/info',
-  token: 'Bearer tk_i6zp5x3z4hd5mg1eq5m7w3ohfz3u0'
+  token: `Bearer ${Deno.env.get("NTFY_TOKEN")}`
 };
 
 async function performSign(mode: "in" | "out") {
   try {
-    // 完整流程开始
     const codeRes = await ky.get("https://xyb.1zpass.cloud/api/code", {
       headers: COMMON_HEADERS,
     }).json<{ id: number }>();
@@ -45,7 +44,6 @@ async function performSign(mode: "in" | "out") {
       'encryptvalue': loginRes.data.encryptValue,
     };
 
-    // 获取训练ID流程
     const projectRes = await ky.post("https://xyb.1zpass.cloud/api/xyb/projects", {
       headers: AUTH_HEADERS,
       json: { force: false },
@@ -61,7 +59,6 @@ async function performSign(mode: "in" | "out") {
       json: { planId: taskRes.data.planId },
     }).json<{ data: { traineeId: number } }>();
 
-    // 执行签到
     const clockRes = await ky.post("https://xyb.1zpass.cloud/api/xyb/clock", {
       headers: AUTH_HEADERS,
       json: {
