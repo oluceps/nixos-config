@@ -52,17 +52,15 @@
       enable = true;
       # for hysteria port hopping
       ruleset = ''
-        table ip nat {
-        	chain prerouting {
-        		type nat hook prerouting priority filter; policy accept;
-        		iifname "eth0" udp dport 40000-50000 counter packets 0 bytes 0 dnat to :4432
-        	}
-        }
-        table ip6 nat {
-        	chain prerouting {
-        		type nat hook prerouting priority filter; policy accept;
-        		iifname "eth0" udp dport 40000-50000 counter packets 0 bytes 0 dnat to :4432
-        	}
+        define INGRESS_INTERFACE="eth0"
+        define PORT_RANGE=20000-50000
+        define HYSTERIA_SERVER_PORT=4432
+
+        table inet hysteria_porthopping {
+          chain prerouting {
+            type nat hook prerouting priority dstnat; policy accept;
+            iifname $INGRESS_INTERFACE udp dport $PORT_RANGE counter redirect to :$HYSTERIA_SERVER_PORT
+          }
         }
       '';
     };
