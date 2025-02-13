@@ -26,7 +26,7 @@
         hard = i: gen i "root" "users" "400";
         userRo = i: gen i user "users" "400";
         rootRo = i: gen i "root" "root" "400";
-        sdnet = i: gen i "root" "systemd-network" "0640";
+        sdnet = i: gen i "root" "systemd-network" "0440";
         rrr = i: gen i "root" "root" "444";
         gener = {
           inherit

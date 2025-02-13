@@ -38,6 +38,7 @@ let
           }
         ];
         networkConfig.DHCP = false;
+        linkConfig.RequiredForOnline = false;
       };
     };
   genPeerNetdev =
