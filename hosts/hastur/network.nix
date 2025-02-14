@@ -204,6 +204,9 @@
         IPv6Forwarding = true;
         IPv6AcceptRA = "yes";
       };
+      ipv6AcceptRAConfig = {
+        UseDNS = false;
+      };
 
       dhcpV4Config.UseDNS = false;
       dhcpV6Config.UseDNS = false;
