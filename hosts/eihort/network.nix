@@ -87,6 +87,8 @@
           IPv6Forwarding = true;
           IPv6AcceptRA = "yes";
         };
+        dhcpV4Config.UseDNS = false;
+        dhcpV6Config.UseDNS = false;
         linkConfig.RequiredForOnline = "routable";
         address = [ "192.168.1.16/24" ];
         routes = [

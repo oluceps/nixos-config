@@ -120,6 +120,8 @@
           IPv6Forwarding = true;
           IPv6AcceptRA = true;
         };
+        dhcpV4Config.UseDNS = false;
+        dhcpV6Config.UseDNS = false;
         dhcpV4Config.RouteMetric = 2040;
         dhcpV6Config.RouteMetric = 2046;
       };
