@@ -2,7 +2,7 @@ import ky from "https://esm.sh/ky@0.33.3";
 import { createHash } from "https://deno.land/std@0.80.0/hash/mod.ts";
 
 const COMMON_HEADERS = {
-  'user-agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/133.0.0.0 Safari/537.36',
+  'user-agent': Deno.env.get("UA"),
   'content-type': 'application/json',
   'dnt': '1',
   'sec-ch-ua': '"Not/A=Brand";v="99", "Google Chrome";v="133", "Chromium";v="133"',
