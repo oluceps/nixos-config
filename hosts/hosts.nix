@@ -19,7 +19,7 @@ let
       // {
         "${lib.getAddrFromCIDR value.unique_addr}" = lib.singleton "${name}.nyaw.xyz";
       }
-    ) { } (lib.filterAttrs (n: v: v.nat || v.censor) nodes))
+    ) { } nodes)
     {
       "fdcc::3" = srvOnEihort;
       "fdcc::1" = srvOnHastur;
