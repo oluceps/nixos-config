@@ -20,7 +20,7 @@ let
       // {
         "${lib.getAddrFromCIDR value.unique_addr}" = lib.singleton "${name}.nyaw.xyz";
       }
-    ) { } nodes)
+    ) { } (lib.filterAttrs (n: v: v.nat) nodes))
     {
       "fdcc::3" = srvOnEihort;
       "fdcc::1" = srvOnHastur;
