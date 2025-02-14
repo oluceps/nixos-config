@@ -2,7 +2,6 @@
 let
 
   srvOnEihort = [
-    "eihort.nyaw.xyz"
     "matrix.nyaw.xyz"
     "photo.nyaw.xyz"
     "s3.nyaw.xyz"
@@ -20,7 +19,7 @@ let
       // {
         "${lib.getAddrFromCIDR value.unique_addr}" = lib.singleton "${name}.nyaw.xyz";
       }
-    ) { } (lib.filterAttrs (n: v: v.nat) nodes))
+    ) { } (lib.filterAttrs (n: v: v.nat || v.censor) nodes))
     {
       "fdcc::3" = srvOnEihort;
       "fdcc::1" = srvOnHastur;
