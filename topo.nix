@@ -51,7 +51,7 @@ extraLibs:
                     }) (extraLibs.conn { }).${n};
 
                   };
-                }) (builtins.attrNames extraLibs.data.meta)
+                }) (builtins.attrNames extraLibs.data.node)
               ))
               // {
                 router = mkRouter "MartinRouterKing" {
