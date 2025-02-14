@@ -19,33 +19,28 @@ let
   thisConn = (lib.conn { }).${hostName};
   allowedUDPPorts = attrValues thisConn;
   trustedInterfaces = map (n: "wg-" + n) (attrNames thisConn);
+  thisNode = node.${hostName};
 
-  genPeerNetwork =
-    peerName: port:
-    let
-      thisNode = node.${hostName};
-    in
-    {
-      "10-wg-${peerName}" = {
-        matchConfig.Name = "wg-${peerName}";
-        addresses = [
-          {
-            Address = thisNode.unique_addr;
-          }
-          {
-            Address = thisNode.link_local_addr;
-            Scope = "link";
-          }
-        ];
-        networkConfig.DHCP = false;
-        linkConfig.RequiredForOnline = false;
-      };
+  genPeerNetwork = peerName: port: {
+    "10-wg-${peerName}" = {
+      matchConfig.Name = "wg-${peerName}";
+      addresses = [
+        {
+          Address = thisNode.unique_addr;
+        }
+        {
+          Address = thisNode.link_local_addr;
+          Scope = "link";
+        }
+      ];
+      networkConfig.DHCP = false;
+      linkConfig.RequiredForOnline = false;
     };
+  };
   genPeerNetdev =
     peerName: port:
     let
       peerNode = node.${peerName};
-      thisNode = node.${hostName};
     in
     {
       "wg-${peerName}" = {
