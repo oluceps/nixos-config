@@ -31,6 +31,7 @@
 // {
   hyst-osa-cli = {
     file = ../sec/hyst-cli.age;
+    cleanPlaceholder = true;
     insert = {
       "f3c4e59bfb78c6a26564724aaadda3ac3250d73ee903b17e3803785335bd082c" = {
         content = "172.234.92.148";
@@ -44,6 +45,7 @@
   };
   hyst-hk-cli = {
     file = ../sec/hyst-cli.age;
+    cleanPlaceholder = true;
     insert = {
       "f3c4e59bfb78c6a26564724aaadda3ac3250d73ee903b17e3803785335bd082c" = {
         content = "8.210.47.13";
