@@ -13,6 +13,7 @@
     };
     "on-eihort.toml" = {
       file = ../../sec/on-eihort.toml.age;
+      cleanPlaceholder = true;
       insert = {
         "0206c8ff3ff866c4212f1a968882f993e101fbf7ffdaa4e0e722b3ca069c5559".content = ''
           [[backup.snapshots]]
@@ -27,8 +28,9 @@
   services.rustic = {
     profiles = map (n: config.vaultix.secrets.${n}.path) [
       "general.toml"
-      # "on-kaambl.toml"
+      "on-kaambl.toml"
       "on-eihort.toml"
+      "on-hastur.toml"
     ];
     backups = {
       critic = {
