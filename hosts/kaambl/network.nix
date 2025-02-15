@@ -1,24 +1,6 @@
 { config, lib, ... }:
 {
   imports = [ ./bird.nix ];
-  # services.babeld = {
-  #   enable = true;
-  #   config = ''
-  #     skip-kernel-setup true
-  #     local-path /var/run/babeld/ro.sock
-  #     router-id 38:d5:7a:e2:19:7d
-
-  #     interface wg-yidhra type tunnel rtt-min 60 rtt-max 256
-  #     interface wg-abhoth type tunnel rtt-min 210 rtt-max 256 rtt-decay 90
-  #     interface wg-azasos type tunnel rtt-min 55 rtt-max 256
-  #     interface wg-hastur type tunnel rtt-min 10 rtt-max 256 rtt-decay 90
-  #     interface wg-eihort type tunnel rtt-min 5 rtt-max 256 rtt-decay 90
-
-  #     redistribute ip fdcc::/64 ge 64 le 128 local allow
-  #     redistribute local deny
-  #   '';
-  # };
-
   services.resolved = {
     enable = lib.mkForce false;
     llmnr = "false";
