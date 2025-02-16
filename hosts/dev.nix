@@ -8,7 +8,7 @@
 }:
 {
   systemd.tmpfiles.rules = [
-    "L /home/${user}/.ssh/config - - - - ${pkgs.writeText "ssh-config" ''
+    "L+ /home/${user}/.ssh/config - - - - ${pkgs.writeText "ssh-config" ''
       ${builtins.concatStringsSep "\n" (
         let
           hosts = (fromTOML (builtins.readFile ./sum.toml)).node;
