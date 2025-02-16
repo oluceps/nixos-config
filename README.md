@@ -13,6 +13,7 @@ with
 + [lanzaboote](https://github.com/nix-community/lanzaboote)
 + [preservation](https://github.com/WilliButz/preservation)
 + [disko](https://github.com/nix-community/disko)
++ [nix-topology](https://oddlama.github.io/nix-topology/)
 
 ---
 
