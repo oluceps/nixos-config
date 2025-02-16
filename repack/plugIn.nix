@@ -8,13 +8,11 @@ let
   cfg = config.repack.plugIn;
 
   inherit (builtins)
-    readFile
-    fromTOML
     attrNames
     attrValues
     ;
   inherit (lib) concatMapAttrs optionalAttrs singleton;
-  inherit (fromTOML (readFile ../hosts/sum.toml)) node;
+  inherit (lib.data) node;
   inherit (config.networking) hostName;
   thisConn = (lib.conn { }).${hostName};
   allowedUDPPorts = attrValues thisConn;
