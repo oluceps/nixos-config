@@ -20,10 +20,13 @@ in
 
           router id 10.0.0.${toString (lib.data.node.${config.networking.hostName}.id + 1)};
 
-          protocol device {}
+          protocol device {
+            scan time 20;
+          }
 
           protocol direct {
-              ipv6;
+            ipv6;
+            interface "wg-*";
           };
 
           define INTRA = [ fdcc::/64+ ];
