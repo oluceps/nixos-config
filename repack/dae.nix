@@ -86,8 +86,8 @@ reIf {
           fallback: all
       }
     '';
-    # package = inputs'.dae.packages.dae-unstable;
-    package = inputs'.dae.packages.dae-pr-748-fix;
+    package = inputs'.dae.packages.dae-unstable;
+    # package = inputs'.dae.packages.dae-pr-748-fix;
     assetsPath = toString (
       pkgs.symlinkJoin {
         name = "dae-assets-nixy";
