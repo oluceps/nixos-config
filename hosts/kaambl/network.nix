@@ -102,6 +102,9 @@
           IPv6Forwarding = true;
           IPv6AcceptRA = true;
         };
+        ipv6AcceptRAConfig = {
+          UseDNS = false;
+        };
         dhcpV4Config.UseDNS = false;
         dhcpV6Config.UseDNS = false;
         dhcpV4Config.RouteMetric = 2040;
