@@ -70,7 +70,9 @@ reIf {
               suffix: cp4.cloudflare.com,
               suffix: apple-relay.apple.com) -> v6
 
-          domain(${lib.concatMapStringsSep "," (n: "suffix: ${n}.nyaw.xyz") (builtins.attrNames lib.data.node)}) -> direct
+          domain(${
+            lib.concatMapStringsSep "," (n: "suffix: ${n}.nyaw.xyz") (builtins.attrNames lib.data.node)
+          }) -> direct
 
           domain(geosite:cn) -> direct
           dip(geoip:private,geoip:cn) -> direct
@@ -84,7 +86,8 @@ reIf {
           fallback: all
       }
     '';
-    package = inputs'.dae.packages.dae-unstable;
+    # package = inputs'.dae.packages.dae-unstable;
+    package = inputs'.dae.packages.dae-pr-748-fix;
     assetsPath = toString (
       pkgs.symlinkJoin {
         name = "dae-assets-nixy";
