@@ -26,11 +26,11 @@ in
               ipv6;
           };
 
-          define SELFSET = [ fdcc::/64+ ];
+          define INTRA = [ fdcc::/64+ ];
 
-          function is_self_net() -> bool
+          function is_intranet() -> bool
           {
-            return net ~ SELFSET;
+            return net ~ INTRA;
           }
 
           protocol kernel {

@@ -47,7 +47,7 @@
           extended next hop yes;
         };
         ipv6 {
-          export where is_self_net();
+          export where is_intranet();
         };
       };
     '';
