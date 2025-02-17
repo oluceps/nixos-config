@@ -28,9 +28,9 @@ in
 
           define INTRA = [ fdcc::/64+ ];
 
-          function is_intranet() -> bool
-          {
-            return net ~ INTRA;
+          filter intranet {
+            if net ~ INTRA then accept;
+            reject;
           }
 
           protocol kernel {
