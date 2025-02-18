@@ -33,14 +33,14 @@ builtins.toJSON (
         interval = 1;
         timezone = "Asia/Shanghai";
         tooltip = true;
-      };
+      } // niriCtlArg;
       "clock#2" = {
         format = "{:%M}";
         tooltip-format = "{:%a}";
         interval = 1;
         timezone = "Asia/Shanghai";
         tooltip = true;
-      };
+      } // niriCtlArg;
       pulseaudio = {
         tooltip = false;
         scroll-step = 1;
