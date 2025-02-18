@@ -36,9 +36,13 @@ in
         listen-ports = [ 53 ];
         upstream-mode = "parallel";
         upstream = [
-          "quic://unfiltered.adguard-dns.com"
+          # "quic://unfiltered.adguard-dns.com"
           "quic://dns.alidns.com"
           "h3://dns.alidns.com/dns-query"
+          "tls://1.1.1.1"
+          "tls://1.0.0.1"
+          "tls://8.8.4.4"
+          "https://dns.google/dns-query"
           "tls://dot.pub"
         ];
       };
