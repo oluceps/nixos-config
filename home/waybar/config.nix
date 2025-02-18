@@ -33,14 +33,14 @@ builtins.toJSON (
         interval = 1;
         timezone = "Asia/Shanghai";
         tooltip = true;
-      } // niriCtlArg;
+      };
       "clock#2" = {
         format = "{:%M}";
         tooltip-format = "{:%a}";
         interval = 1;
         timezone = "Asia/Shanghai";
         tooltip = true;
-      } // niriCtlArg;
+      };
       pulseaudio = {
         tooltip = false;
         scroll-step = 1;
@@ -73,6 +73,11 @@ builtins.toJSON (
         return-type = "json";
         signal = 8;
       };
+      "custom/niri-controller" = {
+        format = " ";
+        tooltip = false;
+        interval = "once";
+      } // niriCtlArg;
       "custom/lightctl" = {
         format = "";
         tooltip = false;
@@ -100,7 +105,7 @@ builtins.toJSON (
         format = "{}";
         interval = 1;
         tooltip = false;
-      } // niriCtlArg;
+      };
       modules-center = [
         "group/time"
         "niri/workspaces"
@@ -110,8 +115,8 @@ builtins.toJSON (
         "pulseaudio"
         "custom/lightctl"
       ];
-      modules-left = [ ];
-      modules-right = [ ];
+      modules-left = [ "custom/niri-controller" ];
+      modules-right = [ "custom/niri-controller" ];
       network = {
         format = "{bandwidthDownOctets}";
         interface = "wlan0";
@@ -138,13 +143,13 @@ builtins.toJSON (
         format = "{index}";
         disable-click = true;
         disable-markup = true;
-      } // niriCtlArg;
+      };
       temperature = {
         format = "{temperatureC}";
         hwmon-path = "/sys/class/hwmon/hwmon1/temp1_input";
         interval = 2;
         tooltip = false;
-      } // niriCtlArg;
+      };
       tray = {
         icon-size = 15;
         spacing = 5;

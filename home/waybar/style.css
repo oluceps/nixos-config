@@ -87,3 +87,8 @@ window#waybar {
     background: none; /* Remove predefined background color (white) */
     transition: none; /* Disable predefined animations */
 }
+
+#custom-niri-controller {
+    background-color: transparent;
+    min-height:  220px;
+}

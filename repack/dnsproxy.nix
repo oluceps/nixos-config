@@ -31,6 +31,8 @@ in
           "8.8.8.8"
           "119.29.29.29"
           "tcp://223.6.6.6:53"
+          "tls://1.1.1.1"
+          "tls://1.0.0.1"
         ];
         listen-addrs = [ "::" ];
         listen-ports = [ 53 ];
@@ -39,11 +41,9 @@ in
           # "quic://unfiltered.adguard-dns.com"
           "quic://dns.alidns.com"
           "h3://dns.alidns.com/dns-query"
-          "tls://1.1.1.1"
-          "tls://1.0.0.1"
-          "tls://8.8.4.4"
           "https://dns.google/dns-query"
           "tls://dot.pub"
+          "tls://1.1.1.1"
         ];
       };
     };
