@@ -88,13 +88,10 @@ in
       DISPLAY ":0"
       QT_QPA_PLATFORM "wayland"
   }
-  workspace "terminal"
-  workspace "browser"
+  workspace "term"
+  workspace "surf"
   workspace "chat"
   workspace "mail"
-  workspace "misc" {
-    open-on-output "HDMI-A-1"
-  }
 
   window-rule {
       match app-id="Alacritty"

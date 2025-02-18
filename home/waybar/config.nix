@@ -103,8 +103,8 @@ builtins.toJSON (
       } // niriCtlArg;
       modules-center = [
         "group/time"
+        "niri/workspaces"
         "temperature"
-        "cpu"
         "memory"
         "battery"
         "pulseaudio"
@@ -132,6 +132,13 @@ builtins.toJSON (
         disable-scroll = false;
         format = "{name}";
       };
+      "niri/workspaces" = {
+        all-outputs = false;
+        current-only = true;
+        format = "{index}";
+        disable-click = true;
+        disable-markup = true;
+      } // niriCtlArg;
       temperature = {
         format = "{temperatureC}";
         hwmon-path = "/sys/class/hwmon/hwmon1/temp1_input";
