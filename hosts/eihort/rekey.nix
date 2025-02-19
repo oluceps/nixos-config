@@ -27,13 +27,6 @@ in
         mode = "400";
       };
 
-      id = {
-        file = ../../sec/id.age;
-        mode = "400";
-        owner = "root";
-        group = "users";
-      };
-
       vault.file = ../../sec/vault.age;
 
       mautrix-tg.file = ../../sec/mautrix-tg.age;
