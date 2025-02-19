@@ -87,7 +87,7 @@ reIf {
       }
     '';
     # package = inputs'.dae.packages.dae-unstable;
-    package = inputs'.dae.packages.dae-fix-1;
+    package = inputs'.dae.packages.dae-pr-748-fix;
     assetsPath = toString (
       pkgs.symlinkJoin {
         name = "dae-assets-nixy";
