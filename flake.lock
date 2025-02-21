@@ -373,16 +373,15 @@
         "nixpkgs": "nixpkgs_10"
       },
       "locked": {
-        "lastModified": 1739985081,
-        "narHash": "sha256-EonZTakePQHsNBoFIWfakGnSxvOhhv9gyLluUfrXgaM=",
-        "owner": "oluceps",
+        "lastModified": 1740074809,
+        "narHash": "sha256-81CDZ0y1J1OgIblNl3HdLyuB8oxi3vN5AwP9a5t/ZGo=",
+        "owner": "daeuniverse",
         "repo": "flake.nix",
-        "rev": "e2d9050d656112e0120160234ae317e4c758519a",
+        "rev": "c186ea01695ba98dab1b397e7a02833b9f12789e",
         "type": "github"
       },
       "original": {
-        "owner": "oluceps",
-        "ref": "dev",
+        "owner": "daeuniverse",
         "repo": "flake.nix",
         "type": "github"
       }
