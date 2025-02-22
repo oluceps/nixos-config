@@ -74,7 +74,11 @@ reIf {
             lib.concatMapStringsSep "," (n: "suffix: ${n}.nyaw.xyz") (builtins.attrNames lib.data.node)
           }) -> direct
 
-          dip(${lib.concatStringsSep "," (map (i: i.addr) (builtins.attrValues lib.data.node))}) -> direct
+          dip(${
+            lib.concatStringsSep "," (
+              map (i: i.addr) (builtins.attrValues (lib.filterAttrs (k: v: v.censor) lib.data.node))
+            )
+          }) -> direct
 
           domain(geosite:cn) -> direct
           dip(geoip:private,geoip:cn) -> direct
