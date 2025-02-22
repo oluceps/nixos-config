@@ -45,7 +45,7 @@ let
         netdevConfig = {
           Kind = "wireguard";
           Name = "wg-${peerName}";
-          MTUBytes = "1440";
+          MTUBytes = "1380";
         };
         wireguardConfig =
           {
