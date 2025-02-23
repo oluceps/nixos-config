@@ -23,7 +23,8 @@ in
       hash = "sha256-dYj+X57+jwqOkog6qC0FrDqFd2VrbaJci2HiAVfn8+c=";
     };
 
-    cargoHash = "sha256-I3wy7CZP+5rXpz0PSeu4HChBIuLFbG923WLZ0kN3Sok=";
+    cargoHash = "sha256-l5VoSJNuoGQ/NPZfRIB1KYJ5dkIUXH890EAcM8DZqa0=";
+    useFetchCargoVendor = true;
 
     meta = {
       description = "Transforms UDP stream into (fake) TCP streams that can go through Layer 3 & Layer 4 (NAPT) firewalls/NATs";
