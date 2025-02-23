@@ -45,9 +45,11 @@ in
         EnvironmentFile = cfg.environmentFile;
         Environment = [ "HOME=/home/${user}" ];
         Restart = "on-failure";
-        RestartSec = "5s";
-        StartLimitBurst = 3;
-        StartLimitInterval = "60s";
+        RestartSec = "20s";
+        RestartSteps = "5";
+        RestartMaxDelaySec = "2h";
+        StartLimitBurst = 5;
+        StartLimitIntervalSec = "60s";
       };
     };
   };
