@@ -3,15 +3,15 @@
     enable = true;
     config = ''
       protocol babel {
-        interface "wg-kaambl" {
-          type tunnel;
-          rtt min 5ms;
-          rtt max 256ms;
-          rtt decay 120;
-          hello interval 1s;
-          update interval 4s;
-          extended next hop yes;
-        };
+        # interface "wg-kaambl" {
+        #   type tunnel;
+        #   rtt min 5ms;
+        #   rtt max 256ms;
+        #   rtt decay 120;
+        #   hello interval 1s;
+        #   update interval 4s;
+        #   extended next hop yes;
+        # };
         interface "wg-eihort" {
           type tunnel;
           rtt min 500us;

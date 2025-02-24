@@ -15,7 +15,9 @@
         in
         lib.mapAttrsToList (n: v: ''
           Host ${n}
-              HostName ${v.addr}
+              HostName ${
+                if config.networking.hostName == "kaambl" then lib.getAddrFromCIDR v.unique_addr else v.addr
+              }
               User ${v.user}
               AddKeysToAgent yes
               ForwardAgent yes
@@ -211,7 +213,7 @@
               # haskell-language-server
               cmake-language-server
               arduino-language-server
-              
+
               vhdl-ls
               delve
               python311Packages.python-lsp-server

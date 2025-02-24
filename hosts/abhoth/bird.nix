@@ -5,7 +5,7 @@
       protocol babel {
         interface "wg-kaambl" {
           type tunnel;
-          rtt min 210ms;
+          rtt min 75ms;
           rtt max 512ms;
           rtt decay 120;
           hello interval 1s;
