@@ -104,12 +104,12 @@ in
 
   window-rule {
       match at-startup=true app-id=r#"^foot$"#
-      open-on-workspace "terminal"
+      open-on-workspace "term"
   }
   window-rule {
       match at-startup=true app-id=r#"^firefox$"#
       match at-startup=true app-id=r#"^google-chrome"#
-      open-on-workspace "browser"
+      open-on-workspace "surf"
   }
 
   window-rule {
