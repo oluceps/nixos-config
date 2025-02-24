@@ -39,14 +39,13 @@ let
     peerName: port:
     let
       peerNode = node.${peerName};
-      directConnect = ((thisNode.nat && peerNode.nat) || (thisNode.censor == peerNode.censor));
     in
     {
       "wg-${peerName}" = {
         netdevConfig = {
           Kind = "wireguard";
           Name = "wg-${peerName}";
-          MTUBytes = if directConnect then 1420 else 1360;
+          MTUBytes = "1380";
         };
         wireguardConfig =
           {
@@ -70,7 +69,11 @@ let
             Endpoint =
               let
                 port = toString thisConn.${peerName};
-                addr = if directConnect then peerNode.addr else "127.0.0.1";
+                addr =
+                  if ((thisNode.nat && peerNode.nat) || (thisNode.censor == peerNode.censor)) then
+                    peerNode.addr
+                  else
+                    "127.0.0.1";
               in
               (addr + ":" + port);
           }
@@ -99,15 +102,5 @@ in
     # it dont recursiveUpdate :\
     systemd.network.netdevs = (concatMapAttrs genPeerNetdev thisConn);
     systemd.network.networks = (concatMapAttrs genPeerNetwork thisConn);
-
-    # https://www.procustodibus.com/blog/2022/12/wireguard-performance-tuning/
-    networking.nftables.ruleset = ''
-      table inet filter {
-          chain forward {
-              type filter hook forward priority 0; policy drop;
-              tcp flags syn / syn,rst tcp option maxseg size set rt mtu
-          }
-      }
-    '';
   };
 }
