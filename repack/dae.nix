@@ -38,7 +38,7 @@ reIf {
           mptcp: true
       }
       routing {
-          pname(systemd-networkd, systemd-resolved, smartdns,
+          pname(bird, systemd-networkd, systemd-resolved, smartdns,
                 dnsproxy, coredns, mosdns, naive, hysteria, tuic-client, sing-box, juicity, mosproxy) -> must_direct
           pname(prometheus) -> direct
 
