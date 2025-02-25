@@ -27,6 +27,7 @@
           rtt max 256ms;
           hello interval 1s;
           update interval 4s;
+          rtt decay 180;
           extended next hop yes;
         };
         interface "wg-yidhra" {
