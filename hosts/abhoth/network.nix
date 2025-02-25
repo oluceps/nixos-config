@@ -48,7 +48,7 @@
     useDHCP = false;
 
     hostName = "abhoth";
-    enableIPv6 = false;
+    enableIPv6 = true;
 
     nftables = {
       enable = true;
