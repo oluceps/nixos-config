@@ -87,10 +87,12 @@
 
     networks."20-eth0" = {
       matchConfig.Name = "eth0";
-      DHCP = "yes";
+
       networkConfig = {
+        DHCP = "ipv4";
         IPv4Forwarding = true;
         IPv6Forwarding = true;
+        IPv6AcceptRA = "yes";
       };
     };
 

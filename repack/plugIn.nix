@@ -46,7 +46,7 @@ let
         netdevConfig = {
           Kind = "wireguard";
           Name = "wg-${peerName}";
-          MTUBytes = if directConnect then 1420 else 1360;
+          MTUBytes = 1330;
         };
         wireguardConfig =
           {
@@ -100,14 +100,5 @@ in
     systemd.network.netdevs = (concatMapAttrs genPeerNetdev thisConn);
     systemd.network.networks = (concatMapAttrs genPeerNetwork thisConn);
 
-    # https://www.procustodibus.com/blog/2022/12/wireguard-performance-tuning/
-    networking.nftables.ruleset = ''
-      table inet filter {
-          chain forward {
-              type filter hook forward priority 0; policy drop;
-              tcp flags syn / syn,rst tcp option maxseg size set rt mtu
-          }
-      }
-    '';
   };
 }
