@@ -13,12 +13,15 @@ in
     };
   };
   config = lib.mkIf cfg.enable {
-    systemd.services.dnsproxy.serviceConfig.LoadCredential = lib.mkIf cfg.loadCert (
-      (map (lib.genCredPath config)) [
-        "nyaw.cert"
-        "nyaw.key"
-      ]
-    );
+    systemd.services.dnsproxy.serviceConfig = {
+      LoadCredential = lib.mkIf cfg.loadCert (
+        (map (lib.genCredPath config)) [
+          "nyaw.cert"
+          "nyaw.key"
+        ]
+      );
+      TimeoutStopSec = "10s";
+    };
     services.dnsproxy = {
       enable = true;
       flags = [
