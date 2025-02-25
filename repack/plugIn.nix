@@ -46,7 +46,7 @@ let
         netdevConfig = {
           Kind = "wireguard";
           Name = "wg-${peerName}";
-          MTUBytes = 1330;
+          MTUBytes = if directConnect then 1420 else 1380;
         };
         wireguardConfig =
           {
