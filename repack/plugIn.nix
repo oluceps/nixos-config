@@ -19,29 +19,44 @@ let
   trustedInterfaces = map (n: "wg-" + n) (attrNames thisConn);
   thisNode = node.${hostName};
 
-  genPeerNetwork = peerName: port: {
-    "10-wg-${peerName}" = {
-      matchConfig.Name = "wg-${peerName}";
-      addresses = [
-        {
-          Address = thisNode.unique_addr;
-        }
-        {
-          Address = thisNode.link_local_addr;
-          Scope = "link";
-        }
-      ];
-      networkConfig.DHCP = false;
-      linkConfig.RequiredForOnline = false;
+  ifNeed =
+    peerNode: prod:
+    if
+      thisNode.nat && peerNode.nat && thisNode ? loc && peerNode ? loc && thisNode.loc != peerNode.loc
+    then
+      # untravelrable nat
+      { }
+    else
+      prod;
+
+  genPeerNetwork =
+    peerName: port:
+    let
+      peerNode = node.${peerName};
+    in
+    ifNeed peerNode {
+      "10-wg-${peerName}" = {
+        matchConfig.Name = "wg-${peerName}";
+        addresses = [
+          {
+            Address = thisNode.unique_addr;
+          }
+          {
+            Address = thisNode.link_local_addr;
+            Scope = "link";
+          }
+        ];
+        networkConfig.DHCP = false;
+        linkConfig.RequiredForOnline = false;
+      };
     };
-  };
   genPeerNetdev =
     peerName: port:
     let
       peerNode = node.${peerName};
       directConnect = ((thisNode.nat && peerNode.nat) || (thisNode.censor == peerNode.censor));
     in
-    {
+    ifNeed peerNode {
       "wg-${peerName}" = {
         netdevConfig = {
           Kind = "wireguard";
