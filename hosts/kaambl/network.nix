@@ -43,7 +43,6 @@
 
     wireless.iwd.enable = true;
     useNetworkd = true;
-    useDHCP = false;
 
     hostName = "kaambl"; # Define your hostname.
     domain = "nyaw.xyz";
