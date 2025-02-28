@@ -29,10 +29,12 @@ in
             interface "wg-*";
           };
 
-          define INTRA = [ fdcc::/64+ ];
+          define INTRA_FIELD = [ fdcc::/64+ ];
 
           filter intranet {
-            if net ~ INTRA then accept;
+            if net ~ INTRA_FIELD then {
+              if source = RTS_BABEL || source = RTS_DEVICE then accept;
+            }
             reject;
           }
 
@@ -40,8 +42,17 @@ in
             ipv6 {
               import none;
               export filter {
-                if source = RTS_STATIC then reject;
-                accept;
+                if source = RTS_BABEL then {
+                  krt_prefsrc = ${lib.getIntraAddr config};
+                  krt_metric = 128;
+                  accept;
+                }
+                if source = RTS_DEVICE then {
+                  krt_metric = 64;
+                  accept;
+                }
+
+                reject;
               };
             };
           };

@@ -56,6 +56,8 @@ rec {
 
   getAddrFromCIDR = i: builtins.elemAt (pkgs.lib.splitString "/" i) 0;
 
+  getIntraAddr = config: getAddrFromCIDR data.node.${config.networking.hostName}.unique_addr;
+
   sharedModules =
     [ inputs.self.nixosModules.repack ]
     ++ (genModules [
