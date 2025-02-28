@@ -21,13 +21,9 @@ let
 
   ifNeed =
     peerNode: prod:
-    if
-      thisNode.nat && peerNode.nat && thisNode ? loc && peerNode ? loc && thisNode.loc != peerNode.loc
-    then
-      # untravelrable nat
-      { }
-    else
-      prod;
+    optionalAttrs (
+      !(thisNode.nat && peerNode.nat && thisNode ? loc && peerNode ? loc && thisNode.loc != peerNode.loc)
+    ) prod;
 
   genPeerNetwork =
     peerName: port:
