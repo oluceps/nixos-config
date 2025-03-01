@@ -18,21 +18,21 @@
         # };
         interface "wg-eihort" {
           rtt min 500us;
-          rtt max 256ms;
+          rtt max 4ms;
           rtt decay 52;
         };
         interface "wg-yidhra" {
           rtt min 55ms;
-          rtt max 256ms;
+          rtt max 75ms;
         };
         interface "wg-abhoth" {
-          rtt min 160ms;
-          rtt max 512ms;
+          rtt min 150ms;
+          rtt max 256ms;
           rtt decay 180;
         };
         interface "wg-azasos" {
           rtt min 50ms;
-          rtt max 512ms;
+          rtt max 100ms;
         };
         ipv6 {
           export filter intranet;

@@ -18,20 +18,20 @@
         # };
         interface "wg-hastur" {
           rtt min 500us;
-          rtt max 256ms;
+          rtt max 4ms;
           rtt decay 52;
         };
         interface "wg-yidhra" {
           rtt min 50ms;
-          rtt max 256ms;
+          rtt max 75ms;
         };
         interface "wg-abhoth" {
-          rtt min 160ms;
+          rtt min 150ms;
           rtt max 256ms;
         };
         interface "wg-azasos" {
           rtt min 40ms;
-          rtt max 512ms;
+          rtt max 80ms;
         };
         ipv6 {
           export filter intranet;
