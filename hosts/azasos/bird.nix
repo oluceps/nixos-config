@@ -32,7 +32,8 @@
           rtt max 256ms;
         };
         ipv6 {
-          export filter intranet;
+          import where in_hortus();
+          export filter hortus_export;
         };
       };
     '';

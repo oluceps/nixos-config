@@ -108,8 +108,25 @@ in
     ) { } (builtins.attrNames thisConn);
 
     # it dont recursiveUpdate :\
-    systemd.network.netdevs = (concatMapAttrs genPeerNetdev thisConn);
-    systemd.network.networks = (concatMapAttrs genPeerNetwork thisConn);
-
+    systemd.network.netdevs = (concatMapAttrs genPeerNetdev thisConn) // {
+      "anchor" = {
+        enable = true;
+        netdevConfig = {
+          Kind = "dummy";
+          Name = "anchor-0";
+        };
+      };
+    };
+    systemd.network.networks = (concatMapAttrs genPeerNetwork thisConn) // {
+      anchor-0 = {
+        enable = true;
+        DHCP = "no";
+        name = "anchor-0";
+        matchConfig = {
+          Name = "anchor-0";
+        };
+        address = singleton thisNode.unique_addr;
+      };
+    };
   };
 }

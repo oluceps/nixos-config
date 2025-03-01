@@ -22,38 +22,47 @@ in
 
           protocol device {
             scan time 20;
-          }
+          };
 
           protocol direct {
             ipv6;
-            interface "wg-*";
+            interface "anchor-*";
           };
 
-          define INTRA_FIELD = [ fdcc::/64+ ];
+          define HORTUS_FIELD = [ fdcc::/64+ ];
 
-          filter intranet {
-            if net ~ INTRA_FIELD then {
+          function in_hortus() {
+            return net ~ HORTUS_FIELD;
+          };
+
+          filter hortus_export {
+            if in_hortus() then {
               if source = RTS_BABEL || source = RTS_DEVICE then accept;
             }
             reject;
-          }
+          };
+
+          filter kernel_export {
+            if source = RTS_BABEL then {
+              krt_prefsrc = ${lib.getIntraAddr config};
+              krt_metric = 128;
+              accept;
+            }
+            if source = RTS_DEVICE then {
+              krt_metric = 64;
+              accept;
+            }
+            reject;
+          };
 
           protocol kernel {
+            scan time 20;
+            learn;
+            metric 0;
             ipv6 {
+              preference 100;
               import none;
-              export filter {
-                if source = RTS_BABEL then {
-                  krt_prefsrc = ${lib.getIntraAddr config};
-                  krt_metric = 128;
-                  accept;
-                }
-                if source = RTS_DEVICE then {
-                  krt_metric = 64;
-                  accept;
-                }
-
-                reject;
-              };
+              export filter kernel_export;
             };
           };
         '';
