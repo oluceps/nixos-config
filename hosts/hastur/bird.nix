@@ -7,7 +7,7 @@
           type tunnel;
           hello interval 1s;
           update interval 2s;
-          rtt decay 60;
+          rtt decay 90;
           check link no;
           extended next hop yes;
         };

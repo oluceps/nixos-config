@@ -7,14 +7,13 @@
           type tunnel;
           hello interval 1s;
           update interval 2s;
-          rtt decay 60;
+          rtt decay 90;
           check link no;
           extended next hop yes;
         };
         interface "wg-kaambl" {
           rtt min 94ms;
           rtt max 256ms;
-          rtt decay 90;
         };
         interface "wg-eihort" {
           rtt min 40ms;
