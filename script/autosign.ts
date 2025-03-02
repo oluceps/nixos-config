@@ -54,9 +54,9 @@ async function performSign(mode: "in" | "out") {
     const taskRes = await ky.post("https://xyb.1zpass.cloud/api/xyb/tasks", {
       headers: AUTH_HEADERS,
       json: {
-        moduleId: projectRes.moduleIds[0],
-        projectRuleId: projectRes.projectRuleIds[0], // assume only
-        planId: projectRes.data[1]
+        moduleId: projectRes.data[0].moduleIds[0],
+        projectRuleId: projectRes.data[0].projectRuleIds[0], // assume only
+        planId: projectRes.data[0].planId
       },
     }).json<{ data: { planId: number } }>();
 
