@@ -20,7 +20,7 @@ reIf {
       }
       global {
           tproxy_port: 12345
-          log_level: info
+          log_level: trace
           # tcp_check_url: 'https://www.apple.com/library/test/success.html'
           tcp_check_url: 'http://cp.cloudflare.com,1.1.1.1,2606:4700:4700::1111'
           udp_check_dns: '8.8.8.8:53,114.114.114.114:53,2001:4860:4860::8888,1.1.1.1:53'
@@ -28,7 +28,7 @@ reIf {
           check_tolerance: 50ms
           wan_interface: auto
           allow_insecure: false
-          dial_mode: domain
+          dial_mode: domain+
           disable_waiting_network: false
           auto_config_kernel_parameter: true
           enable_local_tcp_fast_redirect: true
