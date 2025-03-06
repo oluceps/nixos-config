@@ -206,7 +206,12 @@
     # mysql.enable = true;
     prometheus.enable = true;
     # coredns.enable = true;
-    dnsproxy.enable = true;
+    dnsproxy = {
+      enable = true;
+      extraFlags = [
+        "--edns-addr=211.139.163.1"
+      ];
+    };
     # srs.enable = true;
     grafana.enable = true;
     # xmrig.enable = true;
