@@ -6,6 +6,7 @@
   ...
 }:
 let
+  inherit (lib) mkIf;
   cfg = config.repack.caddy;
   format = pkgs.formats.json { };
   configfile = format.generate "config.json" cfg.settings;
@@ -37,13 +38,13 @@ in
     };
   };
 
-  config = lib.mkIf cfg.enable {
+  config = mkIf cfg.enable {
     repack.caddy.settings = {
       admin = {
         config.persist = false;
       };
       logging.logs.debug.level = "debug";
-      storage = {
+      storage = mkIf cfg.public {
         module = "s3";
         host = "ad73318a13b24f38bd07b54222ad9e01.r2.cloudflarestorage.com";
         bucket = "cert";
