@@ -20,16 +20,16 @@ let
 in
 buildGo124Module {
   pname = "caddy";
-  version = "2.10.3";
+  version = "2.10.4";
 
   src = fetchFromGitHub {
     owner = "oluceps";
     repo = "caddy";
-    tag = "v2.10.3";
-    hash = "sha256-v2CQsCAQ59S0gRSMQgpLSPITrzUSeYTH3XpG5Fd18F0=";
+    tag = "v2.10.4";
+    hash = "sha256-iAoJsWIpRm/QLyZdLOZtgVcm+T+1EUiu3qnO7a7ArLs=";
   };
 
-  vendorHash = "sha256-u+coS8E+BqPXurmkSGT4Cd6Jov0ZH7ftOUJpwUODlow=";
+  vendorHash = "sha256-DQXoYVlY/qRqKBiqSgh7GAg0cVHZpSKJYO3y2hRMuDg=";
 
   subPackages = [ "cmd/caddy" ];
 
