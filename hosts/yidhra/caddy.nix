@@ -345,36 +345,45 @@
         }
       ];
 
-      tls = {
-        automation.policies = [
-          {
-            subjects = [
-              "*.nyaw.xyz"
-              "nyaw.xyz"
-            ];
-            issuers = [
-              {
-                module = "acme";
-                challenges.dns.provider = {
-                  name = "cloudflare";
-                  api_token = "{env.CF_API_TOKEN}";
-                  zone_token = "{env.CF_ZONE_TOKEN}";
-                };
-              }
-            ];
-          }
-        ];
-        dns = {
-          name = "cloudflare";
-          api_token = "{env.CF_API_TOKEN}";
-          zone_token = "{env.CF_ZONE_TOKEN}";
-        };
-        encrypted_client_hello.configs = [
-          {
-            outer_sni = "ech.nyaw.xyz";
-          }
-        ];
+      tls.automation.policies = [
+
+        {
+          key_type = "p256";
+          issuers = [
+            {
+              email = "mn1.674927211@gmail.com";
+              module = "acme";
+            }
+          ];
+        }
+        {
+          subjects = [
+            "*.nyaw.xyz"
+            "nyaw.xyz"
+          ];
+          issuers = [
+            {
+              module = "acme";
+              challenges.dns.provider = {
+                name = "cloudflare";
+                api_token = "{env.CF_API_TOKEN}";
+                zone_token = "{env.CF_ZONE_TOKEN}";
+              };
+            }
+          ];
+        }
+
+      ];
+      tls.dns = {
+        name = "cloudflare";
+        api_token = "{env.CF_API_TOKEN}";
+        zone_token = "{env.CF_ZONE_TOKEN}";
       };
+      tls.encrypted_client_hello.configs = [
+        {
+          outer_sni = "ech.nyaw.xyz";
+        }
+      ];
     };
   };
 }
