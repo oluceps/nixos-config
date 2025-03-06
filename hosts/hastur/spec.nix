@@ -164,6 +164,7 @@
   # system.forbiddenDependenciesRegexes = [ "perl" ];
   environment.etc."resolv.conf".text = ''
     nameserver 127.0.0.1
+    search nyaw.xyz
   '';
 
   zramSwap = {

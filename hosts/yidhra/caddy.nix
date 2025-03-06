@@ -6,7 +6,7 @@
 
   repack.caddy = {
     enable = true;
-    public=true;
+    public = true;
     settings.apps = {
       http.servers.srv0.routes = [
         {
@@ -345,43 +345,38 @@
         }
       ];
 
-      tls =
-        let
-          api_key = "{env.PORKBUN_API_KEY}";
-          api_secret_key = "{env.PORKBUN_API_SECRET_KEY}";
-        in
-        {
-          automation.policies = [
-            {
-              subjects = [
-                "*.nyaw.xyz"
-                "nyaw.xyz"
-              ];
-              issuers = [
-                {
-                  module = "acme";
-                  challenges = {
-                    dns = {
-                      provider = {
-                        name = "porkbun";
-                        inherit api_key api_secret_key;
-                      };
-                    };
-                  };
-                }
-              ];
-            }
-          ];
-          dns = {
-            name = "porkbun";
-            inherit api_key api_secret_key;
-          };
-          encrypted_client_hello.configs = [
-            {
-              outer_sni = "cloudflare-ech.com";
-            }
-          ];
+      tls = {
+        automation.policies = [
+          {
+            subjects = [
+              "*.nyaw.xyz"
+              "nyaw.xyz"
+            ];
+            # issuers = [
+            #   {
+            #     module = "acme";
+            #     challenges = {
+            #       dns = {
+            #         provider = {
+            #           name = "porkbun";
+            #           inherit api_key api_secret_key;
+            #         };
+            #       };
+            #     };
+            #   }
+            # ];
+          }
+        ];
+        dns = {
+          name = "cloudflare";
+          api_token = "{env.CF_API_TOKEN}";
         };
+        encrypted_client_hello.configs = [
+          {
+            outer_sni = "cloudflare-ech.com";
+          }
+        ];
+      };
     };
   };
 }
