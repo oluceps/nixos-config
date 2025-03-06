@@ -352,28 +352,26 @@
               "*.nyaw.xyz"
               "nyaw.xyz"
             ];
-            # issuers = [
-            #   {
-            #     module = "acme";
-            #     challenges = {
-            #       dns = {
-            #         provider = {
-            #           name = "porkbun";
-            #           inherit api_key api_secret_key;
-            #         };
-            #       };
-            #     };
-            #   }
-            # ];
+            issuers = [
+              {
+                module = "acme";
+                challenges.dns.provider = {
+                  name = "cloudflare";
+                  api_token = "{env.CF_API_TOKEN}";
+                  zone_token = "{env.CF_ZONE_TOKEN}";
+                };
+              }
+            ];
           }
         ];
         dns = {
           name = "cloudflare";
           api_token = "{env.CF_API_TOKEN}";
+          zone_token = "{env.CF_ZONE_TOKEN}";
         };
         encrypted_client_hello.configs = [
           {
-            outer_sni = "cloudflare-ech.com";
+            outer_sni = "ech.nyaw.xyz";
           }
         ];
       };

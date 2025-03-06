@@ -80,28 +80,6 @@ in
           ];
           metrics = { };
         };
-        tls = {
-          automation = {
-            policies = [
-              {
-                key_type = "p256";
-                issuers = [
-                  {
-                    email = "mn1.674927211@gmail.com";
-                    module = "acme";
-                  }
-                ];
-              }
-            ];
-          };
-          # certificates = {
-          #   load_files = [{
-          #     certificate = "/run/credentials/caddy.service/nyaw.cert";
-          #     key = "/run/credentials/caddy.service/nyaw.key";
-          #     tags = [ "cert0" ];
-          #   }];
-          # };
-        };
       };
     };
 
