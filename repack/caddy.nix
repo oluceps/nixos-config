@@ -17,6 +17,7 @@ in
       # moved to upper module
       # enable = lib.mkEnableOption "caddy api gateway";
       # mkPackageOption not work here
+      public = lib.mkEnableOption "shared certificate storage, and API env";
       package = lib.mkOption {
         type = lib.types.package;
         default = pkgs.caddy;
@@ -125,6 +126,7 @@ in
           AmbientCapabilities = [ "CAP_NET_BIND_SERVICE" ];
           Environment = [ "XDG_DATA_HOME=%S" ];
           Restart = "always";
+          EnvironmentFile = lib.mkIf cfg.public config.vaultix.secrets.caddy.path;
           RestartSec = 1;
         };
       wantedBy = [ "multi-user.target" ];

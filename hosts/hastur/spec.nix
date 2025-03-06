@@ -209,7 +209,6 @@
     # srs.enable = true;
     grafana.enable = true;
     # xmrig.enable = true;
-    reuse-cert.enable = true;
 
     # postgresql.enable = true;
     # misskey.enable = true;
