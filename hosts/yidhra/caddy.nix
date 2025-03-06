@@ -344,28 +344,40 @@
         }
       ];
 
-      tls.automation.policies = [
-        {
-          subjects = [
-            "*.nyaw.xyz"
-            "nyaw.xyz"
-          ];
-          issuers = [
-            {
-              module = "acme";
-              challenges = {
-                dns = {
-                  provider = {
-                    name = "porkbun";
-                    api_key = "{env.PORKBUN_API_KEY}";
-                    api_secret_key = "{env.PORKBUN_API_SECRET_KEY}";
-                  };
-                };
-              };
-            }
-          ];
-        }
-      ];
+      tls = {
+        automation.policies = [
+          {
+            subjects = [
+              "*.nyaw.xyz"
+              "nyaw.xyz"
+            ];
+            # issuers = [
+            #   {
+            #     module = "acme";
+            #     challenges = {
+            #       dns = {
+            #         provider = {
+            #           name = "porkbun";
+            #           api_key = "{env.PORKBUN_API_KEY}";
+            #           api_secret_key = "{env.PORKBUN_API_SECRET_KEY}";
+            #         };
+            #       };
+            #     };
+            #   }
+            # ];
+          }
+        ];
+        dns = {
+          name = "porkbun";
+          api_key = "{env.PORKBUN_API_KEY}";
+          api_secret_key = "{env.PORKBUN_API_SECRET_KEY}";
+        };
+        encrypted_client_hello.configs = [
+          {
+            outer_sni = "cloudflare-ech.com";
+          }
+        ];
+      };
     };
   };
 }
