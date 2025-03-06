@@ -19,14 +19,15 @@ in
       # mkPackageOption not work here
       package = lib.mkOption {
         type = lib.types.package;
-        default = pkgs.caddy.withPlugins {
-          plugins = [
-            "github.com/caddy-dns/porkbun@v0.2.1"
-            "github.com/mholt/caddy-ratelimit@v0.1.0"
-            "github.com/ss098/certmagic-s3@f227064b674462e1ab4336441b2b6fd35e073885"
-          ];
-          hash = "";
-        };
+        default = pkgs.caddy;
+        # withPlugins {
+        #   plugins = [
+        #     "github.com/caddy-dns/porkbun@v0.2.1"
+        #     "github.com/mholt/caddy-ratelimit@v0.1.0"
+        #     "github.com/ss098/certmagic-s3@f227064b674462e1ab4336441b2b6fd35e073885"
+        #   ];
+        #   hash = "";
+        # };
       };
       settings = lib.mkOption {
         type = lib.types.submodule { freeformType = format.type; };
@@ -41,6 +42,13 @@ in
         config.persist = false;
       };
       logging.logs.debug.level = "debug";
+      storage = {
+        module = "s3";
+        host = "ad73318a13b24f38bd07b54222ad9e01.r2.cloudflarestorage.com";
+        bucket = "cert";
+        prefix = "ssl";
+        insecure = false;
+      };
       apps = {
         http.grace_period = "1s";
         http.servers.srv0 = {

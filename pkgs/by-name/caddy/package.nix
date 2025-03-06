@@ -26,10 +26,10 @@ buildGo124Module {
     owner = "oluceps";
     repo = "caddy";
     tag = "v2.10.3";
-    hash = "";
+    hash = "sha256-v2CQsCAQ59S0gRSMQgpLSPITrzUSeYTH3XpG5Fd18F0=";
   };
 
-  vendorHash = "";
+  vendorHash = "sha256-u+coS8E+BqPXurmkSGT4Cd6Jov0ZH7ftOUJpwUODlow=";
 
   subPackages = [ "cmd/caddy" ];
 
