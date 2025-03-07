@@ -52,9 +52,9 @@ let scheme = {
 }
 
 $env.config.cursor_shape = {
-    vi_insert: line
-    vi_normal: underscore
-  }
+    vi_normal: line
+    vi_insert: underscore
+}
 $env.config.color_config = {
   separator: { fg: $theme.surface2 attr: b }
   leading_trailing_space_bg: { fg: $theme.lavender attr: u }

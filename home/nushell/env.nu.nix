@@ -1,4 +1,9 @@
-{ user, ... }:
+{
+  lib,
+  pkgs,
+  user,
+  ...
+}:
 ''
   # Specifies how environment variables are:
   # - converted from a string to a value on Nushell startup (from_string)
@@ -33,7 +38,7 @@
   let rev_pink = {fg: '#C8ADC4'}
   let path_blue = {fg: '#2168F5'}
   let prom_gray = {fg: '#ACB0BE'}
-  
+
 
   def create_right_prompt [] {
     let home = $env.HOME | str trim
@@ -57,6 +62,8 @@
   $env.PROMPT_INDICATOR_VI_INSERT = {|| if ($env.LAST_EXIT_CODE != 0) {$"(ansi red)>(ansi reset) "} else {$"(ansi $prom_gray)>(ansi reset) "}}
   $env.PROMPT_INDICATOR_VI_NORMAL = {|| $"(ansi blue)<(ansi reset) " }
   $env.PROMPT_MULTILINE_INDICATOR = {|| "::" }
+
+  $env.LS_COLORS = (${lib.getExe pkgs.vivid} generate catppuccin-latte)
 
 
   $env.EDITOR = "hx"
