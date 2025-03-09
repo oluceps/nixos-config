@@ -69,8 +69,6 @@ in
       logging.logs.debug.level = "debug";
       storage = mkIf cfg.public {
         module = "s3";
-        host = "ad73318a13b24f38bd07b54222ad9e01.r2.cloudflarestorage.com";
-        bucket = "cert";
         prefix = "ssl";
         insecure = false;
       };
