@@ -67,11 +67,11 @@ in
         config.persist = false;
       };
       logging.logs.debug.level = "debug";
-      storage = mkIf cfg.public {
-        module = "s3";
-        prefix = "ssl";
-        insecure = false;
-      };
+      # storage = mkIf cfg.public {
+      #   module = "s3";
+      #   prefix = "ssl";
+      #   insecure = false;
+      # };
       apps = {
         http.grace_period = "1s";
         http.servers.srv0 = {
