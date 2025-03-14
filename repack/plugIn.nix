@@ -40,6 +40,7 @@ let
           }
           {
             Address = thisNode.link_local_addr;
+            Peer = peerNode.link_local_addr;
             Scope = "link";
           }
         ];
