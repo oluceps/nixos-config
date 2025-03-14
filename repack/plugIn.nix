@@ -122,10 +122,9 @@ in
               Name = "anchor-0";
             };
           };
-          networks.anchor-0 = {
+          networks."10-dummy-anchor-0" = {
             enable = true;
             DHCP = "no";
-            name = "10-anchor-0";
             matchConfig.Name = "anchor-0";
             address = singleton thisNode.unique_addr;
           };
