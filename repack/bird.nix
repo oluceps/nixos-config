@@ -39,7 +39,6 @@ in
 
           protocol static {
             route HORTUS_PREFIX reject;
-        
             ipv6 {
               import all;
               export none;
