@@ -1,11 +1,10 @@
 import ky from "https://esm.sh/ky@0.33.3";
-import { createHash } from "https://deno.land/std@0.80.0/hash/mod.ts";
 
 const COMMON_HEADERS = {
-  'user-agent': Deno.env.get("UA"),
+  'user-agent': Deno.env.get("UA")!,
   'content-type': 'application/json',
   'dnt': '1',
-  'sec-ch-ua': '"Not/A=Brand";v="99", "Google Chrome";v="133", "Chromium";v="133"',
+  'sec-ch-ua': '"Chromium";v="134", "Not:A-Brand";v="24", "Google Chrome";v="134"',
   'sec-ch-ua-platform': '"Linux"',
 };
 
@@ -14,113 +13,80 @@ const NTFY_CONFIG = {
   token: `Bearer ${Deno.env.get("NTFY_TOKEN")}`
 };
 
+async function checkStatus() {
+  const payload = {
+    username: Deno.env.get("PHONE")!,
+    password: Deno.env.get("PASSWORD")!,
+    deviceId: "",
+    longitude: "",
+    latitude: ""
+  };
+
+  const response = await ky.post('https://www.xybsign.xyz/api/clockInfo', {
+    headers: COMMON_HEADERS,
+    json: payload
+  }).json<{
+    data: {
+      canSign: boolean;
+      clockStatus: { isSignin: boolean; isSignout: boolean }
+    }
+  }>();
+
+  return response.data;
+}
+
 async function performSign(mode: "in" | "out") {
-  try {
-    const codeRes = await ky.get("https://www.xybsign.xyz/api/code", {
-      headers: COMMON_HEADERS,
-    }).json<{ id: number }>();
+  const payload = {
+    username: Deno.env.get("PHONE")!,
+    password: Deno.env.get("PASSWORD")!,
+    mode: mode,
+    force: false
+  };
 
-    const loginRes = await ky.post("https://www.xybsign.xyz/api/xyb/login", {
-      headers: COMMON_HEADERS,
-      json: {
-        username: Deno.env.get("PHONE"),
-        password: createHash("md5").update(Deno.env.get("PASSWORD")).toString(),
-        codeId: codeRes.id,
-      },
-    }).json<{
-      success: boolean;
-      data: { sessionId: string; loginerId: number; encryptValue: string };
-    }>();
-
-    if (!loginRes.success) {
-      console.error("login fail")
-      Deno.exit(1)
-    };
-
-    const AUTH_HEADERS = {
-      ...COMMON_HEADERS,
-      'sessionid': loginRes.data.sessionId,
-      'loginerid': String(loginRes.data.loginerId),
-      'encryptvalue': loginRes.data.encryptValue,
-    };
-
-    const projectRes = await ky.post("https://www.xybsign.xyz/api/xyb/projects", {
-      headers: AUTH_HEADERS,
-      json: { force: false },
-    }).json<{ data: Array<{ planId: number }> }>();
-
-    console.log("projRes:", projectRes)
-
-    const taskRes = await ky.post("https://www.xybsign.xyz/api/xyb/tasks", {
-      headers: AUTH_HEADERS,
-      json: {
-        moduleId: projectRes.data[0].moduleIds[0],
-        projectRuleId: projectRes.data[0].projectRuleIds[0], // assume only
-        planId: projectRes.data[0].planId
-      },
-    }).json<{ data: { planId: number } }>();
-
-    console.log("taskRes:", taskRes)
-
-    const trainRes = await ky.post("https://www.xybsign.xyz/api/xyb/clock/trainid", {
-      headers: AUTH_HEADERS,
-      json: { planId: taskRes.data.planId },
-    }).json<{ data: { traineeId: number } }>();
-
-    const clockRes = await ky.post("https://www.xybsign.xyz/api/xyb/clock", {
-      headers: AUTH_HEADERS,
-      json: {
-        postInfo: {
-          address: Deno.env.get("ADDR"),
-          lat: Deno.env.get("LAT"),
-          lng: Deno.env.get("LNG"),
-          traineeId: trainRes.data.traineeId,
-          clock: 1,
-          compare: 1,
-          distance: 1000,
-          state: 1
-        },
-        mode: mode,
-        isResign: false
-      }
-    }).json<{
-      success: boolean;
-      data: { startTraineeDayNum: number };
-      msg: string
-    }>();
-
-    await ky.post(NTFY_CONFIG.url, {
-      headers: { Authorization: NTFY_CONFIG.token },
-      body: `${mode}签到成功，累计天数: ${clockRes.data.startTraineeDayNum}`
-    });
-
-    return clockRes;
-
-  } catch (error) {
-    await ky.post(NTFY_CONFIG.url, {
-      headers: { Authorization: NTFY_CONFIG.token },
-      body: `${mode}签到失败：${error.message}`
-    });
-    console.error(error);
-    Deno.exit(1)
-  }
+  return ky.post('https://www.xybsign.xyz/api/clock', {
+    headers: COMMON_HEADERS,
+    json: payload
+  }).json<{ code: number; message: string; data: string[] }>();
 }
 
 async function main() {
   try {
-    // 签入流程
-    const inRes = await performSign("in");
-    console.log("签入成功，等待3秒...");
+    const status = await checkStatus();
 
-    // 等待3秒
-    await new Promise(resolve => setTimeout(resolve, 3000));
+    if (!status.canSign) {
+      await ky.post(NTFY_CONFIG.url, {
+        headers: { Authorization: NTFY_CONFIG.token },
+        body: "没法签到"
+      });
+      return;
+    }
 
-    // 签出流程
-    const outRes = await performSign("out");
-    console.log("完整签到流程完成！最终天数:", outRes.data.startTraineeDayNum);
+    if (status.clockStatus.isSignin && status.clockStatus.isSignout) {
+      await ky.post(NTFY_CONFIG.url, {
+        headers: { Authorization: NTFY_CONFIG.token },
+        body: "都签过了"
+      });
+      return;
+    }
 
+    const mode = status.clockStatus.isSignin ? "out" : "in";
+    const result = await performSign(mode);
+
+    if (result.code === 200) {
+      await ky.post(NTFY_CONFIG.url, {
+        headers: { Authorization: NTFY_CONFIG.token },
+        body: `${mode} 操作成功: ${result.data[0]}`
+      });
+    } else {
+      throw new Error(result.message);
+    }
   } catch (error) {
-    console.error("完整流程执行失败:", error);
+    await ky.post(NTFY_CONFIG.url, {
+      headers: { Authorization: NTFY_CONFIG.token },
+      body: `签到失败：${error.message}`
+    });
+    console.error(error);
+    Deno.exit(1);
   }
 }
 
