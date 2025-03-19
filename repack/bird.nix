@@ -38,14 +38,11 @@ in
           };
 
           protocol static {
+            ipv6;
             route HORTUS_PREFIX reject;
-            ipv6 {
-              import all;
-              export none;
-            };
           }
 
-          function in_hortus() {
+          function in_hortus() -> bool {
             return net ~ HORTUS_FIELD;
           };
 
@@ -56,7 +53,11 @@ in
 
           filter to_kernel {
             case source {
-              RTS_STATIC: reject;
+              RTS_STATIC: {
+                krt_prefsrc = HORTUS_OWNIP;
+                krt_metric = 512;
+                accept;
+              }
               RTS_BABEL: {
                 krt_prefsrc = HORTUS_OWNIP;
                 krt_metric = 128;
