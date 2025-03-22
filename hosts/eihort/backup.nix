@@ -5,6 +5,12 @@
   vaultix.secrets = {
    "on-yidong.toml" = {
       file = ../../sec/on-yidong.toml.age;
+      insert = {
+        "0206c8ff3ff866c4212f1a968882f993e101fbf7ffdaa4e0e722b3ca069c5559".content = ''
+          [[backup.snapshots]]
+          sources = [ "/var/lib/backup", "/var/lib/immich", "/var/lib/vaultwarden", "/three/img" ]
+        '';
+      };
     };
   };
   services.rustic = {
