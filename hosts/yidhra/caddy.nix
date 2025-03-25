@@ -15,255 +15,266 @@
               {
                 handler = "subroute";
                 routes = [
+
                   {
                     handle = [
                       {
-                        handler = "reverse_proxy";
-                        upstreams = [ { dial = "[fdcc::3]:3001"; } ];
-                      }
-                    ];
-                    match = [
-                      {
-                        path = [
-                          "/share/*"
-                          "/share"
-                        ];
-                      }
-                    ];
-                  }
-                  {
-                    handle = [
-                      {
-                        handler = "authentication";
-                        providers.http_basic.accounts = [
+                        handler = "subroute";
+                        routes = [
                           {
-                            username = "immich";
-                            password = "$2b$05$9CaXvrYtguDwi190/llO9.qytgqCyPp1wqyO0.umxsTEfKkhpwr4q";
+                            handle = [
+                              {
+                                handler = "reverse_proxy";
+                                upstreams = [ { dial = "[fdcc::3]:3001"; } ];
+                              }
+                            ];
+                            match = [
+                              {
+                                path = [
+                                  "/share/*"
+                                  "/share"
+                                ];
+                              }
+                            ];
+                          }
+                          {
+                            handle = [
+                              {
+                                handler = "authentication";
+                                providers.http_basic.accounts = [
+                                  {
+                                    username = "immich";
+                                    password = "$2b$05$9CaXvrYtguDwi190/llO9.qytgqCyPp1wqyO0.umxsTEfKkhpwr4q";
+                                  }
+                                ];
+                              }
+                              {
+                                handler = "reverse_proxy";
+                                upstreams = [ { dial = "[fdcc::3]:2283"; } ];
+                              }
+                            ];
                           }
                         ];
                       }
-                      {
-                        handler = "reverse_proxy";
-                        upstreams = [ { dial = "[fdcc::3]:2283"; } ];
-                      }
-                    ];
-                  }
-                ];
-              }
 
-            ];
-            match = [
-              {
-                host = [ "photo.nyaw.xyz" ];
-              }
-            ];
-            terminal = true;
-          }
-          {
-            handle = [
-              {
-                handler = "subroute";
-                routes = [
-                  {
-                    handle = [
-                      {
-                        handler = "reverse_proxy";
-                        upstreams = [ { dial = "[fdcc::3]:9000"; } ];
-                      }
-                    ];
-                  }
-                ];
-              }
-            ];
-            match = [ { host = [ "s3.nyaw.xyz" ]; } ];
-            terminal = true;
-          }
-          {
-            handle = [
-              {
-                handler = "reverse_proxy";
-                upstreams = [ { dial = "[fdcc::3]:8003"; } ];
-              }
-            ];
-            match = [ { host = [ "vault.nyaw.xyz" ]; } ];
-            terminal = true;
-          }
-          {
-            handle = [
-              {
-                handler = "rate_limit";
-                rate_limits = {
-                  static = {
-                    match = [ { method = [ "GET" ]; } ];
-                    key = "static";
-                    window = "1m";
-                    max_events = 10;
-                  };
-                  dynamic = {
-                    key = "{http.request.remote.host}";
-                    window = "5s";
-                    max_events = 5;
-                  };
-                };
-                log_key = true;
-              }
-              {
-                handler = "reverse_proxy";
-                upstreams = [ { dial = "localhost:8004"; } ];
-              }
-            ];
-            match = [ { host = [ "subs.nyaw.xyz" ]; } ];
-            terminal = true;
-          }
-          {
-            handle = [
-              {
-                handler = "rate_limit";
-                rate_limits = {
-                  dynamic = {
-                    key = "{http.request.remote.host}";
-                    window = "5s";
-                    max_events = 50;
-                  };
-                };
-                log_key = true;
-              }
-              {
-                handler = "reverse_proxy";
-                headers = {
-                  request = {
-                    set = {
-                      "X-Scheme" = [
-                        "https"
-                      ];
-                    };
-                  };
-                };
-                upstreams = [ { dial = "[fdcc::3]:8083"; } ];
-              }
-            ];
-            match = [ { host = [ "book.nyaw.xyz" ]; } ];
-            terminal = true;
-          }
-          (import ../caddy-matrix.nix {
-            inherit pkgs;
-            matrix-upstream = "[fdcc::3]:6167";
-          })
-          {
-            handle = [
-              {
-                handler = "subroute";
-                routes = [
-                  {
-                    handle = [
-                      {
-                        handler = "reverse_proxy";
-                        upstreams = [ { dial = "[fdcc::1]:5000"; } ];
-                      }
-                    ];
-                  }
-                ];
-              }
-            ];
-            match = [ { host = [ "cache.nyaw.xyz" ]; } ];
-            terminal = true;
-          }
-          {
-            handle = [
-              {
-                handler = "subroute";
-                routes = [
-                  {
-                    handle = [
-                      {
-                        handler = "reverse_proxy";
-                        upstreams = [ { dial = "[fdcc::3]:7700"; } ];
-                      }
-                    ];
-                  }
-                ];
-              }
-            ];
-            match = [ { host = [ "ms.nyaw.xyz" ]; } ];
-            terminal = true;
-          }
-
-          {
-            handle = [
-              {
-                handler = "rate_limit";
-                rate_limits = {
-                  static = {
-                    match = [ { method = [ "GET" ]; } ];
-                    key = "static";
-                    window = "1m";
-                    max_events = 60;
-                  };
-                  dynamic = {
-                    key = "{http.request.remote.host}";
-                    window = "5s";
-                    max_events = 5;
-                  };
-                };
-                log_key = true;
-              }
-              {
-                handler = "reverse_proxy";
-                upstreams = [ { dial = "127.0.0.1:3999"; } ];
-              }
-            ];
-            match = [ { host = [ "pb.nyaw.xyz" ]; } ];
-            terminal = true;
-          }
-
-          {
-            handle = [
-              {
-                handler = "subroute";
-                routes = [
-                  {
-                    handle = [
-                      {
-                        handler = "static_response";
-                        headers = {
-                          Location = [ "https://{http.request.host}{http.request.uri}" ];
-                        };
-                        status_code = 302;
-                      }
                     ];
                     match = [
                       {
-                        method = [ "GET" ];
-                        path_regexp = {
-                          pattern = "^/([-_a-z0-9]{0,64}$|docs/|static/)";
-                        };
-                        protocol = "http";
+                        host = [ "photo.nyaw.xyz" ];
                       }
                     ];
+                    terminal = true;
+                  }
+                  {
+                    handle = [
+                      {
+                        handler = "subroute";
+                        routes = [
+                          {
+                            handle = [
+                              {
+                                handler = "reverse_proxy";
+                                upstreams = [ { dial = "[fdcc::3]:9000"; } ];
+                              }
+                            ];
+                          }
+                        ];
+                      }
+                    ];
+                    match = [ { host = [ "s3.nyaw.xyz" ]; } ];
+                    terminal = true;
                   }
                   {
                     handle = [
                       {
                         handler = "reverse_proxy";
-                        upstreams = [ { dial = "127.0.0.1:2586"; } ];
+                        upstreams = [ { dial = "[fdcc::3]:8003"; } ];
                       }
                     ];
+                    match = [ { host = [ "vault.nyaw.xyz" ]; } ];
+                    terminal = true;
+                  }
+                  {
+                    handle = [
+                      {
+                        handler = "rate_limit";
+                        rate_limits = {
+                          static = {
+                            match = [ { method = [ "GET" ]; } ];
+                            key = "static";
+                            window = "1m";
+                            max_events = 10;
+                          };
+                          dynamic = {
+                            key = "{http.request.remote.host}";
+                            window = "5s";
+                            max_events = 5;
+                          };
+                        };
+                        log_key = true;
+                      }
+                      {
+                        handler = "reverse_proxy";
+                        upstreams = [ { dial = "localhost:8004"; } ];
+                      }
+                    ];
+                    match = [ { host = [ "subs.nyaw.xyz" ]; } ];
+                    terminal = true;
+                  }
+                  {
+                    handle = [
+                      {
+                        handler = "rate_limit";
+                        rate_limits = {
+                          dynamic = {
+                            key = "{http.request.remote.host}";
+                            window = "5s";
+                            max_events = 50;
+                          };
+                        };
+                        log_key = true;
+                      }
+                      {
+                        handler = "reverse_proxy";
+                        headers = {
+                          request = {
+                            set = {
+                              "X-Scheme" = [
+                                "https"
+                              ];
+                            };
+                          };
+                        };
+                        upstreams = [ { dial = "[fdcc::3]:8083"; } ];
+                      }
+                    ];
+                    match = [ { host = [ "book.nyaw.xyz" ]; } ];
+                    terminal = true;
+                  }
+                  (import ../caddy-matrix.nix {
+                    inherit pkgs;
+                    matrix-upstream = "[fdcc::3]:6167";
+                  })
+                  {
+                    handle = [
+                      {
+                        handler = "subroute";
+                        routes = [
+                          {
+                            handle = [
+                              {
+                                handler = "reverse_proxy";
+                                upstreams = [ { dial = "[fdcc::1]:5000"; } ];
+                              }
+                            ];
+                          }
+                        ];
+                      }
+                    ];
+                    match = [ { host = [ "cache.nyaw.xyz" ]; } ];
+                    terminal = true;
+                  }
+                  {
+                    handle = [
+                      {
+                        handler = "subroute";
+                        routes = [
+                          {
+                            handle = [
+                              {
+                                handler = "reverse_proxy";
+                                upstreams = [ { dial = "[fdcc::3]:7700"; } ];
+                              }
+                            ];
+                          }
+                        ];
+                      }
+                    ];
+                    match = [ { host = [ "ms.nyaw.xyz" ]; } ];
+                    terminal = true;
+                  }
+
+                  {
+                    handle = [
+                      {
+                        handler = "rate_limit";
+                        rate_limits = {
+                          static = {
+                            match = [ { method = [ "GET" ]; } ];
+                            key = "static";
+                            window = "1m";
+                            max_events = 60;
+                          };
+                          dynamic = {
+                            key = "{http.request.remote.host}";
+                            window = "5s";
+                            max_events = 5;
+                          };
+                        };
+                        log_key = true;
+                      }
+                      {
+                        handler = "reverse_proxy";
+                        upstreams = [ { dial = "127.0.0.1:3999"; } ];
+                      }
+                    ];
+                    match = [ { host = [ "pb.nyaw.xyz" ]; } ];
+                    terminal = true;
+                  }
+
+                  {
+                    handle = [
+                      {
+                        handler = "subroute";
+                        routes = [
+                          {
+                            handle = [
+                              {
+                                handler = "static_response";
+                                headers = {
+                                  Location = [ "https://{http.request.host}{http.request.uri}" ];
+                                };
+                                status_code = 302;
+                              }
+                            ];
+                            match = [
+                              {
+                                method = [ "GET" ];
+                                path_regexp = {
+                                  pattern = "^/([-_a-z0-9]{0,64}$|docs/|static/)";
+                                };
+                                protocol = "http";
+                              }
+                            ];
+                          }
+                          {
+                            handle = [
+                              {
+                                handler = "reverse_proxy";
+                                upstreams = [ { dial = "127.0.0.1:2586"; } ];
+                              }
+                            ];
+                          }
+                        ];
+                      }
+                    ];
+                    match = [ { host = [ "ntfy.nyaw.xyz" ]; } ];
+                    terminal = true;
+                  }
+                  {
+                    handle = [
+                      {
+                        handler = "reverse_proxy";
+                        upstreams = [ { dial = "[fdcc::3]:8084"; } ];
+                      }
+                    ];
+                    match = [ { host = [ "seed.nyaw.xyz" ]; } ];
+                    terminal = true;
                   }
                 ];
               }
             ];
-            match = [ { host = [ "ntfy.nyaw.xyz" ]; } ];
-            terminal = true;
-          }
-          {
-            handle = [
-              {
-                handler = "reverse_proxy";
-                upstreams = [ { dial = "[fdcc::3]:8084"; } ];
-              }
-            ];
-            match = [ { host = [ "seed.nyaw.xyz" ]; } ];
-            terminal = true;
+            match = [ { host = [ "*.nyaw.xyz" ]; } ];
           }
           {
             handle = [
