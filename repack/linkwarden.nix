@@ -1,18 +1,50 @@
 {
   reIf,
+  config,
+  pkgs,
+  lib,
   ...
 }:
 reIf {
   virtualisation.oci-containers.containers.linkwarden = {
-
     image = "ghcr.io/linkwarden/linkwarden:latest";
-    extraOptions = [ "--network=host" ];
-    environment = {
-
-    };
-    ports = [
-      "[::1]:3004:3000"
+    extraOptions = [
+      # "--pull=always"
     ];
-    workdir = "/var/lib/linkwarden";
+    # networks = [ "pasta:--map-gw" ];
+    # podman = {
+    #   user = "linkwarden";
+    #   sdnotify = "healthy";
+    # };
+
+    environmentFiles = [
+      config.vaultix.secrets.linkwarden.path
+    ];
+    ports = [
+      "3004:3000"
+    ];
+    volumes = [
+      "/var/lib/linkwarden:/data/data"
+    ];
   };
+  # users.groups.linkwarden = { };
+  # users.users.linkwarden = {
+  #   isSystemUser = true;
+  #   group = "linkwarden";
+  #   home = "/var/lib/linkwarden";
+  #   linger = true;
+  #   createHome = true;
+  #   subUidRanges = [
+  #     {
+  #       count = 65536;
+  #       startUid = 2147483646;
+  #     }
+  #   ];
+  #   subGidRanges = [
+  #     {
+  #       count = 65536;
+  #       startGid = 2147483647;
+  #     }
+  #   ];
+  # };
 }

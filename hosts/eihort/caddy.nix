@@ -51,6 +51,15 @@
                     handle = [
                       {
                         handler = "reverse_proxy";
+                        upstreams = [ { dial = "localhost:3004"; } ];
+                      }
+                    ];
+                    match = [ { host = [ "linkwarden.nyaw.xyz" ]; } ];
+                  }
+                  {
+                    handle = [
+                      {
+                        handler = "reverse_proxy";
                         upstreams = [ { dial = "localhost:8090"; } ];
                       }
                     ];
