@@ -20,6 +20,10 @@ reIf {
     environmentFiles = [
       config.vaultix.secrets.linkwarden.path
     ];
+    environment = {
+      NEXT_PUBLIC_OLLAMA_ENDPOINT_URL = "http://host.containers.internal:11434";
+      OLLAMA_MODEL = "phi3:mini-4k";
+    };
     ports = [
       "3004:3000"
     ];

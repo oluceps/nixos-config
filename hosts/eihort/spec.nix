@@ -104,7 +104,7 @@
     radicle.enable = true;
     autosign.enable = true;
     aria2.enable = true;
-    linkwarden.enable = true;
+    # linkwarden.enable = true;
     userborn-subid.enable = true;
     ollama.enable = true;
   };
