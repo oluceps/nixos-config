@@ -306,7 +306,7 @@
 
           display = [ cage ];
 
-          cursor = [ graphite-cursors ];
+          cursor = [ bibata-cursors ];
         }
       )
     )
