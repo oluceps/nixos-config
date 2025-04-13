@@ -45,6 +45,7 @@ in
       misskey = {
         file = ../../sec/misskey.age;
         mode = "400";
+        owner = "misskey";
       };
 
       vault.file = ../../sec/vault.age;
