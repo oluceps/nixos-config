@@ -35,7 +35,6 @@ reIf {
   # };
 
   virtualisation.oci-containers = {
-    backend = "podman";
     containers.misskey = {
       volumes = [
         "${config.vaultix.secrets.misskey.path}:/misskey/.config/config:ro"
