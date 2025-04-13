@@ -35,14 +35,14 @@ reIf {
   virtualisation.oci-containers = {
     backend = "podman";
     containers.misskey = {
-      volumes = [ ];
+      volumes = [ "${config.vaultix.secrets.misskey.path}:/misskey/.config/config:ro" ];
       # pull = "always";
-      image = "misskey:2025.4";
+      image = "misskey/misskey:2025.4";
       ports = [ ];
       networks = [ "pasta:--map-gw" ];
 
       environment = {
-        MISSKEY_CONFIG_YML = config.vaultix.secrets.misskey.path;
+        MISSKEY_CONFIG_YML = "config";
         NODE_OPTIONS = "--use-openssl-ca";
       };
 

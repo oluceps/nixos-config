@@ -44,7 +44,7 @@ in
       };
       misskey = {
         file = ../../sec/misskey.age;
-        mode = "400";
+        mode = "444";
         owner = "misskey";
       };
 
