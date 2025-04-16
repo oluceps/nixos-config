@@ -37,7 +37,7 @@ rec {
         inherit getAddrFromCIDR;
       };
     };
-    inherit (fromTOML (builtins.readFile ./sum.toml)) node;
+    inherit (fromTOML (builtins.readFile ../registry.toml)) node;
   };
 
   genOverlays = map (i: inputs.${i}.overlays.default or inputs.${i}.overlays.${i});
@@ -52,7 +52,7 @@ rec {
 
   iage = type: import ../age { inherit type; };
 
-  conn = import ../lib/conn.nix;
+  conn = import ../lib/conn.nix data.node;
 
   getAddrFromCIDR = i: builtins.elemAt (pkgs.lib.splitString "/" i) 0;
 

@@ -1,9 +1,8 @@
+node:
 {
   basePort ? 51800,
 }:
 let
-  inherit (builtins) readFile fromTOML;
-  nodes = (fromTOML (readFile ../hosts/sum.toml)).node;
   validateNode =
     name: node:
     if !(node ? id) then
@@ -22,7 +21,7 @@ let
     in
     basePort + index;
 
-  nodeNames = builtins.attrNames nodes;
+  nodeNames = builtins.attrNames node;
 
   genConn =
     name: node:
@@ -32,7 +31,7 @@ let
           peerName:
           if peerName != name then
             let
-              peerNode = validateNode peerName nodes.${peerName};
+              peerNode = validateNode peerName node.${peerName};
               port = cantorPort node.id peerNode.id basePort;
             in
             {
@@ -47,4 +46,4 @@ let
     builtins.listToAttrs connections;
 
 in
-builtins.mapAttrs (name: node: genConn name (validateNode name node)) nodes
+builtins.mapAttrs (name: node: genConn name (validateNode name node)) node
