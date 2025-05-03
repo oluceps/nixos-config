@@ -41,7 +41,7 @@ reIf {
         "/etc/ssl/certs:/etc/extra-ca:ro"
       ];
       # pull = "always";
-      image = "misskey/misskey:2025.4";
+      image = "misskey/misskey:2025.4.1";
       # ports = [ "3012:3012" ];
       networks = [ "host" ];
       # networks = [ "pasta:--map-gw" ];
