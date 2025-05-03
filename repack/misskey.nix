@@ -1,5 +1,6 @@
 {
   reIf,
+  lib,
   config,
   pkgs,
   ...
@@ -38,7 +39,14 @@ reIf {
     containers.misskey = {
       volumes = [
         "${config.vaultix.secrets.misskey.path}:/misskey/.config/config:ro"
-        "/etc/ssl/certs:/etc/extra-ca:ro"
+        "${
+          pkgs.cacert.override {
+            extraCertificateFiles = with lib.data.ca; [
+              root
+              intermediate
+            ];
+          }
+        }:/misskey/ca.crt:ro"
       ];
       # pull = "always";
       image = "misskey/misskey:2025.4.1";
@@ -49,7 +57,7 @@ reIf {
       environment = {
         MISSKEY_CONFIG_YML = "config";
         # NODE_OPTIONS = "--use-openssl-ca";
-        NODE_EXTRA_CA_CERTS = "/etc/extra-ca/ca-certificates.crt";
+        NODE_EXTRA_CA_CERTS = "/misskey/ca.crt";
       };
 
       # TODO: CA
