@@ -35,22 +35,29 @@ reIf {
 
   virtualisation.oci-containers = {
     containers.misskey = {
-      volumes = [
-        "${config.vaultix.secrets.misskey.path}:/misskey/.config/config:ro"
-        "${
-          pkgs.cacert.override {
+      volumes =
+        let
+          cabundle = pkgs.cacert.override {
             extraCertificateFiles = with lib.data.ca; [
               root
               intermediate
             ];
-          }
-        }:/misskey/ca.crt:ro"
-      ];
+          };
+        in
+        [
+          "${config.vaultix.secrets.misskey.path}:/misskey/.config/config:ro"
+          "${cabundle}/etc/ssl/certs/ca-bundle.crt:/misskey/ca.crt:ro"
+          "${cabundle}/etc/ssl/certs/ca-bundle.crt:/etc/ssl/certs/ca-certificates.crt"
+        ];
       # pull = "always";
       image = "misskey/misskey:2025.4.1";
-      networks = [
-        "pasta:-T,5432,-T,6379,-T,7700"
+      ports = [
+        "3012:3012"
       ];
+      networks = [
+        "pasta:-T,5432,-T,6379,-T,7700,-T,443"
+      ];
+      extraOptions = [ "--add-host=s3.nyaw.xyz:127.0.0.1" ];
       podman = {
         user = "misskey";
         sdnotify = "healthy";
@@ -62,7 +69,4 @@ reIf {
       };
     };
   };
-  # systemd.services.podman-misskey.serviceConfig.LoadCredential = [
-  #   "config:${config.vaultix.secrets.misskey.path}"
-  # ];
 }
