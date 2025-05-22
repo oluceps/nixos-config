@@ -58,7 +58,7 @@
   users.users.${user}.extraGroups = [ "video" ];
   users.groups.video = { };
 
-  environment.systemPackages = with pkgs; [ texlive.combined.scheme-medium ];
+  environment.systemPackages = with pkgs; [ texlive.combined.scheme-full ];
 
   services = {
     userborn.enable = true;
