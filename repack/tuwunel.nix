@@ -14,6 +14,7 @@ reIf {
     enable = true;
     settings.global = {
       server_name = "nyaw.xyz";
+      well_known = "nyaw.xyz";
       port = 6167;
       address = "::";
       dns_tcp_fallback = false;
