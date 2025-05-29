@@ -7,8 +7,6 @@
 reIf {
   systemd.services.matrix-conduit.serviceConfig = {
     ReadWritePaths = [ "/var/lib/backup/tuwunel" ];
-    ExecStart = "${inputs.conduit.packages.${pkgs.system}.default}/bin/tuwunel";
-    StateDirectory = "tuwunel";
   };
   services.matrix-conduit = {
     enable = true;
