@@ -4,6 +4,7 @@ with pkgs;
   turbo
   eva
   paperback
+  chatmcp
   thunderbird
   amberol
   nix-weather
