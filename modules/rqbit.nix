@@ -32,7 +32,7 @@ in
       users.rqbit = {
         group = "rqbit";
         uid = config.ids.uids.rqbit;
-        isSystemUser = true;
+        home = "/var/lib/rqbit";
       };
 
       groups = {
@@ -42,6 +42,13 @@ in
       };
     };
 
+    networking.firewall.allowedTCPPortRanges = [
+      {
+        from = 4240;
+        to = 4260;
+      }
+    ];
+
     systemd.services.rqbit = {
       wantedBy = [ "multi-user.target" ];
       description = "download daemon";
@@ -49,7 +56,7 @@ in
         Type = "simple";
         User = cfg.user;
         Group = cfg.group;
-        ExecStart = "${lib.getExe' cfg.package} start ${cfg.location}";
+        ExecStart = "${lib.getExe' cfg.package} --http-api-listen-addr [::]:3030 server start ${cfg.location}";
         AmbientCapabilities = "";
         CapabilityBoundingSet = "";
         DeviceAllow = "";
