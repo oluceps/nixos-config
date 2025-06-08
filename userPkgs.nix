@@ -99,6 +99,7 @@ with pkgs;
   sioyek
   zathura
   foliate
+  librum
 
   # file
   filezilla
