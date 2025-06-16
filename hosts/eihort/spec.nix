@@ -86,7 +86,7 @@
     fail2ban.enable = true;
     # phantomsocks.enable = true;
     dae.enable = true;
-    dnsproxy.enable = true;
+    # dnsproxy.enable = true;
     scrutiny.enable = true;
     postgresql.enable = true;
 
@@ -123,7 +123,7 @@
       location = "/three/storage/Downloads";
     };
     bpftune.enable = true;
-    sing-box.enable = true;
+    # sing-box.enable = true;
     metrics.enable = true;
 
     online-keeper.instances.sec = {
