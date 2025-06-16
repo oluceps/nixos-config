@@ -266,6 +266,7 @@
   documentation = {
     info.enable = false;
     nixos.enable = false;
+    man.man-db.enable = true;
   };
 
   systemd.services.nix-daemon.serviceConfig = {
