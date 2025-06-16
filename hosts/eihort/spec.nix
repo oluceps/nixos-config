@@ -86,7 +86,7 @@
     fail2ban.enable = true;
     # phantomsocks.enable = true;
     dae.enable = true;
-    # dnsproxy.enable = true;
+    dnsproxy.enable = true;
     scrutiny.enable = true;
     postgresql.enable = true;
 
