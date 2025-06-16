@@ -263,7 +263,10 @@
         };
     };
   };
-  documentation.info.enable = false;
+  documentation = {
+    info.enable = false;
+    nixos.enable = false;
+  };
 
   systemd.services.nix-daemon.serviceConfig = {
     # WARNING: THIS makes nix-daemon build extremely slow
@@ -380,12 +383,6 @@
     '';
 
     dbus.implementation = "broker";
-  };
-
-  documentation = {
-    enable = false;
-    nixos.enable = false;
-    man.enable = false;
   };
 
   systemd.tmpfiles.rules = [
