@@ -93,7 +93,7 @@
                   paths = import ./userPkgs.nix { inherit pkgs; };
                 };
               };
-            formatter = pkgs.nixfmt-rfc-style;
+            formatter = pkgs.nixfmt-tree;
           };
 
         flake = {
