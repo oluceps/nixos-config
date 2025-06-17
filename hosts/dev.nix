@@ -205,6 +205,7 @@
             [
               vscode-langservers-extracted
               bash-language-server
+              texlab
             ]
             [
               # rust-analyzer
