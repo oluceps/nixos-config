@@ -323,6 +323,7 @@
     )
     ++ (with pkgs.nodePackages; [
       typescript-language-server
+      vscode-json-languageserver
       node2nix
       markdownlint-cli2
       prettier
