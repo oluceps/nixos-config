@@ -259,6 +259,7 @@
     # dae.enable = true;
     dnsproxy = {
       enable = true;
+      lazy = true;
       # loadCert = true;
       extraFlags = [
         "--edns-addr=211.136.150.1"
