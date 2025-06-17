@@ -64,6 +64,7 @@
               check.enable = true;
               settings.hooks = {
                 nixfmt-rfc-style.enable = true;
+                detect-private-keys.enable = true;
                 commitizen = {
                   enable = true;
                 };
