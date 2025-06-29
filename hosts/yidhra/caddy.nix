@@ -287,6 +287,17 @@
             terminal = true;
           }
           {
+            match = [ { host = [ "oidc.nyaw.xyz" ]; } ];
+            handle = [
+              {
+                handler = "reverse_proxy";
+                upstreams = [ { dial = "[fdcc::3]:1411"; } ];
+                response_buffers = 2097152;
+              }
+            ];
+            terminal = true;
+          }
+          {
             handle = [
               {
                 handler = "subroute";
@@ -331,22 +342,6 @@
                       }
                     ];
                     match = [ { path = [ "/.well-known/matrix/client" ]; } ];
-                  }
-                  {
-                    match = [ { host = [ "oidc.nyaw.xyz" ]; } ];
-                    handle = [
-                      {
-                        handler = "reverse_proxy";
-                        transport = {
-                          protocol = "http";
-                          tls = {
-                            server_name = "oidc.nyaw.xyz";
-                          };
-                        };
-                        upstreams = [ { dial = "[fdcc::3]:443"; } ];
-                        response_buffers = 2097152;
-                      }
-                    ];
                   }
                 ];
               }
