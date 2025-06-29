@@ -333,16 +333,18 @@
                     match = [ { path = [ "/.well-known/matrix/client" ]; } ];
                   }
                   {
+                    match = [ { host = [ "oidc.nyaw.xyz" ]; } ];
                     handle = [
                       {
                         handler = "reverse_proxy";
                         transport = {
                           protocol = "http";
                           tls = {
-                            server_name = "nyaw.xyz";
+                            server_name = "oidc.nyaw.xyz";
                           };
                         };
                         upstreams = [ { dial = "[fdcc::3]:443"; } ];
+                        response_buffers = 2097152;
                       }
                     ];
                   }

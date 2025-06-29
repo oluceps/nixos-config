@@ -125,6 +125,13 @@
 
     pocket-id = {
       enable = true;
+      settings = {
+        APP_URL = "https://oidc.nyaw.xyz";
+        TRUST_PROXY = true;
+        DB_PROVIDER = "postgres";
+        OTEL_METRICS_EXPORTER = "prometheus";
+      };
+      environmentFile = config.vaultix.secrets.pocketid.path;
     };
 
     online-keeper.instances.sec = {

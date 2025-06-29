@@ -39,6 +39,7 @@
       trustedInterfaces = [
         "virbr0"
         "podman*"
+        "tun-sing"
         "dae0"
       ];
       allowedUDPPorts = [
