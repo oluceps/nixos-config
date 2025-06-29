@@ -39,10 +39,10 @@ reIf {
           mptcp: true
       }
       routing {
-          pname(bird, systemd-resolved, smartdns,
+          pname(bird, systemd-resolved, systemd-networkd, smartdns,
                 dnsproxy, coredns, mosdns, naive, hysteria, tuic-client, sing-box, juicity, mosproxy) -> must_direct
 
-          pname(prometheus, systemd-networkd) -> direct
+          pname(prometheus) -> direct
           pname(chatmcp) -> ai
 
           pname(Misskey, conduit, tuwunel, conduwuit, .mautrix-telegr, arti) -> all

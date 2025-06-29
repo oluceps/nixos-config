@@ -94,7 +94,7 @@
         DHCP = "no";
         IPv4Forwarding = true;
         IPv6Forwarding = true;
-        IPv6AcceptRA = "yes";
+        IPv6AcceptRA = true;
         MulticastDNS = true;
       };
       ipv6AcceptRAConfig = {

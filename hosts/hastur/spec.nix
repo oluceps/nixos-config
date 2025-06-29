@@ -5,6 +5,7 @@
   ...
 }:
 {
+  systemd.services.systemd-networkd.serviceConfig.Environment = [ "SYSTEMD_LOG_LEVEL=debug" ];
   vaultix.templates = {
     hyst-osa = {
       content =
@@ -192,7 +193,7 @@
     plugIn.enable = true;
     openssh.enable = true;
     fail2ban.enable = true;
-    dae.enable = true;
+    # dae.enable = true;
     scrutiny.enable = true;
     # ddns-go.enable = true;
     # atticd.enable = true;
