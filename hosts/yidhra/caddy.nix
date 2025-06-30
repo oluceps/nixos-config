@@ -343,6 +343,20 @@
                     ];
                     match = [ { path = [ "/.well-known/matrix/client" ]; } ];
                   }
+                  {
+                    handle = [
+                      {
+                        handler = "reverse_proxy";
+                        transport = {
+                          protocol = "http";
+                          tls = {
+                            server_name = "nyaw.xyz";
+                          };
+                        };
+                        upstreams = [ { dial = "[fdcc::3]:443"; } ];
+                      }
+                    ];
+                  }
                 ];
               }
             ];
