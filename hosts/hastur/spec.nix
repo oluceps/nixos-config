@@ -5,7 +5,7 @@
   ...
 }:
 {
-  systemd.services.systemd-networkd.serviceConfig.Environment = [ "SYSTEMD_LOG_LEVEL=debug" ];
+  # systemd.services.systemd-networkd.serviceConfig.Environment = [ "SYSTEMD_LOG_LEVEL=debug" ];
   vaultix.templates = {
     hyst-osa = {
       content =
