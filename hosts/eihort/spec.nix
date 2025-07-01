@@ -54,7 +54,7 @@
   system = {
 
     etc.overlay.enable = true;
-    etc.overlay.mutable = false;
+    etc.overlay.mutable = true;
 
     stateVersion = "25.05";
   };
@@ -115,6 +115,16 @@
       enable = true;
       socketActivated = true;
     };
+    target = {
+      enable = true;
+      # ugly
+      config = builtins.fromJSON (builtins.readFile ./target_cfg.json);
+    };
+    # openiscsi = {
+    #   enable = true;
+    #   discoverPortal = "ip:3260";
+    #   name = "iqn.2005-10.org.nixos.ctl:ntfs-games";
+    # };
     rqbit = {
       enable = true;
       location = "/three/storage/Downloads";
