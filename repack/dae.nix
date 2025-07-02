@@ -37,9 +37,12 @@ reIf {
           utls_imitate: chrome_auto
           lan_interface: podman0,podman1
           mptcp: true
+          tls_fragment_length: '50-100'
+          tls_fragment_interval: '10-20'
+          fallback_resolver: '8.8.8.8:53'
       }
       routing {
-          pname(bird, systemd-resolved, systemd-networkd, smartdns,
+          pname(bird, systemd-networkd, smartdns,
                 dnsproxy, coredns, mosdns, naive, hysteria, tuic-client, sing-box, juicity, mosproxy) -> must_direct
 
           pname(prometheus) -> direct
