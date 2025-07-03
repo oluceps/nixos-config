@@ -54,7 +54,7 @@
   system = {
 
     etc.overlay.enable = true;
-    etc.overlay.mutable = true;
+    etc.overlay.mutable = false;
 
     stateVersion = "25.05";
   };
@@ -104,12 +104,13 @@
     # linkwarden.enable = true;
     userborn-subid.enable = true;
     ollama.enable = true;
+    seaweedfs.enable = true;
 
   };
 
-  systemd.services.minio.serviceConfig.Environment = [
-    "MINIO_BROWSER_REDIRECT_URL=https://${config.networking.fqdn}/minio"
-  ];
+  # systemd.services.minio.serviceConfig.Environment = [
+  #   "MINIO_BROWSER_REDIRECT_URL=https://${config.networking.fqdn}/minio"
+  # ];
   services = {
     rsyncd = {
       enable = true;
