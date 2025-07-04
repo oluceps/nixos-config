@@ -36,6 +36,9 @@ in
         owner = "seaweedfs";
         group = "seaweedfs";
       };
+      memos = {
+        file = ../../sec/memos.age;
+      };
       tg-env = {
         file = ../../sec/tg-env.age;
         mode = "640";

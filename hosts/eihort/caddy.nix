@@ -42,6 +42,15 @@
                     handle = [
                       {
                         handler = "reverse_proxy";
+                        upstreams = [ { dial = "localhost:5230"; } ];
+                      }
+                    ];
+                    match = [ { host = [ "memos.nyaw.xyz" ]; } ];
+                  }
+                  {
+                    handle = [
+                      {
+                        handler = "reverse_proxy";
                         upstreams = [ { dial = "localhost:2283"; } ];
                       }
                     ];

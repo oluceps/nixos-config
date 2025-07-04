@@ -42,6 +42,7 @@ in
           wantedBy = [ "multi-user.target" ];
           serviceConfig = {
             ExecStart = "${cfg.package}/bin/weed ${lib.concatStringsSep " " cfg.args}";
+            ExecReload = "${pkgs.util-linux}/bin/kill -HUP $MAINPID";
             Type = "simple";
             DynamicUser = true;
             SyslogIdentifier = "seaweedfs-master";

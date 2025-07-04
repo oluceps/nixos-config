@@ -116,6 +116,13 @@
       enable = true;
       socketActivated = true;
     };
+    memos = {
+      enable = true;
+      instanceUrl = "https://memos.nyaw.xyz";
+      mode = "dev";
+      port = 5230;
+      environmentFile = config.vaultix.secrets.memos.path;
+    };
     target = {
       enable = true;
       # ugly
@@ -170,12 +177,12 @@
       };
     };
 
-    minio = {
-      enable = true;
-      region = "ap-east-1";
-      rootCredentialsFile = config.vaultix.secrets.minio.path;
-      dataDir = [ "/three/bucket" ];
-    };
+    # minio = {
+    #   enable = true;
+    #   region = "ap-east-1";
+    #   rootCredentialsFile = config.vaultix.secrets.minio.path;
+    #   dataDir = [ "/three/bucket" ];
+    # };
 
     snapy.instances = [
       {
