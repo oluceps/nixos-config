@@ -14,6 +14,7 @@ reIf {
   services.dae = {
     enable = true;
     disableTxChecksumIpGeneric = false;
+    package = inputs'.dae.packages.dae-dirty;
     config = ''
       include {
           secret.dae
@@ -94,7 +95,6 @@ reIf {
           fallback: all
       }
     '';
-    package = inputs'.dae.packages.dae-unstable;
     # package = inputs'.dae.packages.dae-pr-748-fix;
     assetsPath = toString (
       pkgs.symlinkJoin {
