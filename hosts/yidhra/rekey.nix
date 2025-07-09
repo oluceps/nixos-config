@@ -17,8 +17,8 @@ in
   vaultix = {
     settings.hostPubkey = data.node.${config.networking.hostName}.ssh_key;
     secrets = {
-      wg-yidhra = {
-        file = ../../sec/wg-yidhra.age;
+      wg-nodens = {
+        file = ../../sec/wg-nodens.age;
         owner = "systemd-network";
         group = "root";
         mode = "400";
