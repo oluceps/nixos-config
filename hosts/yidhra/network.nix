@@ -1,5 +1,6 @@
 { lib, ... }:
 {
+  systemd.services.systemd-networkd.serviceConfig.Environment = [ "SYSTEMD_LOG_LEVEL=debug" ];
   imports = [ ./bird.nix ];
   networking = {
     domain = "nyaw.xyz";
@@ -87,11 +88,14 @@
 
       address = [
         "103.213.4.159/24"
-        "2401:5a0:1000:96::a/128"
+        "2401:5a0:1000:96::a/64"
       ];
       routes = [
         { Gateway = "103.213.4.1"; }
-        { Gateway = "2401:5a0:1000::1"; }
+        {
+          Gateway = "2401:5a0:1000::1";
+          GatewayOnLink = true;
+        }
       ];
     };
   };
