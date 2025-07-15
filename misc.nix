@@ -318,10 +318,6 @@
       auto-allocate-uids = true;
       use-cgroups = true;
 
-      trusted-users = [
-        "root"
-        "${user}"
-      ];
       # Avoid disk full
       max-free = lib.mkDefault (1000 * 1000 * 1000);
       min-free = lib.mkDefault (128 * 1000 * 1000);
@@ -348,8 +344,8 @@
     pki = {
       certificateFiles = [
         "${pkgs.cacert}/etc/ssl/certs/ca-bundle.crt"
-        lib.data.ca.root
-        lib.data.ca.intermediate
+        lib.data.ca_cert.root_file
+        lib.data.ca_cert.intermediate_file
       ];
       # caCertificateBlacklist = [
       #   "CNNIC ROOT"
