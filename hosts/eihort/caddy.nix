@@ -230,7 +230,7 @@
       tls = {
         certificates.load_files = [
           {
-            certificate = "/run/credentials/caddy.service/nyaw.cert";
+            certificate = lib.data.ca_cert.fullchain_file;
             key = "/run/credentials/caddy.service/nyaw.key";
             tags = [ "cert0" ];
           }
