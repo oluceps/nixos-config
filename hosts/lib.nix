@@ -65,7 +65,7 @@ rec {
         inherit (inputs.nixpkgs.lib) foldl';
       in
       foldl' (acc: name: acc // { "${name}_file" = (pkgs.writeText "${name}.crt" name); }) allCA (
-        builtins.attNames allCA
+        builtins.attrNames allCA
       );
 
   };
