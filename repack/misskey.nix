@@ -41,7 +41,6 @@ reIf {
           cabundle = pkgs.cacert.override {
             extraCertificateFiles = with lib.data.ca_cert; [
               root_file
-              intermediate_file
             ];
           };
         in

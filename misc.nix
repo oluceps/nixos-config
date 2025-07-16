@@ -345,7 +345,6 @@
       certificateFiles = [
         "${pkgs.cacert}/etc/ssl/certs/ca-bundle.crt"
         lib.data.ca_cert.root_file
-        lib.data.ca_cert.intermediate_file
       ];
       # caCertificateBlacklist = [
       #   "CNNIC ROOT"
