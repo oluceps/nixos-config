@@ -52,18 +52,18 @@ unique_addr = "fdcc::4/128"
 link_local_addr = "fe80::216:3eff:fe41:49c6/64"
 pub_key = "V3J9d8lUOk4WXj+dIiAZsuKJv3HxUl8J4HvX/s4eElY="
 
-[node.abhoth]
-# linode
-id = 4
-addr = "172.234.92.148"
-censor = false
-nat = false
-user = "elen"
-ssh_key = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIK5GIXqK0XUjtZip+GVlWno+Dibf43f9Zpm7ydZAWKh0"
+# [node.abhoth]
+# # linode
+# id = 4
+# addr = "172.234.92.148"
+# censor = false
+# nat = false
+# user = "elen"
+# ssh_key = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIK5GIXqK0XUjtZip+GVlWno+Dibf43f9Zpm7ydZAWKh0"
 
-unique_addr = "fdcc::5/128"
-link_local_addr = "fe80::216:3eff:fe15:ec52/64"
-pub_key = "jQGcU+BULglJ9pUz/MmgOWhGRjpimogvEudwc8hMR0A="
+# unique_addr = "fdcc::5/128"
+# link_local_addr = "fe80::216:3eff:fe15:ec52/64"
+# pub_key = "jQGcU+BULglJ9pUz/MmgOWhGRjpimogvEudwc8hMR0A="
 
 # [node.azasos]
 # # tencent cloud | censored
