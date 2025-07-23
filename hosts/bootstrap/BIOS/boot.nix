@@ -2,11 +2,11 @@ _: {
   boot = {
     loader = {
       timeout = 3;
+      grub.enable=false;
       limine = {
         enable = true;
-        biosSupport = true;
         efiSupport = false;
-        biosDevice = "/dev/vda";
+        biosDevice = "/dev/sda";
       };
     };
     kernelParams = [
@@ -16,7 +16,7 @@ _: {
       "earlyprintk=ttyS0"
       "rootdelay=300"
       "19200n8"
-      # "ia32_emulation=0"
+      "ia32_emulation=0"
     ];
     initrd = {
       compressor = "zstd";
