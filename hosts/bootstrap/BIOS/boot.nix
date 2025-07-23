@@ -1,5 +1,14 @@
 _: {
   boot = {
+    loader = {
+      timeout = 3;
+      limine = {
+        enable = true;
+        biosSupport = true;
+        efiSupport = false;
+        biosDevice = "/dev/vda";
+      };
+    };
     kernelParams = [
       "audit=0"
       "net.ifnames=0"
@@ -18,9 +27,9 @@ _: {
       systemd.enable = true;
 
       kernelModules = [
-        "hv_netvsc"
-        "hv_utils"
-        "hv_storvsc"
+        # "hv_netvsc"
+        # "hv_utils"
+        # "hv_storvsc"
       ];
     };
   };
