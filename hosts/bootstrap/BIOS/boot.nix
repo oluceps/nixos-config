@@ -2,7 +2,7 @@ _: {
   boot = {
     loader = {
       timeout = 3;
-      grub.enable=false;
+      grub.enable = false;
       limine = {
         enable = true;
         efiSupport = false;
