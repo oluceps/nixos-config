@@ -14,11 +14,6 @@ let
     "abhoth"
     "kaambl"
   ];
-  targets_notls = map (n: "${n}.nyaw.xyz") [
-    # "kaambl"
-    # "yidhra"
-    # "azasos"
-  ];
   relabel_configs = [
     {
       source_labels = [ "__address__" ];
@@ -87,15 +82,6 @@ reIf {
           static_configs = [ { inherit targets; } ];
         }
         {
-          job_name = "metrics-notls";
-          scheme = "http";
-          basic_auth = {
-            username = "prometheus";
-            password_file = secPath;
-          };
-          static_configs = [ { targets = targets_notls; } ];
-        }
-        {
           job_name = "seaweedfs_metrics";
           scheme = "http";
           static_configs = [ { targets = [ "[fdcc::3]:9768" ]; } ];
@@ -104,6 +90,19 @@ reIf {
           job_name = "centre_psql_metrics";
           scheme = "http";
           static_configs = [ { targets = [ "[fdcc::3]:9187" ]; } ];
+        }
+        {
+          job_name = "chrony_metrics";
+          scheme = "http";
+          static_configs = [
+            {
+              targets = [
+                "[fdcc::3]:9123"
+                "[fdcc::2]:9123"
+                "[fdcc::1]:9123"
+              ];
+            }
+          ];
         }
         {
           job_name = "http";
@@ -154,6 +153,21 @@ reIf {
               {
                 alert = "BtrfsDevErr";
                 expr = ''sum(rate(node_btrfs_device_errors_total[2m])) > 0'';
+              }
+            ];
+          }
+          {
+            name = "chrony";
+            rules = [
+              {
+                record = "instance:chrony_clock_error_seconds:abs";
+                expr = ''
+                  abs(chrony_tracking_last_offset_seconds)
+                  +
+                  chrony_tracking_root_dispersion_seconds
+                  +
+                  (0.5 * chrony_tracking_root_delay_seconds)
+                '';
               }
             ];
           }
