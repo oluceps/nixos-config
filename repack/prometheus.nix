@@ -165,9 +165,9 @@ reIf {
               };
             }
             {
-              targets = [ "1.1.1.1" ];
+              targets = [ "223.6.6.6" ];
               labels = {
-                name = "CLOUDFLARE";
+                name = "ALI";
                 code = "ANYCAST";
                 ip = "IPv4";
               };
@@ -195,7 +195,7 @@ reIf {
               labels = {
                 name = "JP1";
                 city = "Tokyo";
-                code = "HND";
+                code = "NRT";
                 ip = "IPv4";
               };
             }
@@ -204,7 +204,7 @@ reIf {
               labels = {
                 name = "JP1";
                 city = "Tokyo";
-                code = "HND";
+                code = "NRT";
                 ip = "IPv6";
               };
             }
