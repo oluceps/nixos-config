@@ -65,6 +65,7 @@
       })
       pkgs.systemd-run-app
       pkgs.wechat
+      pkgs.porsmo
     ];
   xdg = {
     mime = {

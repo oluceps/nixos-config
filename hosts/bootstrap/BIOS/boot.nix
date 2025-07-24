@@ -6,7 +6,8 @@ _: {
       limine = {
         enable = true;
         efiSupport = false;
-        biosDevice = "/dev/sda";
+        biosSupport = true;
+        biosDevice = "/dev/vda";
       };
     };
     kernelParams = [
