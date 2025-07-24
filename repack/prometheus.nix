@@ -6,14 +6,7 @@
   ...
 }:
 let
-  targets = map (n: "${n}.nyaw.xyz") [
-    # "nodens"
-    "yidhra"
-    "hastur"
-    "eihort"
-    "abhoth"
-    "kaambl"
-  ];
+  targets = map (n: "${n}.nyaw.xyz") (builtins.attrNames lib.data.node);
   relabel_configs = [
     {
       source_labels = [ "__address__" ];
@@ -101,6 +94,26 @@ reIf {
                 "[fdcc::2]:9123"
                 "[fdcc::1]:9123"
               ];
+            }
+          ];
+          relabel_configs = [
+            {
+              source_labels = [ "__address__" ];
+              regex = "\\[fdcc::1\\]:9123";
+              target_label = "instance";
+              replacement = "hastur.nyaw.xyz";
+            }
+            {
+              source_labels = [ "__address__" ];
+              regex = "\\[fdcc::2\\]:9123";
+              target_label = "instance";
+              replacement = "kaambl.nyaw.xyz";
+            }
+            {
+              source_labels = [ "__address__" ];
+              regex = "\\[fdcc::3\\]:9123";
+              target_label = "instance";
+              replacement = "eihort.nyaw.xyz";
             }
           ];
         }

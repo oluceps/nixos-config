@@ -37,11 +37,6 @@ in
       };
     };
 
-    # services.prometheus.exporters.bird = {
-    #   enable = true;
-    #   listenAddress = "[::]";
-    # };
-
     repack.caddy.enable = true;
     repack.caddy.settings.apps.http.servers.srv0.routes = [
       {
