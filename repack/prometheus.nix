@@ -12,6 +12,7 @@ let
     "hastur"
     "eihort"
     "abhoth"
+    "kaambl"
   ];
   targets_notls = map (n: "${n}.nyaw.xyz") [
     # "kaambl"
@@ -99,7 +100,11 @@ reIf {
           scheme = "http";
           static_configs = [ { targets = [ "[fdcc::3]:9768" ]; } ];
         }
-
+        {
+          job_name = "centre_psql_metrics";
+          scheme = "http";
+          static_configs = [ { targets = [ "[fdcc::3]:9187" ]; } ];
+        }
         {
           job_name = "http";
           scheme = "http";
@@ -131,7 +136,8 @@ reIf {
             rules = [
               {
                 alert = "NodeDown";
-                expr = ''up == 0'';
+                expr = ''up{instance != "kaambl.nyaw.xyz"} == 0'';
+                for = "5m";
               }
               {
                 alert = "OOM";
