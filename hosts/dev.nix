@@ -225,6 +225,7 @@
               vhdl-ls
               delve
               # python311Packages.python-lsp-server
+              tombi
               tinymist
             ]
           ];
