@@ -81,7 +81,7 @@ let
           });
         wireguardPeers = singleton (
           {
-            PublicKey = peerNode.pub_key;
+            PublicKey = peerNode.wg_key;
             AllowedIPs = [
               "::/0"
               "0.0.0.0/0"
