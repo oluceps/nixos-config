@@ -28,7 +28,13 @@ let
   ifNeed =
     peerNode: prod:
     optionalAttrs (
-      !(thisNode.nat && peerNode.nat && thisNode ? loc && peerNode ? loc && thisNode.loc != peerNode.loc)
+      !(
+        thisNode.nat
+        && peerNode.nat
+        && thisNode ? region
+        && peerNode ? region
+        && thisNode.region != peerNode.region
+      )
     ) prod;
 
   genPeer =
