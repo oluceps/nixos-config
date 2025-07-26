@@ -17,6 +17,7 @@ let
     singleton
     mapAttrsToList
     foldr
+    elemAt
     ;
   inherit (lib.data) node;
   inherit (config.networking) hostName;
@@ -92,7 +93,11 @@ let
             Endpoint =
               let
                 port = toString thisConn.${peerName};
-                addr = if directConnect then peerNode.addr else "127.0.0.1";
+                addr =
+                  if directConnect then
+                    if peerNode ? addrs then (elemAt peerNode.addrs 0) else (elemAt peerNode.identifiers 0).name
+                  else
+                    "127.0.0.1";
               in
               (addr + ":" + port);
           }
