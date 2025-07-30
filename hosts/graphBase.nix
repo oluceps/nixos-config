@@ -68,6 +68,12 @@
       pkgs.porsmo
     ];
   xdg = {
+    terminal-exec = {
+      enable = true;
+      settings = {
+        default = [ "foot.desktop" ];
+      };
+    };
     mime = {
       enable = true;
       defaultApplications =
