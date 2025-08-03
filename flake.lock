@@ -2837,6 +2837,22 @@
         "type": "github"
       }
     },
+    "pgvectors-nixpkgs": {
+      "locked": {
+        "lastModified": 1732355829,
+        "narHash": "sha256-jg/+fs9A98DcvUrH9w0F+ywc9PksbvPqURG7yz1CjSM=",
+        "owner": "NixOS",
+        "repo": "nixpkgs",
+        "rev": "b468a08276b1e2709168a4d8f04c63360c2140a9",
+        "type": "github"
+      },
+      "original": {
+        "owner": "NixOS",
+        "repo": "nixpkgs",
+        "rev": "b468a08276b1e2709168a4d8f04c63360c2140a9",
+        "type": "github"
+      }
+    },
     "poetry2nix": {
       "inputs": {
         "flake-utils": "flake-utils_7",
@@ -3117,6 +3133,7 @@
         "nixyDomains": "nixyDomains",
         "nuenv": "nuenv_2",
         "nyx": "nyx",
+        "pgvectors-nixpkgs": "pgvectors-nixpkgs",
         "pre-commit-hooks": "pre-commit-hooks_3",
         "preservation": "preservation",
         "prismlauncher": "prismlauncher",
