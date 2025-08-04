@@ -30,6 +30,42 @@
         Content-Security-Policy = [ "frame-ancestors 'self'" ];
       };
     }
+    {
+      handler = "subroute";
+      routes = [
+        {
+          handle = [
+            {
+              handler = "rewrite";
+              uri = "/olm.wasm";
+            }
+          ];
+          match = [ { path = [ "/*/olm.wasm" ]; } ];
+        }
+        {
+          handle = [
+            {
+              handler = "rewrite";
+              uri = "/index.html";
+            }
+          ];
+          match = [
+            {
+              not = [
+                { path = [ "/index.html" ]; }
+                { path = [ "/public/*" ]; }
+                { path = [ "/assets/*" ]; }
+                { path = [ "/config.json" ]; }
+                { path = [ "/manifest.json" ]; }
+                { path = [ "/pdf.worker.min.js" ]; }
+                { path = [ "/olm.wasm" ]; }
+              ];
+              path = [ "/*" ];
+            }
+          ];
+        }
+      ];
+    }
     (
       let
         conf = {
@@ -44,7 +80,7 @@
       in
       {
         handler = "file_server";
-        root = "${pkgs.element-web.override { inherit conf; }}";
+        root = "${pkgs.cinny.override { inherit conf; }}";
       }
     )
   ];
