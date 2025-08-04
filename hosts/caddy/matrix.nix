@@ -69,13 +69,16 @@
     (
       let
         conf = {
-          default_server_config = {
-            "m.homeserver" = {
-              base_url = "https://matrix.nyaw.xyz";
-              server_name = "nyaw.xyz";
-            };
-          };
-          show_labs_settings = true;
+          defaultHomeserver = 0;
+          homeserverList = [
+            "nyaw.xyz"
+            "converser.eu"
+            "envs.net"
+            "matrix.org"
+            "monero.social"
+            "mozilla.org"
+            "xmr.se"
+          ];
         };
       in
       {
