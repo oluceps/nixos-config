@@ -21,6 +21,29 @@
 
         {
           handle = [
+            (
+              let
+                conf = {
+                  defaultHomeserver = 0;
+                  homeserverList = [
+                    "nyaw.xyz"
+                    "envs.net"
+                    "matrix.org"
+                    "monero.social"
+                    "mozilla.org"
+                    "nichi.co"
+                  ];
+                };
+              in
+              {
+                handler = "vars";
+                root = pkgs.cinny.override { inherit conf; };
+              }
+            )
+          ];
+        }
+        {
+          handle = [
             {
               handler = "rewrite";
               uri = "{http.matchers.file.relative}";
@@ -40,26 +63,19 @@
         }
         {
           handle = [
-            (
-              let
-                conf = {
-                  defaultHomeserver = 0;
-                  homeserverList = [
-                    "nyaw.xyz"
-                    "converser.eu"
-                    "envs.net"
-                    "matrix.org"
-                    "monero.social"
-                    "mozilla.org"
-                    "xmr.se"
-                  ];
-                };
-              in
-              {
-                handler = "file_server";
-                root = pkgs.cinny.override { inherit conf; };
-              }
-            )
+
+            {
+              handler = "headers";
+              response.set = {
+                X-Frame-Options = [ "SAMEORIGIN" ];
+                X-Content-Type-Options = [ "nosniff" ];
+                X-XSS-Protection = [ "1; mode=block" ];
+                Content-Security-Policy = [ "frame-ancestors 'self'" ];
+              };
+            }
+            {
+              handler = "file_server";
+            }
           ];
         }
 
