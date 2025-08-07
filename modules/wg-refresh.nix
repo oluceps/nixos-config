@@ -17,11 +17,6 @@ in
 {
   options.services.wg-refresh = {
     enable = mkEnableOption { };
-    tmpPath = mkOption {
-      type = types.str;
-      default = "/tmp/wg-refresh.json";
-      description = "abs path str";
-    };
     calendar = mkOption {
       type = types.str;
       description = "sd timer";
@@ -39,10 +34,17 @@ in
     systemd.services.wg-refresh = {
       wantedBy = [ "timer.target" ];
       description = "refresh outdate addr of wg dev";
+      path = with pkgs; [
+        iproute2
+        systemd
+        hostname
+        dnsutils
+        ripgrep
+      ];
       serviceConfig = {
         Type = "simple";
         User = "root";
-        ExecStart = "${lib.getExe pkgs.nu} ${../script/wg-refresh.nu} ${cfg.tmpPath}";
+        ExecStart = "${lib.getExe pkgs.nushell} ${../script/wg-refresh.nu} ${../registry.toml}";
         Restart = "on-failure";
       };
     };
