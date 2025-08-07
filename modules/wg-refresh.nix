@@ -40,6 +40,7 @@ in
         hostname
         dnsutils
         ripgrep
+        iputils
       ];
       serviceConfig = {
         Type = "simple";
