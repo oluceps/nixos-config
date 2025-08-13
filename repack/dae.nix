@@ -101,8 +101,6 @@ reIf {
           domain(suffix: '4.ip.skk.moe') -> all
           domain(suffix: '2.ip.skk.moe') -> direct
 
-          domain(geosite:github) -> rand
-
           fallback: all
       }
     '';

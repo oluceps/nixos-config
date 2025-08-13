@@ -225,5 +225,6 @@
     # conduwuit.enable = true;
     # mautrix-telegram.enable = true;
     # calibre.enable = true;
+    ollama.enable = true;
   };
 }

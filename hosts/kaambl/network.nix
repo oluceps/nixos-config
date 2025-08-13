@@ -23,8 +23,8 @@
     usePredictableInterfaceNames = false;
     hosts = lib.data.hosts.${config.networking.hostName};
     nameservers = [
-      "223.5.5.5#dns.alidns.com"
       "120.53.53.53#dot.pub"
+      "119.29.29.29"
     ];
     # resolvconf.useLocalResolver = lib.mkForce true;
     # resolvconf.enable = false;

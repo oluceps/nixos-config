@@ -97,7 +97,7 @@
     autosign.enable = false;
     aria2.enable = true;
     userborn-subid.enable = true;
-    ollama.enable = true;
+    # ollama.enable = true;
     seaweedfs.enable = true;
 
     prometheus.enable = true;

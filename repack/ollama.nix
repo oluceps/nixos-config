@@ -1,12 +1,27 @@
-{ lib, reIf, ... }:
 {
+  pkgs,
+  lib,
+  reIf,
+  ...
+}:
+reIf {
   services.ollama = {
     enable = true;
-    environmentVariables = {
-      # HIP_VISIBLE_DEVICES = "0,1";
-      OLLAMA_LLM_LIBRARY = "cpu";
-      OLLAMA_ORIGINS = "http://192.168.*";
-    };
-    host = "[::]";
+    package = pkgs.ollama-ipex;
+  };
+  systemd.services.ollama.serviceConfig = lib.mkForce {
+    DynamicUser = true;
+
+    ExecStart = "${pkgs.ollama-ipex}/bin/ollama-ipex serve";
+
+    PrivateTmp = true;
+
+    Environment = [
+      "HOME=/var/lib/ollama"
+      "OLLAMA_HOST=[::]:11434"
+      "OLLAMA_MODELS=/var/lib/ollama/models"
+      "OLLAMA_ORIGINS=\"http://192.168.*\""
+    ];
+    ReadWritePaths = [ "/var/lib/ollama" ];
   };
 }
