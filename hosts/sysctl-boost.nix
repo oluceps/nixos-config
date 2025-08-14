@@ -10,6 +10,10 @@ _: {
       # Ignore ICMP broadcasts to avoid participating in Smurf attacks
       "net.ipv4.icmp_echo_ignore_broadcasts" = 0;
       "net.core.netdev_budget" = 600;
+
+      "net.core.netdev_tstamp_prequeue" = 0;
+      "net.core.dev_weight" = 256;
+
       # Ignore bad ICMP errors
       "net.ipv4.icmp_ignore_bogus_error_responses" = 1;
       # Reverse-path filter for spoof protection
