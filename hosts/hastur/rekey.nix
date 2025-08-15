@@ -23,13 +23,6 @@ in
         owner = user;
         group = "users";
       };
-      nextchat = {
-        file = ../../sec/nextchat.age;
-        mode = "400";
-        owner = "root";
-        group = "users";
-        name = "nextchat";
-      };
       harmonia = {
         file = ../../sec/harmonia.age;
         mode = "400";

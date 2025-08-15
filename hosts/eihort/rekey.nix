@@ -18,6 +18,7 @@ in
         group = "root";
         mode = "400";
       };
+      syncthing-hastur-api = { };
       notifychan = {
         mode = "400";
       };
@@ -51,10 +52,6 @@ in
       meilisearch = {
         mode = "444";
       };
-      autosign = {
-        mode = "400";
-        owner = user;
-      };
       misskey = {
         mode = "444";
         owner = "misskey";
@@ -64,7 +61,6 @@ in
         owner = config.services.pocket-id.user;
       };
       vault = { };
-      linkwarden = { };
       mautrix-tg = { };
       immich = { };
     };

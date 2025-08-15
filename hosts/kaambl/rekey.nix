@@ -27,9 +27,6 @@ in
         owner = user;
         group = "users";
       };
-      rclone-conf = {
-        file = ../../sec/rclone.age;
-      };
       garage = {
         file = ../../sec/garage.age;
       };

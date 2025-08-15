@@ -30,10 +30,12 @@ reIf {
     ];
     prometheus.serviceConfig.LoadCredential = (map (lib.genCredPath config)) [
       "prom"
+      "syncthing-hastur-api"
     ];
   };
   services.prometheus = {
     enable = true;
+    checkConfig = "syntax-only"; # stat unexist file
     webExternalUrl = "https://${config.networking.fqdn}/prom";
     listenAddress = "127.0.0.1";
     webConfigFile = (pkgs.formats.yaml { }).generate "web.yaml" {
@@ -125,6 +127,29 @@ reIf {
               replacement = "eihort.nyaw.xyz";
             }
           ];
+        }
+        {
+          job_name = "syncthing_metrics";
+          scheme = "http";
+          scrape_timeout = "30s";
+          static_configs = [
+            {
+              targets = [
+                "[fdcc::1]:8384"
+              ];
+            }
+          ];
+          relabel_configs = [
+            {
+              source_labels = [ "__address__" ];
+              regex = "\\[fdcc::1\\]:8384";
+              target_label = "instance";
+              replacement = "hastur.nyaw.xyz";
+            }
+          ];
+
+          authorization.credentials_file = "/run/credentials/prometheus.service/syncthing-hastur-api";
+
         }
         {
           job_name = "http";
