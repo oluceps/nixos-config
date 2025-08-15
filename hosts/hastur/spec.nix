@@ -2,6 +2,7 @@
   pkgs,
   config,
   lib,
+  user,
   ...
 }:
 {
@@ -67,6 +68,12 @@
   services = {
     userborn.enable = true;
 
+    syncthing = {
+      enable = true;
+      openDefaultPorts = true;
+      inherit user;
+      extraFlags = [ "--no-default-folder" ];
+    };
     smartd.notifications.systembus-notify.enable = true;
     wg-refresh = {
       enable = true;

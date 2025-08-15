@@ -77,6 +77,12 @@
 
     metrics.enable = true;
 
+    syncthing = {
+      enable = true;
+      inherit user;
+      openDefaultPorts = true;
+      extraFlags = [ "--no-default-folder" ];
+    };
     # sing-box.enable = true;
     snapy.instances = [
       {
