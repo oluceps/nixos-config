@@ -29,6 +29,7 @@ let
     {
       "fdcc::3" = srvOnEihort;
       "fdcc::1" = srvOnHastur;
+      "127.0.0.1" = [ "sync.nyaw.xyz" ];
     }
   ];
 in
