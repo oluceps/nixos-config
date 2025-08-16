@@ -225,6 +225,7 @@
     };
     # srs.enable = true;
     # xmrig.enable = true;
+    garage.enable = true;
 
     userborn-subid.enable = true;
     # postgresql.enable = true;

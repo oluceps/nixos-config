@@ -17,6 +17,7 @@ in
         owner = user;
         group = "users";
       };
+      garage = { };
       id_sk = {
         file = ../../sec/id_sk.age;
         mode = "400";

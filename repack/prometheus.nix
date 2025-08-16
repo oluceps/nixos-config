@@ -97,7 +97,6 @@ reIf {
         {
           job_name = "chrony_metrics";
           scheme = "http";
-          scrape_timeout = "30s";
           static_configs = [
             {
               targets = [
@@ -131,7 +130,6 @@ reIf {
         {
           job_name = "syncthing_metrics";
           scheme = "http";
-          scrape_timeout = "30s";
           static_configs = [
             {
               targets = [
@@ -150,6 +148,32 @@ reIf {
 
           authorization.credentials_file = "/run/credentials/prometheus.service/syncthing-hastur-api";
 
+        }
+        {
+          job_name = "garage_metrics";
+          scheme = "http";
+          static_configs = [
+            {
+              targets = [
+                "[fdcc::1]:3903"
+                "[fdcc::2]:3903"
+              ];
+            }
+          ];
+          relabel_configs = [
+            {
+              source_labels = [ "__address__" ];
+              regex = "\\[fdcc::1\\]:3903";
+              target_label = "instance";
+              replacement = "hastur.nyaw.xyz";
+            }
+            {
+              source_labels = [ "__address__" ];
+              regex = "\\[fdcc::2\\]:3903";
+              target_label = "instance";
+              replacement = "kaambl.nyaw.xyz";
+            }
+          ];
         }
         {
           job_name = "http";
