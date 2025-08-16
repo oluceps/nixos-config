@@ -36,7 +36,7 @@ build-all-host:
     open registry.toml | $in.node | columns
     | par-each { || nix build $'.#nixosConfigurations.($in).config.system.build.toplevel' -L; }
 renc:
-    RUST_LOG=trace nix run $'.#vaultix.app.(uname | $'($in.machine)-($in.kernel-name | str downcase)').renc'
+    RUST_LOG=trace nix run $'.?submodules=1#vaultix.app.(uname | $'($in.machine)-($in.kernel-name | str downcase)').renc'
     git add ./sec
     git commit -m "vaultix: renc" ./sec/
 

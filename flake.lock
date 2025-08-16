@@ -3736,17 +3736,14 @@
         "rust-overlay": "rust-overlay_10"
       },
       "locked": {
-        "lastModified": 1752329017,
-        "narHash": "sha256-BmhVctaWQ7/i3nAkw6vZ05d17WIO6Wsauaw8vxqL+RU=",
-        "owner": "milieuim",
-        "repo": "vaultix",
-        "rev": "440498ee609a3b83659b62b924a3c39775aaeaf2",
-        "type": "github"
+        "lastModified": 1755338618,
+        "narHash": "sha256-/t19yhnLYbIlxUm13Vh9GCXobpHST3FiFqdZ1ic3pbE=",
+        "path": "/home/riro/Src/vaultix",
+        "type": "path"
       },
       "original": {
-        "owner": "milieuim",
-        "repo": "vaultix",
-        "type": "github"
+        "path": "/home/riro/Src/vaultix",
+        "type": "path"
       }
     },
     "xwayland-satellite": {

@@ -114,7 +114,7 @@
               ) self.nixosConfigurations;
             identity = self + "/sec/age-yubikey-identity-7d5d5540.txt.pub";
             extraRecipients = [ extraLibs.data.keys.ageKey ];
-            defaultSecretDirectory = "./sec";
+            defaultSecretDirectory = "./sec-shadowed";
             cache = "./sec/.cache";
           };
           lib = inputs.nixpkgs.lib.extend self.overlays.lib;
@@ -165,8 +165,8 @@
     browser-previews = {
       url = "github:nix-community/browser-previews";
     };
-    vaultix.url = "github:milieuim/vaultix";
-    # vaultix.url = "/home/elen/Src/vaultix";
+    # vaultix.url = "github:milieuim/vaultix";
+    vaultix.url = "/home/riro/Src/vaultix";
     nixos-cosmic = {
       url = "github:lilyinstarlight/nixos-cosmic";
       inputs.nixpkgs.follows = "nixpkgs";
