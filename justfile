@@ -37,8 +37,8 @@ build-all-host:
     | par-each { || nix build $'.#nixosConfigurations.($in).config.system.build.toplevel' -L; }
 renc:
     RUST_LOG=trace nix run $'.?submodules=1#vaultix.app.(uname | $'($in.machine)-($in.kernel-name | str downcase)').renc'
-    git add ./sec
-    git commit -m "vaultix: renc" ./sec/
+    # git add ./sec
+    # git commit -m "vaultix: renc" ./sec/
 
 build:
     #!/usr/bin/env nu
@@ -83,7 +83,7 @@ edit-sec *args:
                                   reduce {|it, acc| $it + (char newline) + $acc } |
                                   fzf
     if (not ($encrypted_file_tob_edit | path exists)) { print -e "Not found"; exit }
-    nix run $'.#vaultix.app.(uname | $'($in.machine)-($in.kernel-name | str downcase)').edit' -- $encrypted_file_tob_edit
+    nix run $'.?submodules=1#vaultix.app.(uname | $'($in.machine)-($in.kernel-name | str downcase)').edit' -- $encrypted_file_tob_edit
 
 decrypt *args:
     #!/usr/bin/env nu
