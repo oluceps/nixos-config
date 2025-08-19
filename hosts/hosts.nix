@@ -13,6 +13,7 @@ let
     "seaweedfs"
     "oidc"
     "memos"
+    "rqbit"
   ];
   srvOnHastur = [
     "cache.nyaw.xyz"

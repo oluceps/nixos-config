@@ -27,8 +27,10 @@ reIf {
           check_tolerance: 50ms
           wan_interface: auto
           allow_insecure: false
-          sniff_verify_mode: strict
-          reroute_mode: force
+          # metrics_addr: '[::]:8087'
+          pprof_port: 9901
+          # sniff_verify_mode: strict
+          # reroute_mode: force
           disable_waiting_network: false
           auto_config_kernel_parameter: true
           enable_local_tcp_fast_redirect: true

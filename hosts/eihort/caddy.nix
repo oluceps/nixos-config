@@ -91,6 +91,15 @@
                     handle = [
                       {
                         handler = "reverse_proxy";
+                        upstreams = [ { dial = "localhost:3030"; } ];
+                      }
+                    ];
+                    match = [ { host = [ "rqbit.nyaw.xyz" ]; } ];
+                  }
+                  {
+                    handle = [
+                      {
+                        handler = "reverse_proxy";
                         upstreams = [ { dial = "localhost:7700"; } ];
                       }
                     ];
