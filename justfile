@@ -37,10 +37,10 @@ build-all-host:
     | par-each { || nix build $'.#nixosConfigurations.($in).config.system.build.toplevel' -L; }
 renc:
     RUST_LOG=trace nix run $'.?submodules=1#vaultix.app.(uname | $'($in.machine)-($in.kernel-name | str downcase)').renc'
-    ^pushd sec
+    cd sec
     git add .
     git commit -m "vaultix: renc"
-    ^popd
+    cd ..
 
 build:
     #!/usr/bin/env nu

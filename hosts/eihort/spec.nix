@@ -89,8 +89,9 @@
     misskey.enable = true;
     meilisearch.enable = true;
     vaultwarden.enable = true;
-    tuwunel.enable = true;
+    # tuwunel.enable = true;
     mautrix-telegram.enable = true;
+    synapse.enable = true;
     calibre.enable = true;
     immich.enable = true;
     radicle.enable = true;

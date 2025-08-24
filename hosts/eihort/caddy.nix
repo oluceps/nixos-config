@@ -182,7 +182,7 @@
                   }
                   (import ../caddy/matrix.nix {
                     inherit pkgs;
-                    matrix-upstream = "localhost:6167";
+                    matrix-upstream = "localhost:8196";
                   })
                 ];
               }

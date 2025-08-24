@@ -21,6 +21,11 @@
             {
               body = builtins.toJSON { "m.server" = "matrix.nyaw.xyz:443"; };
               handler = "static_response";
+              status_code = 200;
+              headers = {
+                Access-Control-Allow-Origin = [ "*" ];
+                Content-Type = [ "application/json" ];
+              };
             }
           ];
           match = [ { path = [ "/.well-known/matrix/server" ]; } ];
@@ -28,18 +33,8 @@
         {
           handle = [
             {
-              body = builtins.toJSON {
-                "m.server" = {
-                  base_url = "https://matrix.nyaw.xyz";
-                };
-                "m.homeserver" = {
-                  base_url = "https://matrix.nyaw.xyz";
-                };
-                "org.matrix.msc3575.proxy" = {
-                  url = "https://matrix.nyaw.xyz";
-                };
-              };
-              handler = "static_response";
+              handler = "reverse_proxy";
+              upstreams = [ { dial = "[fdcc::3]:8196"; } ];
             }
           ];
           match = [ { path = [ "/.well-known/matrix/client" ]; } ];

@@ -19,6 +19,7 @@ in
         mode = "400";
       };
       syncthing-hastur-api = { };
+      synapse-s3 = { };
       notifychan = {
         mode = "400";
       };

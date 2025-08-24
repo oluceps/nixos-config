@@ -144,7 +144,7 @@
   }
   (import ./matrix.nix {
     inherit pkgs;
-    matrix-upstream = "[fdcc::3]:6167";
+    matrix-upstream = "[fdcc::3]:8196";
   })
   {
     handle = [
