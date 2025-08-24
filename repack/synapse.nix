@@ -8,8 +8,12 @@
 }:
 reIf (
   let
-    bucket = "synapse";
-    endpoint_url = "https://s3.myaw.xyz";
+    s3 = {
+      bucket = "synapse";
+      endpoint_url = "https://s3.nyaw.xyz";
+    };
+    caBundleEnv = "AWS_CA_BUNDLE=${lib.data.ca_cert.root_file}";
+    inherit (config.services.matrix-synapse.settings) media_store_path;
   in
   {
     services.matrix-synapse = {
@@ -36,7 +40,7 @@ reIf (
             store_remote = true;
             store_synchronous = true;
             config = {
-              inherit bucket endpoint_url;
+              inherit (s3) bucket endpoint_url;
             };
           }
         ];
@@ -99,6 +103,7 @@ reIf (
     systemd.services.matrix-synapse-s3-upload.serviceConfig = {
       Type = "oneshot";
       inherit (config.systemd.services.matrix-synapse.serviceConfig) User Group;
+      Environment = [ caBundleEnv ];
       EnvironmentFile = [ config.vaultix.secrets.synapse-s3.path ];
       RuntimeDirectory = [ "matrix-synapse-s3-upload" ];
       WorkingDirectory = "%t/matrix-synapse-s3-upload";
@@ -128,9 +133,9 @@ reIf (
           "upload"
           "--delete"
           "--endpoint-url"
-          endpoint_url
+          s3.endpoint_url
           media_store_path
-          bucket
+          s3.bucket
         ])
       ];
     };
@@ -139,6 +144,7 @@ reIf (
       Environment = [
         "AWS_REQUEST_CHECKSUM_CALCULATION=when_required"
         "AWS_RESPONSE_CHECKSUM_VALIDATION=when_required"
+        caBundleEnv
       ];
       EnvironmentFile = [
         config.vaultix.secrets.synapse-s3.path
