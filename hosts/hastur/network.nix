@@ -70,73 +70,102 @@
         "wg0"
       ];
     };
-
-    links."10-eth0" = {
-      matchConfig.MACAddress = "3c:7c:3f:22:49:80";
-      linkConfig.Name = "eth0";
-    };
-
-    links."30-rndis" = {
-      matchConfig.Driver = "rndis_host";
-      linkConfig = {
-        NamePolicy = "keep";
-        Name = "rndis";
-        MACAddressPolicy = "persistent";
+    netdevs.bond0 = {
+      netdevConfig = {
+        Kind = "bond";
+        Name = "bond0";
+      };
+      bondConfig = {
+        Mode = "active-backup";
+        PrimaryReselectPolicy = "always";
+        MIIMonitorSec = "1s";
       };
     };
-    links."20-ncm" = {
-      matchConfig.Driver = "cdc_ncm";
-      linkConfig = {
-        NamePolicy = "keep";
-        Name = "ncm";
-        MACAddressPolicy = "persistent";
+    links = {
+      "10-eth0" = {
+        matchConfig.MACAddress = "3c:7c:3f:22:49:80";
+        linkConfig.Name = "eth0";
+      };
+
+      "40-wlan0" = {
+        matchConfig.MACAddress = "70:66:55:e7:1c:b1";
+        linkConfig.Name = "wlan0";
+      };
+      "30-rndis" = {
+        matchConfig.Driver = "rndis_host";
+        linkConfig = {
+          NamePolicy = "keep";
+          Name = "rndis";
+          MACAddressPolicy = "persistent";
+        };
+      };
+      "20-ncm" = {
+        matchConfig.Driver = "cdc_ncm";
+        linkConfig = {
+          NamePolicy = "keep";
+          Name = "ncm";
+          MACAddressPolicy = "persistent";
+        };
       };
     };
-    networks."8-eth0" = {
-      matchConfig.Name = "eth0";
-      networkConfig = {
-        DHCP = "no";
-        IPv4Forwarding = true;
-        IPv6Forwarding = true;
-        IPv6AcceptRA = true;
-        MulticastDNS = true;
-      };
-      ipv6AcceptRAConfig = {
-        DHCPv6Client = false;
-        # UseDNS = false;
+    networks = {
+      "20-wired" = {
+        matchConfig.Name = "eth0";
+        networkConfig = {
+          Bond = "bond0";
+          PrimarySlave = true;
+        };
       };
 
-      # dhcpV4Config.UseDNS = false;
-      # dhcpV6Config.UseDNS = false;
-
-      linkConfig.RequiredForOnline = "routable";
-      address = [ "192.168.1.2/24" ];
-      routes = [
-        { Gateway = "192.168.1.1"; }
-      ];
-    };
-
-    networks."25-ncm" = {
-      matchConfig.Name = "ncm";
-      DHCP = "yes";
-      dhcpV4Config.RouteMetric = 2044;
-      dhcpV6Config.RouteMetric = 2044;
-      dhcpV4Config.UseDNS = false;
-      dhcpV6Config.UseDNS = false;
-      networkConfig = {
-        DNSSEC = true;
+      "40-wireless" = {
+        matchConfig.Name = "wlan0";
+        networkConfig = {
+          Bond = "bond0";
+        };
       };
-    };
 
-    networks."30-rndis" = {
-      matchConfig.Name = "rndis";
-      DHCP = "yes";
-      dhcpV4Config.RouteMetric = 2044;
-      dhcpV6Config.RouteMetric = 2044;
-      dhcpV4Config.UseDNS = false;
-      dhcpV6Config.UseDNS = false;
-      networkConfig = {
-        DNSSEC = false;
+      "8-bond0" = {
+        matchConfig.Name = "bond0";
+        networkConfig = {
+          DHCP = "no";
+          IPv4Forwarding = true;
+          IPv6Forwarding = true;
+          IPv6AcceptRA = true;
+          MulticastDNS = true;
+        };
+        ipv6AcceptRAConfig = {
+          DHCPv6Client = false;
+        };
+
+        linkConfig.RequiredForOnline = "routable";
+        address = [ "192.168.1.2/24" ];
+        routes = [
+          { Gateway = "192.168.1.1"; }
+        ];
+      };
+
+      "25-ncm" = {
+        matchConfig.Name = "ncm";
+        DHCP = "yes";
+        dhcpV4Config.RouteMetric = 2044;
+        dhcpV6Config.RouteMetric = 2044;
+        dhcpV4Config.UseDNS = false;
+        dhcpV6Config.UseDNS = false;
+        networkConfig = {
+          DNSSEC = true;
+        };
+      };
+
+      "30-rndis" = {
+        matchConfig.Name = "rndis";
+        DHCP = "yes";
+        dhcpV4Config.RouteMetric = 2044;
+        dhcpV6Config.RouteMetric = 2044;
+        dhcpV4Config.UseDNS = false;
+        dhcpV6Config.UseDNS = false;
+        networkConfig = {
+          DNSSEC = false;
+        };
       };
     };
 
