@@ -36,13 +36,19 @@ build-all-host:
     open registry.toml | $in.node | columns
     | par-each { || nix build $'.#nixosConfigurations.($in).config.system.build.toplevel' -L; }
 renc:
+    just sec-submodule-add
     RUST_LOG=trace nix run $'.?submodules=1#vaultix.app.(uname | $'($in.machine)-($in.kernel-name | str downcase)').renc'
     just sync-subsec
 
 [working-directory: 'sec']
 sync-subsec:
+    just sec-submodule-add
+    git commit -m "vaultix: sechange"
+
+[working-directory: 'sec']
+sec-submodule-add:
     git add .
-    git commit -m "vaultix: renc"
+
 
 build:
     #!/usr/bin/env nu

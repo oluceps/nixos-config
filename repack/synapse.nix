@@ -26,6 +26,7 @@ reIf (
         server_name = "nyaw.xyz";
         public_baseurl = "https://matrix.nyaw.xyz";
         enable_authenticated_media = true;
+        enable_metrics = true;
 
         dynamic_thumbnails = true;
         allow_public_rooms_over_federation = true;
@@ -44,8 +45,38 @@ reIf (
             };
           }
         ];
+        oidc_providers = [
+          {
+            client_id = "7eac9a65-1ebb-4185-a8ec-17c3b614d6cd";
+            client_secret_path = config.vaultix.secrets.synapse-oidc.path;
+            idp_id = "pocket_id";
+            idp_name = "Pocket ID";
+            issuer = "https://oidc.nyaw.xyz/";
+
+            allow_existing_users = true;
+            backchannel_logout_enabled = true;
+
+            scopes = [
+              "openid"
+              "profile"
+            ];
+            user_mapping_provider = {
+              config = {
+                display_name_template = "{{ user.name }}";
+                localpart_template = "{{ user.preferred_username }}";
+              };
+            };
+          }
+        ];
 
         listeners = [
+          {
+            port = 9031;
+            type = "metrics";
+            bind_addresses = [ "::1" ];
+            tls = false;
+            resources = [ ];
+          }
           {
             bind_addresses = [ "::" ];
             port = 8196;
