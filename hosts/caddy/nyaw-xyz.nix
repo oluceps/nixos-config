@@ -50,6 +50,16 @@
     terminal = true;
   }
   {
+    handle = [
+      {
+        handler = "reverse_proxy";
+        upstreams = [ { dial = "[fdcc::3]:8084"; } ];
+      }
+    ];
+    match = [ { host = [ "seed.nyaw.xyz" ]; } ];
+    terminal = true;
+  }
+  {
     match = [ { host = [ "oidc.nyaw.xyz" ]; } ];
     handle = [
       {

@@ -77,6 +77,10 @@
 
     metrics.enable = true;
 
+    wg-refresh = {
+      enable = true;
+      calendar = "hourly";
+    };
     syncthing = {
       enable = true;
       inherit user;

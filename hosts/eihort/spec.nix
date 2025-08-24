@@ -137,6 +137,10 @@
     sing-box.enable = true;
     metrics.enable = true;
 
+    wg-refresh = {
+      enable = true;
+      calendar = "hourly";
+    };
     pocket-id = {
       enable = true;
       settings = {

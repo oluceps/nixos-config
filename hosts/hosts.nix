@@ -14,6 +14,7 @@ let
     "oidc"
     "memos"
     "rqbit"
+    "seed"
   ];
   srvOnHastur = [
     "cache.nyaw.xyz"

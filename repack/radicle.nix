@@ -22,7 +22,7 @@ reIf {
         hints = true;
       };
       node = {
-        alias = "nodens";
+        alias = "nyawyz";
         connect = [ ];
         externalAddresses = [ "seed.nyaw.xyz:8776" ];
         limits = {
@@ -70,7 +70,7 @@ reIf {
           repositories = [
             "rad:z23fw6Ewk1bJvxg2K83a4qNngtwNN"
             "rad:z4DLk3sKs4Fy589WwVBcrXF6B8KES"
-            "rad:z2kQ2dHJJ4Wj3G8Yizxw3JREaZ1Ao"
+            "rad:z2Z5YGxHrosERS5LhGrSg3jBhndv2"
           ];
         };
       };

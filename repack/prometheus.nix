@@ -97,6 +97,8 @@ reIf {
         {
           job_name = "chrony_metrics";
           scheme = "http";
+          scrape_interval = "60s";
+          scrape_timeout = "20s";
           static_configs = [
             {
               targets = [
