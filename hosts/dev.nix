@@ -323,7 +323,7 @@
           cursor = [ bibata-cursors ];
           vcs = [
             jujutsu
-            lazyjj
+            # lazyjj
           ];
         }
       )
