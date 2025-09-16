@@ -92,11 +92,11 @@
         with pkgs;
         {
           python = [
-            (python311.withPackages (
+            (python313.withPackages (
               ps: with ps; [
                 pandas
                 requests
-                absl-py
+                # absl-py
                 tldextract
                 bleak
                 matplotlib
