@@ -26,11 +26,18 @@
           imports = [ ../modules/hysteria.nix ];
           networking.hostName = "sep-microvm";
           networking.useNetworkd = true;
+          system.stateVersion = "25.11";
 
           # forbid access to RFC1918 addr scope & IPv6
           networking.firewall.enable = true;
           networking.nftables.enable = true;
           networking.nftables.ruleset = ''
+            table ip nat {
+              chain postrouting {
+                type nat hook postrouting priority srcnat; policy accept;
+                ip saddr 10.10.10.0/24 oifname "enp0s4" masquerade
+              }
+            }
             table inet filter {
               chain input {
                 type filter hook input priority filter;
@@ -50,6 +57,7 @@
                 iifname "lo" accept
                 ct state established,related accept
 
+                ip daddr { 10.10.10.0/24 } accept
                 ip daddr { 10.0.0.0/8, 172.16.0.0/12, 192.168.0.0/16 } reject with icmp type admin-prohibited
                 ip6 daddr fc00::/7 reject with icmpv6 type admin-prohibited
               }
