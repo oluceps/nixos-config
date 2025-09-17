@@ -39,11 +39,15 @@ reIf
           };
         }) (lib.genList (i: i + 1) maxVMs)
       );
-      networking.nat = {
-        enable = true;
-        internalIPs = [ "10.255.0.0/24" ];
-        # the interface with upstream Internet access, TODO: change with host
-        externalInterface = "bond0";
+      networking = {
+        nat = {
+          enable = true;
+          internalIPs = [ "10.255.0.0/24" ];
+          # the interface with upstream Internet access, TODO: change with host
+          externalInterface = "bond0";
+        };
+        firewall.extraForwardRules = "iifname \"vm1\" oifname \"bond0\" accept";
       };
+
     }
   )

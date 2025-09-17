@@ -22,7 +22,6 @@
           ])
           ++ [
             ./hosts
-            ./vms.nix
             (import ./topo.nix extraLibs)
             vaultix.flakeModules.default
             inputs.nix-topology.flakeModule
