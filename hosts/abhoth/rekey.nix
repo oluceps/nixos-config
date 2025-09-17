@@ -28,6 +28,12 @@ in
         group = "root";
         mode = "400";
       };
+      wg-ext = {
+        file = ../../sec/wg-ext.age;
+        owner = "systemd-network";
+        group = "root";
+        mode = "400";
+      };
     };
   };
 }
