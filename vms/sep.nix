@@ -23,6 +23,7 @@
         #specialArgs = {};
 
         config = {
+          imports = [ ../modules/hysteria.nix ];
           networking.hostName = "sep-microvm";
           networking.useNetworkd = true;
 
@@ -57,39 +58,73 @@
           networking.enableIPv6 = false;
           # forbid end
 
-          systemd.network.networks."10-eth" = {
-            matchConfig.MACAddress = mac;
-            # Static IP configuration
-            address = [
-              "10.255.0.${toString index}/32"
-              "fec0::${lib.toHexString index}/128"
-            ];
-            routes = [
-              {
-                # route to the host
-                Destination = "10.255.0.0/32";
-                GatewayOnLink = true;
-              }
-              {
-                # Default route
-                Destination = "0.0.0.0/0";
-                Gateway = "10.255.0.0";
-                GatewayOnLink = true;
-              }
-              {
-                # Default route
-                Destination = "::/0";
-                Gateway = "fec0::";
-                GatewayOnLink = true;
-              }
-            ];
-            networkConfig = {
-              # DNS servers no longer come from DHCP nor Router
-              # Advertisements. Perhaps you want to change the defaults:
-              DNS = [
-                "223.6.6.6"
-                "8.8.8.8"
+          services.openssh.hostKeys = [
+            {
+              path = "/var/lib/ssh/ssh_host_ed25519_key";
+              type = "ed25519";
+            }
+          ];
+          systemd.network = {
+
+            netdevs.wg-ext = {
+              netdevConfig = {
+                Kind = "wireguard";
+                Name = "wg-ext";
+              };
+              wireguardConfig = {
+                PrivateKeyFile = "/var/lib/wg-ext/key";
+              };
+              wireguardPeers = [
+                {
+                  PublicKey = "2pmaKNynwrVEvOcUXuFfYDGRp5UKbK89DmOSCnjklRk=";
+                  Endpoint = "127.0.0.1:51700";
+                  PersistentKeepalive = 15;
+                  AllowedIPs = [
+                    "10.10.10.2/32"
+                  ];
+                }
               ];
+            };
+            networks."90-wg-ext" = {
+              matchConfig.Name = "wg-ext";
+              address = [ "10.10.10.1/24" ];
+              DHCP = "no";
+            };
+
+            networks."10-eth" = {
+              matchConfig.MACAddress = mac;
+              # Static IP configuration
+              address = [
+                "10.255.0.${toString index}/32"
+                "fec0::${lib.toHexString index}/128"
+              ];
+              routes = [
+                {
+                  # route to the host
+                  Destination = "10.255.0.0/32";
+                  GatewayOnLink = true;
+                }
+                {
+                  # Default route
+                  Destination = "0.0.0.0/0";
+                  Gateway = "10.255.0.0";
+                  GatewayOnLink = true;
+                }
+                {
+                  # Default route
+                  Destination = "::/0";
+                  Gateway = "fec0::";
+                  GatewayOnLink = true;
+                }
+              ];
+              networkConfig = {
+                # DNS servers no longer come from DHCP nor Router
+                # Advertisements. Perhaps you want to change the defaults:
+                DNS = [
+                  "223.6.6.6"
+                  "8.8.8.8"
+                ];
+              };
             };
           };
           users.users.root = {
@@ -100,6 +135,7 @@
           };
           # attack test
           environment.systemPackages = [
+            pkgs.wireguard-tools
             pkgs.nmap
             pkgs.metasploit
             pkgs.mtr
@@ -107,6 +143,12 @@
             pkgs.nftables
 
           ];
+          services.hysteria.instances = {
+            ext = {
+              enable = true;
+              configFile = "/var/lib/hy/config.yml";
+            };
+          };
           services.openssh = {
             enable = true;
             settings = {
@@ -135,7 +177,13 @@
                 inherit mac;
               }
             ];
-
+            volumes = [
+              {
+                mountPoint = "/var";
+                image = "var.img";
+                size = 256;
+              }
+            ];
             shares = [
               {
                 # use proto = "virtiofs" for MicroVMs that are started by systemd
