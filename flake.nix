@@ -22,6 +22,7 @@
           ])
           ++ [
             ./hosts
+            ./vms.nix
             (import ./topo.nix extraLibs)
             vaultix.flakeModules.default
             inputs.nix-topology.flakeModule
@@ -257,5 +258,9 @@
     nixos-facter-modules.url = "github:numtide/nixos-facter-modules";
     devenv.url = "github:cachix/devenv";
     pgvectors-nixpkgs.url = "github:NixOS/nixpkgs?rev=b468a08276b1e2709168a4d8f04c63360c2140a9";
+    microvm = {
+      url = "github:microvm-nix/microvm.nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 }
