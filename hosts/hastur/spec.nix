@@ -234,5 +234,6 @@
     # mautrix-telegram.enable = true;
     # calibre.enable = true;
     ipex.enable = true;
+    routed-subnet.enable = true;
   };
 }
