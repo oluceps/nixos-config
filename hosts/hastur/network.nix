@@ -55,6 +55,27 @@
     };
     nftables = {
       enable = true;
+      ruleset = ''
+        table inet vm_monitoring {
+            chain forward_from_vms {
+                # 匹配所有从 vnet0 接口进入 FORWARD 链的流量
+                iifname "vm1" \
+
+                # 同样，只记录新建的连接，以避免日志风暴
+                ct state new \
+
+                # 使用一个全新的、易于识别的前缀来记录日志
+                log prefix "[NFT_VM_FORWARD_LOG] "
+            }
+
+            chain forward {
+            		type filter hook forward priority 0; policy accept;
+
+                # 将所有 forward 流量跳转到我们的处理链
+                jump forward_from_vms
+            }
+        }
+      '';
     };
     networkmanager.enable = lib.mkForce false;
     networkmanager.dns = "none";
