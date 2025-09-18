@@ -1,6 +1,7 @@
 {
   inputs,
   pkgs,
+  inputs',
   lib,
   ...
 }:
@@ -20,10 +21,13 @@
       {
         inherit pkgs;
         restartIfChanged = true;
-        #specialArgs = {};
+        specialArgs = {
+        };
 
         config = {
-          imports = [ ../modules/hysteria.nix ];
+          imports = [
+            ../modules/hysteria.nix
+          ];
           networking.hostName = "sep-microvm";
           networking.useNetworkd = true;
           system.stateVersion = "25.11";
