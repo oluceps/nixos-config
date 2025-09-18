@@ -22,7 +22,7 @@ reIf {
             max_age = "12h";
             labels = {
               job = "systemd-journal";
-              host = "pihole";
+              host = "vm1";
             };
           };
           relabel_configs = [

@@ -46,7 +46,14 @@ reIf
           # the interface with upstream Internet access, TODO: change with host
           externalInterface = "bond0";
         };
-        firewall.extraForwardRules = "iifname \"vm1\" oifname \"bond0\" accept";
+        nftables.ruleset = ''
+          table inet filter {
+          	chain forward {
+          		type filter hook forward priority filter; policy drop;
+           		iifname "vm1" oifname "bond0" accept
+          	}
+          }
+        '';
       };
 
     }
