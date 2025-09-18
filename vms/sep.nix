@@ -32,34 +32,21 @@
           networking.firewall.enable = true;
           networking.nftables.enable = true;
           networking.nftables.ruleset = ''
-            table ip nat {
+            table inet nat {
               chain postrouting {
                 type nat hook postrouting priority srcnat; policy accept;
-                ip saddr 10.10.10.0/24 oifname "enp0s4" masquerade
+                iifname { wg-ext } oifname enp0s4 ip saddr 10.10.10.2 snat to 10.255.0.1
               }
             }
             table inet filter {
-              chain input {
-                type filter hook input priority filter;
-                policy drop;
+              chain forward {
+                type filter hook forward priority filter; policy drop;
 
                 ct state established,related accept
 
-                iifname "lo" accept
+                iifname "wg-ext" ip daddr 10.255.0.0 reject with icmp admin-prohibited
 
-                ip saddr 10.255.0.0 tcp dport 22 accept
-                # tcp dport 22 accept
-              }
-              chain output {
-                type filter hook output priority filter;
-                policy accept;
-
-                iifname "lo" accept
-                ct state established,related accept
-
-                ip daddr { 10.10.10.0/24 } accept
-                ip daddr { 10.0.0.0/8, 172.16.0.0/12, 192.168.0.0/16 } reject with icmp type admin-prohibited
-                ip6 daddr fc00::/7 reject with icmpv6 type admin-prohibited
+                iifname "wg-ext" oifname "enp0s4" accept
               }
             }
           '';
@@ -72,12 +59,59 @@
               type = "ed25519";
             }
           ];
+          boot.kernel.sysctl = {
+            "net.ipv4.conf.default.rp_filter" = 0;
+            "net.ipv6.conf.all.forwarding" = 1;
+            "net.ipv6.conf.all.accept_redirects" = 0;
+            "net.ipv4.conf.all.forwarding" = 1;
+            "net.ipv4.conf.all.rp_filter" = 0;
+
+            # Protect against tcp time-wait assassination hazards
+            "net.ipv4.tcp_rfc1337" = 1;
+            # TCP Fast Open (TFO)
+            "net.ipv4.tcp_fastopen" = 0;
+            # Bufferbloat mitigations
+            # Requires >= 4.9 & kernel module
+            "net.ipv4.tcp_congestion_control" = "bbr";
+            # Requires >= 4.19
+            "net.core.default_qdisc" = "cake";
+
+            "net.ipv4.tcp_rmem" = "4096 87380 2500000";
+            "net.ipv4.tcp_wmem" = "4096 65536 2500000";
+            "net.core.rmem_max" = 16777216;
+            "net.core.wmem_max" = 16777216;
+            "net.ipv4.conf.all.send_redirects" = 0;
+
+            "net.ipv4.tcp_tw_recycle" = 0;
+            "net.ipv4.tcp_tw_reuse" = 1;
+            "net.ipv4.tcp_no_metrics_save" = 1;
+
+            # hardend
+            "net.ipv4.tcp_sack" = 1;
+            "net.ipv4.tcp_dsack" = 0;
+            "net.ipv4.tcp_fack" = 0;
+
+            "kernel.yama.ptrace_scope" = 2;
+            "vm.mmap_rnd_bits" = 32;
+            "vm.mmap_rnd_compat_bits" = 16;
+
+            "fs.protected_symlinks" = 1;
+            "fs.protected_hardlinks" = 1;
+
+            "fs.protected_fifos" = 2;
+            "fs.protected_regular" = 2;
+
+            "net.ipv4.tcp_slow_start_after_idle" = 0;
+            "vm.max_map_count" = 2147483642;
+            "net.ipv4.tcp_ecn" = 1;
+          };
           systemd.network = {
 
             netdevs.wg-ext = {
               netdevConfig = {
                 Kind = "wireguard";
                 Name = "wg-ext";
+                MTUBytes = 1380;
               };
               wireguardConfig = {
                 PrivateKeyFile = "/var/lib/wg-ext/key";
@@ -144,6 +178,7 @@
           # attack test
           environment.systemPackages = [
             pkgs.wireguard-tools
+            pkgs.tcpdump
             pkgs.nmap
             pkgs.metasploit
             pkgs.mtr
