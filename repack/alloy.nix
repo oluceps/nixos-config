@@ -8,24 +8,43 @@ reIf {
     livedebugging {
       enabled = true
     }
-
     discovery.relabel "journal" {
     	targets = []
-
     	rule {
     		source_labels = ["__journal__systemd_unit"]
     		target_label  = "unit"
     	}
     }
-
     loki.source.journal "journal" {
-    	max_age       = "12h0m0s"
-    	relabel_rules = discovery.relabel.journal.rules
-    	forward_to    = [loki.write.default.receiver]
-    	labels        = {
-    		host = "vm1",
-    		job  = "systemd-journal",
-    	}
+        max_age       = "12h0m0s"
+        relabel_rules = discovery.relabel.journal.rules
+        forward_to    = [loki.process.nftables_geo.receiver]  // 发送到新的处理组件
+        labels        = {
+            host = "vm1",
+            job  = "systemd-journal",
+        }
+    }
+    loki.process "nftables_geo" {
+      stage.regex {
+        expression = "\\[NFT_VM_FORWARD_LOG\\].*DST=(?P<dst>\\S+)"
+      }
+
+      stage.geoip {
+        source  = "dst"
+        db      = "${
+          pkgs.fetchurl {
+            url = "https://github.com/P3TERX/GeoLite.mmdb/releases/download/2025.09.19/GeoLite2-ASN.mmdb";
+            hash = "sha256-XcKyiL+glMPlyoMuXnDXF0zPEJ/yjTKIwJiNc4L6zz0=";
+          }
+        }"
+        db_type = "asn"
+      }
+
+      stage.labels {
+        values = { dst_as_org = "geoip_autonomous_system_organization" }
+      }
+
+      forward_to = [loki.write.default.receiver]
     }
 
     loki.write "default" {
