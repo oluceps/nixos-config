@@ -49,7 +49,7 @@ reIf
         nftables.ruleset = ''
           table inet filter {
           	chain forward {
-          		type filter hook forward priority filter; policy drop;
+              type filter hook forward priority filter; policy drop;
               iifname "vm1" oifname "bond0" ct state new log prefix "[NFT_VM_FORWARD_LOG] " accept
           	}
           }
