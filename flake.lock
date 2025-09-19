@@ -2006,16 +2006,15 @@
         "pre-commit-hooks": "pre-commit-hooks_2"
       },
       "locked": {
-        "lastModified": 1753962600,
-        "narHash": "sha256-2JDFHF//2MD3Op/80+r9bp3oMjzNuGRyrPU8V1yRN+U=",
-        "owner": "oluceps",
+        "lastModified": 1752093877,
+        "narHash": "sha256-P0TySh6sQl1EhfxjW9ZqGxEyUBSsEpdnchOe1QB0pLA=",
+        "owner": "oddlama",
         "repo": "nix-topology",
-        "rev": "eee479a033021e8f2bb00561f32574334c0fee43",
+        "rev": "6a536c4b686ee4bcf07a7b0f8b823584560e2633",
         "type": "github"
       },
       "original": {
-        "owner": "oluceps",
-        "ref": "dev",
+        "owner": "oddlama",
         "repo": "nix-topology",
         "type": "github"
       }
