@@ -39,9 +39,22 @@ reIf {
         }"
         db_type = "asn"
       }
+      stage.geoip {
+        source  = "dst"
+        db      = "${
+          pkgs.fetchurl {
+            url = "https://github.com/P3TERX/GeoLite.mmdb/releases/download/2025.09.16/GeoLite2-City.mmdb";
+            hash = "sha256-b9IhwKmT2kRy7YhD18LtzKc2okuv5YYsPvqJoLfA03M=";
+          }
+        }"
+        db_type = "city"
+      }
 
       stage.labels {
-        values = { dst_as_org = "geoip_autonomous_system_organization" }
+        values = {
+            dst_city = "geoip_city_name",
+            dst_as_org = "geoip_autonomous_system_organization",
+        }
       }
 
       forward_to = [loki.write.default.receiver]
