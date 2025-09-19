@@ -34,6 +34,7 @@
 
           # forbid access to RFC1918 addr scope & IPv6
           networking.firewall.enable = true;
+          networking.firewall.allowedTCPPorts = [ 1095 ];
           networking.nftables.enable = true;
           networking.nftables.ruleset = ''
             table inet nat {
