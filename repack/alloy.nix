@@ -3,7 +3,6 @@ reIf {
   services.alloy = {
     enable = true;
   };
-  # didn't work FIXME
   environment.etc."alloy/config.alloy".text = ''
     livedebugging {
       enabled = true
@@ -18,7 +17,7 @@ reIf {
     loki.source.journal "journal" {
         max_age       = "12h0m0s"
         relabel_rules = discovery.relabel.journal.rules
-        forward_to    = [loki.process.nftables_geo.receiver]  // 发送到新的处理组件
+        forward_to    = [loki.process.nftables_geo.receiver]
         labels        = {
             host = "vm1",
             job  = "systemd-journal",
