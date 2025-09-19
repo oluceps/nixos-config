@@ -3,6 +3,7 @@ reIf {
   services.alloy = {
     enable = true;
   };
+  # didn't work FIXME
   environment.etc."alloy/config.alloy".text = ''
     livedebugging {
       enabled = true
