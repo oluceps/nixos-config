@@ -65,6 +65,7 @@
     };
   }; # Did you read the comment?
   users.mutableUsers = false;
+  programs.openssh.startAgent = true;
   services = {
     userborn.enable = true;
 
@@ -189,10 +190,16 @@
   #   dates = "weekly";
   #   options = "--delete-older-than 10d";
   # };
-  programs.fish.loginShellInit = ''
-    ${pkgs.openssh}/bin/ssh-add ${config.vaultix.secrets.id.path}
-  '';
   systemd = {
+
+    # user.services.add-ssh-keys = {
+    #   script = ''
+    #     eval `${pkgs.openssh}/bin/ssh-agent -s`
+    #     export SSH_ASKPASS_REQUIRE="prefer"
+    #     ${pkgs.openssh}/bin/ssh-add ${config.vaultix.secrets.id_sk.path}
+    #   '';
+    #   wantedBy = [ "default.target" ];
+    # };
     enableEmergencyMode = false;
     settings.Manager = {
       RebootWatchdogSec = "20s";
@@ -237,5 +244,6 @@
     routed-subnet.enable = true;
     loki.enable = true;
     alloy.enable = true;
+    zeek.enable = true;
   };
 }

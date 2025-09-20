@@ -47,7 +47,7 @@
           # ControlPath ~/.ssh/%r@%h:%p.socket
           # ControlPersist 10m
           Port 22
-          IdentityFile ${config.vaultix.secrets.id.path}
+          IdentityFile ${config.vaultix.secrets.id_sk.path}
     ''}"
     "L+ /root/.ssh/config - - - - /home/${user}/.ssh/config"
   ];
@@ -55,8 +55,8 @@
 
     ssh = {
       enableAskPassword = true;
-      askPassword = "${pkgs.wayprompt}/bin/wayprompt-ssh-askpass";
-      # askPassword = "${pkgs.seahorse}/libexec/seahorse/ssh-askpass";
+      # askPassword = "${pkgs.wayprompt}/bin/wayprompt-ssh-askpass";
+      askPassword = "${pkgs.seahorse}/libexec/seahorse/ssh-askpass";
     };
     nh = {
       enable = true;
@@ -220,6 +220,7 @@
               shfmt
               nixfmt-rfc-style
               ruff
+              ty
               # taplo
               rustfmt
               clang-tools
