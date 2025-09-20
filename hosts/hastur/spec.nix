@@ -65,7 +65,6 @@
     };
   }; # Did you read the comment?
   users.mutableUsers = false;
-  programs.openssh.startAgent = true;
   services = {
     userborn.enable = true;
 

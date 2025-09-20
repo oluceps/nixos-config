@@ -184,25 +184,6 @@ reIf {
           ];
         }
         {
-          job_name = "vm1_sni_metrics";
-          scheme = "http";
-          static_configs = [
-            {
-              targets = [
-                "[fdcc::1]:8088"
-              ];
-            }
-          ];
-          relabel_configs = [
-            {
-              source_labels = [ "__address__" ];
-              regex = "\\[fdcc::1\\]:8088";
-              target_label = "instance";
-              replacement = "vm1";
-            }
-          ];
-        }
-        {
           job_name = "http";
           scheme = "http";
           metrics_path = "/probe";

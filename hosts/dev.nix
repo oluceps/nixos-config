@@ -47,15 +47,15 @@
           # ControlPath ~/.ssh/%r@%h:%p.socket
           # ControlPersist 10m
           Port 22
-          IdentityFile ${config.vaultix.secrets.id_sk.path}
+          IdentityFile /persist/keys/sept
     ''}"
     "L+ /root/.ssh/config - - - - /home/${user}/.ssh/config"
   ];
   programs = {
 
     ssh = {
+      # startAgent = true;
       enableAskPassword = true;
-      # askPassword = "${pkgs.wayprompt}/bin/wayprompt-ssh-askpass";
       askPassword = "${pkgs.seahorse}/libexec/seahorse/ssh-askpass";
     };
     nh = {
