@@ -44,14 +44,9 @@
       systemd.enable = true;
 
       availableKernelModules = [
-        "nvme"
-        "usbhid"
-        "xhci_pci"
         "usb_storage"
-        "sd_mod"
         "mpt3sas"
       ];
-      kernelModules = [ "amdgpu" ];
     };
 
     kernelPackages = pkgs.linuxPackages_latest;

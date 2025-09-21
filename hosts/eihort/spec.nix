@@ -54,7 +54,7 @@
   system = {
 
     etc.overlay.enable = true;
-    etc.overlay.mutable = true;
+    etc.overlay.mutable = false;
 
     stateVersion = "25.05";
   };
