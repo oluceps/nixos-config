@@ -21,46 +21,11 @@ reIf {
       loki.source.journal "journal" {
           max_age       = "12h0m0s"
           relabel_rules = discovery.relabel.journal.rules
-          forward_to    = [loki.process.nftables_geo.receiver]
+          forward_to    = [loki.write.default.receiver]
           labels        = {
-              host = "vm1",
+              host = "hastur",
               job  = "systemd-journal",
           }
-      }
-      loki.process "nftables_geo" {
-        stage.regex {
-          expression = "\\[NFT_VM_FORWARD_LOG\\].*DST=(?P<dst>\\S+)"
-        }
-
-        stage.geoip {
-          source  = "dst"
-          db      = "${
-            pkgs.fetchurl {
-              url = "https://github.com/P3TERX/GeoLite.mmdb/releases/download/2025.09.19/GeoLite2-ASN.mmdb";
-              hash = "sha256-XcKyiL+glMPlyoMuXnDXF0zPEJ/yjTKIwJiNc4L6zz0=";
-            }
-          }"
-          db_type = "asn"
-        }
-        stage.geoip {
-          source  = "dst"
-          db      = "${
-            pkgs.fetchurl {
-              url = "https://github.com/P3TERX/GeoLite.mmdb/releases/download/2025.09.16/GeoLite2-City.mmdb";
-              hash = "sha256-b9IhwKmT2kRy7YhD18LtzKc2okuv5YYsPvqJoLfA03M=";
-            }
-          }"
-          db_type = "city"
-        }
-
-        stage.labels {
-          values = {
-              dst_city = "geoip_city_name",
-              dst_as_org = "geoip_autonomous_system_organization",
-          }
-        }
-
-        forward_to = [loki.write.default.receiver]
       }
       local.file_match "zeek_logs" {
         path_targets = [
