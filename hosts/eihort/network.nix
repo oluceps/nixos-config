@@ -84,18 +84,15 @@
       "5-eth0" = {
         matchConfig.Name = "eth0";
         networkConfig = {
-          DHCP = "ipv4";
+          DHCP = "no";
           IPv4Forwarding = true;
           IPv6Forwarding = true;
-          IPv6AcceptRA = "yes";
+          IPv6AcceptRA = true;
           MulticastDNS = true;
         };
         ipv6AcceptRAConfig = {
           DHCPv6Client = false;
-          # UseDNS = false;
         };
-        # dhcpV4Config.UseDNS = false;
-        # dhcpV6Config.UseDNS = false;
         linkConfig.RequiredForOnline = "routable";
       };
     };
