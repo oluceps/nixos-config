@@ -43,7 +43,7 @@
             table inet nat {
               chain postrouting {
                 type nat hook postrouting priority srcnat; policy accept;
-                iifname { wg-ext } oifname enp0s4 ip saddr 10.10.10.2 snat to 10.255.0.1
+                iifname "wg-ext" oifname "enp0s4" ip saddr 10.10.10.0/24 masquerade
               }
             }
             table inet filter {
