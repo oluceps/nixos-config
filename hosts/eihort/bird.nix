@@ -28,7 +28,7 @@
         '';
       in
       ''
-        protocol static vm1 {
+        protocol static vm {
           ipv4;
           route 10.255.0.0/24 via 192.168.1.2;
         }
