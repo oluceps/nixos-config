@@ -89,22 +89,6 @@
       settings.bind = "[::]:5000";
       signKeyPaths = [ config.vaultix.secrets.harmonia.path ];
     };
-    realm = {
-      enable = true;
-      settings = {
-        log.level = "warn";
-        network = {
-          no_tcp = false;
-          use_udp = true;
-        };
-        endpoints = [
-          {
-            listen = "[fdcc::1]:1701";
-            remote = "10.255.0.1:8080";
-          }
-        ];
-      };
-    };
 
     btrfs.autoScrub = {
       enable = true;

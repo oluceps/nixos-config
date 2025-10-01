@@ -186,7 +186,7 @@
           environment.etc."alloy/config.alloy".text = # alloy
             ''
               livedebugging {
-                enabled = true
+                enabled = false
               }
               discovery.relabel "journal" {
               	targets = []

@@ -48,8 +48,16 @@
     };
     nftables = {
       enable = true;
-      ruleset = '''';
+      ruleset = ''
+        table inet filter {
+        	chain forward {
+            type filter hook forward priority filter; policy drop;
+            iifname "eno1" oifname "vm1" ip saddr 192.168.1.110 accept
+        	}
+        }
+      '';
     };
+
     networkmanager.enable = lib.mkForce false;
     networkmanager.dns = "none";
   };
