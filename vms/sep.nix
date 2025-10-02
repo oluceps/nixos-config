@@ -61,7 +61,7 @@
               }
             }
           '';
-          networking.enableIPv6 = false;
+          networking.enableIPv6 = true;
           # forbid end
 
           services.openssh.hostKeys = [
@@ -155,6 +155,7 @@
             nftables
             htop
             q
+            lsof
           ];
           services.hysteria.instances = {
             ext = {

@@ -52,7 +52,7 @@
         table inet filter {
         	chain forward {
             type filter hook forward priority filter; policy drop;
-            iifname "eno1" oifname "vm1" ip saddr 192.168.1.110 accept
+            iifname "eno1" oifname "vm1" ip6 saddr fdcc::3 accept
         	}
         }
       '';

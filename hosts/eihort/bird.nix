@@ -29,8 +29,8 @@
       in
       ''
         protocol static vm {
-          ipv4;
-          route 10.255.0.0/24 via 192.168.1.2;
+          ipv6;
+          route fec0::1/128 via fdcc::1;
         }
         protocol babel {
         ${lib.concatMapStrings genLink (lib.getPeerHostListFrom config)}
