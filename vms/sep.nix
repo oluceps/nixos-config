@@ -10,7 +10,7 @@
     inputs.microvm.nixosModules.host
   ];
   networking.firewall.extraInputRules = ''
-    iifname "vm1" ip saddr 10.255.0.1 ip daddr 10.255.0.0 tcp dport 3030 accept
+    iifname "vm1" ip saddr 10.255.0.1 ip daddr 10.255.0.0 tcp dport { 3030, 53 } accept
   '';
   microvm.autostart = [
     "sept"
@@ -134,8 +134,7 @@
                 # DNS servers no longer come from DHCP nor Router
                 # Advertisements. Perhaps you want to change the defaults:
                 DNS = [
-                  "223.6.6.6"
-                  "8.8.8.8"
+                  "10.255.0.0"
                 ];
               };
             };
@@ -147,14 +146,15 @@
               "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMDcYqby4TnhKV6xGyuZUtxOmTtXjKYp8r+uCxbGph65"
             ];
           };
-          environment.systemPackages = [
-            pkgs.wireguard-tools
-            pkgs.tcpdump
-            pkgs.nmap
-            pkgs.mtr
-            pkgs.traceroute
-            pkgs.nftables
-            pkgs.htop
+          environment.systemPackages = with pkgs; [
+            wireguard-tools
+            tcpdump
+            nmap
+            mtr
+            traceroute
+            nftables
+            htop
+            q
           ];
           services.hysteria.instances = {
             ext = {

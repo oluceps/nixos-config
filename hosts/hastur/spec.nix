@@ -112,10 +112,11 @@
       }
     ];
 
-    tailscale = {
-      enable = false;
-      openFirewall = true;
-    };
+    # tailscale = {
+    #   enable = true;
+    #   openFirewall = true;
+    #   disableTaildrop = true;
+    # };
 
     sing-box.enable = true;
 
