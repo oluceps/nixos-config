@@ -23,7 +23,7 @@
         system = "x86_64-linux";
         protocol = "ssh-ng";
         maxJobs = 4;
-        speedFactor = 2;
+        speedFactor = 1;
         sshUser = "remotebuild";
         sshKey = "/persist/keys/remotebuild";
         supportedFeatures = [
