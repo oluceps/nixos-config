@@ -1,8 +1,8 @@
-{ ... }:
+{ lib, config, ... }:
 {
   nix = {
-    buildMachines = [
-      {
+    buildMachines =
+      (lib.optional (config.networking.hostName != "hastur") {
         hostName = "hastur";
         system = "x86_64-linux";
         protocol = "ssh-ng";
@@ -17,8 +17,8 @@
           "kvm"
         ];
         mandatoryFeatures = [ ];
-      }
-      {
+      })
+      ++ (lib.optional (config.networking.hostName != "eihort") {
         hostName = "eihort";
         system = "x86_64-linux";
         protocol = "ssh-ng";
@@ -33,8 +33,7 @@
           "kvm"
         ];
         mandatoryFeatures = [ ];
-      }
-    ];
+      });
     distributedBuilds = true;
   };
 }
