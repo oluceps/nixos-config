@@ -17,6 +17,7 @@
       "nix-direnv"
       "radicle"
       "xwayland-satellite"
+      "atuin"
     ] (n: inputs'.${n}.packages.default)
     # //
     # GUI applications overlay. for stability
