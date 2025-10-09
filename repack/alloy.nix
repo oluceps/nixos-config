@@ -11,22 +11,22 @@ reIf {
       livedebugging {
         enabled = false
       }
+      discovery.relabel "journal" {
+      	targets = []
+      	rule {
+      		source_labels = ["__journal__systemd_unit"]
+      		target_label  = "unit"
+      	}
+      }
       loki.source.journal "journal" {
           max_age       = "12h0m0s"
+          relabel_rules = discovery.relabel.journal.rules
+          forward_to    = [loki.write.default.receiver]
           labels        = {
               host = "hastur",
-              job  = "refused",
+              job  = "systemd-journal",
           }
-          forward_to = [loki.process.refused.receiver]
       }
-      loki.process "refused" {
-        stage.match {
-          selector = ".*refused connection.*"
-        }
-
-        forward_to = [loki.write.default.receiver]
-      }
-
       local.file_match "zeek_logs" {
         path_targets = [
           { "__path__" = "/var/log/zeek/vm1/dns.log" },
