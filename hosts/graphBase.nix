@@ -107,7 +107,11 @@
         "text/css"
         "text/csv"
 
-      ] (_: "Helix.desktop");
+      ] (_: "Helix.desktop")
+      // lib.genAttrs [
+        "video/mp4"
+        "video/mkv"
+      ] (_: "vlc.desktop");
     };
     portal = {
       enable = true;
