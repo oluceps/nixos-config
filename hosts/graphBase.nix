@@ -115,7 +115,8 @@
     };
     portal = {
       enable = true;
-      xdgOpenUsePortal = true;
+      # WARNING: this broken xdg-open
+      # xdgOpenUsePortal = true;
       extraPortals = [
         pkgs.xdg-desktop-portal-gtk
         pkgs.xdg-desktop-portal-gnome
