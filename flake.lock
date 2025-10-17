@@ -3150,11 +3150,11 @@
         "rust-overlay": "rust-overlay_9"
       },
       "locked": {
-        "lastModified": 1759842117,
-        "narHash": "sha256-Csfjf29Dp7JcxqxyeOOj0H4u26HRYbNUrE3yxaCbgZs=",
+        "lastModified": 1760631251,
+        "narHash": "sha256-Xks/lc2PNWlK2zNpfwrvv/8GKMpcsgX+faS+sXn5cRI=",
         "ref": "refs/heads/master",
-        "rev": "2e77d5ef4df526a8453d38d6d2d735fe9ce7e423",
-        "revCount": 2544,
+        "rev": "634866889f30736ef07839796ffd3482239121fb",
+        "revCount": 2594,
         "type": "git",
         "url": "https://seed.radicle.xyz/z3gqcJUoA1n9HaHKufZs5FCSGazv5.git"
       },

@@ -15,7 +15,7 @@
       "prismlauncher"
       "resign"
       "nix-direnv"
-      "radicle"
+      # "radicle"
       "xwayland-satellite"
       "atuin"
     ] (n: inputs'.${n}.packages.default)
