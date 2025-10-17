@@ -210,7 +210,7 @@
       events = [
         {
           event = "lock";
-          command = "${pkgs.swaylock}/bin/swaylock";
+          command = "${inputs'.noctalia.packages.default}/bin/noctalia-shell ipc call lockScreen toggle";
         }
         {
           event = "before-sleep";

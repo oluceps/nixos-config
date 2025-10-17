@@ -1173,7 +1173,7 @@
     },
     "flake-utils_11": {
       "inputs": {
-        "systems": "systems_14"
+        "systems": "systems_15"
       },
       "locked": {
         "lastModified": 1681202837,
@@ -1191,7 +1191,7 @@
     },
     "flake-utils_12": {
       "inputs": {
-        "systems": "systems_15"
+        "systems": "systems_16"
       },
       "locked": {
         "lastModified": 1731533236,
@@ -1209,7 +1209,7 @@
     },
     "flake-utils_13": {
       "inputs": {
-        "systems": "systems_16"
+        "systems": "systems_17"
       },
       "locked": {
         "lastModified": 1731533236,
@@ -2855,6 +2855,30 @@
         "type": "github"
       }
     },
+    "noctalia": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ],
+        "quickshell": [
+          "quickshell"
+        ],
+        "systems": "systems_14"
+      },
+      "locked": {
+        "lastModified": 1760665468,
+        "narHash": "sha256-DYNcSgy8597D/Cqb/Qu68XiTz7mYpfWGTH0FeFBO3CA=",
+        "owner": "noctalia-dev",
+        "repo": "noctalia-shell",
+        "rev": "d56c197fd308c727350a3b6a11efeaaa43781079",
+        "type": "github"
+      },
+      "original": {
+        "owner": "noctalia-dev",
+        "repo": "noctalia-shell",
+        "type": "github"
+      }
+    },
     "nuenv": {
       "inputs": {
         "nixpkgs": "nixpkgs_15",
@@ -3136,6 +3160,26 @@
         "type": "github"
       }
     },
+    "quickshell": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1760315601,
+        "narHash": "sha256-cvguRikKX0yXZ7jaK4Gt3qB1I33T5TzYZQf0Ampx8ko=",
+        "owner": "outfoxxed",
+        "repo": "quickshell",
+        "rev": "00858812f25b748d08b075a0d284093685fa3ffd",
+        "type": "github"
+      },
+      "original": {
+        "owner": "outfoxxed",
+        "repo": "quickshell",
+        "type": "github"
+      }
+    },
     "radicle": {
       "inputs": {
         "advisory-db": "advisory-db",
@@ -3213,12 +3257,14 @@
         "nixpkgs-stable": "nixpkgs-stable_4",
         "nixpkgs-wayland": "nixpkgs-wayland",
         "nixyDomains": "nixyDomains",
+        "noctalia": "noctalia",
         "nuenv": "nuenv_2",
         "nyx": "nyx",
         "pgvectors-nixpkgs": "pgvectors-nixpkgs",
         "pre-commit-hooks": "pre-commit-hooks_3",
         "preservation": "preservation",
         "prismlauncher": "prismlauncher",
+        "quickshell": "quickshell",
         "radicle": "radicle",
         "tg-online-keeper": "tg-online-keeper",
         "vaultix": "vaultix",
@@ -3626,6 +3672,21 @@
       }
     },
     "systems_16": {
+      "locked": {
+        "lastModified": 1681028828,
+        "narHash": "sha256-Vy1rq5AaRuLzOxct8nz4T6wlgyUR7zLU309k9mBC768=",
+        "owner": "nix-systems",
+        "repo": "default",
+        "rev": "da67096a3b9bf56a91d16901293e51ba5b49a27e",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nix-systems",
+        "repo": "default",
+        "type": "github"
+      }
+    },
+    "systems_17": {
       "locked": {
         "lastModified": 1681028828,
         "narHash": "sha256-Vy1rq5AaRuLzOxct8nz4T6wlgyUR7zLU309k9mBC768=",
