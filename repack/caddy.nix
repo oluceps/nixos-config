@@ -138,8 +138,8 @@ in
                 params = {
                   base_auth_url = "http://oidc.nyaw.xyz";
                   delay_start = 3;
-                  client_id = "";
-                  client_secret = "";
+                  client_id = "{env.CALIBRE_OIDC_CLIENT_ID}";
+                  client_secret = "{env.CALIBRE_OIDC_CLIENT_SEC}";
                   driver = "generic";
                   metadata_url = "http://oidc.nyaw.xyz/.well-known/openid-configuration";
                   realm = "generic";

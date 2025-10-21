@@ -4,6 +4,7 @@ with pkgs;
   turbo
   eva
   paperback
+  termusic
   chatmcp
   thunderbird
   amberol
