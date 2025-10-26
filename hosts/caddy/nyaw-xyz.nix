@@ -133,22 +133,17 @@
   {
     handle = [
       {
-        handler = "subroute";
-        routes = [
-          {
-            headers = {
-              request = {
-                set = {
-                  "X-Scheme" = [
-                    "https"
-                  ];
-                };
-              };
+        headers = {
+          request = {
+            set = {
+              "X-Scheme" = [
+                "https"
+              ];
             };
-            upstreams = [ { dial = "[fdcc::3]:8083"; } ];
-            handler = "reverse_proxy";
-          }
-        ];
+          };
+        };
+        upstreams = [ { dial = "[fdcc::3]:8083"; } ];
+        handler = "reverse_proxy";
       }
     ];
     match = [
