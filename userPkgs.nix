@@ -14,6 +14,7 @@ with pkgs;
   # chromium
   # apotris
   # celeste
+  obsidian
   stellarium
   # celluloid
   # thiefmd

@@ -66,7 +66,7 @@ export def d [
       # let user = do $get_user $per;
       log info $"deploy ($per) @ ($per_node_addr)"
 
-      nixos-rebuild $mode --flake .?submodules=1 --target-host $'root@($per_node_addr)' --sudo ...($extra_builder_args)
+      nixos-rebuild $mode --flake $'.#($per)' --target-host $'root@($per_node_addr)' --sudo ...($extra_builder_args)
     
     }
   }
