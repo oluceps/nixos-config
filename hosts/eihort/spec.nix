@@ -49,6 +49,28 @@
       name = "hk.yaml";
       trim = false;
     };
+
+    hyst-no = {
+      content =
+        config.vaultix.placeholder.hyst-no-cli
+        + (
+          let
+            port = toString (lib.conn { }).${config.networking.hostName}.nodens;
+          in
+          ''
+            socks5:
+              listen: 127.0.0.1:1093
+            udpForwarding:
+            - listen: 127.0.0.1:${port}
+              remote: 127.0.0.1:${port}
+              timeout: 120s
+          ''
+        );
+      owner = "root";
+      group = "users";
+      name = "no.yaml";
+      trim = false;
+    };
   };
   security.auditd.enable = true;
   system = {
@@ -180,6 +202,10 @@
       yidhra = {
         enable = true;
         configFile = config.vaultix.templates.hyst-yi.path;
+      };
+      nodens = {
+        enable = true;
+        configFile = config.vaultix.templates.hyst-no.path;
       };
     };
 
