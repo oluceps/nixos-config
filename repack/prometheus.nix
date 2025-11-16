@@ -285,44 +285,8 @@ reIf {
                 ip = "IPv4";
               };
             }
-
-            {
-              targets = [ "154.31.114.112" ];
-              labels = {
-                name = "JP1";
-                city = "Tokyo";
-                code = "NRT";
-                ip = "IPv4";
-              };
-            }
-            {
-              targets = [ "2403:18c0:1000:13a:343b:65ff:fe1b:7a0f" ];
-              labels = {
-                name = "JP1";
-                city = "Tokyo";
-                code = "NRT";
-                ip = "IPv6";
-              };
-            }
-            {
-              targets = [ "205.198.76.6" ];
-              labels = {
-                name = "JP2";
-                city = "Tokyo";
-                code = "NRT";
-                ip = "IPv4";
-              };
-            }
-            {
-              targets = [ "2404:c140:2000:2::32:1d9f" ];
-              labels = {
-                name = "JP2";
-                city = "Tokyo";
-                code = "NRT";
-                ip = "IPv6";
-              };
-            }
-          ];
+          ]
+          ++ lib.targetsFromNodes;
           relabel_configs = gen_relabel_configs (
             with config.services.prometheus.exporters.blackbox; "${listenAddress}:${toString port}"
           );
