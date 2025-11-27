@@ -75,6 +75,11 @@ reIf {
           static_configs = [ { inherit targets; } ];
         }
         {
+          job_name = "metrics-sept";
+          scheme = "http";
+          static_configs = [ { targets = [ "[fec0::1]:9100" ]; } ];
+        }
+        {
           job_name = "tg-online";
           scheme = "http";
           metrics_path = "/metrics";
@@ -298,11 +303,11 @@ reIf {
           {
             name = "metrics";
             rules = [
-              {
-                alert = "NodeDown";
-                expr = ''up{instance !~ "kaambl.nyaw.xyz|hastur.nyaw.xyz"} == 0''; # suspend or reboot to win
-                for = "2m";
-              }
+              # {
+              #   alert = "NodeDown";
+              #   expr = ''up{instance !~ "kaambl.nyaw.xyz|hastur.nyaw.xyz"} == 0''; # suspend or reboot to win
+              #   for = "2m";
+              # }
               {
                 alert = "OOM";
                 expr = ''node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes < 0.1'';

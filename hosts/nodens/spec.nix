@@ -27,6 +27,26 @@
   users.mutableUsers = false;
   services.userborn.enable = true;
 
+  users.users.zgmx = {
+    isNormalUser = true;
+    uid = 1010;
+    subUidRanges = [
+      {
+        count = 65536;
+        startUid = 2147483646;
+      }
+    ];
+    subGidRanges = [
+      {
+        count = 65536;
+        startGid = 2147483647;
+      }
+    ];
+    shell = pkgs.fish;
+    openssh.authorizedKeys.keys = [
+      "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMgaKPBtVDqxgse2UdlsGM7LdRxq+uSJV7FPhC1LyyXJ"
+    ];
+  };
   zramSwap = {
     enable = true;
     memoryPercent = 80;
@@ -51,6 +71,8 @@
     #   enable = true;
     # };
     sing-server.enable = true;
+
+    userborn-subid.enable = true;
   };
   services = {
     # dnsproxy.settings = lib.mkForce {

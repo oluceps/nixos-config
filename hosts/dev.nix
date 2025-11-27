@@ -312,6 +312,7 @@
             htop
             onefetch
             hardinfo2
+            vicinae
             imgcat
             nix-index
             ccze
