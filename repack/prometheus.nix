@@ -28,275 +28,285 @@ reIf {
     alertmanager.serviceConfig.LoadCredential = [
       "notifychan:${config.vaultix.secrets.notifychan.path}"
     ];
-    prometheus.serviceConfig.LoadCredential = (map (lib.genCredPath config)) [
+    victoriametrics.serviceConfig.LoadCredential = (map (lib.genCredPath config)) [
       "prom"
       "syncthing-hastur-api"
     ];
   };
-  services.prometheus = {
+  services.victoriametrics = {
     enable = true;
-    checkConfig = "syntax-only"; # stat unexist file
-    webExternalUrl = "https://${config.networking.fqdn}/prom";
-    listenAddress = "[fdcc::3]";
-    webConfigFile = (pkgs.formats.yaml { }).generate "web.yaml" {
-      basic_auth_users = {
-        prometheus = "$2b$05$9CaXvrYtguDwi190/llO9.qytgqCyPp1wqyO0.umxsTEfKkhpwr4q";
-      };
-    };
-    port = 9090;
-    retentionTime = "7d";
-    globalConfig = {
-      scrape_interval = "30s";
-      evaluation_interval = "1m";
-    };
+    listenAddress = "[fdcc::3]:9090";
+    # webConfigFile = (pkgs.formats.yaml { }).generate "web.yaml" {
+    #   basic_auth_users = {
+    #     prometheus = "$2b$05$9CaXvrYtguDwi190/llO9.qytgqCyPp1wqyO0.umxsTEfKkhpwr4q";
+    #   };
+    # };
+    # basicAuthUsername = "prometheus";
+
     # prometheus not exit when credentials could not be load.
-    scrapeConfigs =
-      let
-        secPath = "/run/credentials/prometheus.service/prom";
-      in
-      [
-        {
-          job_name = "caddy";
-          scheme = "https";
-          basic_auth = {
-            username = "prometheus";
-            password_file = secPath;
-          };
-          metrics_path = "/caddy";
-          static_configs = [ { inherit targets; } ];
-        }
-        {
-          job_name = "metrics";
-          scheme = "https";
-          basic_auth = {
-            username = "prometheus";
-            password_file = secPath;
-          };
-          static_configs = [ { inherit targets; } ];
-        }
-        {
-          job_name = "metrics-sept";
-          scheme = "http";
-          static_configs = [ { targets = [ "[fec0::1]:9100" ]; } ];
-        }
-        {
-          job_name = "tg-online";
-          scheme = "http";
-          metrics_path = "/metrics";
-          static_configs = [ { targets = [ "localhost:8087" ]; } ];
-        }
-        {
-          job_name = "seaweedfs_metrics";
-          scheme = "http";
-          static_configs = [ { targets = [ "[fdcc::3]:9768" ]; } ];
-        }
-        {
-          job_name = "centre_psql_metrics";
-          scheme = "http";
-          static_configs = [ { targets = [ "[fdcc::3]:9187" ]; } ];
-        }
-        {
-          job_name = "ntfy_metrics";
-          scheme = "http";
-          static_configs = [ { targets = [ "[fdcc::4]:9090" ]; } ];
-        }
-        {
-          job_name = "synapse_metrics";
-          scheme = "http";
-          metrics_path = "/_synapse/metrics";
-          static_configs = [ { targets = [ "localhost:9031" ]; } ];
-        }
-        # {
-        #   job_name = "mautrix_tg_metrics";
-        #   scheme = "http";
-        #   static_configs = [ { targets = [ "[fdcc::3]:8005" ]; } ];
-        # }
-        {
-          job_name = "chrony_metrics";
-          scheme = "http";
-          scrape_interval = "60s";
-          scrape_timeout = "20s";
-          static_configs = [
-            {
-              targets = [
-                "[fdcc::3]:9123"
-                "[fdcc::2]:9123"
-                "[fdcc::1]:9123"
-              ];
-            }
-          ];
-          relabel_configs = [
-            {
-              source_labels = [ "__address__" ];
-              regex = "\\[fdcc::1\\]:9123";
-              target_label = "instance";
-              replacement = "hastur.nyaw.xyz";
-            }
-            {
-              source_labels = [ "__address__" ];
-              regex = "\\[fdcc::2\\]:9123";
-              target_label = "instance";
-              replacement = "kaambl.nyaw.xyz";
-            }
-            {
-              source_labels = [ "__address__" ];
-              regex = "\\[fdcc::3\\]:9123";
-              target_label = "instance";
-              replacement = "eihort.nyaw.xyz";
-            }
-          ];
-        }
-        {
-          job_name = "syncthing_metrics";
-          scheme = "http";
-          static_configs = [
-            {
-              targets = [
-                "[fdcc::1]:8384"
-              ];
-            }
-          ];
-          relabel_configs = [
-            {
-              source_labels = [ "__address__" ];
-              regex = "\\[fdcc::1\\]:8384";
-              target_label = "instance";
-              replacement = "hastur.nyaw.xyz";
-            }
-          ];
+    #
+    prometheusConfig = {
+      scrape_configs =
+        let
+          secPath = "/run/credentials/vectoriametrics.service/prom";
+        in
+        [
+          {
+            job_name = "caddy";
+            scheme = "https";
+            basic_auth = {
+              username = "prometheus";
+              password_file = secPath;
+            };
+            metrics_path = "/caddy";
+            static_configs = [ { inherit targets; } ];
+          }
+          {
+            job_name = "metrics";
+            scheme = "https";
+            basic_auth = {
+              username = "prometheus";
+              password_file = secPath;
+            };
+            static_configs = [ { inherit targets; } ];
+          }
+          {
+            job_name = "metrics-sept";
+            scheme = "http";
+            static_configs = [ { targets = [ "[fec0::1]:9100" ]; } ];
+            relabel_configs = [
+              {
+                target_label = "job";
+                replacement = "metrics";
+              }
+              {
+                source_labels = [ "__address__" ];
+                regex = "\\[fec0::1\\]:9100";
+                target_label = "instance";
+                replacement = "sept";
+              }
+            ];
+          }
+          {
+            job_name = "tg-online";
+            scheme = "http";
+            metrics_path = "/metrics";
+            static_configs = [ { targets = [ "localhost:8087" ]; } ];
+          }
+          {
+            job_name = "seaweedfs_metrics";
+            scheme = "http";
+            static_configs = [ { targets = [ "[fdcc::3]:9768" ]; } ];
+          }
+          {
+            job_name = "centre_psql_metrics";
+            scheme = "http";
+            static_configs = [ { targets = [ "[fdcc::3]:9187" ]; } ];
+          }
+          {
+            job_name = "ntfy_metrics";
+            scheme = "http";
+            static_configs = [ { targets = [ "[fdcc::4]:9099" ]; } ];
+          }
+          {
+            job_name = "synapse_metrics";
+            scheme = "http";
+            metrics_path = "/_synapse/metrics";
+            static_configs = [ { targets = [ "localhost:9031" ]; } ];
+          }
+          # {
+          #   job_name = "mautrix_tg_metrics";
+          #   scheme = "http";
+          #   static_configs = [ { targets = [ "[fdcc::3]:8005" ]; } ];
+          # }
+          {
+            job_name = "chrony_metrics";
+            scheme = "http";
+            scrape_interval = "60s";
+            scrape_timeout = "20s";
+            static_configs = [
+              {
+                targets = [
+                  "[fdcc::3]:9123"
+                  "[fdcc::2]:9123"
+                  "[fdcc::1]:9123"
+                ];
+              }
+            ];
+            relabel_configs = [
+              {
+                source_labels = [ "__address__" ];
+                regex = "\\[fdcc::1\\]:9123";
+                target_label = "instance";
+                replacement = "hastur.nyaw.xyz";
+              }
+              {
+                source_labels = [ "__address__" ];
+                regex = "\\[fdcc::2\\]:9123";
+                target_label = "instance";
+                replacement = "kaambl.nyaw.xyz";
+              }
+              {
+                source_labels = [ "__address__" ];
+                regex = "\\[fdcc::3\\]:9123";
+                target_label = "instance";
+                replacement = "eihort.nyaw.xyz";
+              }
+            ];
+          }
+          {
+            job_name = "syncthing_metrics";
+            scheme = "http";
+            static_configs = [
+              {
+                targets = [
+                  "[fdcc::1]:8384"
+                ];
+              }
+            ];
+            relabel_configs = [
+              {
+                source_labels = [ "__address__" ];
+                regex = "\\[fdcc::1\\]:8384";
+                target_label = "instance";
+                replacement = "hastur.nyaw.xyz";
+              }
+            ];
 
-          authorization.credentials_file = "/run/credentials/prometheus.service/syncthing-hastur-api";
+            authorization.credentials_file = "/run/credentials/prometheus.service/syncthing-hastur-api";
 
-        }
-        {
-          job_name = "garage_metrics";
-          scheme = "http";
-          static_configs = [
-            {
-              targets = [
-                "[fdcc::1]:3903"
-                "[fdcc::2]:3903"
-              ];
-            }
-          ];
-          relabel_configs = [
-            {
-              source_labels = [ "__address__" ];
-              regex = "\\[fdcc::1\\]:3903";
-              target_label = "instance";
-              replacement = "hastur.nyaw.xyz";
-            }
-            {
-              source_labels = [ "__address__" ];
-              regex = "\\[fdcc::2\\]:3903";
-              target_label = "instance";
-              replacement = "kaambl.nyaw.xyz";
-            }
-          ];
-        }
-        {
-          job_name = "http";
-          scheme = "http";
-          metrics_path = "/probe";
-          params = {
-            module = [ "http_2xx" ];
-          };
-          static_configs = [
-            {
-              targets = [
-                "https://nyaw.xyz"
-              ]
-              ++ map (pre: "https://${pre}.nyaw.xyz") [
-                "blog"
-                "abhoth"
-              ];
-            }
-          ];
-          relabel_configs = gen_relabel_configs (
-            with config.services.prometheus.exporters.blackbox; "${listenAddress}:${toString port}"
-          );
-        }
-        {
-          job_name = "bridge_alive";
-          scheme = "http";
-          metrics_path = "/probe";
-          params = {
-            module = [ "http_with_proxy_to_ext" ];
-          };
-          static_configs = [
-            {
-              targets = [
-                "http://connectivitycheck.gstatic.com"
-              ];
-            }
-          ];
-          relabel_configs = gen_relabel_configs (
-            with config.services.prometheus.exporters.blackbox; "${listenAddress}:${toString port}"
-          );
-        }
-        {
-          job_name = "tcp";
-          scheme = "http";
-          metrics_path = "/probe";
-          params = {
-            module = [ "tcp_connect" ];
-          };
-          static_configs = [
-            {
-              targets = [
-                "[2001:4860:4860::8888]:53" # google
+          }
+          {
+            job_name = "garage_metrics";
+            scheme = "http";
+            static_configs = [
+              {
+                targets = [
+                  "[fdcc::1]:3903"
+                  "[fdcc::2]:3903"
+                ];
+              }
+            ];
+            relabel_configs = [
+              {
+                source_labels = [ "__address__" ];
+                regex = "\\[fdcc::1\\]:3903";
+                target_label = "instance";
+                replacement = "hastur.nyaw.xyz";
+              }
+              {
+                source_labels = [ "__address__" ];
+                regex = "\\[fdcc::2\\]:3903";
+                target_label = "instance";
+                replacement = "kaambl.nyaw.xyz";
+              }
+            ];
+          }
+          {
+            job_name = "http";
+            scheme = "http";
+            metrics_path = "/probe";
+            params = {
+              module = [ "http_2xx" ];
+            };
+            static_configs = [
+              {
+                targets = [
+                  "https://nyaw.xyz"
+                ]
+                ++ map (pre: "https://${pre}.nyaw.xyz") [
+                  "blog"
+                  "abhoth"
+                ];
+              }
+            ];
+            relabel_configs = gen_relabel_configs (
+              with config.services.prometheus.exporters.blackbox; "${listenAddress}:${toString port}"
+            );
+          }
+          {
+            job_name = "bridge_alive";
+            scheme = "http";
+            metrics_path = "/probe";
+            params = {
+              module = [ "http_with_proxy_to_ext" ];
+            };
+            static_configs = [
+              {
+                targets = [
+                  "http://connectivitycheck.gstatic.com"
+                ];
+              }
+            ];
+            relabel_configs = gen_relabel_configs (
+              with config.services.prometheus.exporters.blackbox; "${listenAddress}:${toString port}"
+            );
+          }
+          {
+            job_name = "tcp";
+            scheme = "http";
+            metrics_path = "/probe";
+            params = {
+              module = [ "tcp_connect" ];
+            };
+            static_configs = [
+              {
+                targets = [
+                  "[2001:4860:4860::8888]:53" # google
 
-                "154.31.114.112:80" # jp1
-                "[2403:18c0:1000:13a:343b:65ff:fe1b:7a0f]:80"
+                  "154.31.114.112:80" # jp1
+                  "[2403:18c0:1000:13a:343b:65ff:fe1b:7a0f]:80"
 
-                "205.198.76.6"
-                "2404:c140:2000:2::32:1d9f"
-              ];
-            }
-          ];
-          relabel_configs = gen_relabel_configs (
-            with config.services.prometheus.exporters.blackbox; "${listenAddress}:${toString port}"
-          );
-        }
-        {
-          job_name = "ping";
-          scheme = "http";
-          metrics_path = "/probe";
-          params = {
-            module = [ "icmp" ];
-          };
-          static_configs = [
-            {
-              targets = [ "8.8.8.8" ];
-              labels = {
-                name = "GOOGLE";
-                code = "ANYCAST";
-                ip = "IPv4";
-              };
-            }
-            {
-              targets = [ "2001:4860:4860::8888" ];
-              labels = {
-                name = "GOOGLE";
-                code = "ANYCAST";
-                ip = "IPv6";
-              };
-            }
-            {
-              targets = [ "223.6.6.6" ];
-              labels = {
-                name = "ALI";
-                code = "ANYCAST";
-                ip = "IPv4";
-              };
-            }
-          ]
-          ++ lib.targetsFromNodes;
-          relabel_configs = gen_relabel_configs (
-            with config.services.prometheus.exporters.blackbox; "${listenAddress}:${toString port}"
-          );
-        }
-      ];
+                  "205.198.76.6"
+                  "2404:c140:2000:2::32:1d9f"
+                ];
+              }
+            ];
+            relabel_configs = gen_relabel_configs (
+              with config.services.prometheus.exporters.blackbox; "${listenAddress}:${toString port}"
+            );
+          }
+          {
+            job_name = "ping";
+            scheme = "http";
+            metrics_path = "/probe";
+            params = {
+              module = [ "icmp" ];
+            };
+            static_configs = [
+              {
+                targets = [ "8.8.8.8" ];
+                labels = {
+                  name = "GOOGLE";
+                  code = "ANYCAST";
+                  ip = "IPv4";
+                };
+              }
+              {
+                targets = [ "2001:4860:4860::8888" ];
+                labels = {
+                  name = "GOOGLE";
+                  code = "ANYCAST";
+                  ip = "IPv6";
+                };
+              }
+              {
+                targets = [ "223.6.6.6" ];
+                labels = {
+                  name = "ALI";
+                  code = "ANYCAST";
+                  ip = "IPv4";
+                };
+              }
+            ]
+            ++ lib.targetsFromNodes;
+            relabel_configs = gen_relabel_configs (
+              with config.services.prometheus.exporters.blackbox; "${listenAddress}:${toString port}"
+            );
+          }
+        ];
+    };
+
     rules = lib.singleton (
       builtins.toJSON {
         groups = [
@@ -344,20 +354,20 @@ reIf {
         ];
       }
     );
-    alertmanagers = [
-      {
-        # path_prefix = "/alert";
-        static_configs = [
-          {
-            targets =
-              let
-                cfg = config.services.prometheus;
-              in
-              [ "${cfg.alertmanager.listenAddress}:${builtins.toString cfg.alertmanager.port}" ];
-          }
-        ];
-      }
-    ];
+    # alertmanagers = [
+    #   {
+    #     # path_prefix = "/alert";
+    #     static_configs = [
+    #       {
+    #         targets =
+    #           let
+    #             cfg = config.services.prometheus;
+    #           in
+    #           [ "${cfg.alertmanager.listenAddress}:${builtins.toString cfg.alertmanager.port}" ];
+    #       }
+    #     ];
+    #   }
+    # ];
     exporters = {
       blackbox = {
         enable = true;
@@ -386,38 +396,38 @@ reIf {
         };
       };
     };
-    alertmanager = {
-      enable = true;
-      webExternalUrl = "https://alert.nyaw.xyz";
-      listenAddress = "[fdcc::3]";
-      port = 9093;
-      logLevel = "info";
-      extraFlags = [ ''--cluster.listen-address=""'' ];
-      configuration = {
-        global = {
-          resolve_timeout = "2m";
-        };
-        receivers = [
-          {
-            name = "telegram";
-            telegram_configs = [
-              {
-                bot_token_file = "/run/credentials/alertmanager.service/notifychan";
-                chat_id = -1002215131569;
-                # http_config = {
-                #   proxy_url = "http://127.0.0.1:1900";
-                # };
-              }
-            ];
-          }
-        ];
-        route = {
-          receiver = "telegram";
-          group_wait = "30s";
-          group_interval = "2m";
-          repeat_interval = "10m";
-        };
-      };
-    };
+    # alertmanager = {
+    #   enable = true;
+    #   webExternalUrl = "https://alert.nyaw.xyz";
+    #   listenAddress = "[fdcc::3]";
+    #   port = 9093;
+    #   logLevel = "info";
+    #   extraFlags = [ ''--cluster.listen-address=""'' ];
+    #   configuration = {
+    #     global = {
+    #       resolve_timeout = "2m";
+    #     };
+    #     receivers = [
+    #       {
+    #         name = "telegram";
+    #         telegram_configs = [
+    #           {
+    #             bot_token_file = "/run/credentials/alertmanager.service/notifychan";
+    #             chat_id = -1002215131569;
+    #             # http_config = {
+    #             #   proxy_url = "http://127.0.0.1:1900";
+    #             # };
+    #           }
+    #         ];
+    #       }
+    #     ];
+    #     route = {
+    #       receiver = "telegram";
+    #       group_wait = "30s";
+    #       group_interval = "2m";
+    #       repeat_interval = "10m";
+    #     };
+    #   };
+    # };
   };
 }
