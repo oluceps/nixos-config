@@ -1,3 +1,4 @@
+# victoriametrics
 {
   reIf,
   config,
@@ -33,22 +34,19 @@ reIf {
       "syncthing-hastur-api"
     ];
   };
+
   services.victoriametrics = {
     enable = true;
     listenAddress = "[fdcc::3]:9090";
-    # webConfigFile = (pkgs.formats.yaml { }).generate "web.yaml" {
-    #   basic_auth_users = {
-    #     prometheus = "$2b$05$9CaXvrYtguDwi190/llO9.qytgqCyPp1wqyO0.umxsTEfKkhpwr4q";
-    #   };
-    # };
-    # basicAuthUsername = "prometheus";
-
-    # prometheus not exit when credentials could not be load.
-    #
+    extraOptions = [
+      # "-loggerLevel=WARN"
+      "-enableTCP6"
+    ];
+    retentionPeriod = "60d";
     prometheusConfig = {
       scrape_configs =
         let
-          secPath = "/run/credentials/vectoriametrics.service/prom";
+          secPath = "/run/credentials/victoriametrics.service/prom";
         in
         [
           {
@@ -173,7 +171,7 @@ reIf {
               }
             ];
 
-            authorization.credentials_file = "/run/credentials/prometheus.service/syncthing-hastur-api";
+            authorization.credentials_file = "/run/credentials/victoriametrics.service/syncthing-hastur-api";
 
           }
           {
@@ -307,67 +305,56 @@ reIf {
         ];
     };
 
-    rules = lib.singleton (
-      builtins.toJSON {
-        groups = [
-          {
-            name = "metrics";
-            rules = [
-              # {
-              #   alert = "NodeDown";
-              #   expr = ''up{instance !~ "kaambl.nyaw.xyz|hastur.nyaw.xyz"} == 0''; # suspend or reboot to win
-              #   for = "2m";
-              # }
-              {
-                alert = "OOM";
-                expr = ''node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes < 0.1'';
-              }
-              {
-                alert = "DiskFull";
-                expr = ''node_filesystem_avail_bytes{mountpoint=~"/persist"} / node_filesystem_size_bytes < 0.1'';
-              }
-              {
-                alert = "UnitFailed";
-                expr = ''node_systemd_unit_state{state="failed"} == 1'';
-              }
-              {
-                alert = "BtrfsDevErr";
-                expr = ''sum(rate(node_btrfs_device_errors_total[2m])) > 0'';
-              }
-            ];
-          }
-          {
-            name = "chrony";
-            rules = [
-              {
-                record = "instance:chrony_clock_error_seconds:abs";
-                expr = ''
-                  abs(chrony_tracking_last_offset_seconds)
-                  +
-                  chrony_tracking_root_dispersion_seconds
-                  +
-                  (0.5 * chrony_tracking_root_delay_seconds)
-                '';
-              }
-            ];
-          }
-        ];
-      }
-    );
-    # alertmanagers = [
-    #   {
-    #     # path_prefix = "/alert";
-    #     static_configs = [
-    #       {
-    #         targets =
-    #           let
-    #             cfg = config.services.prometheus;
-    #           in
-    #           [ "${cfg.alertmanager.listenAddress}:${builtins.toString cfg.alertmanager.port}" ];
-    #       }
-    #     ];
-    #   }
-    # ];
+  };
+  services.vmalert.instances.main.settings = {
+    "notifier.url" =
+      let
+        cfg = config.services.prometheus;
+      in
+      [ "${cfg.alertmanager.listenAddress}:${builtins.toString cfg.alertmanager.port}" ];
+    "datasource.url" = "http://localhost:9090";
+    rule = {
+      groups = [
+        {
+          name = "metrics";
+          rules = [
+            {
+              alert = "OOM";
+              expr = ''node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes < 0.1'';
+            }
+            {
+              alert = "DiskFull";
+              expr = ''node_filesystem_avail_bytes{mountpoint=~"/persist"} / node_filesystem_size_bytes < 0.1'';
+            }
+            {
+              alert = "UnitFailed";
+              expr = ''node_systemd_unit_state{state="failed"} == 1'';
+            }
+            {
+              alert = "BtrfsDevErr";
+              expr = ''sum(rate(node_btrfs_device_errors_total[2m])) > 0'';
+            }
+          ];
+        }
+        {
+          name = "chrony";
+          rules = [
+            {
+              record = "instance:chrony_clock_error_seconds:abs";
+              expr = ''
+                abs(chrony_tracking_last_offset_seconds)
+                +
+                chrony_tracking_root_dispersion_seconds
+                +
+                (0.5 * chrony_tracking_root_delay_seconds)
+              '';
+            }
+          ];
+        }
+      ];
+    };
+  };
+  services.prometheus = {
     exporters = {
       blackbox = {
         enable = true;
@@ -396,38 +383,51 @@ reIf {
         };
       };
     };
-    # alertmanager = {
-    #   enable = true;
-    #   webExternalUrl = "https://alert.nyaw.xyz";
-    #   listenAddress = "[fdcc::3]";
-    #   port = 9093;
-    #   logLevel = "info";
-    #   extraFlags = [ ''--cluster.listen-address=""'' ];
-    #   configuration = {
-    #     global = {
-    #       resolve_timeout = "2m";
-    #     };
-    #     receivers = [
-    #       {
-    #         name = "telegram";
-    #         telegram_configs = [
-    #           {
-    #             bot_token_file = "/run/credentials/alertmanager.service/notifychan";
-    #             chat_id = -1002215131569;
-    #             # http_config = {
-    #             #   proxy_url = "http://127.0.0.1:1900";
-    #             # };
-    #           }
-    #         ];
-    #       }
-    #     ];
-    #     route = {
-    #       receiver = "telegram";
-    #       group_wait = "30s";
-    #       group_interval = "2m";
-    #       repeat_interval = "10m";
-    #     };
-    #   };
-    # };
+    alertmanager = {
+      enable = true;
+      webExternalUrl = "https://alert.nyaw.xyz";
+      listenAddress = "[fdcc::3]";
+      port = 9093;
+      logLevel = "info";
+      extraFlags = [ ''--cluster.listen-address=""'' ];
+      configuration = {
+        global = {
+          resolve_timeout = "2m";
+        };
+        receivers = [
+          {
+            name = "telegram";
+            telegram_configs = [
+              {
+                bot_token_file = "/run/credentials/alertmanager.service/notifychan";
+                chat_id = -1002215131569;
+                # http_config = {
+                #   proxy_url = "http://127.0.0.1:1900";
+                # };
+              }
+            ];
+          }
+        ];
+        route = {
+          receiver = "telegram";
+          group_wait = "30s";
+          group_interval = "2m";
+          repeat_interval = "10m";
+        };
+      };
+    };
   };
+  # alertmanagers = [
+  #   {
+  #     static_configs = [
+  #       {
+  #         targets =
+  #           let
+  #             cfg = config.services.prometheus;
+  #           in
+  #           [ "${cfg.alertmanager.listenAddress}:${builtins.toString cfg.alertmanager.port}" ];
+  #       }
+  #     ];
+  #   }
+  # ];
 }

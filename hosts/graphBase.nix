@@ -61,7 +61,6 @@
           obs-pipewire-audio-capture
         ];
       })
-      pkgs.systemd-run-app
       pkgs.wechat
       pkgs.porsmo
       pkgs.libnotify # foot

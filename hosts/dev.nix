@@ -48,6 +48,7 @@
           # ControlPersist 10m
           Port 22
           IdentityFile /persist/keys/sept
+          HashKnownHosts yes
     ''}"
     "L+ /root/.ssh/config - - - - /home/${user}/.ssh/config"
   ];
@@ -298,6 +299,7 @@
             acpi
             swww
             distrobox
+            gum
             dmidecode
             nix-output-monitor
             numbat
