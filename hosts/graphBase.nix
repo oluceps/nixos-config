@@ -11,6 +11,11 @@
   environment.sessionVariables = {
     QS_ICON_THEME = "Fluent";
   };
+  # hardware.opentabletdriver.enable = true;
+
+  # # Required by OpenTabletDriver
+  # hardware.uinput.enable = true;
+  # boot.kernelModules = [ "uinput" ];
   environment.systemPackages =
     with inputs'.browser-previews.packages;
     (
@@ -249,7 +254,7 @@
       events = [
         {
           event = "lock";
-          command = "${inputs'.noctalia.packages.default}/bin/noctalia-shell ipc call lockScreen toggle";
+          command = "${inputs'.noctalia.packages.default}/bin/noctalia-shell ipc call lockScreen lock";
         }
         {
           event = "before-sleep";
@@ -273,7 +278,6 @@
       #    RUN+="${pkgs.systemd}/bin/loginctl lock-sessions"
       # '';
       packages = with pkgs; [
-        android-udev-rules
         # qmk-udev-rules
         jlink-udev-rules
         yubikey-personalization
@@ -385,7 +389,7 @@
         addons = with pkgs; [
           fcitx5-mozc
           fcitx5-rime
-          (fcitx5-configtool.override { kcmSupport = false; })
+          (qt6Packages.fcitx5-configtool.override { kcmSupport = false; })
         ];
       };
     };

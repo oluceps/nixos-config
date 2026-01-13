@@ -8,7 +8,10 @@
 {
   environment.systemPackages = [
     pkgs.nvtopPackages.intel
+    pkgs.texlive.combined.scheme-full
   ];
+  nix.settings.trusted-users = [ "riro" ];
+
   # systemd.services.systemd-networkd.serviceConfig.Environment = [ "SYSTEMD_LOG_LEVEL=debug" ];
   vaultix.templates = {
     hyst-ab = {

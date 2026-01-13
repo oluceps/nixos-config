@@ -112,7 +112,6 @@ rec {
     "catppuccin"
     # "lix-module"
     "nix-topology"
-    "nyx"
     "self"
   ])
   ++ (with inputs.dae.nixosModules; [
