@@ -64,7 +64,7 @@
             pre-commit = {
               check.enable = true;
               settings.hooks = {
-                nixfmt-rfc-style.enable = false;
+                nixfmt-rfc-style.enable = true;
                 detect-private-keys.enable = true;
               };
             };
