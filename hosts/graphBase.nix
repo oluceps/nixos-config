@@ -176,7 +176,6 @@
       package = pkgs.wireshark;
     };
     kdeconnect.enable = false;
-    adb.enable = true;
     command-not-found.enable = false;
     gamescope.enable = true;
     steam = {

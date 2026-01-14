@@ -85,7 +85,7 @@
     stateVersion = "24.11";
     etc.overlay = {
       enable = true;
-      mutable = false;
+      mutable = true;
     };
   }; # Did you read the comment?
   users.mutableUsers = false;
