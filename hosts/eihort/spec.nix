@@ -127,7 +127,7 @@
     grafana.enable = true;
     incus = {
       enable = true;
-      bridgeAddr = "192.168.0.3/24";
+      bridgeAddr = "fdcc:3::1/64";
     };
   };
 

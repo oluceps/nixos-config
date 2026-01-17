@@ -52,7 +52,7 @@
         table inet filter {
         	chain forward {
             type filter hook forward priority filter; policy drop;
-            iifname "br0" oifname "vm1" ip6 saddr fdcc::3 accept
+            iifname "eno1" oifname "vm1" ip6 saddr fdcc::3 accept
         	}
         }
       '';
@@ -125,6 +125,13 @@
       #     Bond = "bond0";
       #   };
       # };
+      "10-wlan0-ignore" = {
+        matchConfig.Name = "wlan0";
+        linkConfig = {
+          Unmanaged = "yes";
+          ActivationPolicy = "down";
+        };
+      };
 
       "8-eno1" = {
         matchConfig.Name = "eno1";

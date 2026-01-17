@@ -259,7 +259,7 @@
     earlyoom.enable = true;
     incus = {
       enable = true;
-      bridgeAddr = "192.168.0.2/24";
+      bridgeAddr = "fdcc:1::1/64";
     };
   };
 }
