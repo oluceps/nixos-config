@@ -129,6 +129,7 @@
       enable = true;
       bridgeAddr = "fdcc:3::1/64";
     };
+    telegram-search.enable = true;
   };
 
   # systemd.services.minio.serviceConfig.Environment = [

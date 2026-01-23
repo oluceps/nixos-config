@@ -26,7 +26,7 @@
     enableIPv6 = true;
     # WARNING: THIS FAILED MY DHCP
     # interfaces.eth0.wakeOnLan.enable = true;
-    wireless.iwd.enable = true;
+    # wireless.iwd.enable = true;
     useNetworkd = true;
     useDHCP = false;
     firewall = {
@@ -91,7 +91,9 @@
 
       "40-wlan0" = {
         matchConfig.MACAddress = "70:66:55:e7:1c:b1";
-        linkConfig.Name = "wlan0";
+        linkConfig = {
+          Name = "wlan0";
+        };
       };
       "30-rndis" = {
         matchConfig.Driver = "rndis_host";
@@ -125,13 +127,6 @@
       #     Bond = "bond0";
       #   };
       # };
-      "10-wlan0-ignore" = {
-        matchConfig.Name = "wlan0";
-        linkConfig = {
-          Unmanaged = "yes";
-          ActivationPolicy = "down";
-        };
-      };
 
       "8-eno1" = {
         matchConfig.Name = "eno1";
