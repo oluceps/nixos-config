@@ -229,6 +229,8 @@ in
   // Add lines like this to spawn processes at startup.
   // Note that running niri as a session supports xdg-desktop-autostart,
   // which may be more convenient to use.
+  spawn-at-startup "bash" "-c" "systemctl --user import-environment WAYLAND_DISPLAY DISPLAY XDG_CURRENT_DESKTOP && dbus-update-activation-environment --systemd WAYLAND_DISPLAY DISPLAY XDG_CURRENT_DESKTOP"
+  spawn-at-startup "systemctl" "--user" "restart" "rbw-agent.service"
   spawn-at-startup ${execApp [ (lib.getExe pkgs.foot) ]}
   spawn-at-startup ${execDesktop "chromium-browser"}
   spawn-at-startup ${execDesktop "Telegram"}

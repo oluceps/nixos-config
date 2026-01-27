@@ -22,18 +22,41 @@
       default_session = initial_session;
     };
   };
-  security.pam.services = {
-    greetd.enableGnomeKeyring = true;
-    login.enableGnomeKeyring = true;
-  };
-  services.gnome.gcr-ssh-agent.enable = true;
+  # security.pam.services = {
+  #   greetd.enableGnomeKeyring = true;
+  #   login.enableGnomeKeyring = true;
+  # };
+  # services.gnome.gcr-ssh-agent.enable = true;
   environment.systemPackages = [
     pkgs.show-current-ws
+    pkgs.rbw
   ];
+  environment.sessionVariables = {
+    SSH_AUTH_SOCK = "$XDG_RUNTIME_DIR/rbw/ssh-agent-socket";
+  };
 
   systemd.user = {
     services = {
 
+      rbw-agent = {
+        description = "Bitwarden CLI (rbw) Agent";
+
+        wantedBy = [
+          "graphical-session.target"
+          "default.target"
+        ];
+        partOf = [ "graphical-session.target" ];
+
+        path = [ pkgs.wayprompt ];
+
+        serviceConfig = {
+          ExecStart = "${pkgs.rbw}/bin/rbw-agent --no-daemonize";
+          Restart = "always";
+          RestartSec = "5s";
+          RuntimeDirectory = "rbw";
+          RuntimeDirectoryMode = "0700";
+        };
+      };
       niri-flake-polkit = {
         description = "PolicyKit Authentication Agent provided by niri-flake";
         wantedBy = [ "niri.service" ];
