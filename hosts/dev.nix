@@ -48,6 +48,7 @@
           # ControlPersist 10m
           Port 22
           IdentityFile /persist/keys/sept
+          IdentitiesOnly yes
           HashKnownHosts yes
     ''}"
     "L+ /root/.ssh/config - - - - /home/${user}/.ssh/config"
