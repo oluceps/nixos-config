@@ -38,19 +38,20 @@
   systemd.user = {
     services = {
 
-      rbw-agent = {
-        description = "Bitwarden CLI (rbw) Agent";
+      rbw = {
+        description = "Bitwarden CLI (rbw) unlock and start Agent";
 
         wantedBy = [
           "graphical-session.target"
           "default.target"
         ];
+        after = [ "niri.service" ];
         partOf = [ "graphical-session.target" ];
-
-        path = [ pkgs.wayprompt ];
+        path = [ pkgs.rbw ];
 
         serviceConfig = {
           ExecStart = "${pkgs.rbw}/bin/rbw-agent --no-daemonize";
+          ExecStartPost = "${pkgs.rbw}/bin/rbw unlock";
           Restart = "always";
           RestartSec = "5s";
           RuntimeDirectory = "rbw";
