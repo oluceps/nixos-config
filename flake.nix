@@ -71,7 +71,7 @@
                   let
                     checkScript = pkgs.writeShellScript "check-dangerous.sh" ''
                       if ${pkgs.ripgrep}/bin/rg --line-number --color=always --fixed-strings "# DANGEROUS:" "$@"; then
-                        echo -e "\n\033[0;31m[!] 发现禁止提交的标记！请根据上述信息修改代码或删除标记。\033[0m"
+                        echo -e "\n\033[0;31m[!] commit forbidden!\033[0m"
                         exit 1
                       fi
                     '';
