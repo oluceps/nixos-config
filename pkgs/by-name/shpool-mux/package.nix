@@ -2,11 +2,9 @@
 
 pkgs.rustPlatform.buildRustPackage {
   pname = "shpool-mux";
-  version = "0.1.0";
+  version = "0.1.1";
 
   src = ./.;
 
-  vendorHash = "";
-
-  cargoHash = "sha256-0/2tqEt+y7jXwdDJreQEVBEsyQQXPNgJ9AI6vyjdGhM=";
+  cargoLock.lockFile = ./Cargo.lock;
 }

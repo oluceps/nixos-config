@@ -1,5 +1,6 @@
 use rustix::fs::{FlockOperation, flock};
 use rustix::io::{FdFlags, fcntl_setfd};
+use std::collections::HashSet;
 use std::env;
 use std::fs::OpenOptions;
 use std::os::unix::process::CommandExt;
@@ -7,61 +8,93 @@ use std::path::PathBuf;
 use std::process::Command;
 
 fn main() {
-    let runtime_dir = env::var("XDG_RUNTIME_DIR").unwrap();
+    let runtime_dir = env::var("XDG_RUNTIME_DIR").unwrap_or_else(|_| String::from("/tmp"));
 
     let user = env::var("USER").unwrap_or_else(|_| "user".into());
-
     let lock_dir = PathBuf::from(&runtime_dir).join(format!("shpool-{}-locks", user));
 
-    // eprintln!("[shpool-mux] Checking Lock Dir: {:?}", lock_dir);
-
     if !lock_dir.exists() {
-        if let Err(e) = std::fs::create_dir_all(&lock_dir) {
-            eprintln!("[shpool-mux] FATAL: Failed to create lock dir: {}", e);
-            std::process::exit(1);
-        }
+        let _ = std::fs::create_dir_all(&lock_dir);
     }
 
-    for i in 1..=20 {
+    // === 1. Spawn Mode detection ===
+    // Ctrl+Shift+N inherit mother's CWD。
+    // if CWD != HOME，highly possible is a new window opened on dir,
+    // expect a new shell instead of the session retain by last by this slot.
+    let cwd = env::current_dir().unwrap_or_else(|_| PathBuf::from("/"));
+    let home = env::var("HOME").ok().map(PathBuf::from);
+
+    // cannot get HOME, fallback
+    let is_spawn_mode = match home {
+        Some(h) => cwd != h,
+        None => true,
+    };
+
+    let running_sessions = get_running_sessions();
+
+    let mut slots: Vec<u32> = (1..=20).collect();
+
+    if is_spawn_mode {
+        slots.sort_by_key(|&i| {
+            if running_sessions.contains(&i.to_string()) {
+                1
+            } else {
+                0
+            }
+        });
+    }
+
+    for &i in &slots {
         let lock_path = lock_dir.join(format!("slot_{}.lock", i));
-        let session_name = format!("{}", i);
-        let file_result = OpenOptions::new()
+        let session_name = format!("{}", i); // 建议名字纯数字，简洁
+
+        let file = OpenOptions::new()
             .read(true)
             .write(true)
             .create(true)
             .open(&lock_path);
 
-        match file_result {
-            Ok(f) => match flock(&f, FlockOperation::NonBlockingLockExclusive) {
-                Ok(_) => {
-                    if let Err(e) = fcntl_setfd(&f, FdFlags::empty()) {
-                        eprintln!("[shpool-mux] Slot {}: fcntl failed: {}", i, e);
-                        continue;
-                    }
-
-                    // eprintln!("[shpool-mux] Acquired slot {}, executing...", i);
-
-                    let err = Command::new("shpool")
-                        .arg("attach")
-                        .arg("-f")
-                        .arg(&session_name)
-                        .exec();
-
-                    panic!("[shpool-mux] FATAL: Failed to exec shpool: {}", err);
+        if let Ok(f) = file {
+            if let Ok(_) = flock(&f, FlockOperation::NonBlockingLockExclusive) {
+                if let Err(_) = fcntl_setfd(&f, FdFlags::empty()) {
+                    continue;
                 }
-                Err(rustix::io::Errno::WOULDBLOCK) => continue,
-                Err(e) => eprintln!("[shpool-mux] Slot {}: Lock error: {}", i, e),
-            },
-            Err(e) => {
-                eprintln!(
-                    "[shpool-mux] Slot {}: Failed to open/create file {:?}: {}",
-                    i, lock_path, e
-                );
+
+                if is_spawn_mode && running_sessions.contains(&session_name) {
+                    let _ = Command::new("shpool")
+                        .arg("kill")
+                        .arg(&session_name)
+                        .output(); // output() 会等待子进程结束，起到同步作用
+                }
+
+                let mut cmd = Command::new("shpool");
+                cmd.arg("attach").arg("-f").arg(&session_name);
+
+                cmd.arg("--dir").arg(&cwd);
+
+                let err = cmd.exec();
+
+                panic!("[shpool-mux] FATAL: Failed to exec shpool: {}", err);
             }
         }
     }
 
-    eprintln!("\n[shpool-mux] Error: All 20 slots failed to acquire.");
+    eprintln!("\n[shpool-mux] Error: All 20 slots are locked locally.");
     eprintln!("Press ENTER to exit...");
     let _ = std::io::stdin().read_line(&mut String::new());
+}
+
+fn get_running_sessions() -> HashSet<String> {
+    let mut set = HashSet::new();
+    if let Ok(output) = Command::new("shpool").arg("list").output() {
+        let stdout = String::from_utf8_lossy(&output.stdout);
+        // NAME    STARTED_AT    STATUS
+        // 1       ...           attached
+        for line in stdout.lines().skip(1) {
+            if let Some(name) = line.split_whitespace().next() {
+                set.insert(name.to_string());
+            }
+        }
+    }
+    set
 }
