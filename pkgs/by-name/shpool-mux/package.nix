@@ -6,7 +6,7 @@ pkgs.rustPlatform.buildRustPackage {
 
   src = ./.;
 
-  vendorHash = "sha256-0/2tqEt+y7jXwdDJreQEVBEsyQQXPNgJ9AI6vyjdGhM=";
+  vendorHash = "";
 
   cargoHash = "sha256-0/2tqEt+y7jXwdDJreQEVBEsyQQXPNgJ9AI6vyjdGhM=";
 }
