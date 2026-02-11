@@ -134,6 +134,7 @@
     alloy.enable = true;
     zeek.enable = true;
     jellyfin.enable = true;
+    samba.enable = true;
   };
 
   # systemd.services.minio.serviceConfig.Environment = [
