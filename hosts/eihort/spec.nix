@@ -1,5 +1,6 @@
 {
   config,
+  inputs,
   lib,
   pkgs,
   ...
@@ -145,6 +146,11 @@
       enable = true;
       socketActivated = true;
     };
+    nuanmonito = {
+      enable = true;
+      package = inputs.nuanmonito.packages.${pkgs.system}.nuanmonito;
+      environmentFile = config.vaultix.secrets.nuan.path;
+    };
     memos = {
       enable = true;
       instanceUrl = "https://memos.nyaw.xyz";
@@ -282,8 +288,8 @@
     # If the hardware watchdog does not get a signal for 20s,
     # it will forcefully reboot the system.
     settings.Manager = {
-      RebootWatchdogSec = "20s";
-      RuntimeWatchdogSec = "30s";
+      RebootWatchdogSec = "3min";
+      RuntimeWatchdogSec = "60s";
     };
   };
 

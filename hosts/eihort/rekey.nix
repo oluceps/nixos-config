@@ -13,6 +13,7 @@ in
 
     secrets = {
       grafana = { };
+      nuan = { };
       wg-eihort = {
         owner = "systemd-network";
         group = "root";

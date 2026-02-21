@@ -402,6 +402,7 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     snm.url = "gitlab:simple-nixos-mailserver/nixos-mailserver/master";
+    nuanmonito.url = "/home/riro/Src/nuanmonito";
     self.submodules = true;
 
   };
