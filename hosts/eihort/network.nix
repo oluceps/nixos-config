@@ -31,13 +31,11 @@
       allowedUDPPorts = [
         80
         443
-        8080
         5353 # mdns
       ];
       allowedTCPPorts = [
         80
         443
-        8080
         3260
       ];
     };
