@@ -148,7 +148,7 @@
     };
     nuanmonito = {
       enable = true;
-      package = inputs.nuanmonito.packages.${pkgs.system}.nuanmonito;
+      package = inputs.nuanmonito.packages.${pkgs.stdenv.hostPlatform.system}.nuanmonito;
       environmentFile = config.vaultix.secrets.nuan.path;
     };
     memos = {

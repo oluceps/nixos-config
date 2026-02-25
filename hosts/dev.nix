@@ -151,6 +151,8 @@
             devenv
             zoxide
             nodejs_latest
+            opencode
+            gemini-cli
             gh
             zed-editor
             # vscode.fhs
@@ -345,7 +347,6 @@
     ++ (with pkgs.nodePackages; [
       typescript-language-server
       vscode-json-languageserver
-      node2nix
       markdownlint-cli2
       prettier
     ]);
