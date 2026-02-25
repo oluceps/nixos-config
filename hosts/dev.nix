@@ -154,7 +154,7 @@
             opencode
             gemini-cli
             gh
-            zed-editor
+            # zed-editor
             # vscode.fhs
             # nodejs_latest.pkgs.pnpm
             # nodejs_latest

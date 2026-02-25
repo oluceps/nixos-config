@@ -136,6 +136,7 @@
     zeek.enable = true;
     jellyfin.enable = true;
     samba.enable = true;
+    ncps.enable = true;
   };
 
   # systemd.services.minio.serviceConfig.Environment = [

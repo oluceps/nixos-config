@@ -2280,6 +2280,22 @@
         "type": "github"
       }
     },
+    "nixpkgs-2505-kernel": {
+      "locked": {
+        "lastModified": 1759640323,
+        "narHash": "sha256-WyFIKc+7DWyCCD/ef7hr1IvNwG6KxubVVsrQN3tLLaI=",
+        "owner": "NixOS",
+        "repo": "nixpkgs",
+        "rev": "c1a044ba6864653fa8cc7236fad37fa8a37917d3",
+        "type": "github"
+      },
+      "original": {
+        "owner": "NixOS",
+        "repo": "nixpkgs",
+        "rev": "c1a044ba6864653fa8cc7236fad37fa8a37917d3",
+        "type": "github"
+      }
+    },
     "nixpkgs-factorio": {
       "locked": {
         "lastModified": 1724984758,
@@ -3486,6 +3502,7 @@
         "nixos-facter-modules": "nixos-facter-modules",
         "nixpkgs": "nixpkgs_24",
         "nixpkgs-22": "nixpkgs-22",
+        "nixpkgs-2505-kernel": "nixpkgs-2505-kernel",
         "nixpkgs-factorio": "nixpkgs-factorio",
         "nixpkgs-fix-mautrix": "nixpkgs-fix-mautrix",
         "nixpkgs-master": "nixpkgs-master",

@@ -29,7 +29,11 @@ reIf {
       };
     };
   };
-  vaultix.secrets.grafana-secretkey = {
+  vaultix.secrets = {
+    grafana = { };
+    grafana-secretkey = {
+      owner = "grafana";
+    };
   };
   systemd.services.grafana.serviceConfig = {
     EnvironmentFile = config.vaultix.secrets.grafana.path;
