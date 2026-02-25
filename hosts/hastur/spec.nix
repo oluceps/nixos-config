@@ -256,9 +256,9 @@
     # alloy.enable = true;
     # zeek.enable = true;
     earlyoom.enable = true;
-    incus = {
-      enable = true;
-      bridgeAddr = "fdcc:1::1/64";
-    };
+    # incus = {
+    #   enable = true;
+    #   bridgeAddr = "fdcc:1::1/64";
+    # };
   };
 }

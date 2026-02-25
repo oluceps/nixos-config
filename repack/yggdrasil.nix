@@ -6,24 +6,42 @@
   ...
 }:
 reIf {
+  networking.firewall = {
 
-  networking.firewall.allowedUDPPorts = [ 1234 ];
+    # allowedUDPPorts = [ 12344 ];
+    allowedTCPPorts = [
+      1234
+      12344
+    ];
+  };
   services.yggdrasil = {
     enable = true;
-    openMulticastPort = true;
+    # openMulticastPort = true;
     settings = {
-      Listen = [ "quic://[::]:1234" ];
+      Listen = [
+        "tcp://[::]:1234"
+        "tls://[::]:12344"
+      ];
       Peers =
         let
-          thisNode = lib.data.node.${config.networking.hostName};
+          thisName = config.networking.hostName;
+          thisNode = lib.data.node.${thisName};
           able2Connect =
             peerNode:
             (!peerNode.nat)
             || (thisNode.nat && thisNode ? region && peerNode ? region && thisNode.region == peerNode.region);
+          directConnect = peerNode: ((thisNode.nat && peerNode.nat) || (thisNode.censor == peerNode.censor));
         in
-        (lib.mapAttrsToList (_: v: "quic://" + (lib.elemAt v.addrs 0) + ":1234") (
-          lib.filterAttrs (_: v: able2Connect v) lib.data.node
-        ));
+        (lib.mapAttrsToList (
+          _: v:
+          let
+            addr = (lib.elemAt v.addrs 0);
+          in
+          if (directConnect v) then
+            "tcp://" + addr + ":1234"
+          else
+            "sockstls://127.0.0.1:1900/" + addr + ":12344"
+        ) (lib.filterAttrs (k: v: (able2Connect v) && k != thisName) lib.data.node));
     };
     package = pkgs.yggdrasil.overrideAttrs (old: {
       version = old.version + "-patch";

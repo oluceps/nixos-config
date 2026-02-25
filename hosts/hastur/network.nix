@@ -5,9 +5,7 @@
     resolved = {
       llmnr = "true";
       dnssec = "false";
-      extraConfig = ''
-        Cache=no
-      '';
+      settings.Resolve.Cache = "no";
     };
   };
   networking = {

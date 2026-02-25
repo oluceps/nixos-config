@@ -126,10 +126,10 @@
 
     prometheus.enable = true;
     grafana.enable = true;
-    incus = {
-      enable = true;
-      bridgeAddr = "fdcc:3::1/64";
-    };
+    # incus = {
+    #   enable = true;
+    #   bridgeAddr = "fdcc:3::1/64";
+    # };
     telegram-search.enable = true;
     loki.enable = true;
     alloy.enable = true;
