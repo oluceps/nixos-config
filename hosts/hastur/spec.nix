@@ -218,7 +218,7 @@
       RuntimeWatchdogSec = "30s";
     };
 
-    sleep.settings.Sleep.AllowHibernation = "no";
+    # sleep.settings.Sleep.AllowHibernation = "no";
   };
   repack = {
     plugIn.enable = true;
