@@ -21,18 +21,17 @@ in
       expose = lib.mkEnableOption "API env";
       package = lib.mkOption {
         type = lib.types.package;
-        default = pkgs.caddy
-        # .withPlugins {
-        #   plugins = [
-        #     "github.com/caddy-dns/cloudflare@v0.0.0-20250724223520-f589a18c0f5d"
-        #     "github.com/mholt/caddy-ratelimit@v0.1.0"
-        #     "github.com/ss098/certmagic-s3@v0.0.0-20250607141218-0c4ff782fbd0"
-        #     "github.com/greenpau/caddy-security@v1.1.31"
-        #     "github.com/mholt/caddy-l4@v0.0.0-20260112235400-e24201789f06"
-        #   ];
-        #   hash = "";
-        # };
-        ;
+        default = pkgs.caddy.withPlugins {
+          plugins = [
+            "github.com/caddy-dns/cloudflare@v0.0.0-20250724223520-f589a18c0f5d"
+            "github.com/mholt/caddy-ratelimit@v0.1.0"
+            "github.com/ss098/certmagic-s3@v0.0.0-20250607141218-0c4ff782fbd0"
+            "github.com/greenpau/caddy-security@v1.1.31"
+            "github.com/mholt/caddy-l4@v0.0.0-20260112235400-e24201789f06"
+          ];
+          hash = "";
+        };
+        # ;
       };
       settings = lib.mkOption {
         type = lib.types.submodule { freeformType = format.type; };
