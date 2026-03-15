@@ -1,14 +1,15 @@
 { lib, config, ... }:
 {
   imports = [ ./bird.nix ];
-  services = {
-    resolved = {
-      settings.Resolve.LLMNR = "true";
-      settings.Resolve.DNSSEC = "false";
-      settings.Resolve.FallbackDNS = [ "8.8.8.8#dns.google" ];
-      settings.Resolve.Cache = "no";
-    };
+
+  services.resolved.settings.Resolve = {
+    LLMNR = "true";
+    DNSSEC = "false";
+    FallbackDNS = [ "8.8.8.8#dns.google" ];
+    Cache = "no";
   };
+
+  # services.resolved.enable = false;
   networking = {
     # resolvconf.useLocalResolver = true;
     hosts = lib.data.hosts.${config.networking.hostName};
@@ -35,6 +36,7 @@
         80
         443
         3260
+        21027 # syncthing
       ];
     };
     hostId = "0bc55a2e";

@@ -77,7 +77,7 @@
   system = {
 
     etc.overlay.enable = true;
-    etc.overlay.mutable = false;
+    etc.overlay.mutable = true;
 
     stateVersion = "25.05";
   };
@@ -146,6 +146,10 @@
     rsyncd = {
       enable = true;
       socketActivated = true;
+    };
+    cloudflared = {
+      enable = true;
+      environmentFile = config.vaultix.secrets.cfd.path;
     };
     nuanmonito = {
       enable = true;
