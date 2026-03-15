@@ -37,7 +37,7 @@ reIf (
         trustedInterfaces = [
           "ygg0"
         ];
-        extraInputRules = ''
+        extraInputRules = lib.mkIf thisNode.nat ''
           iifname { "eno1", "wlan0" } ip6 saddr { ${llSetString} } accept
         '';
       };
@@ -74,7 +74,7 @@ reIf (
           lib.filterAttrs (k: _: k != thisName) lib.data.node
         );
 
-        MulticastInterfaces = [
+        MulticastInterfaces = lib.mkIf thisNode.nat [
           {
             Regex = "eno.*";
             Beacon = true;
