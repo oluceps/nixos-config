@@ -91,7 +91,7 @@
       "5-eno1" = {
         matchConfig.Name = "eno1";
         networkConfig = {
-          DHCP = "no";
+          DHCP = "ipv4";
           IPv4Forwarding = true;
           IPv6Forwarding = true;
           IPv6AcceptRA = true;
@@ -101,11 +101,6 @@
           DHCPv6Client = false;
         };
         linkConfig.RequiredForOnline = "routable";
-        address = [ "192.168.0.3/24" ];
-        dns = [ "192.168.0.1" ];
-        routes = [
-          { Gateway = "192.168.0.1"; }
-        ];
       };
     };
   };

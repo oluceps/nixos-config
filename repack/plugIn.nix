@@ -161,5 +161,10 @@ in
         }
       '';
     repack.yggdrasil.enable = true;
+    # services.zerotierone = {
+    #   enable = true;
+    #   joinNetworks = [ "76fc96e49840ce35" ];
+    # };
+
   };
 }

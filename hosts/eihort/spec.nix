@@ -130,7 +130,7 @@
     #   enable = true;
     #   bridgeAddr = "fdcc:3::1/64";
     # };
-    telegram-search.enable = true;
+    # telegram-search.enable = true;
     loki.enable = true;
     alloy.enable = true;
     zeek.enable = true;
