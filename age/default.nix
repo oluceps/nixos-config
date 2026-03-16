@@ -42,7 +42,6 @@
         "sing-server"
         "caddy"
         "k3s_token"
-        "babel-auth"
       ])
       // (userRo [
         "nyaw.key"
@@ -52,6 +51,10 @@
       // (rrr [ "ntfy-token" ])
       // (if type != "default" then (import ./${type}.nix gener) else { })
       // {
+
+        "babel-auth" = {
+          owner = "bird";
+        };
         "nyaw.cert" = {
           cleanPlaceholder = true;
           mode = "400";
