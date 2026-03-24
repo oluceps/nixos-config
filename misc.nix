@@ -57,6 +57,14 @@
     };
     fish = {
       enable = true;
+      shellAbbrs = {
+        sc = "systemctl";
+        scs = "systemctl status";
+        scr = "systemctl restart";
+        jc = "journalctl";
+        jcfu = "journalctl -fu";
+        jcfk = "journalctl -fk";
+      };
       shellAliases = {
         j = "just";
         ls = "eza --icons=auto --hyperlink --color=always --color-scale=all --color-scale-mode=gradient --git --git-repos";
@@ -74,17 +82,9 @@
         lks = "lsd --icon never --hyperlink auto";
         g = "lazygit";
         "cd.." = "cd ..";
-        up = "nix flake update --commit-lock-file /etc/nixos && swc";
-        fp = "fish --private";
-        e = "exit";
         st = "sudo systemctl-tui";
         rp = "rustplayer";
         y = "yazi";
-        i = "kitty +kitten icat";
-        sc = "systemctl";
-        scs = "systemctl status";
-        scr = "systemctl restart";
-        jc = "journalctl";
         ".." = "cd ..";
         "。。" = "cd ..";
         "..." = "cd ../..";
