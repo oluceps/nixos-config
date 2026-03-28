@@ -160,7 +160,7 @@
             opencode
             codex
             gemini-cli
-            antigravity-fhs
+            antigravity
             gh
             # zed-editor
             # vscode.fhs

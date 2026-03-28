@@ -11,7 +11,7 @@
   system = {
 
     etc.overlay.enable = true;
-    etc.overlay.mutable = true;
+    etc.overlay.mutable = false;
 
     stateVersion = "25.05";
   };
@@ -71,6 +71,8 @@
     jellyfin.enable = true;
     samba.enable = true;
     ncps.enable = true;
+    earlyoom.enable = true;
+    forgejo.enable = true;
   };
 
   # systemd.services.minio.serviceConfig.Environment = [

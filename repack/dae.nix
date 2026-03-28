@@ -41,7 +41,7 @@ reIf {
             # sniffing_timeout: 50ms
             tls_implementation: utls
             utls_imitate: chrome_auto
-            lan_interface: br0,podman0,podman1,podman2,podman3
+            lan_interface: br0,podman0,podman1,podman2,podman3,docker0
             mptcp: true
             tls_fragment_length: '50-100'
             tls_fragment_interval: '10-20'
@@ -80,7 +80,7 @@ reIf {
             dip(9.9.9.9) -> direct
             dip(1.1.1.1, 8.8.8.8, 1.0.0.1, 8.8.4.4) -> all
             dip(224.0.0.0/3, 'ff00::/8', 10.0.0.0/8, 'fd00::/8', '200::/7') -> direct
-
+            domain(geosite:anthropic) -> claude
 
             domain(suffix:migadu.com) -> all
             dport(465) -> all

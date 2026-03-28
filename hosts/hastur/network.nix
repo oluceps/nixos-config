@@ -35,6 +35,7 @@
       trustedInterfaces = [
         "virbr0"
         "podman*"
+        "docker0"
         "tun-sing"
         "dae0"
       ];
