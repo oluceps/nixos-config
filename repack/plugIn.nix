@@ -17,24 +17,27 @@ in
   config = lib.mkIf cfg.enable {
 
     networking.firewall = {
-      trustedInterfaces = [ "xfrm-*" ];
+      trustedInterfaces = [
+        "xfrm-*"
+        "hts-0"
+      ];
     };
 
-    systemd.network = {
-      netdevs."10-anchor-0" = {
-        enable = true;
-        netdevConfig = {
-          Kind = "dummy";
-          Name = "anchor-0";
-        };
-      };
-      networks."10-dummy-anchor-0" = {
-        enable = true;
-        DHCP = "no";
-        matchConfig.Name = "anchor-0";
-        address = singleton thisNode.unique_addr;
-      };
-    };
+    # systemd.network = {
+    # netdevs."10-anchor-0" = {
+    #   enable = true;
+    #   netdevConfig = {
+    #     Kind = "dummy";
+    #     Name = "anchor-0";
+    #   };
+    # };
+    # networks."10-dummy-anchor-0" = {
+    #   enable = true;
+    #   DHCP = "no";
+    #   matchConfig.Name = "anchor-0";
+    #   address = singleton thisNode.unique_addr;
+    # };
+    # };
 
     # # https://www.procustodibus.com/blog/2021/11/wireguard-nftables/
     # networking.nftables.ruleset = # nft
@@ -60,11 +63,12 @@ in
     #     }
     #   '';
     repack.yggdrasil.enable = true;
+    repack.wg-partial-mesh.enable = true;
     # services.zerotierone = {
     #   enable = true;
     #   joinNetworks = [ "76fc96e49840ce35" ];
     # };
-    repack.ranet.enable = true;
+    # repack.ranet.enable = true;
 
   };
 }

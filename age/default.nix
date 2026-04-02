@@ -56,6 +56,12 @@
         "babel-auth" = {
           owner = "bird";
         };
+        "wg-${config.networking.hostName}" = {
+          owner = "systemd-network";
+        };
+        psk = {
+          owner = "systemd-network";
+        };
         "nyaw.cert" = {
           cleanPlaceholder = true;
           mode = "400";
