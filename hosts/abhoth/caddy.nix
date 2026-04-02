@@ -12,6 +12,45 @@
     settings.apps = {
       http.servers = {
         srv0 = {
+          listener_wrappers = [
+            {
+              wrapper = "layer4";
+              routes = [
+                {
+                  handle = [
+                    {
+                      handler = "subroute";
+                      routes = [
+                        {
+                          handle = [
+                            {
+                              handler = "proxy";
+                              upstreams = [
+                                {
+                                  dial = [
+                                    "tcp/127.0.0.1:4474"
+                                  ];
+                                }
+                              ];
+                            }
+                          ];
+                          match = [
+                            {
+                              tls = {
+                                sni = [
+                                  "www.kyoto-u.ac.jp"
+                                ];
+                              };
+                            }
+                          ];
+                        }
+                      ];
+                    }
+                  ];
+                }
+              ];
+            }
+          ];
           routes = [
             {
               handle = [

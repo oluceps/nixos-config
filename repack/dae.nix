@@ -83,7 +83,7 @@ reIf {
             domain(geosite:anthropic) -> claude
 
             domain(suffix:migadu.com) -> all
-            dport(465) -> all
+            dport(465) -> v6
             domain(geosite:google-gemini,google,openai,geosite:category-ai-chat-!cn,cloudflare) -> ai
             domain(suffix: copilot.microsoft.com,
                 suffix: gateway-copilot.bingviz.microsoftapp.net,
@@ -128,7 +128,7 @@ reIf {
             dip(geoip:private) -> direct
 
             domain(suffix:'api.atuin.nyaw.xyz') -> all
-            domain(suffix:'911993.xyz') -> all
+            domain(full:'box.nyaw.xyz') -> v6
 
             domain(suffix: '4.ip.skk.moe') -> all
             domain(suffix: '2.ip.skk.moe') -> direct

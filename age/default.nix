@@ -42,6 +42,7 @@
         "sing-server"
         "caddy"
         "k3s_token"
+        "garden_key"
       ])
       // (userRo [
         "nyaw.key"

@@ -34,6 +34,7 @@
     supportedFilesystems = [ "tcp_bbr" ];
   };
   repack = {
+    ranet.enable = true;
     plugIn.enable = true;
     openssh.enable = true;
     fail2ban.enable = true;
@@ -125,6 +126,12 @@
       ];
     };
 
+    ranet-discover = {
+      enable = true;
+      registry = "/var/lib/garden/registry.json";
+      key = config.vaultix.secrets.garden_key.path;
+      interface = "eno1";
+    };
     realm = {
       enable = true;
       settings = {

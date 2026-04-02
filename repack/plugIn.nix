@@ -17,7 +17,7 @@ in
   config = lib.mkIf cfg.enable {
 
     networking.firewall = {
-      trustedInterfaces = [ "zt*" ];
+      trustedInterfaces = [ "xfrm-*" ];
     };
 
     systemd.network = {
@@ -60,10 +60,11 @@ in
     #     }
     #   '';
     repack.yggdrasil.enable = true;
-    services.zerotierone = {
-      enable = true;
-      joinNetworks = [ "76fc96e49840ce35" ];
-    };
+    # services.zerotierone = {
+    #   enable = true;
+    #   joinNetworks = [ "76fc96e49840ce35" ];
+    # };
+    repack.ranet.enable = true;
 
   };
 }

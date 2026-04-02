@@ -61,7 +61,8 @@
             table inet nat {
               chain postrouting {
                 type nat hook postrouting priority srcnat; policy accept;
-                iifname "wg-ext" oifname "enp0s4" masquerade;
+                iifname "wg-ext" oifname "enp0s4" ip saddr 10.10.10.0/24 masquerade;
+                iifname "wg-ext" oifname "enp0s4" meta nfproto ipv6 snat to fec0::1;
               }
             }
             table inet filter {

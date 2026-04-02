@@ -97,6 +97,7 @@ withSystem "x86_64-linux" (
       ++ (with inputs; [
         # aagl.nixosModules.default
         disko.nixosModules.default
+        ranet-discover.nixosModules.default
         # niri.nixosModules.niri
         # nixos-cosmic.nixosModules.default
         # inputs.j-link.nixosModule
