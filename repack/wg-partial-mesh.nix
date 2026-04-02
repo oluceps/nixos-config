@@ -26,8 +26,6 @@ let
 
 in
 reIf {
-  # strongswan provides the vici socket required by ranet
-
   networking = {
     firewall = {
       allowedUDPPorts = [
@@ -36,10 +34,27 @@ reIf {
     };
   };
 
+  vaultix.secrets = {
+    "wg-${hostName}" = {
+      owner = "systemd-network";
+    };
+    psk = {
+      owner = "systemd-network";
+    };
+  };
+
   systemd.network = {
     networks."10-wireguard-hts" = {
       matchConfig.Name = "hts-0";
-      address = [ "fdcc::${toString (thisNode.id + 1)}/64" ];
+      addresses = [
+        "fdcc::${toString (thisNode.id + 1)}/128"
+      ];
+      routes = [
+        {
+          Destination = "fdcc::/64";
+          Metric = 100;
+        }
+      ];
       networkConfig = {
         IPMasquerade = "ipv6";
         IPv6Forwarding = true;
@@ -62,29 +77,33 @@ reIf {
         lib.mapAttrsToList (
           name: peerNode:
           let
-            # Pick IPv6 address first, then IPv4
-            v6Addr = lib.findFirst (addr: getFamily addr == "ip6") null peerNode.addrs;
-            v4Addr = lib.findFirst (addr: getFamily addr == "ip4") null peerNode.addrs;
+            potentialEndpoints = lib.filter (addr: !lib.hasPrefix "fdcc:" addr) (peerNode.addrs or [ ]);
+
+            v6Addr = lib.findFirst (addr: getFamily addr == "ip6") null potentialEndpoints;
+            v4Addr = lib.findFirst (addr: getFamily addr == "ip4") null potentialEndpoints;
             endpointAddr = if v6Addr != null then "[${v6Addr}]" else v4Addr;
           in
-          if name == hostName || endpointAddr == null then
+          if name == hostName then
             [ ]
           else
             let
-              peerConfig = ifAble2Connect peerNode {
-                PublicKey = peerNode.wg_key;
-                AllowedIPs = [
-                  "fdcc::${toString (peerNode.id + 1)}"
-                ];
-                PresharedKeyFile = config.vaultix.secrets.psk.path;
-                Endpoint = "${endpointAddr}:39388";
-                PersistentKeepalive = 15;
-              };
+              peerConfig = ifAble2Connect peerNode (
+                {
+                  PublicKey = peerNode.wg_key;
+                  AllowedIPs = [
+                    "fdcc::${toString (peerNode.id + 1)}/128"
+                  ];
+                  PresharedKeyFile = config.vaultix.secrets.psk.path;
+                  PersistentKeepalive = 15;
+                }
+                // lib.optionalAttrs (endpointAddr != null) {
+                  Endpoint = "${endpointAddr}:39388";
+                }
+              );
             in
             if peerConfig == { } then [ ] else [ peerConfig ]
         ) lib.data.node
       );
     };
   };
-
 }
