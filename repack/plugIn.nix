@@ -63,12 +63,12 @@ in
     #     }
     #   '';
     repack.yggdrasil.enable = true;
-    repack.wg-partial-mesh.enable = true;
+    # repack.wg-partial-mesh.enable = true;
     # services.zerotierone = {
     #   enable = true;
     #   joinNetworks = [ "76fc96e49840ce35" ];
     # };
-    # repack.ranet.enable = true;
+    repack.ranet.enable = true;
 
   };
 }

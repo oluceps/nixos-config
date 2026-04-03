@@ -46,7 +46,7 @@ reIf {
   systemd.network = {
     networks."10-wireguard-hts" = {
       matchConfig.Name = "hts-0";
-      addresses = [
+      address = [
         "fdcc::${toString (thisNode.id + 1)}/128"
       ];
       routes = [
@@ -59,6 +59,33 @@ reIf {
         IPMasquerade = "ipv6";
         IPv6Forwarding = true;
       };
+      networkConfig.DHCP = false;
+      linkConfig.RequiredForOnline = false;
+    };
+    networks."10-hts-sb_fwd" = {
+      matchConfig.Name = "hts-sb_fw";
+      address = [
+        "172.19.0.1/30"
+        "fdfe:dcba:9876::1/126"
+      ];
+      routes = [
+        {
+          Destination = "154.31.114.112/32";
+          Scope = "link";
+        }
+        {
+          Destination = "2403:18c0:1000:13a:343b:65ff:fe1b:7a0f/128";
+          Scope = "link";
+        }
+        {
+          Destination = "205.198.76.6/32";
+          Scope = "link";
+        }
+        {
+          Destination = "2404:c140:2005::b:a72a/128";
+          Scope = "link";
+        }
+      ];
       networkConfig.DHCP = false;
       linkConfig.RequiredForOnline = false;
     };

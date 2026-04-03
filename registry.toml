@@ -43,7 +43,7 @@ wg_key = "69DTVyNbhMN6/cgLCpcZrh/kGoi1IyxV0QwVjDe5IQk="
 ygg_pubkey = "38f6eb396caad927898ab182e882452499b0181477c25d7adb679905f12deb33"
 mac = "ac:1f:6b:e5:fe:3a"
 
-addrs = ["192.168.0.22"]
+addrs = ["192.168.0.17"]
 # identifiers = [{ name = "eihort.local", type = "mdns" }]
 
 
