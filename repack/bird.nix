@@ -33,8 +33,7 @@ in
           };
           protocol direct {
             ipv6;
-            # include zt interfaces
-            interface "anchor-0"; 
+            interface "anchor-*"; 
           }
 
           protocol static guard {

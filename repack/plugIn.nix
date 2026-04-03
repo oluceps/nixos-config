@@ -68,7 +68,8 @@ in
     #   enable = true;
     #   joinNetworks = [ "76fc96e49840ce35" ];
     # };
-    repack.ranet.enable = true;
+    # repack.ranet.enable = true;
+    repack.vxlan-mesh.enable = true;
 
   };
 }
