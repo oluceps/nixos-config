@@ -3529,11 +3529,11 @@
         "rust-overlay": "rust-overlay_8"
       },
       "locked": {
-        "lastModified": 1774426776,
-        "narHash": "sha256-DcF/DuFFcZgbyDpzzFCo/b6U418iNuwbNgHBAwf2mdE=",
+        "lastModified": 1775143606,
+        "narHash": "sha256-NAbWFKkWU4ivBRAKaSx+W8opmb+SAMQ3L5iFI/j5u3M=",
         "ref": "refs/heads/master",
-        "rev": "e7467fb15ff6d679d710c0ee9b6f6d2b94d4c69d",
-        "revCount": 2922,
+        "rev": "22b2871f64ecf34a22d32add0dd59a0c7c96ad10",
+        "revCount": 2946,
         "type": "git",
         "url": "https://seed.radicle.xyz/z3gqcJUoA1n9HaHKufZs5FCSGazv5.git"
       },
