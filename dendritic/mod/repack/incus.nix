@@ -1,8 +1,5 @@
 {
-  reIf,
-  pkgs,
   config,
-  user,
   lib,
   ...
 }:
@@ -14,6 +11,9 @@ in
     repack.incus = {
       bridgeAddr = lib.mkOption {
         type = lib.types.str;
+      };
+      user = lib.mkOption {
+        type = lib.types.singleLineStr;
       };
     };
   };
