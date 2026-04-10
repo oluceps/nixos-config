@@ -1,4 +1,10 @@
+{ user, ... }:
 {
+  users.users.${user}.extraGroups = [
+    "podman"
+    "video"
+    "render"
+  ];
   networking.firewall = {
     trustedInterfaces = [
       "podman*"

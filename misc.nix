@@ -33,12 +33,12 @@
     };
   };
   virtualisation.oci-containers.backend = "podman";
-  virtualisation.containers.containersConf.settings = {
-    network = {
-      # FIX: create network silent fail
-      network_config_dir = "/var/lib/containers/storage/networks";
-    };
-  };
+  # virtualisation.containers.containersConf.settings = {
+  #   network = {
+  #     # FIX: create network silent fail
+  #     network_config_dir = "/var/lib/containers/storage/networks";
+  #   };
+  # };
   networking.nftables.flushRuleset = lib.mkForce false;
   programs = {
     less.lessopen = null;
