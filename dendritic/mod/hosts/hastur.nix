@@ -11,16 +11,17 @@
     imports = [
       self.modules.generic.data
       self.modules.generic.fn
+      self.modules.nixos.identity
       self.modules.nixos.coredns
-      ./incus.nix
-      ./subs.nix
-      ./photoprism.nix
+      self.modules.nixos.incus
+      self.modules.nixos.subs
+      self.modules.nixos.photoprism
     ];
-    incus.enable = true;
-    incus.user = "riro";
-    incus.bridgeAddr = "fdcc:1::1/64";
-    subs.enable = true;
-    photoprism.enable = true;
+    identity.user = "riro";
+    repack.incus.enable = true;
+    repack.incus.bridgeAddr = "fdcc:1::1/64";
+    repack.subs.enable = true;
+    repack.photoprism.enable = true;
     users.users.riro = {
       isNormalUser = true;
       group = "riro";
