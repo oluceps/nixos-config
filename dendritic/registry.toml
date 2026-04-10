@@ -1,0 +1,98 @@
+prefix = "fdcc::"
+
+[node.hastur]
+# homeserver censored
+id = 0                                                                                       # ro, for Cantor Pair Function
+censor = true
+nat = true
+region = 0
+user = "riro"
+ssh_key = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIM4XC7dGxwY7VUPr4t+NtWL+c7pTl8g568jdv6aRbhDZ"
+link_local_addr = "fe80::216:3eff:fe0f:37d8/64"
+wg_key = "BCbrvvMIoHATydMkZtF8c+CHlCpKUy1NW+aP0GnYfRM="
+# identifiers = [{ name = "hastur.local", type = "mdns" }]
+addrs = ["192.168.0.10"]
+ygg_pubkey = "30dd36b2bf9b9e96430e79ebf4c3d0ba7b6758140953246407bc9dddffbd09b8"
+mac = "30:56:0f:58:e1:b3"
+
+[node.kaambl]
+# laptop
+id = 1
+censor = true
+nat = true
+region = 0
+user = "elen"
+ssh_key = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKQ8LFIGiv5IEqra7/ky0b0UgWdTGPY1CPA9cH8rMnyf"
+link_local_addr = "fe80::216:3eff:fe66:f780/64"
+wg_key = "i7Li/BDu5g5+Buy6m6Jnr09Ne7xGI/CcNAbyK9KKbQg="
+addrs = ["192.168.0.30"]
+ygg_pubkey = "6368e736160c39e887509a1fba75e16f357ee92910a44edb77e135bbc87889c5"
+# identifiers = [{ name = "kaambl.local", type = "mdns" }]
+mac = "38:d5:7a:e2:19:7b"
+
+[node.eihort]
+# nas
+id = 2
+censor = true
+nat = true
+region = 0
+user = "elen"
+ssh_key = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIImlt3ABsoFfuPwiPR2vyO8sDAFEQtu3BKPqrCBdcsch"
+link_local_addr = "fe80::216:3eff:fe4f:e85f/64"
+wg_key = "69DTVyNbhMN6/cgLCpcZrh/kGoi1IyxV0QwVjDe5IQk="
+ygg_pubkey = "38f6eb396caad927898ab182e882452499b0181477c25d7adb679905f12deb33"
+mac = "ac:1f:6b:e5:fe:3a"
+
+addrs = ["192.168.0.20"]
+# identifiers = [{ name = "eihort.local", type = "mdns" }]
+
+
+[node.yidhra]
+id = 3
+addrs = ["64.118.146.101", "2404:c140:2005::b:a72a"]
+censor = false
+nat = false
+user = "elen"
+ssh_key = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJfA9a0Uetc/vt0rHTulnQNHZPqJNy9ZyLvmP5GDnaoc"
+link_local_addr = "fe80::216:3eff:fe41:49c6/64"
+wg_key = "V3J9d8lUOk4WXj+dIiAZsuKJv3HxUl8J4HvX/s4eElY="
+iata = "NRT"
+city = "Tokyo"
+ygg_pubkey = "1aea5a3bc4ab6a92d103d745d3e19aa2bf66b33c5d77e8d5896a905b2ef3ac15"
+
+[node.abhoth]
+# dmit
+id = 4
+addrs = ["154.31.114.112", "2403:18c0:1000:13a:343b:65ff:fe1b:7a0f"]
+censor = false
+nat = false
+user = "elen"
+ssh_key = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIFRMxm3SFj1DwUjCTF4ByMVYQNMOPzi/Kqff5fTEvtG9"
+link_local_addr = "fe80::216:3eff:fe15:ec52/64"
+wg_key = "jQGcU+BULglJ9pUz/MmgOWhGRjpimogvEudwc8hMR0A="
+iata = "NRT"
+city = "Tokyo"
+ygg_pubkey = "b382696fe2e84c8a33c51923453de48caa666745a9228582892b5703600725a9"
+
+
+[extra.edgeone]
+type = "ygg"
+region = 0
+censor = true
+nat = true
+user = "elen"
+ygg_pubkey = "00009960b687622088a805cc95cb5721584856bcc4268f3f51eed280877f8e28"
+mac = "c4:09:38:f2:3e:cb"
+
+# [node.nodens]
+# # dmit lax
+# id = 5
+# addrs = ["2605:52c0:3:90b:505a:26ff:fec1:cdbf", "136.175.179.183"]
+# censor = false
+# nat = false
+# user = "elen"
+# ssh_key = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMbuDim30CUgAaG5p6Wxh/3CyqnrhWRUI2MLgrxOga3x"
+# link_local_addr = "fe80::04e2:3e20:0613:4d92/64"
+# wg_key = "49xNnrpNKHAvYCDikO3XhiK94sUaSQ4leoCnTOQjWno="
+# iata = "LAX"
+# city = "Los Angeles"
