@@ -336,6 +336,7 @@
             fend
             rustic
             systemctl-tui
+            uv
 
           ];
           info = [
