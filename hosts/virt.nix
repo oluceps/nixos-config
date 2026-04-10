@@ -1,5 +1,6 @@
 { user, ... }:
 {
+
   users.users.${user}.extraGroups = [
     "podman"
     "video"
@@ -10,6 +11,9 @@
       "podman*"
     ];
   };
+  systemd.tmpfiles.rules = [
+    "d /var/lib/containers/storage/networks 0775 root podman - -"
+  ];
   virtualisation = {
     vmVariant = {
       virtualisation = {
@@ -24,6 +28,13 @@
       dockerCompat = true;
       defaultNetwork.settings = {
         dns_enabled = true;
+      };
+    };
+
+    oci-containers.backend = "podman";
+    containers.containersConf.settings = {
+      network = {
+        network_config_dir = "/var/lib/containers/storage/networks";
       };
     };
   };
