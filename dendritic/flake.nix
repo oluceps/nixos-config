@@ -2,13 +2,11 @@
   description = "oluceps' flake";
   outputs =
     inputs:
+    let
+      pkgs = import inputs.nixpkgs { system = "x86_64-linux"; };
+    in
     inputs.flake-parts.lib.mkFlake { inherit inputs; } (
-      {
-        imports = [
-          inputs.flake-parts.flakeModules.modules
-        ];
-      }
-      // (inputs.import-tree ./mod)
+      inputs.import-tree ./mod // { _module.args = { inherit pkgs; }; }
     );
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable-small";
