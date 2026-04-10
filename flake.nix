@@ -409,6 +409,7 @@
     nuanmonito.url = "/home/riro/Src/nuanmonito";
     ranet.url = "/home/riro/Src/ranet";
     ranet-discover.url = "/home/riro/Src/ranet-discover";
+    import-tree.url = "github:vic/import-tree";
     self.submodules = true;
 
   };
