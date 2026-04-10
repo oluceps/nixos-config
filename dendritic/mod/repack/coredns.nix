@@ -1,6 +1,7 @@
 { config, lib, ... }:
 {
-  flake.modules.nixos.coredns = {
+  options.repack.coredns.enable = lib.mkEnableOption "coredns";
+  flake.modules.nixos.coredns = lib.mkIf config.repack.coredns.enable {
     services.coredns = {
       enable = true;
       config = ''
