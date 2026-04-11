@@ -1,4 +1,3 @@
-{ lib, ... }:
 {
   flake.modules.nixos.yggdrasil =
     { config, lib, ... }:
@@ -14,11 +13,6 @@
         || (thisNode.nat && thisNode ? region && peerNode ? region && thisNode.region == peerNode.region);
       directConnect = peerNode: ((thisNode.nat && peerNode.nat) || (thisNode.censor == peerNode.censor));
 
-      # registry.extra seems not to be in config.data.node yet, let's check constant.nix again
-      # actually constant.nix reads registry.toml into 'registry' and then uses 'node' from it.
-      # but it doesn't seem to include 'extra'.
-      # Let's assume for now we only care about nodes in 'node'.
-
       trustedLinkLocalAddrs = lib.mapAttrsToList (_: v: macToLL v.mac) (
         lib.filterAttrs (
           k: v:
@@ -29,68 +23,63 @@
       llSetString = lib.concatStringsSep ", " trustedLinkLocalAddrs;
     in
     {
-      options.repack.yggdrasil.enable = lib.mkEnableOption "yggdrasil";
-      config = lib.mkIf config.repack.yggdrasil.enable {
-        networking = {
-          firewall = {
-            allowedTCPPorts = [
-              1234
-              12344
-            ];
-            trustedInterfaces = [
-              "ygg0"
-            ];
-            extraInputRules = lib.mkIf thisNode.nat ''
-              iifname { "eno1", "wlan0" } ip6 saddr { ${llSetString} } accept
-            '';
-          };
+      networking = {
+        firewall = {
+          allowedTCPPorts = [
+            1234
+            12344
+          ];
+          trustedInterfaces = [ "ygg0" ];
+          extraInputRules = lib.mkIf thisNode.nat ''
+            iifname { "eno1", "wlan0" } ip6 saddr { ${llSetString} } accept
+          '';
         };
+      };
 
-        services.yggdrasil = {
-          enable = true;
-          openMulticastPort = true;
-          persistentKeys = true;
-          settings = {
-            Listen = [
-              "tcp://[::]:1234"
-              "tls://[::]:12344"
-            ];
-            Peers = (
-              lib.mapAttrsToList
-                (
-                  _: v:
-                  let
-                    addr = (lib.elemAt v.addrs 0);
-                  in
-                  if (directConnect v) then
-                    "tcp://" + addr + ":1234"
-                  else
-                    "sockstls://127.0.0.1:1900/" + addr + ":12344"
-                )
-                (
-                  lib.filterAttrs (
-                    k: v: (able2Connect v) && k != thisName && !(builtins.hasAttr "region" v)
-                  ) config.data.node
-                )
-            );
-            AllowedPublicKeys = lib.mapAttrsToList (_: v: v.ygg_pubkey) (
-              lib.filterAttrs (k: _: k != thisName) config.data.node
-            );
+      services.yggdrasil = {
+        enable = true;
+        openMulticastPort = true;
+        persistentKeys = true;
+        settings = {
+          Listen = [
+            "tcp://[::]:1234"
+            "tls://[::]:12344"
+          ];
+          Peers = (
+            lib.mapAttrsToList
+              (
+                _: v:
+                let
+                  addr = (lib.elemAt v.addrs 0);
+                in
+                if (directConnect v) then
+                  "tcp://" + addr + ":1234"
+                else
+                  "sockstls://127.0.0.1:1900/" + addr + ":12344"
+              )
+              (
+                lib.filterAttrs (
+                  k: v: (able2Connect v) && k != thisName && !(builtins.hasAttr "region" v)
+                ) config.data.node
+              )
+          );
+          AllowedPublicKeys = lib.mapAttrsToList (_: v: v.ygg_pubkey) (
+            lib.filterAttrs (k: _: k != thisName) config.data.node
+          );
 
-            MulticastInterfaces = lib.mkIf thisNode.nat [
-              {
-                Regex = "eno.*";
-                Beacon = true;
-                Listen = true;
-              }
-              {
-                Regex = "wlan.*";
-                Beacon = true;
-                Listen = true;
-              }
-            ];
-            IfName = "ygg0";
-          };
+          MulticastInterfaces = lib.mkIf thisNode.nat [
+            {
+              Regex = "eno.*";
+              Beacon = true;
+              Listen = true;
+            }
+            {
+              Regex = "wlan.*";
+              Beacon = true;
+              Listen = true;
+            }
+          ];
+          IfName = "ygg0";
         };
       };
     };

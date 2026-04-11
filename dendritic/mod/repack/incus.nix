@@ -1,4 +1,3 @@
-{ lib, ... }:
 {
   flake.modules.nixos.incus =
     {
@@ -7,24 +6,19 @@
       pkgs,
       ...
     }:
-    let
-      cfg = config.repack.incus;
-    in
     {
-      options.repack.incus = {
-        enable = lib.mkEnableOption "incus";
-        bridgeAddr = lib.mkOption {
-          type = lib.types.str;
-        };
+      options.incus.bridgeAddr = lib.mkOption {
+        type = lib.types.str;
+        default = "fdcc:1::1/64";
       };
-      config = lib.mkIf cfg.enable {
+      config = {
         virtualisation.incus = {
           enable = true;
           preseed = {
             networks = [
               {
                 config = {
-                  "ipv6.address" = cfg.bridgeAddr;
+                  "ipv6.address" = config.incus.bridgeAddr;
                   "ipv6.nat" = "false";
                   "ipv6.routing" = "true";
                   "ipv4.address" = "none";
@@ -104,7 +98,7 @@
         };
         systemd.network.networks."40-br0" = {
           matchConfig.Name = "br0";
-          address = [ cfg.bridgeAddr ];
+          address = [ config.incus.bridgeAddr ];
         };
       };
     };
