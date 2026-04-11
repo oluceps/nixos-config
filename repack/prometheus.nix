@@ -266,7 +266,7 @@ reIf {
             static_configs = [
               {
                 targets = [
-                  "http://connectivitycheck.gstatic.com"
+                  "http://connectivitycheck.gstatic.com/generate_204"
                 ];
               }
             ];
@@ -285,12 +285,8 @@ reIf {
               {
                 targets = [
                   "[2001:4860:4860::8888]:53" # google
-
-                  "154.31.114.112:80" # jp1
-                  "[2403:18c0:1000:13a:343b:65ff:fe1b:7a0f]:80"
-
-                  "205.198.76.6"
-                  "2404:c140:2000:2::32:1d9f"
+                  "www.bilibili.com:80"
+                  "www.baidu.com:80"
                 ];
               }
             ];
