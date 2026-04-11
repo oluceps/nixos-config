@@ -12,22 +12,25 @@
       self.modules.generic.data
       self.modules.generic.fn
       self.modules.nixos.identity
-      self.modules.nixos.coredns
+      self.modules.nixos.openssh
+      self.modules.nixos.fail2ban
+      self.modules.nixos.scrutiny
+      self.modules.nixos.userborn-subid
+      self.modules.nixos.earlyoom
       self.modules.nixos.incus
-      self.modules.nixos.subs
-      self.modules.nixos.photoprism
     ];
+
     identity.user = "riro";
-    repack.incus.enable = true;
-    repack.incus.bridgeAddr = "fdcc:1::1/64";
-    repack.subs.enable = true;
-    repack.photoprism.enable = true;
+
+    incus.bridgeAddr = "fdcc:1::1/64";
+
     users.users.riro = {
       isNormalUser = true;
       group = "riro";
       extraGroups = [ "wheel" ];
     };
     users.groups.riro = { };
+
     networking.hostName = "hastur";
     nixpkgs.hostPlatform = "x86_64-linux";
     boot.loader.grub.devices = [ "nodev" ];

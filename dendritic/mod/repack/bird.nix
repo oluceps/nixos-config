@@ -1,13 +1,8 @@
-{ lib, ... }:
 {
   flake.modules.nixos.bird =
     { config, lib, ... }:
-    let
-      cfg = config.repack.bird;
-    in
     {
-      options.repack.bird = {
-        enable = lib.mkEnableOption "bird";
+      options.bird = {
         baseConfig = lib.mkOption {
           type = lib.types.lines;
           readOnly = true;
@@ -88,10 +83,10 @@
           default = "";
         };
       };
-      config = lib.mkIf cfg.enable {
+      config = {
         services.bird = {
           enable = true;
-          config = cfg.baseConfig + cfg.config;
+          config = config.bird.baseConfig + config.bird.config;
           checkConfig = false;
         };
       };
