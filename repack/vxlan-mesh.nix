@@ -124,6 +124,8 @@ reIf {
             v6Addr = lib.findFirst (addr: getFamily addr == "ip6") null potentialEndpoints;
             v4Addr = lib.findFirst (addr: getFamily addr == "ip4") null potentialEndpoints;
             endpointAddr = if v6Addr != null then "[${v6Addr}]" else v4Addr;
+            # region the same, or target is public ip
+            directConnect = ((thisNode.region or null) == (peerNode.region or null)) || !(peerNode.nat or true);
           in
           if name == hostName then
             [ ]
@@ -138,7 +140,7 @@ reIf {
                   PresharedKeyFile = config.vaultix.secrets.psk.path;
                   PersistentKeepalive = 15;
                 }
-                // lib.optionalAttrs (endpointAddr != null) {
+                // lib.optionalAttrs (endpointAddr != null && directConnect) {
                   Endpoint = "${endpointAddr}:39388";
                 }
               );
