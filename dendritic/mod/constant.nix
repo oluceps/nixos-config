@@ -6,7 +6,7 @@
 let
   inherit (inputs.nixpkgs) lib;
   registry = lib.fromTOML (builtins.readFile ../registry.toml);
-  inherit (registry) prefix node;
+  inherit (registry) prefix node extra;
   genModules = map (
     let
       m = i: inputs.${i}.nixosModules;
@@ -23,7 +23,7 @@ let
       unique_addr_nomask = prefix + toString (v.id + 1);
       unique_addr = unique_addr_nomask + mask;
     }
-  ) node;
+  ) (node // extra);
 
   hosts =
     (
