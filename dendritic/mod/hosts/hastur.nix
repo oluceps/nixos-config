@@ -1,35 +1,33 @@
 {
-  config,
   self,
-  inputs,
-  pkgs,
-  lib,
   ...
 }:
 {
   configurations.nixos.hastur.module = {
-    imports = [
-      self.modules.generic.data
-      self.modules.generic.fn
-      self.modules.nixos.identity
-      self.modules.nixos.openssh
-      self.modules.nixos.fail2ban
-      self.modules.nixos.scrutiny
-      self.modules.nixos.userborn-subid
-      self.modules.nixos.earlyoom
-      self.modules.nixos.incus
-    ];
+    imports =
+      with self.modules;
+      (
+        (with generic; [
+          data
+          fn
+        ])
+        ++ (with nixos; [
+          identity
+          openssh
+          fail2ban
+          scrutiny
+          userborn-subid
+          earlyoom
+          incus
+          dae
+          vaultix
+        ])
+      );
 
-    identity.user = "riro";
-
+    identity.user = "root";
     incus.bridgeAddr = "fdcc:1::1/64";
 
-    users.users.riro = {
-      isNormalUser = true;
-      group = "riro";
-      extraGroups = [ "wheel" ];
-    };
-    users.groups.riro = { };
+    systemd.sysusers.enable = true;
 
     networking.hostName = "hastur";
     nixpkgs.hostPlatform = "x86_64-linux";
