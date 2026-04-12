@@ -20,7 +20,7 @@
 
   # services.scx = {
   #   enable = true;
-  #   scheduler = "scx_lavd";
+  #   scheduler = "scx_bpfland";
   # };
   boot = {
     tmp.useTmpfs = true;
@@ -53,8 +53,8 @@
       let
         helpers = pkgs.callPackage "${inputs.nix-cachyos-kernel.outPath}/helpers.nix" { };
 
-        rawKernel = pkgs.cachyosKernels.linux-cachyos-latest-lto.override {
-          pname = "linux-cachyos-latest-lto-zen5";
+        rawKernel = pkgs.cachyosKernels.linux-cachyos-bore-lto.override {
+          pname = "linux-cachyos-custom-kernel";
           processorOpt = "zen4";
           extraMakeFlags = [ "KCFLAGS=-march=znver5" ];
         };

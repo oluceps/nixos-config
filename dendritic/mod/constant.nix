@@ -75,9 +75,8 @@ let
       }
     )
       { lib = lib; };
-in
-{
-  flake.modules.generic.data = {
+
+  data = {
     options.data = lib.mkOption {
       type = lib.types.attrsOf lib.types.unspecified;
       default = { };
@@ -97,10 +96,8 @@ in
       inherit hosts;
     };
   };
-
-  flake.modules.generic.fn =
+  fn =
     { pkgs, lib, ... }:
-
     {
       options.fn = lib.mkOption {
         type = lib.types.attrsOf lib.types.unspecified;
@@ -204,5 +201,18 @@ in
       );
 
     };
-
-}
+in
+(lib.mkMerge [
+  {
+    flake.modules.generic = {
+      data = data;
+      fn = fn;
+    };
+  }
+  {
+    flake = data;
+  }
+  {
+    flake.config.fn = fn;
+  }
+])

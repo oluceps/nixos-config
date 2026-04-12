@@ -17,6 +17,7 @@ _: {
       #
       #
       "net.ipv4.conf.all.arp_accept" = 1;
+      "net.ipv4.fib_multipath_hash_policy" = 1;
 
       "net.ipv6.conf.all.accept_ra" = 2;
       "net.ipv6.conf.all.forwarding" = 1;

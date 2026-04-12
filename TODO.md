@@ -4,6 +4,8 @@
 
 # Solved
 
+## use `nftables.tables` dont use `nftables.ruleset`
+
 ## fix podman with read-only overlayfs /etc
 
 config:
