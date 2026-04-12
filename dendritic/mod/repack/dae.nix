@@ -11,6 +11,10 @@
       ...
     }:
     {
+      vaultix.secrets.dae = {
+        owner = "root";
+        mode = "400";
+      };
       environment.etc."dae/secret.dae".source = config.vaultix.secrets.dae.path;
 
       services.dae = {
