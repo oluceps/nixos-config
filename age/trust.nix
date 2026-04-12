@@ -9,7 +9,6 @@
 }:
 (hard [
   "general.toml"
-  "ss-az"
 ])
 // (userRo [
   "atuin"

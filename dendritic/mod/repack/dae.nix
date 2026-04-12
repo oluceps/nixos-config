@@ -1,6 +1,5 @@
 {
   inputs,
-  inputs',
   ...
 }:
 {
@@ -17,7 +16,7 @@
       services.dae = {
         enable = true;
         disableTxChecksumIpGeneric = false;
-        package = inputs'.dae.packages.dae-unstable;
+        package = inputs.dae.packages.${pkgs.stdenv.hostPlatform.system}.dae-unstable;
         config =
           let
             notEihort = lib.optionalString (!(config.networking.hostName == "eihort"));

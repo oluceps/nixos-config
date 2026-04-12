@@ -17,7 +17,14 @@
 
   config.flake = {
     nixosConfigurations = lib.flip lib.mapAttrs config.configurations.nixos (
-      name: { module }: inputs.nixpkgs.lib.nixosSystem { modules = [ module ]; }
+      name:
+      { module }:
+      inputs.nixpkgs.lib.nixosSystem {
+        modules = [
+          module
+          (config.flake.modules.nixos."age/${name}" or { }) # secret accompany with host
+        ];
+      }
     );
 
     # checks =
