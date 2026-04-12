@@ -1,4 +1,9 @@
-{ inputs, self, ... }:
+{
+  withSystem,
+  inputs,
+  self,
+  ...
+}:
 {
   flake.vaultix = {
     nodes =
@@ -22,4 +27,14 @@
     defaultSecretDirectory = "./sec";
     cache = "./sec/.cache";
   };
+  flake.modules.nixos.vaultix =
+    { pkgs, lib, ... }:
+    {
+      imports = lib.singleton {
+        imports = [ (import (inputs.vaultix.outPath + "/module") { localSelf = self; }) ];
+        vaultix.package = withSystem pkgs.stdenv.hostPlatform.system (
+          { inputs', ... }: inputs'.vaultix.packages.default
+        );
+      };
+    };
 }

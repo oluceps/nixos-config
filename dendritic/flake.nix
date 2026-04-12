@@ -2,12 +2,11 @@
   description = "oluceps' flake";
   outputs =
     inputs:
-    let
-      pkgs = import inputs.nixpkgs { system = "x86_64-linux"; };
-    in
-    inputs.flake-parts.lib.mkFlake { inherit inputs; } (
-      inputs.import-tree ./mod // { _module.args = { inherit pkgs; }; }
-    );
+    inputs.flake-parts.lib.mkFlake { inherit inputs; } {
+      imports = [
+        (inputs.import-tree ./mod)
+      ];
+    };
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable-small";
     nixpkgs-stable.url = "github:NixOS/nixpkgs/nixos-25.05";
@@ -35,8 +34,8 @@
     browser-previews = {
       url = "github:nix-community/browser-previews";
     };
-    vaultix.url = "github:milieuim/vaultix";
-    # vaultix.url = "/home/riro/Src/vaultix";
+    # vaultix.url = "github:milieuim/vaultix";
+    vaultix.url = "/home/riro/Src/vaultix";
     nixos-cosmic = {
       url = "github:lilyinstarlight/nixos-cosmic";
       inputs.nixpkgs.follows = "nixpkgs";
