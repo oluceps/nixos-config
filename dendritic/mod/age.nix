@@ -13,11 +13,6 @@ in
             mode = "400";
             owner = config.identity.user;
           };
-          garage = { };
-          dae = {
-            owner = "root";
-            mode = "400";
-          };
         };
       };
       services.openssh.hostKeys = [

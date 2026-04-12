@@ -1,5 +1,4 @@
 {
-  self,
   inputs,
   config,
   ...
@@ -97,7 +96,12 @@ let
     };
   };
   fn =
-    { pkgs, lib, ... }:
+    {
+      config,
+      pkgs,
+      lib,
+      ...
+    }:
     {
       options.fn = lib.mkOption {
         type = lib.types.attrsOf lib.types.unspecified;
@@ -109,15 +113,13 @@ let
 
         genOverlays = map (i: inputs.${i}.overlays.default or inputs.${i}.overlays.${i});
 
-        hostOverlays =
-          { inputs', inputs }:
-          (import ../overlays.nix { inherit inputs' inputs; })
-          ++ [
-            inputs.self.overlays.default
-            inputs.nix-topology.overlays.default
-          ];
-
-        iage = type: import ../age { inherit type; };
+        # hostOverlays =
+        #   { inputs', inputs }:
+        #   (import ../overlays.nix { inherit inputs' inputs; })
+        #   ++ [
+        #     inputs.self.overlays.default
+        #     inputs.nix-topology.overlays.default
+        #   ];
 
         conn = import ../lib/conn.nix node-data;
 
@@ -127,11 +129,10 @@ let
 
         getAddrFromCIDR = i: builtins.elemAt (pkgs.lib.splitString "/" i) 0;
 
-        getThisNodeFrom = _: node-data.${config.networking.hostName};
+        getIntraAddr = getAddrFromCIDR getThisNode.unique_addr;
+        getThisNode = node-data.${config.networking.hostName};
 
-        getIntraAddrFrom = c: getAddrFromCIDR (getThisNodeFrom c).unique_addr;
-
-        getPeerHostListFrom = c: (builtins.attrNames (conn { }).${c.networking.hostName});
+        getPeerHostList = (builtins.attrNames (conn { }).${config.networking.hostName});
 
         sharedModules =
           (genModules [
@@ -165,8 +166,6 @@ let
               map (removeSuffix ".nix") (attrNames (filterAttrs (_: v: v == "regular") (readDir dir)))
             )
           );
-
-        genCredPath = config: key: (key + ":" + config.vaultix.secrets.${key}.path);
 
         capitalize =
           str:
@@ -212,7 +211,7 @@ in
   {
     flake = data;
   }
-  {
-    flake.config.fn = fn;
-  }
+  # {
+  #   flake.config.fn = fn;
+  # }
 ])
