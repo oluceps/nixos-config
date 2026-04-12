@@ -21,6 +21,7 @@
           incus
           dae
           vaultix
+          custom-modules
         ])
       );
 
