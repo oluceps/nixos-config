@@ -40,6 +40,7 @@
         "sing"
         "sing-server"
         "caddy"
+        "garden_key"
       ])
       // (userRo [
         "nyaw.key"

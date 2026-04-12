@@ -45,6 +45,7 @@
     sing-server.enable = true;
     # snm.enable = true;
     stalwart.enable = true;
+    userborn-subid.enable = true;
   };
   services = {
     yggdrasil.settings.AllowedPublicKeys = [

@@ -1,4 +1,4 @@
-{ user, ... }:
+{ pkgs, user, ... }:
 {
 
   users.users.${user}.extraGroups = [
@@ -11,9 +11,6 @@
       "podman*"
     ];
   };
-  systemd.tmpfiles.rules = [
-    "d /var/lib/containers/storage/networks 0775 root podman - -"
-  ];
   virtualisation = {
     vmVariant = {
       virtualisation = {
@@ -32,10 +29,23 @@
     };
 
     oci-containers.backend = "podman";
-    containers.containersConf.settings = {
-      network = {
-        network_config_dir = "/var/lib/containers/storage/networks";
-      };
-    };
+    # containers.containersConf.settings = {
+    #   network = {
+    #     network_config_dir = "/var/lib/containers/storage/networks";
+    #   };
+    # };
   };
+  systemd.tmpfiles.rules =
+    let
+      rootPodmanConf = pkgs.writeText "root-containers.conf" ''
+        [network]
+        network_config_dir = "/var/lib/containers/storage/networks"
+      '';
+    in
+    [
+      "d /var/lib/containers/storage/networks 0700 root root - -"
+
+      "d /root/.config/containers 0700 root root - -"
+      "L+ /root/.config/containers/containers.conf - - - - ${rootPodmanConf}"
+    ];
 }
