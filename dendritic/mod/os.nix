@@ -20,10 +20,19 @@
       name:
       { module }:
       inputs.nixpkgs.lib.nixosSystem {
-        modules = [
-          module
-          (config.flake.modules.nixos."age/${name}" or { }) # secret accompany with host
-        ];
+        modules =
+          let
+            nixos = config.flake.modules.nixos;
+          in
+          [
+            module
+            (nixos."age/${name}" or { }) # secret accompany with host
+            (nixos."net/${name}" or { })
+            (nixos."disko/${name}" or { })
+            (nixos."backup/${name}" or { })
+            (nixos."caddy/${name}" or { })
+            (nixos."bird/${name}" or { })
+          ];
       }
     );
 

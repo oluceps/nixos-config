@@ -11,9 +11,9 @@
             debug protocols all;
             timeformat protocol iso long;
 
-            router id 10.0.0.${toString ((config.fn.getThisNodeFrom config).id + 1)};
+            router id 10.0.0.${toString ((config.fn.getThisNode).id + 1)};
 
-            define HORTUS_OWNIP = ${config.fn.getIntraAddrFrom config};
+            define HORTUS_OWNIP = ${config.fn.getIntraAddr};
             define HORTUS_PREFIX = fdcc::/16;
             define HORTUS_FIELD = [ fdcc::/16+ ];
 

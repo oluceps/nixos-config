@@ -13,6 +13,22 @@ in
             mode = "400";
             owner = config.identity.user;
           };
+          sing = { };
+          age = { };
+          atuin = {
+            owner = config.identity.user;
+            mode = "400";
+          };
+          atuin_key = {
+            owner = config.identity.user;
+            mode = "400";
+          };
+          sing-server = { };
+          id_sk = {
+            owner = config.identity.user;
+            mode = "400";
+          };
+          "general.toml" = { };
         };
       };
       services.openssh.hostKeys = [

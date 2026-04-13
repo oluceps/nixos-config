@@ -35,7 +35,4 @@
     in
     modules // { inherit default; };
 
-  flake.modules.nixos.custom-modules = {
-    imports = [ self.nixosModules.default ];
-  };
 }

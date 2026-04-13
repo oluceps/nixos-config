@@ -23,7 +23,7 @@ let
       unique_addr_nomask = prefix + toString (v.id + 1);
       unique_addr = unique_addr_nomask + mask;
     }
-  ) (node // extra);
+  ) node;
 
   hosts =
     (
@@ -134,20 +134,15 @@ let
 
         getPeerHostList = (builtins.attrNames (conn { }).${config.networking.hostName});
 
-        sharedModules =
-          (genModules [
+        sharedModules = (
+          genModules [
             "run0-sudo-shim"
-            "vaultix"
-            "lanzaboote"
             "catppuccin"
-            # "lix-module"
             "nix-topology"
             "self"
-          ])
-          ++ (with inputs.dae.nixosModules; [
-            dae
-            daed
-          ]);
+          ]
+        );
+        genCredPath = key: (key + ":" + config.vaultix.secrets.${key}.path);
 
         genFilteredDirAttrsV2 =
           dir: excludes:
@@ -186,19 +181,17 @@ let
             }
           );
 
-      }
-      // (
-        let
-          pki = {
-            root = "-----BEGIN CERTIFICATE-----\nMIIBpTCCAUugAwIBAgIUfvuy7UCKFt2uZWaU7jbZa5H/S8cwCgYIKoZIzj0EAwIw\nLjERMA8GA1UECgwITWlsaWV1aW0xGTAXBgNVBAMMEE1pbGlldWltIFJvb3QgQ0Ew\nIBcNMjUwNzE2MDAxMTU0WhgPMjA1MjEyMDEwMDExNTRaMC4xETAPBgNVBAoMCE1p\nbGlldWltMRkwFwYDVQQDDBBNaWxpZXVpbSBSb290IENBMFkwEwYHKoZIzj0CAQYI\nKoZIzj0DAQcDQgAEsoAfEGkLVf7dEc8C5D8x3UOKO9J9PlliK1NMSa5QsPhmghX9\nPL/b0ZZfsccQG7GRXvB81Mc8OSp9y0m2PM5rnaNFMEMwHQYDVR0OBBYEFHWuexIw\nqD7YcVwXuHTPzHe02qT7MBIGA1UdEwEB/wQIMAYBAf8CAQEwDgYDVR0PAQH/BAQD\nAgEGMAoGCCqGSM49BAMCA0gAMEUCIFtRgURKZS4waPg5nI0SkWq80vNkX9Ri6yfk\nvf7FhcBxAiEAtyb3/swm3it411i/zHYR5ZDLRhYjCYyiJAVp2EdVlm4=\n-----END CERTIFICATE-----";
-            intermediate = "-----BEGIN CERTIFICATE-----\nMIIBzjCCAXSgAwIBAgIUXSZPhMXV7RmVGTARVoZLhkzqEpEwCgYIKoZIzj0EAwIw\nLjERMA8GA1UECgwITWlsaWV1aW0xGTAXBgNVBAMMEE1pbGlldWltIFJvb3QgQ0Ew\nHhcNMjUwNzIwMDIzNTQxWhcNMjgwNzE5MDIzNTQxWjA4MREwDwYDVQQKDAhNaWxp\nZWludTEjMCEGA1UEAwwaTWlsaWV1aW0gSW50ZXJtZWRpYXRlIENBIDAwWTATBgcq\nhkjOPQIBBggqhkjOPQMBBwNCAAQ5SE1hafu1/QB4pqOOuds95S3HL6A9KbrbjdRJ\nFJDpQ0Ba2ip3TxgvJ0TuZafcZd9AriQK+4KKMe45J+88jkPso2YwZDAdBgNVHQ4E\nFgQUUuBxjDVDP6APjav8QLv4xqvdRwQwEgYDVR0TAQH/BAgwBgEB/wIBADAOBgNV\nHQ8BAf8EBAMCAgQwHwYDVR0jBBgwFoAUda57EjCoPthxXBe4dM/Md7TapPswCgYI\nKoZIzj0EAwIDSAAwRQIhAP/ov68sNHVd+G1mghSlLQF7AvlFkeezRXRl3A3LpXig\nAiAiMKB95uZODsDB9lIaT8nAG7MRpEWSuJxUSw44Vsz9xg==\n-----END CERTIFICATE-----";
-          };
-        in
-        (lib.foldl' (
-          acc: name: acc // { "${name}_file" = (pkgs.writeText "${name}.crt" pki.${name}); }
-        ) pki (builtins.attrNames pki))
-      );
-
+        pki =
+          let
+            pki = {
+              root = "-----BEGIN CERTIFICATE-----\nMIIBpTCCAUugAwIBAgIUfvuy7UCKFt2uZWaU7jbZa5H/S8cwCgYIKoZIzj0EAwIw\nLjERMA8GA1UECgwITWlsaWV1aW0xGTAXBgNVBAMMEE1pbGlldWltIFJvb3QgQ0Ew\nIBcNMjUwNzE2MDAxMTU0WhgPMjA1MjEyMDEwMDExNTRaMC4xETAPBgNVBAoMCE1p\nbGlldWltMRkwFwYDVQQDDBBNaWxpZXVpbSBSb290IENBMFkwEwYHKoZIzj0CAQYI\nKoZIzj0DAQcDQgAEsoAfEGkLVf7dEc8C5D8x3UOKO9J9PlliK1NMSa5QsPhmghX9\nPL/b0ZZfsccQG7GRXvB81Mc8OSp9y0m2PM5rnaNFMEMwHQYDVR0OBBYEFHWuexIw\nqD7YcVwXuHTPzHe02qT7MBIGA1UdEwEB/wQIMAYBAf8CAQEwDgYDVR0PAQH/BAQD\nAgEGMAoGCCqGSM49BAMCA0gAMEUCIFtRgURKZS4waPg5nI0SkWq80vNkX9Ri6yfk\nvf7FhcBxAiEAtyb3/swm3it411i/zHYR5ZDLRhYjCYyiJAVp2EdVlm4=\n-----END CERTIFICATE-----";
+              intermediate = "-----BEGIN CERTIFICATE-----\nMIIBzjCCAXSgAwIBAgIUXSZPhMXV7RmVGTARVoZLhkzqEpEwCgYIKoZIzj0EAwIw\nLjERMA8GA1UECgwITWlsaWV1aW0xGTAXBgNVBAMMEE1pbGlldWltIFJvb3QgQ0Ew\nHhcNMjUwNzIwMDIzNTQxWhcNMjgwNzE5MDIzNTQxWjA4MREwDwYDVQQKDAhNaWxp\nZWludTEjMCEGA1UEAwwaTWlsaWV1aW0gSW50ZXJtZWRpYXRlIENBIDAwWTATBgcq\nhkjOPQIBBggqhkjOPQMBBwNCAAQ5SE1hafu1/QB4pqOOuds95S3HL6A9KbrbjdRJ\nFJDpQ0Ba2ip3TxgvJ0TuZafcZd9AriQK+4KKMe45J+88jkPso2YwZDAdBgNVHQ4E\nFgQUUuBxjDVDP6APjav8QLv4xqvdRwQwEgYDVR0TAQH/BAgwBgEB/wIBADAOBgNV\nHQ8BAf8EBAMCAgQwHwYDVR0jBBgwFoAUda57EjCoPthxXBe4dM/Md7TapPswCgYI\nKoZIzj0EAwIDSAAwRQIhAP/ov68sNHVd+G1mghSlLQF7AvlFkeezRXRl3A3LpXig\nAiAiMKB95uZODsDB9lIaT8nAG7MRpEWSuJxUSw44Vsz9xg==\n-----END CERTIFICATE-----";
+            };
+          in
+          (lib.foldl' (
+            acc: name: acc // { "${name}_file" = (pkgs.writeText "${name}.crt" pki.${name}); }
+          ) pki (builtins.attrNames pki));
+      };
     };
 in
 (lib.mkMerge [

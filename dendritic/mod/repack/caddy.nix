@@ -44,6 +44,7 @@
       };
 
       config = {
+        vaultix.secrets.caddy = { };
         caddy.settings = {
           admin = {
             config.persist = false;
@@ -115,7 +116,7 @@
               Restart = "always";
               EnvironmentFile = mkIf cfg.expose config.vaultix.secrets.caddy.path;
               LoadCredential = mkIf (!cfg.expose) (
-                (map (lib.genCredPath config)) [
+                (map (config.fn.genCredPath)) [
                   "nyaw.cert"
                   "nyaw.key"
                 ]
