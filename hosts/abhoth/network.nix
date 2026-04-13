@@ -1,14 +1,10 @@
 { config, lib, ... }:
 {
   imports = [ ./bird.nix ];
-  services = {
-    resolved = {
-      settings.Resolve = {
-        LLMNR = "false";
-        Cache = "no";
-        DNSSEC = "false";
-      };
-    };
+  services.resolved.settings.Resolve = {
+    LLMNR = "false";
+    Cache = "no";
+    DNSSEC = "false";
   };
   networking = {
     domain = "nyaw.xyz";

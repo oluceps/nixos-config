@@ -17,6 +17,8 @@
       };
       environment.etc."dae/secret.dae".source = config.vaultix.secrets.dae.path;
 
+      networking.firewall.trustedInterfaces = [ "dae0" ];
+
       services.dae = {
         enable = true;
         disableTxChecksumIpGeneric = false;

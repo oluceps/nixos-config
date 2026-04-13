@@ -1,14 +1,11 @@
 { lib, config, ... }:
 {
   imports = [ ./bird.nix ];
-  services = {
-    resolved = {
-      settings.Resolve = {
-        LLMNR = "true";
-        Cache = "no";
-        DNSSEC = "false";
-      };
-    };
+  services.resolved.settings.Resolve = {
+    LLMNR = "true";
+    Cache = "no";
+    FallbackDNS = [ "8.8.8.8#dns.google" ];
+    DNSSEC = "false";
   };
   networking = {
     timeServers = [
@@ -40,7 +37,6 @@
         "dae0"
       ];
       allowedUDPPorts = [
-        8080
         5353
         1901
       ];
@@ -51,14 +47,6 @@
     };
     nftables = {
       enable = true;
-      # ruleset = ''
-      #   table inet filter {
-      #   	chain forward {
-      #       type filter hook forward priority filter; policy drop;
-      #       iifname "eno1" oifname "vm1" ip6 saddr fdcc::3 accept
-      #   	}
-      #   }
-      # '';
     };
 
     networkmanager.enable = lib.mkForce false;

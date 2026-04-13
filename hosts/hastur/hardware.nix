@@ -5,23 +5,12 @@
   config,
   lib,
   modulesPath,
-  inputs',
   inputs,
   pkgs,
   ...
 }:
 {
   imports = [ (modulesPath + "/installer/scan/not-detected.nix") ];
-
-  # hardware.tuxedo-rs = {
-  #   enable = true;
-  #   tailor-gui.enable = true;
-  # };
-
-  # services.scx = {
-  #   enable = true;
-  #   scheduler = "scx_bpfland";
-  # };
   boot = {
     tmp.useTmpfs = true;
     loader.efi = {
