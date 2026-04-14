@@ -95,6 +95,59 @@ let
       inherit hosts;
     };
   };
+
+  pki-data = {
+    root = "-----BEGIN CERTIFICATE-----\nMIIBpTCCAUugAwIBAgIUfvuy7UCKFt2uZWaU7jbZa5H/S8cwCgYIKoZIzj0EAwIw\nLjERMA8GA1UECgwITWlsaWV1aW0xGTAXBgNVBAMMEE1pbGlldWltIFJvb3QgQ0Ew\nIBcNMjUwNzE2MDAxMTU0WhgPMjA1MjEyMDEwMDExNTRaMC4xETAPBgNVBAoMCE1p\nbGlldWltMRkwFwYDVQQDDBBNaWxpZXVpbSBSb290IENBMFkwEwYHKoZIzj0CAQYI\nKoZIzj0DAQcDQgAEsoAfEGkLVf7dEc8C5D8x3UOKO9J9PlliK1NMSa5QsPhmghX9\nPL/b0ZZfsccQG7GRXvB81Mc8OSp9y0m2PM5rnaNFMEMwHQYDVR0OBBYEFHWuexIw\nqD7YcVwXuHTPzHe02qT7MBIGA1UdEwEB/wQIMAYBAf8CAQEwDgYDVR0PAQH/BAQD\nAgEGMAoGCCqGSM49BAMCA0gAMEUCIFtRgURKZS4waPg5nI0SkWq80vNkX9Ri6yfk\nvf7FhcBxAiEAtyb3/swm3it411i/zHYR5ZDLRhYjCYyiJAVp2EdVlm4=\n-----END CERTIFICATE-----";
+    intermediate = "-----BEGIN CERTIFICATE-----\nMIIBzjCCAXSgAwIBAgIUXSZPhMXV7RmVGTARVoZLhkzqEpEwCgYIKoZIzj0EAwIw\nLjERMA8GA1UECgwITWlsaWV1aW0xGTAXBgNVBAMMEE1pbGlldWltIFJvb3QgQ0Ew\nHhcNMjUwNzIwMDIzNTQxWhcNMjgwNzE5MDIzNTQxWjA4MREwDwYDVQQKDAhNaWxp\nZWludTEjMCEGA1UEAwwaTWlsaWV1aW0gSW50ZXJtZWRpYXRlIENBIDAwWTATBgcq\nhkjOPQIBBggqhkjOPQMBBwNCAAQ5SE1hafu1/QB4pqOOuds95S3HL6A9KbrbjdRJ\nFJDpQ0Ba2ip3TxgvJ0TuZafcZd9AriQK+4KKMe45J+88jkPso2YwZDAdBgNVHQ4E\nFgQUUuBxjDVDP6APjav8QLv4xqvdRwQwEgYDVR0TAQH/BAgwBgEB/wIBADAOBgNV\nHQ8BAf8EBAMCAgQwHwYDVR0jBBgwFoAUda57EjCoPthxXBe4dM/Md7TapPswCgYI\nKoZIzj0EAwIDSAAwRQIhAP/ov68sNHVd+G1mghSlLQF7AvlFkeezRXRl3A3LpXig\nAiAiMKB95uZODsDB9lIaT8nAG7MRpEWSuJxUSw44Vsz9xg==\n-----END CERTIFICATE-----";
+  };
+
+  mkFn = pkgs: rec {
+    genOverlays = map (i: inputs.${i}.overlays.default or inputs.${i}.overlays.${i});
+    conn = import ../lib/conn.nix node-data;
+    targetsFromNodes = (import ../lib/nodesToTargets.nix { inherit (pkgs) lib; }) node-data;
+    macToLL = (import ../lib/macToLL.nix { inherit (pkgs) lib; });
+    getAddrFromCIDR = i: builtins.elemAt (pkgs.lib.splitString "/" i) 0;
+    genFilteredDirAttrsV2 =
+      dir: excludes:
+      let
+        inherit (inputs.nixpkgs.lib)
+          genAttrs
+          subtractLists
+          removeSuffix
+          attrNames
+          filterAttrs
+          ;
+        inherit (builtins) readDir;
+      in
+      genAttrs (
+        subtractLists excludes (
+          map (removeSuffix ".nix") (attrNames (filterAttrs (_: v: v == "regular") (readDir dir)))
+        )
+      );
+    capitalize =
+      str:
+      let
+        inherit (pkgs.lib.strings) toUpper substring concatStrings;
+      in
+      concatStrings [
+        (toUpper (substring 0 1 str))
+        (substring 1 16 str)
+      ];
+    readToStore =
+      p:
+      toString (
+        pkgs.writeTextFile {
+          name = baseNameOf p;
+          text = builtins.readFile p;
+        }
+      );
+    pki = (
+      lib.foldl' (
+        acc: name: acc // { "${name}_file" = (pkgs.writeText "${name}.crt" pki-data.${name}); }
+      ) pki-data (builtins.attrNames pki-data)
+    );
+  };
+
   fn =
     {
       config,
@@ -102,38 +155,19 @@ let
       lib,
       ...
     }:
+    let
+      _fn = mkFn pkgs;
+    in
     {
       options.fn = lib.mkOption {
         type = lib.types.attrsOf lib.types.unspecified;
         default = { };
         description = "Helper functions for system configuration";
       };
-
-      config.fn = rec {
-
-        genOverlays = map (i: inputs.${i}.overlays.default or inputs.${i}.overlays.${i});
-
-        # hostOverlays =
-        #   { inputs', inputs }:
-        #   (import ../overlays.nix { inherit inputs' inputs; })
-        #   ++ [
-        #     inputs.self.overlays.default
-        #     inputs.nix-topology.overlays.default
-        #   ];
-
-        conn = import ../lib/conn.nix node-data;
-
-        targetsFromNodes = (import ../lib/nodesToTargets.nix { inherit (pkgs) lib; }) node-data;
-
-        macToLL = (import ../lib/macToLL.nix { inherit (pkgs) lib; });
-
-        getAddrFromCIDR = i: builtins.elemAt (pkgs.lib.splitString "/" i) 0;
-
-        getIntraAddr = getAddrFromCIDR getThisNode.unique_addr;
+      config.fn = _fn // {
         getThisNode = node-data.${config.networking.hostName};
-
-        getPeerHostList = (builtins.attrNames (conn { }).${config.networking.hostName});
-
+        getIntraAddr = _fn.getAddrFromCIDR (node-data.${config.networking.hostName}.unique_addr);
+        getPeerHostList = (builtins.attrNames (_fn.conn { }).${config.networking.hostName});
         sharedModules = (
           genModules [
             "run0-sudo-shim"
@@ -143,54 +177,6 @@ let
           ]
         );
         genCredPath = key: (key + ":" + config.vaultix.secrets.${key}.path);
-
-        genFilteredDirAttrsV2 =
-          dir: excludes:
-          let
-            inherit (inputs.nixpkgs.lib)
-              genAttrs
-              subtractLists
-              removeSuffix
-              attrNames
-              filterAttrs
-              ;
-            inherit (builtins) readDir;
-          in
-          genAttrs (
-            subtractLists excludes (
-              map (removeSuffix ".nix") (attrNames (filterAttrs (_: v: v == "regular") (readDir dir)))
-            )
-          );
-
-        capitalize =
-          str:
-          let
-            inherit (pkgs.lib.strings) toUpper substring concatStrings;
-          in
-          concatStrings [
-            (toUpper (substring 0 1 str))
-            (substring 1 16 str)
-          ];
-
-        readToStore =
-          p:
-          toString (
-            pkgs.writeTextFile {
-              name = baseNameOf p;
-              text = builtins.readFile p;
-            }
-          );
-
-        pki =
-          let
-            pki = {
-              root = "-----BEGIN CERTIFICATE-----\nMIIBpTCCAUugAwIBAgIUfvuy7UCKFt2uZWaU7jbZa5H/S8cwCgYIKoZIzj0EAwIw\nLjERMA8GA1UECgwITWlsaWV1aW0xGTAXBgNVBAMMEE1pbGlldWltIFJvb3QgQ0Ew\nIBcNMjUwNzE2MDAxMTU0WhgPMjA1MjEyMDEwMDExNTRaMC4xETAPBgNVBAoMCE1p\nbGlldWltMRkwFwYDVQQDDBBNaWxpZXVpbSBSb290IENBMFkwEwYHKoZIzj0CAQYI\nKoZIzj0DAQcDQgAEsoAfEGkLVf7dEc8C5D8x3UOKO9J9PlliK1NMSa5QsPhmghX9\nPL/b0ZZfsccQG7GRXvB81Mc8OSp9y0m2PM5rnaNFMEMwHQYDVR0OBBYEFHWuexIw\nqD7YcVwXuHTPzHe02qT7MBIGA1UdEwEB/wQIMAYBAf8CAQEwDgYDVR0PAQH/BAQD\nAgEGMAoGCCqGSM49BAMCA0gAMEUCIFtRgURKZS4waPg5nI0SkWq80vNkX9Ri6yfk\nvf7FhcBxAiEAtyb3/swm3it411i/zHYR5ZDLRhYjCYyiJAVp2EdVlm4=\n-----END CERTIFICATE-----";
-              intermediate = "-----BEGIN CERTIFICATE-----\nMIIBzjCCAXSgAwIBAgIUXSZPhMXV7RmVGTARVoZLhkzqEpEwCgYIKoZIzj0EAwIw\nLjERMA8GA1UECgwITWlsaWV1aW0xGTAXBgNVBAMMEE1pbGlldWltIFJvb3QgQ0Ew\nHhcNMjUwNzIwMDIzNTQxWhcNMjgwNzE5MDIzNTQxWjA4MREwDwYDVQQKDAhNaWxp\nZWludTEjMCEGA1UEAwwaTWlsaWV1aW0gSW50ZXJtZWRpYXRlIENBIDAwWTATBgcq\nhkjOPQIBBggqhkjOPQMBBwNCAAQ5SE1hafu1/QB4pqOOuds95S3HL6A9KbrbjdRJ\nFJDpQ0Ba2ip3TxgvJ0TuZafcZd9AriQK+4KKMe45J+88jkPso2YwZDAdBgNVHQ4E\nFgQUUuBxjDVDP6APjav8QLv4xqvdRwQwEgYDVR0TAQH/BAgwBgEB/wIBADAOBgNV\nHQ8BAf8EBAMCAgQwHwYDVR0jBBgwFoAUda57EjCoPthxXBe4dM/Md7TapPswCgYI\nKoZIzj0EAwIDSAAwRQIhAP/ov68sNHVd+G1mghSlLQF7AvlFkeezRXRl3A3LpXig\nAiAiMKB95uZODsDB9lIaT8nAG7MRpEWSuJxUSw44Vsz9xg==\n-----END CERTIFICATE-----";
-            };
-          in
-          (lib.foldl' (
-            acc: name: acc // { "${name}_file" = (pkgs.writeText "${name}.crt" pki.${name}); }
-          ) pki (builtins.attrNames pki));
       };
     };
 in
@@ -203,9 +189,11 @@ in
   }
   {
     flake = data;
-  }
-  {
-    #
-    # config.flake = fn;
+    transposition.fn.adHoc = true;
+    perSystem =
+      { pkgs, ... }:
+      {
+        fn = mkFn pkgs;
+      };
   }
 ])
