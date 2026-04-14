@@ -2,10 +2,7 @@
   flake.modules.nixos.immich =
     { config, ... }:
     {
-      vaultix.secrets.immich = {
-        owner = "immich";
-        mode = "400";
-      };
+      vaultix.secrets.immich = { };
       services = {
         immich = {
           enable = true;

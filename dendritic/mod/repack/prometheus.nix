@@ -44,7 +44,7 @@
         alertmanager.serviceConfig.LoadCredential = [
           "notifychan:${config.vaultix.secrets.notifychan.path}"
         ];
-        victoriametrics.serviceConfig.LoadCredential = (map (lib.genCredPath config)) [
+        victoriametrics.serviceConfig.LoadCredential = (map (config.fn.genCredPath)) [
           "prom"
           "syncthing-hastur-api"
         ];

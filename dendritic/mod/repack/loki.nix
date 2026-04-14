@@ -3,7 +3,8 @@
     { config, ... }:
     {
       vaultix.secrets.loki = {
-        owner = "loki";
+        owner = config.services.loki.user;
+        group = config.services.loki.group;
         mode = "400";
       };
       services.loki = {

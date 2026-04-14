@@ -9,6 +9,7 @@
       base-pkgs
       virt
       starship
+      i18n
       env
       pki
       security

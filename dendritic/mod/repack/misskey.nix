@@ -8,7 +8,7 @@
     }:
     {
       vaultix.secrets.misskey = {
-        owner = "root";
+        owner = "misskey";
         mode = "400";
       };
       services.redis.servers.misskey = {
@@ -20,8 +20,8 @@
           volumes =
             let
               cabundle = pkgs.cacert.override {
-                extraCertificateFiles = with lib.data.ca_cert; [
-                  lib.data.ca_cert.root_file
+                extraCertificateFiles = with config.fn.pki; [
+                  root_file
                 ];
               };
             in

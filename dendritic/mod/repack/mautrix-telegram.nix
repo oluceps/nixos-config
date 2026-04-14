@@ -1,16 +1,13 @@
+{ inputs, ... }:
 {
   flake.modules.nixos.mautrix-telegram =
     {
       config,
-      inputs,
       pkgs,
       ...
     }:
     {
-      vaultix.secrets.mautrix-tg = {
-        owner = "mautrix-telegram";
-        mode = "400";
-      };
+      vaultix.secrets.mautrix-tg = { };
       systemd.services.mautrix-telegram.serviceConfig.RuntimeMaxSec = 86400;
       services.mautrix-telegram = {
         enable = true;

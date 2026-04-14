@@ -41,10 +41,10 @@
           directory = ../pkgs/by-name;
         })
         // {
-          # default = pkgs.symlinkJoin {
-          #   name = "user-pkgs";
-          #   paths = import ./userPkgs.nix { inherit pkgs; };
-          # };
+          default = pkgs.symlinkJoin {
+            name = "user-pkgs";
+            paths = import ../user-pkgs.nix { inherit pkgs; };
+          };
         };
     };
 }

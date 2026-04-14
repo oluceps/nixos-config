@@ -194,16 +194,16 @@
       }
     ];
 
-    shadowsocks.instances = [
-      {
-        name = "rha";
-        configFile = config.vaultix.secrets.ss-az.path;
-        serve = {
-          enable = true;
-          port = 6059;
-        };
-      }
-    ];
+    # shadowsocks.instances = [
+    #   {
+    #     name = "rha";
+    #     configFile = config.vaultix.secrets.ss-az.path;
+    #     serve = {
+    #       enable = true;
+    #       port = 6059;
+    #     };
+    #   }
+    # ];
   };
 
   programs = {

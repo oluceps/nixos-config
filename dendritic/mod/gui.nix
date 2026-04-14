@@ -6,7 +6,6 @@
       imports = [
         self.modules.nixos.xdg
         self.modules.nixos.font
-        self.modules.nixos.i18n
         self.modules.nixos.theme
         self.modules.nixos.niri
         self.modules.nixos.nix-index
