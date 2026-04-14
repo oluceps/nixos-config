@@ -44,7 +44,6 @@
     { config, ... }:
     {
       imports = [ self.modules.nixos.postgresql-backup ];
-      postgresql-backup.enable = true;
       systemd.services.postgresqlBackup.onSuccess = [ "rustic-backups-critic.service" ];
 
       vaultix.secrets = {

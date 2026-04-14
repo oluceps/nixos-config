@@ -12,19 +12,16 @@
         bucket = "synapse";
         endpoint_url = "https://s3.nyaw.xyz";
       };
-      caBundleEnv = "AWS_CA_BUNDLE=${lib.data.ca_cert.root_file}";
+      caBundleEnv = "AWS_CA_BUNDLE=${config.fn.pki.root_file}";
       inherit (config.services.matrix-synapse.settings) media_store_path;
     in
     {
       vaultix.secrets = {
         synapse-oidc = {
-          owner = "matrix-synapse";
+          owner = config.systemd.services.matrix-synapse.serviceConfig.User;
           mode = "400";
         };
-        synapse-s3 = {
-          owner = "matrix-synapse";
-          mode = "400";
-        };
+        synapse-s3 = { };
       };
 
       services.matrix-synapse = {

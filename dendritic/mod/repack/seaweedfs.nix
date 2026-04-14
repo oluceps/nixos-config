@@ -6,8 +6,8 @@
     in
     {
       vaultix.secrets.weed-s3 = {
-        owner = "root";
-        mode = "400";
+        owner = "seaweedfs";
+        group = "seaweedfs";
       };
       services.seaweedfs = {
         enable = true;

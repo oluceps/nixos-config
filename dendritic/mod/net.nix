@@ -156,7 +156,7 @@ in
       common
     ]);
 
-  flake.module.nixos."net/eihort" =
+  flake.modules.nixos."net/eihort" =
     { config, ... }:
     (lib.mkMerge [
       {

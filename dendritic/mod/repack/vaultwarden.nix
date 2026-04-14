@@ -2,10 +2,7 @@
   flake.modules.nixos.vaultwarden =
     { config, ... }:
     {
-      vaultix.secrets.vault = {
-        owner = "vaultwarden";
-        mode = "400";
-      };
+      vaultix.secrets.vault = { };
       services.vaultwarden = {
         enable = true;
         dbBackend = "postgresql";

@@ -18,6 +18,12 @@
         };
       };
       nix = {
+        gc = {
+          automatic = true;
+          dates = "weekly";
+          options = "--delete-older-than 10d";
+        };
+
         # package = pkgs.nixVersions.stable;
         package = pkgs.lixPackageSets.stable.lix;
 
@@ -92,6 +98,7 @@
         extraOptions = ''
           !include ${config.vaultix.secrets.gh-token.path}
         '';
+
       };
 
       vaultix.secrets.gh-token = {

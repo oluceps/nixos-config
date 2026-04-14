@@ -1,8 +1,8 @@
+{ inputs, ... }:
 {
   flake.modules.nixos.radicle =
     {
       config,
-      inputs,
       pkgs,
       ...
     }:
