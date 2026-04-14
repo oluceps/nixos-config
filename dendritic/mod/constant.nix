@@ -1,12 +1,12 @@
 {
   inputs,
-  config,
+  flake-parts-lib,
   ...
 }:
 let
   inherit (inputs.nixpkgs) lib;
   registry = lib.fromTOML (builtins.readFile ../registry.toml);
-  inherit (registry) prefix node extra;
+  inherit (registry) prefix node;
   genModules = map (
     let
       m = i: inputs.${i}.nixosModules;
@@ -204,7 +204,8 @@ in
   {
     flake = data;
   }
-  # {
-  #   flake.config.fn = fn;
-  # }
+  {
+    #
+    # config.flake = fn;
+  }
 ])
