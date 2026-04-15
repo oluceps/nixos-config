@@ -125,20 +125,17 @@ in
         secrets = {
           # postfix-sasl = { };
           wg-yidhra = {
-            file = ../../sec/wg-yidhra.age;
             owner = "systemd-network";
             group = "root";
             mode = "400";
           };
 
           wgy-warp = {
-            file = ../../sec/wgy-warp.age;
             owner = "systemd-network";
             group = "root";
             mode = "400";
           };
           subs = {
-            file = ../../sec/subs.age;
             mode = "740";
             owner = config.identity.user;
             group = "root";
