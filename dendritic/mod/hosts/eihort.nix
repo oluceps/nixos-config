@@ -130,7 +130,7 @@
       };
 
       zramSwap = {
-        enable = true;
+        enable = false;
         swapDevices = 1;
         memoryPercent = 40;
         algorithm = "zstd";

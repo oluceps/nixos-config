@@ -63,10 +63,24 @@
                   # withNgSuffix = false;
                   nix = pkgs.lixPackageSets.stable.lix;
                 })
+                zola
                 devenv
                 zoxide
                 nodejs_latest
+                wakelan
+                lynx
                 opencode
+                atuin
+                yazi
+                shpool
+                ouch
+                libsixel
+                difftastic
+                btop
+                minio-client
+                fscan
+                i2p
+                ethtool
                 git-credential-oauth
                 codex
                 gemini-cli

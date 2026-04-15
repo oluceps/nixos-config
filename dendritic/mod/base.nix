@@ -13,6 +13,7 @@
       env
       pki
       security
+      sysctl
       # perlless
     ];
   };
