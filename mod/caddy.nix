@@ -45,6 +45,13 @@
 
       config = {
         vaultix.secrets.caddy = { };
+        networking.firewall = {
+          allowedTCPPorts = [
+            80
+            443
+          ];
+          allowedUDPPorts = [ 443 ];
+        };
         caddy.settings = {
           admin = {
             config.persist = false;

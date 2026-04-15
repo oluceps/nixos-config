@@ -1,6 +1,6 @@
 { self, ... }:
 let
-  hostPrivKey = "/persist/keys/ssh_host_ed25519_key";
+  hostPrivKey = "/var/lib/ssh/ssh_host_ed25519_key";
 in
 {
   flake.modules.nixos."age/hastur" =

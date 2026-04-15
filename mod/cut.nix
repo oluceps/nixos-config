@@ -37,5 +37,6 @@
         enable = true;
         mutable = false;
       };
+      users.subIdRanges.strictOverlapCheck = true;
     };
 }

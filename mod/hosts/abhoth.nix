@@ -24,7 +24,6 @@
             identity
             openssh
             fail2ban
-            userborn-subid
             earlyoom
             vaultix
             shared-modules
@@ -35,7 +34,6 @@
             plugIn
             vxlan-mesh
             yggdrasil
-            userborn-subid
             earlyoom
             chrony
             sing-server
