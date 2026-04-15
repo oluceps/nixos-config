@@ -1,6 +1,5 @@
 {
   inputs,
-  flake-parts-lib,
   ...
 }:
 let
@@ -32,6 +31,7 @@ let
         srvOnEihort = map (n: n + ".nyaw.xyz") [
           "matrix"
           "gf"
+          "vault"
           "photo"
           "s3"
           "ms"
