@@ -8,12 +8,6 @@ let
       DNSSEC = "false";
     };
     networking = {
-      timeServers = [
-        "ntp1.aliyun.com"
-        "240e:982:13a3:f700:70c6:e4fd:a208:19d3"
-        "edu.ntp.org.cn"
-        "2001:250:380a:5::10"
-      ];
       usePredictableInterfaceNames = true;
 
       domain = "nyaw.xyz";
@@ -65,6 +59,13 @@ in
             ];
             allowedUDPPorts = [ 1901 ];
           };
+
+          timeServers = [
+            "ntp1.aliyun.com"
+            "240e:982:13a3:f700:70c6:e4fd:a208:19d3"
+            "edu.ntp.org.cn"
+            "2001:250:380a:5::10"
+          ];
         };
 
         systemd.network = {
@@ -169,6 +170,12 @@ in
           };
           hostId = "0bc55a2e";
 
+          timeServers = [
+            "ntp1.aliyun.com"
+            "240e:982:13a3:f700:70c6:e4fd:a208:19d3"
+            "edu.ntp.org.cn"
+            "2001:250:380a:5::10"
+          ];
           nftables = {
             enable = true;
             tables.filter = {
@@ -231,4 +238,56 @@ in
       }
       common
     ]);
+
+  flake.modules.nixos."net/abhoth" =
+    { ... }:
+    lib.mkMerge [
+      common
+      {
+        networking = {
+          hostName = "abhoth";
+        };
+        systemd.network = {
+          enable = true;
+
+          wait-online = {
+            enable = true;
+            anyInterface = true;
+            ignoredInterfaces = [
+              "wg0"
+            ];
+          };
+          links."10-eth0" = {
+            matchConfig.MACAddress = "36:3b:65:1b:7a:0f";
+            linkConfig.Name = "eth0";
+          };
+
+          networks."8-eth0" = {
+            matchConfig.Name = "eth0";
+            networkConfig = {
+              DHCP = "no";
+              IPv4Forwarding = true;
+              IPv6Forwarding = true;
+              IPv6AcceptRA = true;
+            };
+
+            address = [
+              "154.31.114.112/24"
+            ];
+
+            routes = [
+              {
+                Gateway = "193.41.250.250";
+                GatewayOnLink = true;
+              }
+            ];
+            linkConfig = {
+              RequiredForOnline = "routable";
+              MTUBytes = 1280;
+            };
+          };
+        };
+
+      }
+    ];
 }

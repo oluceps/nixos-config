@@ -21,10 +21,7 @@
             rustscan
             stun
             bandwhich
-            fscan
             iperf3
-            i2p
-            ethtool
             dnsutils
             tcpdump
             netcat
@@ -32,13 +29,9 @@
             socat
             miniserve
             mtr
-            wakelan
             q
             nali
-            lynx
             nethogs
-            w3m
-            whois
             dig
             wireguard-tools
             # curlFull
@@ -56,31 +49,20 @@
             tcping-go
             # httping
             iftop
-            cilium-cli
+            # cilium-cli
           ]
         ];
         cmd = [
           eza
           fzf
           mcrcon
-          zola
 
           smartmontools
-          difftastic
-          btop
-          atuin
-          minio-client
           # attic
           ntfy-sh
-          _7zz
-          yazi
-          rclone
-
           helix
           srm
           # onagre
-          libsixel
-          ouch
 
           # common
           [
@@ -98,25 +80,17 @@
             lsof
             tree
             bat
-            shpool
           ]
           [
-            broot
-            ranger
             ripgrep
             qrencode
             lazygit
             b3sum
             coreutils
-            juicefs
-            # inetutils
             traceroute
-            pciutils
-            usbutils
             rsync
           ]
         ];
-        # # ripgrep-all
 
       };
     in

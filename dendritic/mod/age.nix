@@ -84,4 +84,23 @@ in
         }
       ];
     };
+  flake.modules.nixos."age/abhoth" =
+    { config, ... }:
+    {
+
+      services.openssh.hostKeys = [
+        {
+          path = hostPrivKey;
+          type = "ed25519";
+        }
+      ];
+      vaultix = {
+        settings.hostPubkey = config.data.node.${config.networking.hostName}.ssh_key;
+
+        secrets = {
+          # postfix-sasl = { };
+          stalwart = { };
+        };
+      };
+    };
 }
