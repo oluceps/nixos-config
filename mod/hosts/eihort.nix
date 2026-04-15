@@ -25,7 +25,6 @@
             openssh
             fail2ban
             scrutiny
-            userborn-subid
             earlyoom
             incus
             vaultix
@@ -40,7 +39,6 @@
             vxlan-mesh
             yggdrasil
             scrutiny
-            userborn-subid
             secureboot
             earlyoom
             dae

@@ -23,7 +23,6 @@
             identity
             openssh
             fail2ban
-            userborn-subid
             earlyoom
             vaultix
             shared-modules
@@ -34,7 +33,6 @@
             plugIn
             vxlan-mesh
             yggdrasil
-            userborn-subid
             chrony
             sing-server
             rustypaste

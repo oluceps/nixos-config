@@ -1,7 +1,12 @@
 { self, ... }:
 {
   flake.modules.nixos.dev =
-    { lib, pkgs, ... }:
+    {
+      config,
+      lib,
+      pkgs,
+      ...
+    }:
     {
       imports = with self.modules.nixos; [
         ssh
@@ -16,6 +21,12 @@
           ${lib.getExe pkgs.atuin} init fish | source
           ${lib.getExe pkgs.zoxide} init fish | source
         '';
+        nh = {
+          enable = true;
+          # clean.enable = true;
+          # clean.extraArgs = "--keep-since 4d --keep 7";
+          flake = "/home/${config.identity.user}/Src/nixos";
+        };
         direnv = {
           enable = true;
           package = pkgs.direnv;

@@ -31,6 +31,9 @@
               // {
                 inherit (inputs'.browser-previews.packages) google-chrome-beta;
                 inherit (inputs'.nixpkgs-stable.legacyPackages) calibre-web;
+                openssl = prev.openssl.overrideAttrs (o: {
+                  doCheck = false;
+                });
               }
             )
           ]

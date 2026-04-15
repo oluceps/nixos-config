@@ -119,8 +119,6 @@ in
                 IPv6AcceptRA = true;
                 MulticastDNS = true;
               };
-              dhcpV4Config.RouteMetric = 2042;
-              dhcpV6Config.RouteMetric = 2042;
               ipv6AcceptRAConfig = {
                 DHCPv6Client = false;
               };
@@ -131,10 +129,6 @@ in
             "25-ncm" = {
               matchConfig.Name = "ncm";
               DHCP = "yes";
-              dhcpV4Config.RouteMetric = 2044;
-              dhcpV6Config.RouteMetric = 2044;
-              dhcpV4Config.UseDNS = false;
-              dhcpV6Config.UseDNS = false;
               networkConfig = {
                 DNSSEC = true;
               };
@@ -143,10 +137,6 @@ in
             "30-rndis" = {
               matchConfig.Name = "rndis";
               DHCP = "yes";
-              dhcpV4Config.RouteMetric = 2044;
-              dhcpV6Config.RouteMetric = 2044;
-              dhcpV4Config.UseDNS = false;
-              dhcpV6Config.UseDNS = false;
               networkConfig = {
                 DNSSEC = false;
               };
@@ -297,6 +287,7 @@ in
       {
         networking = {
           hostName = "yidhra";
+          firewall.allowedUDPPorts = [ 51808 ];
         };
         systemd.network = {
           enable = true;
@@ -419,8 +410,6 @@ in
               DHCP = "yes";
               dhcpV4Config.RouteMetric = 2044;
               dhcpV6Config.RouteMetric = 2044;
-              dhcpV4Config.UseDNS = false;
-              dhcpV6Config.UseDNS = false;
               networkConfig = {
                 DNSSEC = true;
               };
