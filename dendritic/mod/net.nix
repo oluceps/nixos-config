@@ -290,4 +290,144 @@ in
 
       }
     ];
+  flake.modules.nixos."net/yidhra" =
+    { ... }:
+    lib.mkMerge [
+      common
+      {
+        networking = {
+          hostName = "yidhra";
+        };
+        systemd.network = {
+          enable = true;
+
+          wait-online = {
+            enable = true;
+            anyInterface = true;
+            ignoredInterfaces = [
+            ];
+          };
+
+          links."10-eth0" = {
+            matchConfig.MACAddress = "fa:51:33:18:0a:00";
+            linkConfig.Name = "eth0";
+          };
+
+          networks."8-eth0" = {
+            matchConfig.Name = "eth0";
+            networkConfig = {
+              DHCP = "ipv4";
+              IPv4Forwarding = true;
+              IPv6Forwarding = true;
+              IPv6AcceptRA = true;
+              MulticastDNS = true;
+            };
+
+            address = [
+              "2404:c140:2005::b:a72a/64"
+            ];
+            routes = [
+              {
+                Gateway = "2404:c140:2005::1";
+                GatewayOnLink = true;
+              }
+            ];
+            linkConfig.RequiredForOnline = "routable";
+          };
+        };
+
+      }
+    ];
+  flake.modules.nixos."net/kaambl" =
+    { ... }:
+    lib.mkMerge [
+      common
+      {
+        networking = {
+          hostName = "kaambl";
+        };
+        systemd.network = {
+          enable = true;
+
+          wait-online = {
+            enable = false;
+            anyInterface = true;
+            ignoredInterfaces = [
+              "wlan0"
+              "wg0"
+            ];
+          };
+          links = {
+
+            "30-rndis" = {
+              matchConfig.Driver = "rndis_host";
+              linkConfig = {
+                NamePolicy = "keep";
+                Name = "rndis";
+                MACAddressPolicy = "persistent";
+              };
+            };
+            "20-ncm" = {
+              matchConfig.Driver = "cdc_ncm";
+              linkConfig = {
+                NamePolicy = "keep";
+                Name = "ncm";
+                MACAddressPolicy = "persistent";
+              };
+            };
+            "40-wlan" = {
+              matchConfig.Driver = "ath11k_pci";
+              linkConfig = {
+                Name = "wlan0";
+                WakeOnLan = "magic";
+              };
+            };
+          };
+
+          networks = {
+
+            "20-wireless" = {
+              matchConfig.Name = "wlan0";
+              networkConfig = {
+                DHCP = "ipv4";
+                IPv4Forwarding = true;
+                IPv6Forwarding = true;
+                IPv6AcceptRA = true;
+                MulticastDNS = true;
+              };
+              ipv6AcceptRAConfig = {
+                DHCPv6Client = false;
+                # UseDNS = false;
+              };
+              dhcpV4Config.RouteMetric = 2040;
+              dhcpV6Config.RouteMetric = 2046;
+            };
+
+            "30-rndis" = {
+              matchConfig.Name = "rndis";
+              DHCP = "yes";
+              dhcpV4Config.RouteMetric = 2044;
+              dhcpV6Config.RouteMetric = 2044;
+              dhcpV4Config.UseDNS = false;
+              dhcpV6Config.UseDNS = false;
+              networkConfig = {
+                DNSSEC = true;
+              };
+            };
+            "25-ncm" = {
+              matchConfig.Name = "ncm";
+              DHCP = "yes";
+              dhcpV4Config.RouteMetric = 2044;
+              dhcpV6Config.RouteMetric = 2044;
+              dhcpV4Config.UseDNS = false;
+              dhcpV6Config.UseDNS = false;
+              networkConfig = {
+                DNSSEC = true;
+              };
+            };
+          };
+        };
+
+      }
+    ];
 }
