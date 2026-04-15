@@ -13,7 +13,7 @@
         || (thisNode.nat && thisNode ? region && peerNode ? region && thisNode.region == peerNode.region);
       directConnect = peerNode: ((thisNode.nat && peerNode.nat) || (thisNode.censor == peerNode.censor));
 
-      extra_reg = (fromTOML (builtins.readFile ../../registry.toml)).extra;
+      extra_reg = (fromTOML (builtins.readFile ../registry.toml)).extra;
 
       trustedLinkLocalAddrs = lib.mapAttrsToList (_: v: macToLL v.mac) (
         lib.filterAttrs (
