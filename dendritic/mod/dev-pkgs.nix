@@ -72,6 +72,7 @@
                 opencode
                 atuin
                 yazi
+                hexyl
                 shpool
                 ouch
                 libsixel
@@ -82,6 +83,8 @@
                 i2p
                 ethtool
                 git-credential-oauth
+                qrencode
+                lazygit
                 codex
                 gemini-cli
                 docker-compose

@@ -103,4 +103,69 @@ in
         };
       };
     };
+  flake.modules.nixos."age/yidhra" =
+    { config, ... }:
+    {
+
+      services.openssh.hostKeys = [
+        {
+          path = hostPrivKey;
+          type = "ed25519";
+        }
+      ];
+      vaultix = {
+        settings.hostPubkey = config.data.node.${config.networking.hostName}.ssh_key;
+
+        secrets = {
+          # postfix-sasl = { };
+          wg-yidhra = {
+            file = ../../sec/wg-yidhra.age;
+            owner = "systemd-network";
+            group = "root";
+            mode = "400";
+          };
+
+          wgy-warp = {
+            file = ../../sec/wgy-warp.age;
+            owner = "systemd-network";
+            group = "root";
+            mode = "400";
+          };
+          subs = {
+            file = ../../sec/subs.age;
+            mode = "740";
+            owner = config.identity.user;
+            group = "root";
+            name = "subs.ts";
+          };
+
+        };
+      };
+    };
+  flake.modules.nixos."age/kaambl" =
+    { config, ... }:
+    {
+
+      services.openssh.hostKeys = [
+        {
+          path = hostPrivKey;
+          type = "ed25519";
+        }
+      ];
+      vaultix = {
+        settings.hostPubkey = config.data.node.${config.networking.hostName}.ssh_key;
+
+        secrets = {
+          # postfix-sasl = { };
+          sing = { };
+          id = {
+            # file = ../../sec/id.age;
+            mode = "400";
+            owner = config.identity.user;
+            group = "users";
+          };
+          garage = { };
+        };
+      };
+    };
 }

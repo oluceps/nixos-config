@@ -156,7 +156,7 @@
   };
   programs.sway.enable = false;
   programs.gtklock.enable = true;
-  programs.light.enable = true;
+  # programs.light.enable = true;
 
   systemd = {
 
@@ -175,9 +175,6 @@
       RebootWatchdogSec = "20s";
       RuntimeWatchdogSec = "30s";
     };
-    sleep.extraConfig = ''
-      AllowHibernation=no
-    '';
 
     tmpfiles.rules = [
       # "L+    /opt/rocm/hip   -    -    -     -    ${pkgs.rocmPackages.clr}"

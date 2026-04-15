@@ -4,9 +4,10 @@
     inputs:
     inputs.flake-parts.lib.mkFlake { inherit inputs; } {
       debug = true;
-
       imports = [
         (inputs.import-tree ./mod)
+        ./livecd
+        ./bootstrap
       ];
     };
   inputs = {

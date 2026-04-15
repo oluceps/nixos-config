@@ -67,11 +67,11 @@
           # common
           [
             killall
-            hexyl
             jq
             fx
             bottom
             lsd
+            htop
             fd
             choose
             duf
@@ -83,8 +83,6 @@
           ]
           [
             ripgrep
-            qrencode
-            lazygit
             b3sum
             coreutils
             traceroute
