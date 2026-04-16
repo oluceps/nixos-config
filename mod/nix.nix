@@ -25,7 +25,7 @@
         };
 
         # package = pkgs.nixVersions.stable;
-        package = pkgs.lixPackageSets.stable.lix;
+        package = pkgs.lixPackageSets.git.lix;
 
         nixPath = [ "nixpkgs=${inputs.nixpkgs}" ];
         channel.enable = false;
