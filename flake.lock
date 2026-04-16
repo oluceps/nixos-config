@@ -2576,7 +2576,7 @@
         "type": "github"
       }
     },
-    "nixpkgs-patch-subuids": {
+    "nixpkgs-patch-subuids-10": {
       "flake": false,
       "locked": {
         "narHash": "sha256-KVcl7dzBbsCxPf5cUr7NyfFduK41j+CB7IyPHnjXJ7M=",
@@ -3001,7 +3001,7 @@
         "type": "github"
       },
       "original": {
-        "owner": "r-vdp",
+        "owner": "oluceps",
         "ref": "nixos-subids",
         "repo": "nixpkgs",
         "type": "github"
@@ -3681,7 +3681,7 @@
         "nixpkgs-fix-mautrix": "nixpkgs-fix-mautrix",
         "nixpkgs-master": "nixpkgs-master",
         "nixpkgs-origin-vaul": "nixpkgs-origin-vaul",
-        "nixpkgs-patch-subuids": "nixpkgs-patch-subuids",
+        "nixpkgs-patch-subuids-10": "nixpkgs-patch-subuids-10",
         "nixpkgs-rstable": "nixpkgs-rstable",
         "nixpkgs-stable": "nixpkgs-stable_4",
         "nixpkgs-upstream": "nixpkgs-upstream",
