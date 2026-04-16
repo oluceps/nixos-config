@@ -1,0 +1,8 @@
+version = 1
+
+[machines.andesite]
+uri = "ssh://elen@eihort.nyaw.xyz"
+jobs = 2
+speed-factor = 1.0
+supported-features = ["kvm","big-parallel"]
+ssh-key = "/persist/keys/sept"
