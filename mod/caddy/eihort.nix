@@ -19,7 +19,7 @@
         owner = config.identity.user;
         insert = {
           "aa778b04d0a03257ce38ecfc17c225fe019a5369d50b2b51a47af2dcc3b446ef" = {
-            content = config.data.pki.intermediate;
+            content = config.fn.pki.intermediate;
           };
         };
       };
