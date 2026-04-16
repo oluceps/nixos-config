@@ -405,7 +405,7 @@
                   http = {
                     proxy_url = "http://10.255.0.1:8080";
                     skip_resolve_phase_with_proxy = true;
-                    valid_status_codes = [ 404 ];
+                    valid_status_codes = [ 204 ];
                   };
                 };
                 icmp = {
