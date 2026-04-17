@@ -38,5 +38,6 @@
         mutable = false;
       };
       users.subIdRanges.strictOverlapCheck = true;
+      users.subIdRanges.static = true;
     };
 }

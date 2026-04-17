@@ -3,13 +3,12 @@
     {
       config,
       pkgs,
-      lib,
       ...
     }:
     {
       vaultix.secrets.misskey = {
         owner = "misskey";
-        mode = "400";
+        mode = "444";
       };
       services.redis.servers.misskey = {
         enable = true;
