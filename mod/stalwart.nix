@@ -15,6 +15,7 @@
       systemd.services.stalwart.serviceConfig.EnvironmentFile = config.vaultix.secrets.stalwart.path;
       services.stalwart = {
         enable = true;
+        stateVersion = "1";
         settings = {
           http.use-x-forwarded = true;
           http.url = "'https' + '://' + config_get('server.hostname')";

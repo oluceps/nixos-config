@@ -55,7 +55,7 @@
       incus.bridgeAddr = "fdcc:1::1/64";
       environment.systemPackages = [
         pkgs.nvtopPackages.intel
-        pkgs.texlive.combined.scheme-full
+        # pkgs.texlive.combined.scheme-full
       ];
 
       system = {
@@ -104,16 +104,17 @@
         kernelPackages =
           # (inputs.nix-cachyos-kernel.mkFixedVersionKernelWith pkgs).linuxPackages-cachyos-latest-lto;
           # inputs'.nix-cachyos-kernel.linuxPackages-cachyos-latest-lto-zen4;
-          let
-            helpers = pkgs.callPackage "${inputs.nix-cachyos-kernel.outPath}/helpers.nix" { };
+          # let
+          #   helpers = pkgs.callPackage "${inputs.nix-cachyos-kernel.outPath}/helpers.nix" { };
 
-            rawKernel = pkgs.cachyosKernels.linux-cachyos-bore-lto.override {
-              pname = "linux-cachyos-custom-kernel";
-              processorOpt = "zen4";
-              extraMakeFlags = [ "KCFLAGS=-march=znver5" ];
-            };
-          in
-          helpers.kernelModuleLLVMOverride (pkgs.linuxKernel.packagesFor rawKernel);
+          #   rawKernel = pkgs.cachyosKernels.linux-cachyos-bore-lto.override {
+          #     pname = "linux-cachyos-custom-kernel";
+          #     processorOpt = "zen4";
+          #     extraMakeFlags = [ "KCFLAGS=-march=znver5" ];
+          #   };
+          # in
+          # helpers.kernelModuleLLVMOverride (pkgs.linuxKernel.packagesFor rawKernel);
+          pkgs.linuxPackages_latest;
         blacklistedKernelModules = [ "hid_nintendo" ];
         kernelParams = [
           "amd_pstate=active"

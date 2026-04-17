@@ -37,6 +37,6 @@
         enable = true;
         mutable = false;
       };
-      # users.subIdRanges.strictOverlapCheck = true;
+      users.subIdRanges.strictOverlapCheck = true;
     };
 }

@@ -31,8 +31,14 @@
               // {
                 inherit (inputs'.browser-previews.packages) google-chrome-beta;
                 inherit (inputs'.nixpkgs-stable.legacyPackages) calibre-web;
-                openssl = prev.openssl.overrideAttrs (o: {
-                  doCheck = false;
+                foot = prev.foot.overrideAttrs (o: {
+                  version = "1.26.0-ecf3";
+                  src = prev.fetchFromCodeberg {
+                    owner = "dnkl";
+                    repo = "foot";
+                    rev = "ecf3b864e461bf6bf5033ac794cc6109013cd816";
+                    hash = "sha256-TbeDUJkdkz8IVAnSnf75gvVhGxwcMOizpSGSHq6rKrM=";
+                  };
                 });
               }
             )
