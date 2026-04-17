@@ -9,7 +9,8 @@
       ];
     };
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable-small";
+    nixpkgs.url = "github:oluceps/nixpkgs/nixos-subids";
+
     nixpkgs-stable.url = "github:NixOS/nixpkgs/nixos-25.05";
     nixpkgs-rstable.url = "github:NixOS/nixpkgs/nixos-23.05";
     nixpkgs-master.url = "github:NixOS/nixpkgs/master";
@@ -146,7 +147,6 @@
       url = "github:lordgrimmauld/run0-sudo-shim";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    snm.url = "gitlab:simple-nixos-mailserver/nixos-mailserver/master";
     nuanmonito.url = "/home/riro/Src/nuanmonito";
     ranet.url = "/home/riro/Src/ranet";
     ranet-discover.url = "/home/riro/Src/ranet-discover";

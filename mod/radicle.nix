@@ -20,7 +20,7 @@
           listenAddress = "[::]";
         };
         node.openFirewall = true;
-        privateKeyFile = config.vaultix.secrets.id.path;
+        # privateKeyFile = config.vaultix.secrets.id.path;
         publicKey = config.data.keys.sshPubKey;
         settings = {
           cli = {
