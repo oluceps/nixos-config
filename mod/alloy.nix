@@ -67,8 +67,8 @@
             stage.json {
               expressions = {
                 ts        = "ts",
-                dst = ""id.resp_h"",
-                dpt = ""id.resp_p"",
+                dst = "\"id.resp_h\"",
+                dpt = "\"id.resp_p\"",
                 proto     = "proto",
                 ip_proto  = "ip_proto",
               }
@@ -78,8 +78,8 @@
               source  = "dst"
               db      = "${
                 pkgs.fetchurl {
-                  url = "https://github.com/P3TERX/GeoLite.mmdb/releases/download/2026.03.10/GeoLite2-ASN.mmdb";
-                  hash = "sha256-WbepKNqCshQdR7qLJvb5cRtAUfIm1zBRzN3k+iTKiDc=";
+                  url = "https://github.com/P3TERX/GeoLite.mmdb/releases/download/2026.04.16/GeoLite2-ASN.mmdb";
+                  hash = "sha256-AA7ZwhbYnCtIHqGbs5ikAq5689ruAKWaw04OVfox9Nk=";
                 }
               }"
               db_type = "asn"
@@ -88,8 +88,8 @@
               source  = "dst"
               db      = "${
                 pkgs.fetchurl {
-                  url = "https://github.com/P3TERX/GeoLite.mmdb/releases/download/2026.03.10/GeoLite2-City.mmdb";
-                  hash = "sha256-b/e+kgTwLOFLF+aGhg9uddaNbbIvDv1EfXgp8t5Nh/A=";
+                  url = "https://github.com/P3TERX/GeoLite.mmdb/releases/download/2026.04.16/GeoLite2-City.mmdb";
+                  hash = "sha256-t0BNPJzM9hq3h3kIu8d6dsVxBcyKKcQjEZ8/WzhF6jw=";
                 }
               }"
               db_type = "city"
