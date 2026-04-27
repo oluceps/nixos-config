@@ -4312,7 +4312,7 @@
         "dirtyRev": "34c680dc3124a145d14c776c6f343a5056961005-dirty",
         "dirtyShortRev": "34c680d-dirty",
         "lastModified": 1770126251,
-        "narHash": "sha256-/B+g9jxn7unIPmYE6WkVuENjukzgCxdPyZzVqSjMzoE=",
+        "narHash": "sha256-4G4SkPJcjUixyOEFSqI2kiMVEHdc225TTQVUiPinT7A=",
         "type": "git",
         "url": "file:///home/riro/Src/vaultix"
       },

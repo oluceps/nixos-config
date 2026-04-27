@@ -104,6 +104,7 @@ in
         secrets = {
           # postfix-sasl = { };
           stalwart = { };
+          xray = { };
         };
       };
     };
@@ -140,6 +141,7 @@ in
             name = "subs.ts";
           };
 
+          xray = { };
         };
       };
     };
@@ -170,6 +172,14 @@ in
             owner = config.identity.user;
           };
           garage = { };
+          atuin_key = {
+            owner = config.identity.user;
+            mode = "400";
+          };
+          atuin = {
+            owner = config.identity.user;
+            mode = "400";
+          };
         };
       };
     };

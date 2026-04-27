@@ -390,17 +390,11 @@ in
                 DHCPv6Client = false;
                 # UseDNS = false;
               };
-              dhcpV4Config.RouteMetric = 2040;
-              dhcpV6Config.RouteMetric = 2046;
             };
 
             "30-rndis" = {
               matchConfig.Name = "rndis";
               DHCP = "yes";
-              dhcpV4Config.RouteMetric = 2044;
-              dhcpV6Config.RouteMetric = 2044;
-              dhcpV4Config.UseDNS = false;
-              dhcpV6Config.UseDNS = false;
               networkConfig = {
                 DNSSEC = true;
               };
@@ -408,8 +402,6 @@ in
             "25-ncm" = {
               matchConfig.Name = "ncm";
               DHCP = "yes";
-              dhcpV4Config.RouteMetric = 2044;
-              dhcpV6Config.RouteMetric = 2044;
               networkConfig = {
                 DNSSEC = true;
               };
