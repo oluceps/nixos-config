@@ -45,6 +45,7 @@
 
           users.mutableUsers = false;
           users.users.root = {
+            initialHashedPassword = lib.mkForce config.data.keys.hashedPasswd;
             openssh.authorizedKeys.keys = [
               self.data.keys.sshPubKey2
               self.data.keys.skSshPubKey
@@ -235,7 +236,7 @@
             devices = {
               disk = {
                 main = {
-                  imageSize = "8G";
+                  imageSize = "2G";
                   type = "disk";
                   device = "/dev/sda";
                   content = {
