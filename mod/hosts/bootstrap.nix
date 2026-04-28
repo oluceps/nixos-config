@@ -202,7 +202,7 @@
               # timeout = 3;
               limine = {
                 enable = true;
-                efiSupport = false;
+                efiSupport = true;
                 biosSupport = true;
                 biosDevice = "/dev/sda";
               };
@@ -247,7 +247,9 @@
                         type = "EF02";
                       };
                       ESP = {
+                        name = "ESP";
                         size = "256M";
+                        type = "EF00";
                         content = {
                           type = "filesystem";
                           format = "vfat";
@@ -309,18 +311,6 @@
                   };
                 };
               };
-              # nodev = {
-              #   "/" = {
-              #     fsType = "tmpfs";
-              #     mountOptions = [
-              #       "relatime"
-              #       "nosuid"
-              #       "nodev"
-              #       "size=2G"
-              #       "mode=755"
-              #     ];
-              #   };
-              # };
             };
           };
         }
