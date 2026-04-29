@@ -183,4 +183,22 @@ in
         };
       };
     };
+  flake.modules.nixos."age/uubboo" =
+    { config, ... }:
+    {
+
+      services.openssh.hostKeys = [
+        {
+          path = hostPrivKey;
+          type = "ed25519";
+        }
+      ];
+      vaultix = {
+        settings.hostPubkey = config.data.node.${config.networking.hostName}.ssh_key;
+
+        secrets = {
+          sing = { };
+        };
+      };
+    };
 }

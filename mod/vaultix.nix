@@ -15,7 +15,7 @@
         !elem n [
           # "yidhra"
           "resq"
-          "livecd"
+          "rescue"
           "bootstrap"
           "nodens"
           # "hastur"

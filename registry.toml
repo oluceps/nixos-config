@@ -74,15 +74,28 @@ iata = "NRT"
 city = "Tokyo"
 ygg_pubkey = "b382696fe2e84c8a33c51923453de48caa666745a9228582892b5703600725a9"
 
-
-[extra.edgeone]
-type = "ygg"
-region = 0
+[node.uubboo]
+# edge
+id = 5
+addrs = ["192.168.0.60"]
 censor = true
 nat = true
+region = 0
 user = "elen"
-ygg_pubkey = "00009960b687622088a805cc95cb5721584856bcc4268f3f51eed280877f8e28"
+ssh_key = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINTn2ZKJ1KcbAmkqf+/VKUpSKzTt+qRLv5a/Y9QzdNcq"
+link_local_addr = "fe80::dcec:8fbb:1f93:2d3f/64"
+wg_key = "ruJyKXSXmXg1zxFmFp/i9RYzZf6iwKN1ImcV1BdgaS4="
+ygg_pubkey = "2557a79ba3bf20908e9bc69f1502aeb36c0acc9890c022a0a09cfac5f16cc78b"
 mac = "c4:09:38:f2:3e:cb"
+
+
+# [extra.edgeone]
+# type = "ygg"
+# region = 0
+# censor = true
+# nat = true
+# user = "elen"
+# ygg_pubkey = "00009960b687622088a805cc95cb5721584856bcc4268f3f51eed280877f8e28"
 
 # [node.nodens]
 # # dmit lax

@@ -45,7 +45,7 @@
 
           users.mutableUsers = false;
           users.users.root = {
-            initialHashedPassword = lib.mkForce config.data.keys.hashedPasswd;
+            initialHashedPassword = lib.mkForce self.data.keys.hashedPasswd;
             openssh.authorizedKeys.keys = [
               self.data.keys.sshPubKey2
               self.data.keys.skSshPubKey

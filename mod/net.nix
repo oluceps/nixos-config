@@ -411,4 +411,41 @@ in
 
       }
     ];
+  flake.modules.nixos."net/uubboo" =
+    { ... }:
+    lib.mkMerge [
+      common
+      {
+        networking = {
+          hostName = "uubboo";
+        };
+        systemd.network = {
+          enable = true;
+
+          wait-online = {
+            enable = true;
+            anyInterface = true;
+          };
+          links."10-eno1" = {
+            matchConfig.MACAddress = "c4:09:38:f2:3e:cb";
+            linkConfig.Name = "eno1";
+          };
+
+          networks."8-eno1" = {
+            matchConfig.Name = "eno1";
+            networkConfig = {
+              DHCP = "yes";
+              IPv4Forwarding = true;
+              IPv6Forwarding = true;
+              IPv6AcceptRA = true;
+              MulticastDNS = true;
+            };
+            ipv6AcceptRAConfig = {
+              DHCPv6Client = false;
+            };
+            linkConfig.RequiredForOnline = "routable";
+          };
+        };
+      }
+    ];
 }
