@@ -55,8 +55,8 @@
             # "https://cache.lix.systems"
           ]
           ++ (map (n: "https://${n}.cachix.org") [
-            "nix-community"
-            "nixpkgs-wayland"
+            # "nix-community"
+            # "nixpkgs-wayland"
             "microvm"
             "devenv"
           ]);

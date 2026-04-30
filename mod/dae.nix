@@ -59,13 +59,15 @@
              dns {
                  ipversion_prefer: 4
                  upstream {
-                    ${notEihort "local: 'udp://[2409:8034:2000::1]'"}
+                     # ${notEihort "local: 'udp://[2409:8034:2000::1]'"}
+                     local: 'udp://[2409:8034:2000::1]'
                      googledns: 'tcp+udp://dns.google'
-                     pol: 'quic://dns.alidns.com'
+                     pol: 'quic://unfiltered.adguard-dns.com'
                  }
                  routing {
                      request {
-                         ${notEihort "qname(geosite:cn) -> local"}
+                         # ${notEihort "qname(geosite:cn) -> local"}
+                         qname(geosite:cn) -> local
                          fallback: googledns
                      }
                      response {
