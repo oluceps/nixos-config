@@ -9,10 +9,6 @@
       };
       bird = {
         config = ''
-          protocol direct ext {
-            ipv6;
-            interface "eno1";
-          };
           include "${config.vaultix.secrets.babel-auth.path}";
         '';
       };

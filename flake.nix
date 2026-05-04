@@ -21,6 +21,7 @@
     nixpkgs-origin-vaul.url = "github:NixOS/nixpkgs?rev=ccfbb9cd5859cc51c9d720b47b08e48d1aff633f";
 
     nix-topology.url = "github:oddlama/nix-topology";
+    limes.url = "/home/riro/Src/limes-project/limes";
     niri = {
       url = "github:YaLTeR/niri";
       # inputs.nixpkgs.follows = "nixpkgs";

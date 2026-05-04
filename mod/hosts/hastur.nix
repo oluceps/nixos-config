@@ -41,7 +41,8 @@
             yggdrasil
             scrutiny
             earlyoom
-            dae
+            # dae
+            limes
             secureboot
             home
             chrony

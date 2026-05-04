@@ -17,13 +17,16 @@
       #
       #
       "net.ipv4.conf.all.arp_accept" = 1;
-      "net.ipv4.fib_multipath_hash_policy" = 1;
+      # "net.ipv4.fib_multipath_hash_policy" = 1;
 
       "net.ipv6.conf.all.accept_ra" = 2;
       "net.ipv6.conf.all.forwarding" = 1;
       "net.ipv6.conf.all.accept_redirects" = 0;
       "net.ipv4.conf.all.forwarding" = 1;
       "net.ipv4.conf.all.rp_filter" = 0;
+      "net.ipv6.conf.all.rp_filter" = 0;
+      "net.ipv4.conf.lo.rp_filter" = 0;
+      "net.ipv6.conf.lo.rp_filter" = 0;
 
       # Ignore ICMP broadcasts to avoid participating in Smurf attacks
       "net.ipv4.icmp_echo_ignore_broadcasts" = 0;
