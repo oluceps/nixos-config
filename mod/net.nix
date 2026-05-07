@@ -21,6 +21,7 @@ let
       firewall = {
         enable = true;
         checkReversePath = false;
+        logRefusedConnections = true;
         trustedInterfaces = [
           "virbr0"
           "podman*"
@@ -72,7 +73,6 @@ in
             anyInterface = true;
             ignoredInterfaces = [
               "wlan0"
-              "wg0"
             ];
           };
           links = {
@@ -337,12 +337,8 @@ in
           enable = true;
 
           wait-online = {
-            enable = false;
+            enable = true;
             anyInterface = true;
-            ignoredInterfaces = [
-              "wlan0"
-              "wg0"
-            ];
           };
           links = {
 
