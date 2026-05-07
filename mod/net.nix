@@ -26,12 +26,8 @@ let
           "podman*"
         ];
         allowedUDPPorts = [
-          5353
-          1901
         ];
         allowedTCPPorts = [
-          8080
-          1901
         ];
       };
       nftables = {

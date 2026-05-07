@@ -16,8 +16,7 @@
           };
           routing = {
             fwmark = "0x100";
-            table_id = 100;
-            tproxy_port = 12345;
+            veth_prefix = "limes_v";
           };
           rules = {
             proxy = {

@@ -45,7 +45,7 @@
                  allow_insecure: false
                  pprof_port: 9901
                  dial_mode: domain
-                 disable_waiting_network: false
+                 disable_waiting_network: true
                  auto_config_kernel_parameter: true
                  tls_implementation: utls
                  utls_imitate: ios_auto
