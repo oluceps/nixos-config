@@ -149,6 +149,7 @@
             HandleLidSwitch = "suspend-then-hibernate";
             HandlePowerKey = "hibernate"; # it sucks. laptop
             HandlePowerKeyLongPress = "poweroff";
+            IdleAction = "suspend";
           };
         };
 

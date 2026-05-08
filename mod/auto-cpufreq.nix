@@ -5,7 +5,7 @@
       ...
     }:
     {
-      modules = [
+      imports = [
         inputs.auto-cpufreq.nixosModules.default
       ];
       # ---Snip---

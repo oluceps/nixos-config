@@ -194,6 +194,26 @@
         "type": "github"
       }
     },
+    "auto-cpufreq": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1778086849,
+        "narHash": "sha256-0sWvD4mgdAkRM2DyFp7/lhcaP88qq6LYESEB0RMAed0=",
+        "owner": "AdnanHodzic",
+        "repo": "auto-cpufreq",
+        "rev": "17cd8792b2446b64bb07ea3c68d00732aeaf2b78",
+        "type": "github"
+      },
+      "original": {
+        "owner": "AdnanHodzic",
+        "repo": "auto-cpufreq",
+        "type": "github"
+      }
+    },
     "browser-previews": {
       "inputs": {
         "flake-utils": "flake-utils_3",
@@ -3699,6 +3719,7 @@
         "anyrun": "anyrun",
         "ascii2char": "ascii2char",
         "atuin": "atuin",
+        "auto-cpufreq": "auto-cpufreq",
         "browser-previews": "browser-previews",
         "catppuccin": "catppuccin",
         "conduit": "conduit",
