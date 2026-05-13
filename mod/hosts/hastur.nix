@@ -46,6 +46,7 @@
             secureboot
             home
             chrony
+            prometheus
             # xray
           ])
         )
@@ -60,6 +61,7 @@
       environment.systemPackages = [
         pkgs.nvtopPackages.intel
         pkgs.chafa
+        pkgs.mcp-grafana
         # pkgs.texlive.combined.scheme-full
       ];
       environment.etc."alloy/config.alloy".text = ''

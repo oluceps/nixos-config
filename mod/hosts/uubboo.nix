@@ -34,6 +34,7 @@
             yggdrasil
             chrony
             dae
+            prometheus
           ])
         )
         ++ [

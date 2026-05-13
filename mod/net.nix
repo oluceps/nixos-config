@@ -403,11 +403,12 @@ in
       }
     ];
   flake.modules.nixos."net/uubboo" =
-    { ... }:
+    { config, ... }:
     lib.mkMerge [
       common
       {
         networking = {
+          hosts = config.data.hosts.${config.networking.hostName};
           hostName = "uubboo";
         };
         systemd.network = {
