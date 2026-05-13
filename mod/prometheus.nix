@@ -30,11 +30,11 @@
           mode = "400";
         };
         prom = {
-          owner = "victoriametrics";
+          owner = "vmagent";
           mode = "400";
         };
         syncthing-hastur-api = {
-          owner = "victoriametrics";
+          owner = "vmagent";
           mode = "400";
         };
       };
@@ -43,7 +43,7 @@
         alertmanager.serviceConfig.LoadCredential = [
           "notifychan:${config.vaultix.secrets.notifychan.path}"
         ];
-        victoriametrics.serviceConfig.LoadCredential = (map (config.fn.genCredPath)) [
+        vmagent.serviceConfig.LoadCredential = (map (config.fn.genCredPath)) [
           "prom"
           "syncthing-hastur-api"
         ];
@@ -51,15 +51,29 @@
 
       services.victoriametrics = {
         enable = true;
-        listenAddress = "[fdcc::3]:9090";
+        listenAddress = "[fdcc::${toString (config.data.node.${config.networking.hostName}.id + 1)}]:9090";
         extraOptions = [
           "-enableTCP6"
+          "-dedup.minScrapeInterval=10s"
         ];
         retentionPeriod = "60d";
+      };
+      services.vmagent = {
+        enable = true;
+        extraArgs = [
+          "-remoteWrite.maxDiskUsagePerURL=1GB"
+          "-remoteWrite.queues=2"
+          "-remoteWrite.url=http://[fdcc::1]:9090/api/v1/write"
+          "-remoteWrite.url=http://[fdcc::3]:9090/api/v1/write"
+          "-remoteWrite.url=http://[fdcc::6]:9090/api/v1/write"
+          "-enableTCP6"
+          "-remoteWrite.tmpDataPath=/var/cache/vmagent"
+        ];
+
         prometheusConfig = {
           scrape_configs =
             let
-              secPath = "/run/credentials/victoriametrics.service/prom";
+              secPath = "/run/credentials/vmagent.service/prom";
             in
             [
               {
@@ -152,26 +166,6 @@
                     ];
                   }
                 ];
-                relabel_configs = [
-                  {
-                    source_labels = [ "__address__" ];
-                    regex = "\[fdcc::1\]:9123";
-                    target_label = "instance";
-                    replacement = "hastur.nyaw.xyz";
-                  }
-                  {
-                    source_labels = [ "__address__" ];
-                    regex = "\[fdcc::2\]:9123";
-                    target_label = "instance";
-                    replacement = "kaambl.nyaw.xyz";
-                  }
-                  {
-                    source_labels = [ "__address__" ];
-                    regex = "\[fdcc::3\]:9123";
-                    target_label = "instance";
-                    replacement = "eihort.nyaw.xyz";
-                  }
-                ];
               }
               {
                 job_name = "syncthing_metrics";
@@ -192,7 +186,7 @@
                   }
                 ];
 
-                authorization.credentials_file = "/run/credentials/victoriametrics.service/syncthing-hastur-api";
+                authorization.credentials_file = "/run/credentials/vmagent.service/syncthing-hastur-api";
 
               }
               {
@@ -354,7 +348,9 @@
             cfg = config.services.prometheus;
           in
           [ "${cfg.alertmanager.listenAddress}:${toString cfg.alertmanager.port}" ];
-        "datasource.url" = "http://localhost:9090";
+        "datasource.url" = "http://[fdcc::${
+          toString (config.data.node.${config.networking.hostName}.id + 1)
+        }]:9090";
         rule = {
           groups = [
             {
@@ -393,6 +389,22 @@
                 }
               ];
             }
+            {
+              name = "pier_health";
+              rules = [
+                {
+                  alert = "PierDown";
+                  annotations = {
+                    summary = "node offline";
+                  };
+                  expr = "up{job=node_exporter,instance=eihort.nyaw.xyz:443} == 0";
+                  for = "1m";
+                  labels = {
+                    severity = "critical";
+                  };
+                }
+              ];
+            }
           ];
         };
       };
@@ -427,7 +439,7 @@
         alertmanager = {
           enable = true;
           webExternalUrl = "https://alert.nyaw.xyz";
-          listenAddress = "[fdcc::3]";
+          listenAddress = "[fdcc::${toString (config.data.node.${config.networking.hostName}.id + 1)}]";
           port = 9093;
           logLevel = "info";
           extraFlags = [ ''--cluster.listen-address=""'' ];
@@ -445,12 +457,28 @@
                   }
                 ];
               }
+              {
+                name = "bridge-channel";
+                telegram_configs = [
+                  {
+                    bot_token_file = "/run/credentials/alertmanager.service/notifychan";
+                    chat_id = -1003020363451;
+                  }
+                ];
+              }
             ];
             route = {
               receiver = "telegram";
               group_wait = "30s";
               group_interval = "2m";
               repeat_interval = "10m";
+              routes = [
+                {
+                  matchers = [ "alertname = \"PierDown\"" ];
+                  receiver = "bridge-channel";
+                  continue = false;
+                }
+              ];
             };
           };
         };
