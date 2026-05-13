@@ -21,6 +21,20 @@
           inherit replacement;
         }
       ];
+      fqdn_instance_relabel = [
+        {
+          source_labels = [ "__address__" ];
+          regex = "(.+)\.nyaw\.xyz(:\d+)?";
+          target_label = "instance";
+          replacement = "$1";
+        }
+      ];
+      fdcc_instance_relabel = map (name: {
+        source_labels = [ "__address__" ];
+        regex = "\[fdcc::${toString (config.data.node.${name}.id + 1)}\]:\d+";
+        target_label = "instance";
+        replacement = name;
+      }) (builtins.attrNames config.data.node);
 
     in
     {
@@ -85,6 +99,7 @@
                 };
                 metrics_path = "/caddy";
                 static_configs = [ { inherit targets; } ];
+                relabel_configs = fqdn_instance_relabel;
               }
               {
                 job_name = "ncps";
@@ -93,6 +108,7 @@
                     targets = [ "[fdcc::3]:8501" ];
                   }
                 ];
+                relabel_configs = fdcc_instance_relabel;
               }
               {
                 job_name = "metrics";
@@ -102,6 +118,7 @@
                   password_file = secPath;
                 };
                 static_configs = [ { inherit targets; } ];
+                relabel_configs = fqdn_instance_relabel;
               }
               {
                 job_name = "metrics-sept";
@@ -125,32 +142,38 @@
                 scheme = "http";
                 metrics_path = "/metrics";
                 static_configs = [ { targets = [ "[fdcc::3]:8087" ]; } ];
+                relabel_configs = fdcc_instance_relabel;
               }
               {
                 job_name = "seaweedfs_metrics";
                 scheme = "http";
                 static_configs = [ { targets = [ "[fdcc::3]:9768" ]; } ];
+                relabel_configs = fdcc_instance_relabel;
               }
               {
                 job_name = "centre_psql_metrics";
                 scheme = "http";
                 static_configs = [ { targets = [ "[fdcc::3]:9187" ]; } ];
+                relabel_configs = fdcc_instance_relabel;
               }
               {
                 job_name = "ntfy_metrics";
                 scheme = "http";
                 static_configs = [ { targets = [ "[fdcc::4]:9099" ]; } ];
+                relabel_configs = fdcc_instance_relabel;
               }
               {
                 job_name = "synapse_metrics";
                 scheme = "http";
                 metrics_path = "/_synapse/metrics";
                 static_configs = [ { targets = [ "[fdcc::3]:9031" ]; } ];
+                relabel_configs = fdcc_instance_relabel;
               }
               {
                 job_name = "uubboo_wgmesh_metrics";
                 scheme = "http";
                 static_configs = [ { targets = [ "[fdcc::6]:9586" ]; } ];
+                relabel_configs = fdcc_instance_relabel;
               }
               {
                 job_name = "chrony_metrics";
@@ -166,6 +189,7 @@
                     ];
                   }
                 ];
+                relabel_configs = fdcc_instance_relabel;
               }
               {
                 job_name = "syncthing_metrics";
@@ -177,14 +201,7 @@
                     ];
                   }
                 ];
-                relabel_configs = [
-                  {
-                    source_labels = [ "__address__" ];
-                    regex = "\[fdcc::1\]:8384";
-                    target_label = "instance";
-                    replacement = "hastur.nyaw.xyz";
-                  }
-                ];
+                relabel_configs = fdcc_instance_relabel;
 
                 authorization.credentials_file = "/run/credentials/vmagent.service/syncthing-hastur-api";
 
@@ -200,20 +217,7 @@
                     ];
                   }
                 ];
-                relabel_configs = [
-                  {
-                    source_labels = [ "__address__" ];
-                    regex = "\[fdcc::1\]:3903";
-                    target_label = "instance";
-                    replacement = "hastur.nyaw.xyz";
-                  }
-                  {
-                    source_labels = [ "__address__" ];
-                    regex = "\[fdcc::2\]:3903";
-                    target_label = "instance";
-                    replacement = "kaambl.nyaw.xyz";
-                  }
-                ];
+                relabel_configs = fdcc_instance_relabel;
               }
               {
                 job_name = "stalwart_metrics";
@@ -342,16 +346,24 @@
             ];
         };
       };
-      services.vmalert.instances.main.settings = {
-        "notifier.url" =
-          let
-            cfg = config.services.prometheus;
-          in
-          [ "${cfg.alertmanager.listenAddress}:${toString cfg.alertmanager.port}" ];
-        "datasource.url" = "http://[fdcc::${
-          toString (config.data.node.${config.networking.hostName}.id + 1)
-        }]:9090";
-        rule = {
+      services.vmalert.instances.main = {
+        enable = true;
+        settings = {
+          "notifier.url" =
+            let
+              cfg = config.services.prometheus;
+            in
+            [ "http://${cfg.alertmanager.listenAddress}:${toString cfg.alertmanager.port}" ];
+          "datasource.url" = "http://[fdcc::${
+            toString (config.data.node.${config.networking.hostName}.id + 1)
+          }]:9090";
+          "remoteWrite.url" = "http://[fdcc::${
+            toString (config.data.node.${config.networking.hostName}.id + 1)
+          }]:9090";
+          "enableTCP6" = true;
+        };
+
+        rules = {
           groups = [
             {
               name = "metrics";
@@ -395,9 +407,9 @@
                 {
                   alert = "PierDown";
                   annotations = {
-                    summary = "node offline";
+                    summary = "bridge node offline";
                   };
-                  expr = "up{job=node_exporter,instance=eihort.nyaw.xyz:443} == 0";
+                  expr = ''up{job="metrics",instance="eihort"} == 0'';
                   for = "1m";
                   labels = {
                     severity = "critical";
@@ -476,6 +488,9 @@
                 {
                   matchers = [ "alertname = \"PierDown\"" ];
                   receiver = "bridge-channel";
+                  group_wait = "30s";
+                  group_interval = "2m";
+                  repeat_interval = "20m";
                   continue = false;
                 }
               ];
