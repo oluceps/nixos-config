@@ -26,7 +26,7 @@
       services.dae = {
         enable = true;
         disableTxChecksumIpGeneric = false;
-        package = inputs.dae.packages.${pkgs.stdenv.hostPlatform.system}.dae-next;
+        package = inputs.dae.packages.${pkgs.stdenv.hostPlatform.system}.dae-unstable;
         config =
           let
             notEihort = lib.optionalString (!(config.networking.hostName == "eihort"));
@@ -44,7 +44,7 @@
                  wan_interface: auto
                  allow_insecure: false
                  # pprof_port: 9901
-                 # dial_mode: domain
+                 dial_mode: domain
                  disable_waiting_network: false
                  auto_config_kernel_parameter: true
                  tls_implementation: utls
