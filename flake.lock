@@ -526,7 +526,7 @@
         "dirtyRev": "87281ee152b189d1d0c7840c476ef9eed6e33d8d-dirty",
         "dirtyShortRev": "87281ee-dirty",
         "lastModified": 1778001093,
-        "narHash": "sha256-If/l3ZHINWHZFjO8dOqH9l2JZxd/+HzWWoli2va7NoA=",
+        "narHash": "sha256-F3/xe7KHWcsdTllCWOZIk2/pTn6fd7cc6iRGCeI4sgM=",
         "type": "git",
         "url": "file:///home/riro/Src/flake.nix"
       },

@@ -490,7 +490,7 @@
                   receiver = "bridge-channel";
                   group_wait = "30s";
                   group_interval = "2m";
-                  repeat_interval = "20m";
+                  repeat_interval = "60m";
                   continue = false;
                 }
               ];
