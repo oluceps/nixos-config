@@ -50,6 +50,7 @@ in
           hosts = config.data.hosts.${config.networking.hostName} // {
             "localhost" = [ "alert.nyaw.xyz" ];
           };
+          wireless.iwd.enable = true;
           hostName = "hastur"; # Define your hostname.
           firewall = {
             allowedTCPPorts = [
@@ -85,7 +86,7 @@ in
             };
 
             "40-wlan0" = {
-              matchConfig.MACAddress = "70:66:55:e7:1c:b1";
+              matchConfig.MACAddress = "50:ee:32:8e:12:a5";
               linkConfig = {
                 Name = "wlan0";
               };
