@@ -66,6 +66,22 @@ in
             "edu.ntp.org.cn"
             "2001:250:380a:5::10"
           ];
+
+          nftables = {
+            enable = true;
+            tables.filter = {
+              family = "inet";
+              content = ''
+                chain forward {
+                  type filter hook forward priority filter; policy drop;
+
+                  iifname "eno1" oifname "vm2" accept
+
+                  ct state { established, related } accept
+                }
+              '';
+            };
+          };
         };
 
         systemd.network = {
@@ -167,22 +183,6 @@ in
             "edu.ntp.org.cn"
             "2001:250:380a:5::10"
           ];
-          nftables = {
-            enable = true;
-            tables.filter = {
-              family = "inet";
-              content = ''
-                chain forward {
-                  type filter hook forward priority filter; policy drop;
-
-                  iifname "eno1" oifname "vm1" accept
-
-                  ct state { established, related } accept
-                }
-              '';
-            };
-          };
-
         };
         systemd.network = {
           enable = true;
