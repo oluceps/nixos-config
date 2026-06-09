@@ -18,17 +18,17 @@
     }:
     {
       imports = [
-        # (inputs.nixpkgs + "/nixos/modules/profiles/qemu-guest.nix")
+        (inputs.nixpkgs + "/nixos/modules/profiles/qemu-guest.nix")
         # (inputs.nixpkgs + "/nixos/modules/installer/scan/not-detected.nix")
-        {
-          options.fw-iface = lib.mkOption {
-            type = lib.types.enum [
-              "UEFI"
-              "BIOS"
-            ];
-          };
-          config.fw-iface = "UEFI";
-        }
+        # {
+        #   options.fw-iface = lib.mkOption {
+        #     type = lib.types.enum [
+        #       "UEFI"
+        #       "BIOS"
+        #     ];
+        #   };
+        #   config.fw-iface = "UEFI";
+        # }
         {
           time.timeZone = "Asia/Hong_Kong";
           networking = {
@@ -202,11 +202,18 @@
           boot = {
             loader = {
               # timeout = 3;
-              limine = {
+              # limine = {
+              #   enable = true;
+              #   efiSupport = true;
+              #   biosSupport = true;
+              #   biosDevice = "/dev/sda";
+              # };
+              grub = {
                 enable = true;
-                efiSupport = true;
-                biosSupport = true;
-                biosDevice = "/dev/sda";
+                # efiSupport = true;
+                # biosSupport = true;
+                # biosDevice = "/dev/sda";
+                device = "/dev/sda";
               };
             };
             kernelParams = [
@@ -322,7 +329,7 @@
             enable = true;
 
             links."10-eno1" = {
-              matchConfig.MACAddress = "bc:24:11:88:90:da";
+              matchConfig.MACAddress = "bc:24:11:f0:0c:f6";
               linkConfig.Name = "eno1";
             };
 
@@ -342,12 +349,12 @@
               domains = [ "PVE" ];
 
               address = [
-                "2401:b60:e0fe:15::2/64"
+                "2401:b60:e0fe:3e::2/64"
               ];
               linkConfig.RequiredForOnline = "routable";
               routes = [
                 {
-                  Gateway = "2401:b60:e0fe:15::1";
+                  Gateway = "2401:b60:e0fe:3e::1";
                   # GatewayOnLink = true;
                 }
               ];

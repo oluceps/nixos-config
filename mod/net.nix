@@ -50,7 +50,18 @@ in
           hosts = config.data.hosts.${config.networking.hostName} // {
             "localhost" = [ "alert.nyaw.xyz" ];
           };
-          wireless.iwd.enable = true;
+          wireless.iwd = {
+            enable = true;
+            settings = {
+              Network = {
+                EnableIPv6 = true;
+                RoutePriorityOffset = 300;
+              };
+              Settings = {
+                AutoConnect = false;
+              };
+            };
+          };
           hostName = "hastur"; # Define your hostname.
           firewall = {
             allowedTCPPorts = [
