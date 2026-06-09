@@ -49,6 +49,7 @@
             openssh.authorizedKeys.keys = [
               self.data.keys.sshPubKey2
               self.data.keys.skSshPubKey
+              "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMlk4fFt1HfVenQFTyGgxHfxqPB8spVtZqzBC5R2gYNg ed-login-250928"
             ];
           };
 
@@ -64,7 +65,7 @@
             };
           };
 
-          system.stateVersion = "24.05";
+          system.stateVersion = "25.11";
         }
 
         # {
@@ -321,7 +322,7 @@
             enable = true;
 
             links."10-eno1" = {
-              matchConfig.MACAddress = "c4:09:38:f2:3e:cb";
+              matchConfig.MACAddress = "bc:24:11:88:90:da";
               linkConfig.Name = "eno1";
             };
 
