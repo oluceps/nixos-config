@@ -33,11 +33,11 @@
           time.timeZone = "Asia/Hong_Kong";
           networking = {
             nameservers = [ "8.8.8.8" ];
-            usePredictableInterfaceNames = false;
-
+            usePredictableInterfaceNames = true;
             firewall.enable = false;
 
             useNetworkd = true;
+            useDHCP = false;
 
             hostName = "bootstrap";
           };
@@ -206,7 +206,7 @@
               #   enable = true;
               #   efiSupport = true;
               #   biosSupport = true;
-              #   biosDevice = "/dev/sda";
+              # biosDevice = "/dev/sda";
               # };
               grub = {
                 enable = true;
@@ -329,7 +329,7 @@
             enable = true;
 
             links."10-eno1" = {
-              matchConfig.MACAddress = "bc:24:11:f0:0c:f6";
+              matchConfig.MACAddress = "bc:24:11:21:c7:2c";
               linkConfig.Name = "eno1";
             };
 

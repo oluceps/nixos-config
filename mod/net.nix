@@ -458,4 +458,41 @@ in
         };
       }
     ];
+  flake.modules.nixos."net/azasos" =
+    { ... }:
+    lib.mkMerge [
+      common
+      {
+        networking = {
+          hostName = "azasos";
+        };
+        systemd.network = {
+          enable = true;
+          wait-online = {
+            enable = true;
+            anyInterface = true;
+          };
+          links."10-eno1" = {
+            matchConfig.MACAddress = "bc:24:11:21:c7:2c";
+            linkConfig.Name = "eno1";
+          };
+          networks."8-eno1" = {
+            matchConfig.Name = "eno1";
+            networkConfig = {
+              DHCP = "no";
+              IPv4Forwarding = true;
+              IPv6Forwarding = true;
+              IPv6AcceptRA = true;
+              MulticastDNS = true;
+            };
+            ipv6AcceptRAConfig = {
+              DHCPv6Client = false;
+            };
+            address = [ "2401:b60:e0fe:3e::2/64" ];
+            routes = [ { Gateway = "2401:b60:e0fe:3e::1"; } ];
+            linkConfig.RequiredForOnline = "routable";
+          };
+        };
+      }
+    ];
 }
