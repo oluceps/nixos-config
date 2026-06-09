@@ -329,7 +329,7 @@
             networks."8-eno1" = {
               matchConfig.Name = "eno1";
               networkConfig = {
-                DHCP = "yes";
+                DHCP = "no";
                 IPv4Forwarding = true;
                 IPv6Forwarding = true;
                 IPv6AcceptRA = true;
@@ -339,19 +339,18 @@
                 DHCPv6Client = false;
                 # UseDNS = false;
               };
+              domains = [ "PVE" ];
 
-              # address = [
-              # "205.198.76.6/24"
-              # "2404:c140:2000:2::32:1d9f/64/48"
-              # ];
+              address = [
+                "2401:b60:e0fe:15::2/64"
+              ];
               linkConfig.RequiredForOnline = "routable";
-              # routes = [
-              #   { Gateway = "205.198.76.1"; }
-              #   {
-              #     Gateway = "2404:c140:2000:2::1";
-              #     GatewayOnLink = true;
-              #   }
-              # ];
+              routes = [
+                {
+                  Gateway = "2401:b60:e0fe:15::1";
+                  # GatewayOnLink = true;
+                }
+              ];
             };
           };
         }
