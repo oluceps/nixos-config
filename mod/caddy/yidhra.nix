@@ -19,6 +19,7 @@
                     handle = [
                       {
                         handler = "proxy";
+                        terminal = true;
                         upstreams = [
                           {
                             dial = [
