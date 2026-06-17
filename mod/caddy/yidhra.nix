@@ -19,11 +19,10 @@
                     handle = [
                       {
                         handler = "proxy";
-                        terminal = true;
                         upstreams = [
                           {
                             dial = [
-                              "tcp/127.0.0.1:4474"
+                              "127.0.0.1:4474"
                             ];
                           }
                         ];
@@ -39,7 +38,6 @@
                       }
                     ];
                   }
-
                 ];
               }
 
@@ -88,7 +86,6 @@
                           }
                         ];
                         match = [ { host = [ "ntfy.nyaw.xyz" ]; } ];
-                        terminal = true;
                       }
                       {
                         handle = [
@@ -115,7 +112,6 @@
                           }
                         ];
                         match = [ { host = [ "pb.nyaw.xyz" ]; } ];
-                        terminal = true;
                       }
                       {
                         handle = [
@@ -142,7 +138,6 @@
                           }
                         ];
                         match = [ { host = [ "subs.nyaw.xyz" ]; } ];
-                        terminal = true;
                       }
                     ];
                   }
@@ -157,7 +152,6 @@
                   }
                 ];
                 match = [ { host = [ "api.atuin.nyaw.xyz" ]; } ];
-                terminal = true;
               }
               (import ../../caddy/nyaw-xyz-zone-apex.nix)
             ];

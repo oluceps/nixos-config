@@ -8,7 +8,7 @@
   dockerTools,
   pkg-config,
   enableJemalloc ? true,
-  rust-jemalloc-sys,
+  jemalloc,
   cmake,
 }:
 
@@ -36,7 +36,7 @@ rustPlatform.buildRustPackage {
 
   CFLAGS = "-Wno-error=stringop-overflow";
 
-  buildInputs = lib.optional enableJemalloc rust-jemalloc-sys;
+  buildInputs = lib.optional enableJemalloc jemalloc;
 
   buildFeatures = lib.optional enableJemalloc "jemalloc";
 
