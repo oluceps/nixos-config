@@ -69,7 +69,11 @@
       url = "git+https://seed.radicle.xyz/z3gqcJUoA1n9HaHKufZs5FCSGazv5.git";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    tg-online-keeper.url = "github:oluceps/TelegramOnlineKeeper";
+    tg-online-keeper = {
+      url = "github:oluceps/TelegramOnlineKeeper";
+      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.flake-parts.follows = "flake-parts";
+    };
     # tg-online-keeper.url = "/home/elen/Src/tg-online-keeper";
     disko = {
       url = "github:nix-community/disko";

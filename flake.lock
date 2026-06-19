@@ -1105,22 +1105,6 @@
         "nixpkgs-lib": "nixpkgs-lib_10"
       },
       "locked": {
-        "lastModified": 1740872218,
-        "narHash": "sha256-ZaMw0pdoUKigLpv9HiNDH2Pjnosg7NBYMJlHTIsHEUo=",
-        "path": "/nix/store/054s12i2a5vg9wxp308ns2qxb38zbbz4-source",
-        "rev": "3876f6b87db82f33775b1ef5ea343986105db764",
-        "type": "path"
-      },
-      "original": {
-        "id": "flake-parts",
-        "type": "indirect"
-      }
-    },
-    "flake-parts_16": {
-      "inputs": {
-        "nixpkgs-lib": "nixpkgs-lib_11"
-      },
-      "locked": {
         "lastModified": 1768135262,
         "narHash": "sha256-PVvu7OqHBGWN16zSi6tEmPwwHQ4rLPU9Plvs8/1TUBY=",
         "owner": "hercules-ci",
@@ -2529,18 +2513,6 @@
     },
     "nixpkgs-lib_10": {
       "locked": {
-        "lastModified": 1740872140,
-        "narHash": "sha256-3wHafybyRfpUCLoE8M+uPVZinImg3xX+Nm6gEfN3G8I=",
-        "type": "tarball",
-        "url": "https://github.com/NixOS/nixpkgs/archive/6d3702243441165a03f699f64416f635220f4f15.tar.gz"
-      },
-      "original": {
-        "type": "tarball",
-        "url": "https://github.com/NixOS/nixpkgs/archive/6d3702243441165a03f699f64416f635220f4f15.tar.gz"
-      }
-    },
-    "nixpkgs-lib_11": {
-      "locked": {
         "lastModified": 1765674936,
         "narHash": "sha256-k00uTP4JNfmejrCLJOwdObYC9jHRrr/5M/a/8L2EIdo=",
         "owner": "nix-community",
@@ -3252,22 +3224,6 @@
     },
     "nixpkgs_32": {
       "locked": {
-        "lastModified": 1742069588,
-        "narHash": "sha256-C7jVfohcGzdZRF6DO+ybyG/sqpo1h6bZi9T56sxLy+k=",
-        "owner": "NixOS",
-        "repo": "nixpkgs",
-        "rev": "c80f6a7e10b39afcc1894e02ef785b1ad0b0d7e5",
-        "type": "github"
-      },
-      "original": {
-        "owner": "NixOS",
-        "ref": "nixos-unstable",
-        "repo": "nixpkgs",
-        "type": "github"
-      }
-    },
-    "nixpkgs_33": {
-      "locked": {
         "lastModified": 1769789167,
         "narHash": "sha256-kKB3bqYJU5nzYeIROI82Ef9VtTbu4uA3YydSk/Bioa8=",
         "owner": "NixOS",
@@ -3282,7 +3238,7 @@
         "type": "github"
       }
     },
-    "nixpkgs_34": {
+    "nixpkgs_33": {
       "locked": {
         "lastModified": 1772542754,
         "narHash": "sha256-WGV2hy+VIeQsYXpsLjdr4GvHv5eECMISX1zKLTedhdg=",
@@ -4628,9 +4584,13 @@
     },
     "tg-online-keeper": {
       "inputs": {
-        "flake-parts": "flake-parts_15",
+        "flake-parts": [
+          "flake-parts"
+        ],
         "naersk": "naersk",
-        "nixpkgs": "nixpkgs_32"
+        "nixpkgs": [
+          "nixpkgs"
+        ]
       },
       "locked": {
         "lastModified": 1742326755,
@@ -4825,8 +4785,8 @@
       "inputs": {
         "advisory-db": "advisory-db_3",
         "crane": "crane_6",
-        "flake-parts": "flake-parts_16",
-        "nixpkgs": "nixpkgs_33",
+        "flake-parts": "flake-parts_15",
+        "nixpkgs": "nixpkgs_32",
         "pre-commit-hooks": "pre-commit-hooks_4",
         "rust-overlay": "rust-overlay_11"
       },
@@ -4846,7 +4806,7 @@
     },
     "vicinae": {
       "inputs": {
-        "nixpkgs": "nixpkgs_34",
+        "nixpkgs": "nixpkgs_33",
         "systems": "systems_18"
       },
       "locked": {
