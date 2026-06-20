@@ -160,25 +160,25 @@
           );
         };
 
-        # networks."10-hts-sb_fwd" = {
-        #   matchConfig.Name = "hts-sb_fw";
-        #   address = [
-        #     "172.19.0.1/30"
-        #     "fdfe:dcba:9876::1/126"
-        #   ];
-        #   routes = lib.flatten (
-        #     map (
-        #       v:
-        #       map (a: {
-        #         Destination = if (getFamily a == "ip6") then a + "/128" else a + "/32";
-        #       }) v.addrs
-        #     ) (lib.attrValues (lib.filterAttrs (_: v: !v.nat && !v.censor) config.data.node))
-        #   );
-        #   networkConfig = {
-        #     DHCP = false;
-        #   };
-        #   linkConfig.RequiredForOnline = false;
-        # };
+        networks."10-hts-sb_fwd" = {
+          matchConfig.Name = "hts-sb_fw";
+          address = [
+            "172.19.0.1/30"
+            "fdfe:dcba:9876::1/126"
+          ];
+          routes = lib.flatten (
+            map (
+              v:
+              map (a: {
+                Destination = if (getFamily a == "ip6") then a + "/128" else a + "/32";
+              }) v.addrs
+            ) (lib.attrValues (lib.filterAttrs (_: v: !v.nat && !v.censor) config.data.node))
+          );
+          networkConfig = {
+            DHCP = false;
+          };
+          linkConfig.RequiredForOnline = false;
+        };
 
       };
     };
