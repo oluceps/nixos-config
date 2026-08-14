@@ -55,6 +55,7 @@
                         handle = [
                           {
                             handler = "reverse_proxy";
+                            headers.request.set.X-Real-Ip = [ "{http.request.remote.host}" ];
                             upstreams = [ { dial = "[fdcc::3]:8003"; } ];
                           }
                         ];
