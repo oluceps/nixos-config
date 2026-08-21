@@ -49,6 +49,7 @@ stdenv.mkDerivation rec {
     "BPF_CC=clang"
     "BPFTOOL=bpftool"
     "LLVM_STRIP=llvm-strip"
+    "CHECKSUM_HACK=kprobe"
   ];
 
   buildFlags = [
