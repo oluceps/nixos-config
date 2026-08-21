@@ -15,7 +15,7 @@
   ronn,
 }:
 
-stdenv.mkDerivation rec {
+stdenv.mkDerivation {
   pname = "mimic-bpf";
   version = "unstable-2024-03-22";
 
