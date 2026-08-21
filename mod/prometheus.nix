@@ -344,13 +344,12 @@
                   {
                     targets = [ "10.10.10.2" ];
                     labels = {
-                      name = "BRE";
-                      code = "LAX";
+                      name = "BREAD";
+                      code = "MSP";
                       ip = "IPv4";
                     };
                   }
-                ]
-                ++ config.fn.targetsFromNodes;
+                ];
                 relabel_configs = gen_relabel_configs "10.255.0.1:9115";
               }
               {
