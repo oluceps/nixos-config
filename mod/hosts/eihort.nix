@@ -8,7 +8,6 @@
     {
       config,
       pkgs,
-      lib,
       ...
     }:
     {
@@ -66,7 +65,7 @@
             sept
             zeek
 
-            pxe
+            # pxe
           ])
         )
         ++ [
@@ -86,6 +85,11 @@
       };
       boot = {
         supportedFilesystems = [ "zfs" ];
+        zfs = {
+          devNodes = "/dev/disk/by-id";
+          extraPools = [ "pool0" ];
+          forceImportRoot = false;
+        };
 
         loader = {
           efi = {
@@ -144,6 +148,7 @@
         };
       };
       services = {
+        zfs.autoScrub.enable = true;
         rsyncd = {
           enable = true;
           socketActivated = true;
@@ -169,7 +174,7 @@
         # };
         rqbit = {
           enable = true;
-          location = "/three/storage/Downloads";
+          location = "/pool0/storage/Downloads";
         };
         # bpftune.enable = true;
         sing-box.enable = true;
