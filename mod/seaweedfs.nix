@@ -34,6 +34,9 @@
         ReadWritePaths = [
           dataDir
         ];
+        MemoryMax = "8G";
+        MemoryHigh = "6G";
+        Environment = [ "GOMEMLIMIT=6GiB" ];
       };
 
       environment.etc."seaweedfs/filer.toml".source = ./filer.toml;
