@@ -114,8 +114,10 @@
           # "net.ifnames=0"
           "ia32_emulation=0"
           "zswap.enabled=1"
-          "zswap.compressor=zstd"
+          "zswap.compressor=lz4"
           "zswap.zpool=zsmalloc"
+          "zswap.accept_threshold_percent=70"
+          "zswap.shrinker_enabled=1"
         ];
 
         initrd = {
@@ -226,7 +228,6 @@
           interval = "weekly";
           fileSystems = [
             "/persist"
-            "/three"
           ];
         };
 
