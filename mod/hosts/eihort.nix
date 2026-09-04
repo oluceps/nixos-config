@@ -85,7 +85,10 @@
         stateVersion = "24.11";
       };
       boot = {
-        supportedFilesystems = [ "zfs" ];
+        supportedFilesystems = [
+          "zfs"
+          "ntfs"
+        ];
         zfs = {
           devNodes = "/dev/disk/by-id";
           extraPools = [ "pool0" ];
@@ -151,7 +154,15 @@
         };
       };
       services = {
-        zfs.autoScrub.enable = true;
+        zfs = {
+          autoScrub.enable = true;
+          optimization = {
+            enable = true;
+            arcMinGiB = 8;
+            aggressiveL2ARC = true;
+            disablePrefetch = true;
+          };
+        };
         rsyncd = {
           enable = true;
           socketActivated = true;
