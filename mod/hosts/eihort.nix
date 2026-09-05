@@ -78,6 +78,10 @@
       identity.user = "elen";
       incus.bridgeAddr = "fdcc:3::1/64";
 
+      hardware.facter = {
+        reportPath = ../eihort_facter.json;
+        detected.dhcp.enable = false;
+      };
       system = {
         # This headless machine uses to perform heavy task.
         # Running database and web services.

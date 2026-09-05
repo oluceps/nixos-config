@@ -12,18 +12,6 @@
       ...
     }:
     {
-      disabledModules = [ "security/wrappers/default.nix" ];
-
-      options.security = {
-        wrappers = lib.mkOption {
-          type = lib.types.attrs;
-          default = { };
-        };
-        wrapperDir = lib.mkOption {
-          type = lib.types.path;
-          default = "/run/wrappers/bin";
-        };
-      };
 
       imports =
         with self.modules;
@@ -36,18 +24,29 @@
             overlay
             identity
             openssh
-            fail2ban
+            # fail2ban # Disabled to save ~140MB space (Python3)
             earlyoom
             vaultix
             shared-modules
             users
             empheral-root
-            base
+            # base
+            cut
+            fish
+            bash
+            nix
+            env
+            pki
+            security
+            sysctl
+
+            #--base
             vxlan-mesh
             yggdrasil
             chrony
             xray
             perlless
+            space-opt
           ])
         )
         ++ [
@@ -56,11 +55,6 @@
         ];
 
       config = {
-        nix.enable = false;
-        services.udev.enable = false;
-        services.lvm.enable = false;
-        security.sudo.enable = false;
-
         identity.user = "elen";
         xray.configFile = config.vaultix.secrets.xray.path;
 
@@ -106,24 +100,31 @@
         #   }
         # '';
         boot = {
-          supportedFilesystems = [ "tcp_bbr" ];
+          # supportedFilesystems = [ "tcp_bbr" ]; # removed typo
           loader = {
-            timeout = 3;
-            grub.enable = false;
+            timeout = 10;
+            # grub = {
+            #   enable = true;
+            #   # efiSupport = true;
+            #   # biosSupport = true;
+            #   # biosDevice = "/dev/sda";
+            #   device = "/dev/sda";
+            # };
             limine = {
               enable = true;
               efiSupport = false;
               biosSupport = true;
-              biosDevice = "/dev/vda";
+              biosDevice = "/dev/sda";
             };
           };
 
           kernelPackages = pkgs.linuxPackages_latest;
+          kernelModules = [ "tcp_bbr" ];
           kernelParams = [
             "audit=0"
             "net.ifnames=0"
-            "console=ttyS0"
-            "earlyprintk=ttyS0"
+            # "console=ttyS0"
+            # "earlyprintk=ttyS0"
             "rootdelay=300"
             "19200n8"
           ];
@@ -133,8 +134,8 @@
               "-19"
               "-T0"
             ];
+            systemd.enable = true;
           };
-
         };
         systemd = {
           enableEmergencyMode = false;
@@ -152,11 +153,6 @@
           hostPlatform = "x86_64-linux";
           overlays = [
             self.overlays.default
-            (selfOverlay: superOverlay: {
-              dbus = superOverlay.dbus.override {
-                systemdMinimal = selfOverlay.systemd;
-              };
-            })
           ];
           config = {
             allowUnsupportedSystem = true;
