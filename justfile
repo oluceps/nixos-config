@@ -36,14 +36,19 @@ build-all-host:
     open registry.toml | $in.node | columns
     | par-each { || nix build $'.#nixosConfigurations.($in).config.system.build.toplevel' -L; }
 renc:
-    just sec-submodule-add
-    nix run $'.#vaultix.app.(uname | $'($in.machine)-($in.kernel-name | str downcase)').renc'
     just sync-subsec
+    touch .nix-dirty
+    git add sec
+    git commit -m "chore(sec): update sec submodule before renc"
+    git add -N .nix-dirty
+    nix run $'.#vaultix.app.(uname | $'($in.machine)-($in.kernel-name | str downcase)').renc'
+    rm .nix-dirty
+    git rm --cache .nix-dirty
 
 [working-directory: 'sec']
 sync-subsec:
     just sec-submodule-add
-    git commit -m "vaultix: sechange"
+    try { git commit -m "vaultix: sechange" }
 
 [working-directory: 'sec']
 sec-submodule-add:
