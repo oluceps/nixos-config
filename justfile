@@ -37,9 +37,9 @@ build-all-host:
     | par-each { || nix build $'.#nixosConfigurations.($in).config.system.build.toplevel' -L; }
 renc:
     just sync-subsec
-    touch .nix-dirty
     git add sec
     git commit -m "chore(sec): update sec submodule before renc"
+    touch .nix-dirty
     git add -N .nix-dirty
     nix run $'.#vaultix.app.(uname | $'($in.machine)-($in.kernel-name | str downcase)').renc'
     rm .nix-dirty
