@@ -135,6 +135,7 @@
               codex
 
               opencode
+              pi-coding-agent
               # claude-code
             ];
 

@@ -37,6 +37,7 @@ build-all-host:
     | par-each { || nix build $'.#nixosConfigurations.($in).config.system.build.toplevel' -L; }
 renc:
     just sync-subsec
+    rm -f .nix-dirty
     git add sec
     git commit -m "chore(sec): update sec submodule before renc"
     touch .nix-dirty
