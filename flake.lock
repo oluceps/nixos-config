@@ -3144,6 +3144,22 @@
         "type": "github"
       }
     },
+    "nixpkgs_36": {
+      "locked": {
+        "lastModified": 1789149629,
+        "narHash": "sha256-H6GwaZzZf+4npqv0tph94w9tZddSjFjmQrVsW0z78uk=",
+        "owner": "NixOS",
+        "repo": "nixpkgs",
+        "rev": "eaad089433ca2bb662274377d33df3d0e51ef28b",
+        "type": "github"
+      },
+      "original": {
+        "owner": "NixOS",
+        "ref": "nixos-unstable",
+        "repo": "nixpkgs",
+        "type": "github"
+      }
+    },
     "nixpkgs_4": {
       "locked": {
         "lastModified": 1726042813,
@@ -3800,6 +3816,7 @@
         "tg-online-keeper": "tg-online-keeper",
         "vaultix": "vaultix",
         "vicinae": "vicinae",
+        "vocat": "vocat",
         "xwayland-satellite": "xwayland-satellite"
       }
     },
@@ -4556,6 +4573,21 @@
         "owner": "vicinaehq",
         "repo": "vicinae",
         "type": "github"
+      }
+    },
+    "vocat": {
+      "inputs": {
+        "nixpkgs": "nixpkgs_36"
+      },
+      "locked": {
+        "lastModified": 1789339861,
+        "narHash": "sha256-mZmIobde8eDKqcQPjP57uFpWT7xJLzqZoyTuSwYhJwI=",
+        "path": "/home/riro/Src/vohive-nix",
+        "type": "path"
+      },
+      "original": {
+        "path": "/home/riro/Src/vohive-nix",
+        "type": "path"
       }
     },
     "xwayland-satellite": {

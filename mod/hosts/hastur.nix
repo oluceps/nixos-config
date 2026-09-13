@@ -48,6 +48,7 @@
             prometheus
             # xray
             june
+            vocat
             # ipex
             # scx
           ])
