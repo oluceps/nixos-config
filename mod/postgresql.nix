@@ -5,6 +5,7 @@
       services.prometheus.exporters.postgres = {
         enable = true;
         listenAddress = "[::]";
+        runAsLocalSuperUser = true;
       };
       services.postgresql = {
         enable = true;
