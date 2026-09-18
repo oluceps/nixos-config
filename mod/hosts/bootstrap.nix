@@ -374,7 +374,7 @@
                   args:
                   (prev.aggregateModules args).overrideAttrs (old: {
                     passthru = (old.passthru or { }) // {
-                      target = "bzImage";
+                      target = "Image";
                     };
                   });
               })

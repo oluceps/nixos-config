@@ -307,6 +307,60 @@ in
 
       }
     ];
+  flake.modules.nixos."net/nodens" =
+    { ... }:
+    lib.mkMerge [
+      common
+      {
+        networking = {
+          hostName = "nodens";
+        };
+        systemd.network = {
+          enable = true;
+
+          wait-online = {
+            enable = true;
+            anyInterface = true;
+            ignoredInterfaces = [
+              "wg0"
+            ];
+          };
+          links."10-eth0" = {
+            matchConfig.MACAddress = "02:00:17:04:b0:f1";
+            linkConfig.Name = "eth0";
+          };
+
+          networks."8-eth0" = {
+            matchConfig.Name = "eth0";
+            networkConfig = {
+              DHCP = "ipv6";
+              IPv4Forwarding = true;
+              IPv6Forwarding = true;
+              IPv6AcceptRA = true;
+              MulticastDNS = true;
+            };
+            ipv6AcceptRAConfig = {
+              DHCPv6Client = true;
+            };
+
+            address = [
+              "193.123.164.59/32"
+            ];
+            linkConfig.RequiredForOnline = "routable";
+            routes = [
+              # {
+              #   Gateway = "2a0f:1cc6:b225::1";
+              #   GatewayOnLink = true;
+              # }
+              # {
+              #   Gateway = "216.195.195.254";
+              # }
+            ];
+          };
+        };
+
+      }
+    ];
   flake.modules.nixos."net/yidhra" =
     { ... }:
     lib.mkMerge [
