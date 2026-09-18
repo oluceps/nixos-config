@@ -112,14 +112,13 @@ ygg_pubkey = "1271764f912480d928ff1d1c002393b71b171f142575a2e05539678df1b8c2b1"
 # ygg_pubkey = "00009960b687622088a805cc95cb5721584856bcc4268f3f51eed280877f8e28"
 
 # [node.nodens]
-# # dmit lax
 # id = 5
-# addrs = ["2605:52c0:3:90b:505a:26ff:fec1:cdbf", "136.175.179.183"]
+# addrs = ["2603:c021:8025:648e:0:52a8:2e07:313a", "161.33.137.52"]
 # censor = false
 # nat = false
 # user = "elen"
 # ssh_key = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMbuDim30CUgAaG5p6Wxh/3CyqnrhWRUI2MLgrxOga3x"
 # link_local_addr = "fe80::04e2:3e20:0613:4d92/64"
 # wg_key = "49xNnrpNKHAvYCDikO3XhiK94sUaSQ4leoCnTOQjWno="
-# iata = "LAX"
-# city = "Los Angeles"
+# iata = "TYO"
+# city = "Tokyo"

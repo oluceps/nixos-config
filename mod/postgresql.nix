@@ -7,6 +7,9 @@
         listenAddress = "[::]";
         runAsLocalSuperUser = true;
       };
+      systemd.services.postgresql.serviceConfig = {
+        ReadWritePaths = [ "/pool0/relation" ];
+      };
       services.postgresql = {
         enable = true;
         package = pkgs.postgresql_17_jit;

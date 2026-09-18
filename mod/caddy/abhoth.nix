@@ -87,12 +87,31 @@
                             }
                           ];
                           match = [ { host = [ "pb.nyaw.xyz" ]; } ];
+                          terminal = true;
                         }
                         {
                           handle = [
                             {
-                              handler = "reverse_proxy";
-                              upstreams = [ { dial = "localhost:9313"; } ];
+                              handler = "subroute";
+                              routes = [
+                                {
+                                  handle = [
+                                    {
+                                      handler = "rewrite";
+                                      uri = "/jmap/session";
+                                    }
+                                  ];
+                                  match = [ { path = [ "/.well-known/jmap" ]; } ];
+                                }
+                                {
+                                  handle = [
+                                    {
+                                      handler = "reverse_proxy";
+                                      upstreams = [ { dial = "localhost:9313"; } ];
+                                    }
+                                  ];
+                                }
+                              ];
                             }
                           ];
                           match = [ { host = [ "box.nyaw.xyz" ]; } ];
@@ -159,7 +178,6 @@
                       module = "acme";
                       email = "mn1.674927211@gmail.com";
                       challenges.dns.provider = dns;
-                      preferred_chains.smallest = true;
                     }
                   ];
                   key_type = "p256";

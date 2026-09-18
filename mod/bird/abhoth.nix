@@ -15,7 +15,12 @@
         environmentFile = config.vaultix.secrets."autopeer".path;
       };
       vaultix.secrets = {
-        autopeer = { };
+        autopeer = {
+          insert = {
+            "62dcce68ed5b883e4afe9feceb2e0945067a3f3b2c708361d9b6c18704d4ff10".content = "dn42abhoth";
+            "aeb537ee3881de1a3f4ffe192421fb3ae4b03dd025cd2bf5fc640222f43df0a9".content = "154.31.114.112";
+          };
+        };
         babel-auth = {
           owner = "bird";
         };
