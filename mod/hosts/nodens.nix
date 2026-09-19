@@ -153,7 +153,7 @@
       };
 
       nixpkgs = {
-        hostPlatform = "x86_64-linux";
+        hostPlatform = "aarch64-linux";
         overlays = [
           self.overlays.default
         ];

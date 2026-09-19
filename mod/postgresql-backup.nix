@@ -5,7 +5,7 @@
       location = "/var/lib/backup/postgresql";
       compression = "none"; # rustix handle this
       startAt = "*-*-* 0,12:00:00";
-      pgdumpAllOptions = "--exclude-database=se_db";
+      pgdumpAllOptions = "--exclude-database=relation";
     };
   };
 }

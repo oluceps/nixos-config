@@ -94,7 +94,7 @@ in
                   ct state { established, related } accept
 
                   iifname "vm2" oifname "vxlan-mesh" icmpv6 type echo-request counter accept
-                  iifname "vm2" oifname "vxlan-mesh" ip6 daddr fdcc::3 tcp dport { 8123 } counter accept
+                  iifname "vm2" oifname "vxlan-mesh" ip6 daddr fdcc::3 tcp dport { 5432 } counter accept
                   iifname "vxlan-mesh" oifname "vm2" ct state { established, related } counter accept
                 }
                 chain postrouting {
@@ -333,7 +333,7 @@ in
           networks."8-eth0" = {
             matchConfig.Name = "eth0";
             networkConfig = {
-              DHCP = "ipv6";
+              DHCP = "yes";
               IPv4Forwarding = true;
               IPv6Forwarding = true;
               IPv6AcceptRA = true;
@@ -343,19 +343,7 @@ in
               DHCPv6Client = true;
             };
 
-            address = [
-              "193.123.164.59/32"
-            ];
             linkConfig.RequiredForOnline = "routable";
-            routes = [
-              # {
-              #   Gateway = "2a0f:1cc6:b225::1";
-              #   GatewayOnLink = true;
-              # }
-              # {
-              #   Gateway = "216.195.195.254";
-              # }
-            ];
           };
         };
 
