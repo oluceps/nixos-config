@@ -65,13 +65,13 @@
           }
 
           protocol rpki roa_dn42_2 {
-              roa4 { table dn42_roa4; };
-              roa6 { table dn42_roa6; };
-              remote "rpki.dn42.milu.moe" port 8082;
-              
-              refresh 600;
-              retry 300;
-              expire 7200;
+            roa4 { table dn42_roa4; };
+            roa6 { table dn42_roa6; };
+            remote "rpki.dn42.launchpadx.top" port 8082;
+
+            retry keep 90;
+            refresh keep 900;
+            expire keep 3600;
           }
 
           function dn42_roa_check() {
