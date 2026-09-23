@@ -26,11 +26,24 @@
           owner = "bird";
         };
       };
+      systemd.network = {
+        netdevs."10-dn42-dummy-0" = {
+          enable = true;
+          netdevConfig = {
+            Kind = "dummy";
+            Name = "dn42-dummy";
+          };
+        };
+        networks."10-dn42-dummy-0" = {
+          enable = true;
+          DHCP = "no";
+          matchConfig.Name = "dn42-dummy";
+          address = [ "fdda:1965:1d5f::${toString ((config.fn.getThisNode).id + 1)}" ];
+        };
+      };
 
       bird = {
         config = ''
-          include "${config.vaultix.secrets.babel-auth.path}";
-
           ipv6 table dn42_v6;
 
           roa4 table dn42_roa4;
@@ -115,6 +128,23 @@
             # (因为在 static_dn42 里已经独立生成了宣告前缀)
             export none; 
           }
+
+          protocol static static_dn42_nodens {
+            ipv6 { table dn42_v6; };
+            route DN42_OWNIP/128 reject; 
+          }
+
+          protocol bgp ibgp_abhoth {
+            local HORTUS_OWNIP as DN42_ASN;
+            neighbor fdcc::5 as DN42_ASN;
+            
+            ipv6 {
+              table dn42_v6;
+              import all;
+              export all;
+              next hop self;
+            };
+          }          
 
           include "/var/lib/autopeer/*.conf";
 

@@ -26,6 +26,21 @@
           owner = "bird";
         };
       };
+      systemd.network = {
+        netdevs."10-dn42-dummy-0" = {
+          enable = true;
+          netdevConfig = {
+            Kind = "dummy";
+            Name = "dn42-dummy";
+          };
+        };
+        networks."10-dn42-dummy-0" = {
+          enable = true;
+          DHCP = "no";
+          matchConfig.Name = "dn42-dummy";
+          address = [ "fdda:1965:1d5f::${toString ((config.fn.getThisNode).id + 1)}" ];
+        };
+      };
 
       bird = {
         config = ''
@@ -113,6 +128,18 @@
             # 从 master6 侧不向 dn42_v6 输出任何东西
             # (因为在 static_dn42 里已经独立生成了宣告前缀)
             export none; 
+          }
+
+          protocol bgp ibgp_nodens {
+            local HORTUS_OWNIP as DN42_ASN;
+            neighbor fdcc::8 as DN42_ASN;
+            
+            ipv6 {
+              table dn42_v6;
+              import all;
+              export all;
+              next hop self;
+            };
           }
 
           include "/var/lib/autopeer/*.conf";
