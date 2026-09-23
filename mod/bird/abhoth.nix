@@ -44,8 +44,6 @@
 
       bird = {
         config = ''
-          include "${config.vaultix.secrets.babel-auth.path}";
-
           ipv6 table dn42_v6;
 
           roa4 table dn42_roa4;
