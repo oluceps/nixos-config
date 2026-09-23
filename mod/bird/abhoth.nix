@@ -27,21 +27,6 @@
         };
       };
 
-      systemd.network = {
-        netdevs."10-dn42-dummy-0" = {
-          enable = true;
-          netdevConfig = {
-            Kind = "dummy";
-            Name = "dn42-dummy";
-          };
-        };
-        networks."10-dn42-dummy-0" = {
-          enable = true;
-          DHCP = "no";
-          matchConfig.Name = "dn42-dummy";
-          address = [ "fdda:1965:1d5f::${toString ((config.fn.getThisNode).id + 1)}" ];
-        };
-      };
       bird = {
         config = ''
           include "${config.vaultix.secrets.babel-auth.path}";
@@ -88,7 +73,10 @@
               
               return false;
           }
-
+          protocol static static_dn42 {
+            ipv6 { table dn42_v6; };
+            route DN42_PREFIX reject;
+          }
           function dn42_import_from_peer(int peer_asn; int peer_id) -> bool {
 
             if net.type != NET_IP6 then return false;
@@ -104,7 +92,7 @@
 
           function dn42_export_to_peer(int peer_asn; int peer_id) -> bool {
             # announce my field
-            if source = RTS_DEVICE && net ~ DN42_FIELD then return true;
+            if source = RTS_STATIC && net ~ DN42_FIELD then return true;
             
             # my A -> me -> my B
             if source = RTS_BGP then return true;
