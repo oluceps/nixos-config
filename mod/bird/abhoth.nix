@@ -72,7 +72,7 @@
             expire keep 3600;
           }
 
-          function dn42_roa_check() {
+          function dn42_roa_check() -> bool {
               if net.type = NET_IP4 then {
                   # bgp_path.last is origin ASN
                   if roa_check(dn42_roa4, net, bgp_path.last) = ROA_VALID then return true;
@@ -113,6 +113,11 @@
             return false;
           }
 
+          protocol direct abhoth_dn42 {
+            ipv6;
+            interface "dn42-dummy";
+          }
+
           # pipe to main table
           protocol pipe pipe_dn42 {
             table master6;
@@ -123,17 +128,20 @@
               reject;
             };
             
-            # 从 master6 侧不向 dn42_v6 输出任何东西
-            # (因为在 static_dn42 里已经独立生成了宣告前缀)
-            export none; 
+            export filter {
+              if source = RTS_DEVICE && net ~ DN42_V6_RANGE then accept;
+              reject;
+            };
           }
 
+          # TODO: auto gen
           protocol bgp ibgp_nodens {
             local HORTUS_OWNIP as DN42_ASN;
             neighbor fdcc::8 as DN42_ASN;
             
             ipv6 {
               table dn42_v6;
+              igp table master6;
               import all;
               export all;
               next hop self;

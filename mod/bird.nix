@@ -82,7 +82,6 @@
                 export filter to_kernel;
               };
             };
-
             protocol babel {
               interface "vxlan-mesh" {
                 type wired;
