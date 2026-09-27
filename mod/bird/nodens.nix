@@ -1,7 +1,7 @@
 { self, inputs, ... }:
 {
   flake.modules.nixos."bird/nodens" =
-    { config, ... }:
+    { lib, config, ... }:
     {
       imports = [
         self.modules.nixos.bird
@@ -181,29 +181,33 @@
             };
           }
 
-          protocol bgp ibgp_abhoth {
-            local HORTUS_OWNIP as DN42_ASN;
-            neighbor fdcc::5 as DN42_ASN;
-            
-            ipv6 {
-              table dn42_v6;
-              igp table master6;
-              import all;
-              export all;
-              next hop self;
-            };
+          ${builtins.concatStringsSep "\n" (
+            lib.mapAttrsToList (n: v: ''
+              protocol bgp ibgp_${n} {
+                local HORTUS_OWNIP as DN42_ASN;
+                neighbor ${v.unique_addr_nomask} as DN42_ASN;
+                
+                ipv6 {
+                  table dn42_v6;
+                  igp table master6;
+                  import all;
+                  export all;
+                  next hop self;
+                };
 
-            ipv4 {
-              table dn42_v4;
-              igp table master6;  # 关键：借助 master6 解析 IPv6 下一跳
-              extended next hop on;
-              import all;
-              export all;
-              next hop self;
-            };
-          }          
+                ipv4 {
+                  table dn42_v4;
+                  igp table master6;
+                  extended next hop on;
+                  import all;
+                  export all;
+                  next hop self;
+                };
+              }
+            '') (lib.filterAttrs (k: v: k != config.networking.hostName && v.dn42) config.data.node)
+          )}
 
-          include "/var/lib/autopeer/*.conf";
+          include "/run/dn42-autopeer/current/*.conf";
 
         '';
       };
