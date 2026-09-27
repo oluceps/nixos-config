@@ -52,7 +52,7 @@
           roa4 table dn42_roa4;
           roa6 table dn42_roa6;
 
-          define DN42_V6_RANGE = [ fd00::/8+ ];
+          define DN42_V6_RANGE = [ fd00::/8{44,64} ];
           define DN42_V4_RANGE = [ 172.20.0.0/14+ ]; # maybe more?
 
           # main rtr server
@@ -79,75 +79,72 @@
           function dn42_roa_check() -> bool {
               if net.type = NET_IP4 then {
                   # bgp_path.last is origin ASN
-                  if roa_check(dn42_roa4, net, bgp_path.last) = ROA_VALID then return true;
-                  return false;
+                  if roa_check(dn42_roa4, net, bgp_path.last) = ROA_INVALID then return false;
+                  return true;
               }
               
               if net.type = NET_IP6 then {
-                  if roa_check(dn42_roa6, net, bgp_path.last) = ROA_VALID then return true;
-                  return false;
+                  if roa_check(dn42_roa6, net, bgp_path.last) = ROA_INVALID then return false;
+                  return true;
               }
               
               return false;
           }
-
           protocol static static_dn42 {
             ipv6 { table dn42_v6; };
             route DN42_PREFIX reject;
-          }          
+          }
           protocol static static_dn42_v4 {
             ipv4 { table dn42_v4; };
             route DN42_PREFIX_V4 reject;
           }
           function dn42_import_from_peer(int peer_asn; int peer_id) -> bool {
-
             if net.type != NET_IP6 then return false;
 
-            if (net.len < 44) || (net.len > 64) then return false;
-            
+            if !(net ~ DN42_V6_RANGE) then return false;
+
             if net ~ DN42_FIELD then return false;
-            
-            if net ~ DN42_V6_RANGE && dn42_roa_check() then return true;
+
+            if dn42_roa_check() then return true;
 
             return false;
-          }
+          }          
+          function dn42_import_from_peer_v4(int peer_asn; int peer_id) -> bool {
+            if net.type != NET_IP4 then return false;
 
+            # TODO: replace with registry filter.txt-derived prefix set
+            if !(net ~ DN42_V4_RANGE) then return false;
+
+            if net ~ DN42_FIELD_V4 then return false;
+
+            if !dn42_roa_check() then return false;
+
+            return true;
+          }          
           function dn42_export_to_peer(int peer_asn; int peer_id) -> bool {
             # announce my field
-            if source = RTS_STATIC && net ~ DN42_FIELD then return true;
+            if net = DN42_PREFIX then return true;
             
             # my A -> me -> my B
             if source = RTS_BGP && dn42_roa_check() then return true;
             
             return false;
-          }
-
-          function dn42_import_from_peer_v4(int peer_asn; int peer_id) -> bool {
-            if net.type != NET_IP4 then return false;
-
-            if (net.len < 21) || (net.len > 29) then return false;
-
-            # if net ~ DN42_V4_FIELD then return false;
-
-            if net ~ DN42_V4_RANGE && dn42_roa_check() then return true;
-
-            return false;
-          }
-
-          protocol direct dn42 {
-            ipv4;
-            ipv6;
-            interface "dn42-dummy";
           }
 
           function dn42_export_to_peer_v4(int peer_asn; int peer_id) -> bool {
             # announce my field
-            if source = RTS_STATIC && net ~ DN42_FIELD_V4 then return true;
+            if net = DN42_PREFIX_V4 then return true;
             
             # my A -> me -> my B
             if source = RTS_BGP && dn42_roa_check() then return true;
             
             return false;
+          }
+
+          protocol direct dn42 {
+            ipv6;
+            ipv4;
+            interface "dn42-dummy";
           }
 
           # pipe to main table
@@ -165,7 +162,6 @@
               reject;
             };
           }
-
           protocol pipe pipe_dn42_v4 {
             table master4;
             peer table dn42_v4;
@@ -208,7 +204,6 @@
           )}
 
           include "/run/dn42-autopeer/current/*.conf";
-
         '';
       };
     };
