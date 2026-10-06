@@ -31,6 +31,7 @@ let
         trustedInterfaces = [
           "virbr0"
           "podman*"
+          "tun0"
         ];
         allowedUDPPorts = [
         ];
