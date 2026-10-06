@@ -28,10 +28,8 @@
       systemd.network.networks."90-vm2" = {
         routes = [
           {
-            routeConfig = {
-              Destination = "fd00:89:1::/64";
-              Gateway = "fec0::2";
-            };
+            Destination = "fd00:89:1::/64";
+            Gateway = "fec0::2";
           }
         ];
       };

@@ -16,10 +16,6 @@
         iifname "vm1" ip saddr 10.255.0.1 ip daddr 10.255.0.0 tcp dport { 3030, 53 } accept
         iifname "vm1" ip saddr 10.255.0.1 ip daddr 10.255.0.0 udp dport 53 accept
       '';
-      networking.firewall.extraForwardRules = ''
-        iifname "vm1" oifname "tun0" accept
-        iifname "tun0" oifname "vm1" accept
-      '';
       networking = {
         nat = {
           enable = true;
