@@ -218,6 +218,7 @@
                 environment.systemPackages = with pkgs; [
                   wireguard-tools
                   tcpdump
+                  helix
                   nmap
                   mtr
                   traceroute
@@ -234,10 +235,10 @@
                 #     configFile = "/var/lib/hy/config.yml";
                 #   };
                 # };
-                services.xray = {
-                  enable = true;
-                  settingsFile = "/var/lib/xray/config.json";
-                };
+                # services.xray = {
+                #   enable = true;
+                #   settingsFile = "/var/lib/xray/config.json";
+                # };
                 services.openssh = {
                   enable = true;
                   settings = {
@@ -287,6 +288,63 @@
                     	external_labels = {}
                     }
                   '';
+
+                networking.firewall = {
+                  trustedInterfaces = [
+                    "podman*"
+                  ];
+                };
+                virtualisation = {
+                  vmVariant = {
+                    virtualisation = {
+                      memorySize = 2048;
+                      cores = 6;
+                    };
+                  };
+
+                  podman = {
+                    enable = true;
+                    dockerSocket.enable = true;
+                    dockerCompat = true;
+                    defaultNetwork.settings = {
+                      dns_enabled = true;
+                    };
+                  };
+
+                  oci-containers.backend = "podman";
+                };
+                systemd.services.socks5-kit-node4 = {
+                  description = "socks5-kit node4 container";
+                  wantedBy = [ "multi-user.target" ];
+                  after = [
+                    "podman.service"
+                    "network-online.target"
+                  ];
+                  requires = [ "podman.service" ];
+                  wants = [ "network-online.target" ];
+                  path = [ pkgs.podman ];
+                  serviceConfig = {
+                    Type = "oneshot";
+                    RemainAfterExit = true;
+                    WorkingDirectory = "/var/lib/ext-xray/";
+                    ExecStartPre = "${pkgs.bash}/bin/bash -c 'podman image exists localhost/socks5-kit-node4:26.9.9 || podman load -i /var/lib/ext-xray/socks5-kit-node4-amd64.tar.gz'";
+                    ExecStart = "${pkgs.bash}/bin/bash /var/lib/ext-xray/run.sh";
+                    ExecStop = "${pkgs.podman}/bin/podman rm -f socks5-kit-node4";
+                  };
+                };
+                systemd.tmpfiles.rules =
+                  let
+                    rootPodmanConf = pkgs.writeText "root-containers.conf" ''
+                      [network]
+                      network_config_dir = "/var/lib/containers/storage/networks"
+                    '';
+                  in
+                  [
+                    "d /var/lib/containers/storage/networks 0700 root root - -"
+
+                    "d /root/.config/containers 0700 root root - -"
+                    "L+ /root/.config/containers/containers.conf - - - - ${rootPodmanConf}"
+                  ];
                 microvm = {
                   interfaces = [
                     {
