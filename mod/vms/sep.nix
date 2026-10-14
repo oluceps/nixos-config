@@ -4,6 +4,7 @@
     {
       pkgs,
       lib,
+      config,
       ...
     }:
     {
@@ -11,6 +12,36 @@
         inputs.microvm.nixosModules.host
         self.modules.nixos.routed-subnet
       ];
+
+      systemd.sockets.fec0-ssh = {
+        description = "Socket for fec0 SSH forwarding";
+        wantedBy = [ "sockets.target" ];
+
+        listenStreams = [ "[fdcc::3]:2223" ];
+
+        socketConfig = {
+          Accept = false;
+          BindIPv6Only = "ipv6-only";
+          FreeBind = true;
+        };
+      };
+
+      systemd.services.fec0-ssh = {
+        description = "Forward to fec0::1 SSH";
+
+        serviceConfig = {
+          Type = "notify";
+          # Use the IPv4 backend address here.
+          # sing-box transparent proxying on eihort intercepts direct TCP to [fec0::1]:22,
+          # and systemd-socket-proxyd does not accept the bracketed IPv6 form as a host.
+          ExecStart = "${config.systemd.package}/lib/systemd/systemd-socket-proxyd 10.255.0.1:22";
+
+          DynamicUser = true;
+          NoNewPrivileges = true;
+          ProtectSystem = "strict";
+          ProtectHome = true;
+        };
+      };
 
       networking.firewall.extraInputRules = ''
         iifname "vm1" ip saddr 10.255.0.1 ip daddr 10.255.0.0 tcp dport { 3030, 53 } accept
@@ -161,11 +192,14 @@
                   openssh.authorizedKeys.keys = [
                     "sk-ssh-ed25519@openssh.com AAAAGnNrLXNzaC1lZDI1NTE5QG9wZW5zc2guY29tAAAAIH+HwSzDbhJOIs8cMuUaCsvwqfla4GY6EuD1yGuNkX6QAAAADnNzaDoxNjg5NTQzMzc1"
                     "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMDcYqby4TnhKV6xGyuZUtxOmTtXjKYp8r+uCxbGph65"
+                    "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMlk4fFt1HfVenQFTyGgxHfxqPB8spVtZqzBC5R2gYNg ed-login-250928"
+                    "sk-ssh-ed25519@openssh.com AAAAGnNrLXNzaC1lZDI1NTE5QG9wZW5zc2guY29tAAAAIMhKqC4VMo5VOTKvdYA2vTqhNOTkyCqxifhcuAvbXJSNAAAAE3NzaDoxNzg0NzgzODMzLWdpZnQ= ssh:1784783833-gift"
                   ];
                 };
                 environment.systemPackages = with pkgs; [
                   tcpdump
                   helix
+                  vim
                   nmap
                   mtr
                   traceroute
