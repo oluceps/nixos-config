@@ -38,7 +38,7 @@
             chrony
             # sing-server
             # xray
-            mc
+            # mc
             wgmesh
 
           ])

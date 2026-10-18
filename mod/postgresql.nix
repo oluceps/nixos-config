@@ -38,7 +38,8 @@
           effective_io_concurrency = 200;
           min_wal_size = "2GB";
           max_wal_size = "8GB";
-          shared_preload_libraries = [ "vchord.so" ];
+          shared_preload_libraries = "vchord.so,pg_stat_statements";
+          "pg_stat_statements.track" = "top";
           search_path = "\"$user\", public, vectors";
         };
 

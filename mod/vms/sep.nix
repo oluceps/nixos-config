@@ -276,12 +276,12 @@
                   ];
                 };
                 virtualisation = {
-                  vmVariant = {
-                    virtualisation = {
-                      memorySize = 2048;
-                      cores = 6;
-                    };
-                  };
+                  # vmVariant = {
+                  #   virtualisation = {
+                  #     memorySize = 2048;
+                  #     cores = 6;
+                  #   };
+                  # };
 
                   podman = {
                     enable = true;
