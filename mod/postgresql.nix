@@ -1,7 +1,17 @@
 {
   flake.modules.nixos.postgresql =
-    { lib, pkgs, ... }:
     {
+      config,
+      lib,
+      pkgs,
+      ...
+    }:
+    {
+      realm.serviceDiscovery.publish.postgresql = {
+        unit = "postgresql.service";
+        port = config.services.postgresql.settings.port;
+      };
+
       services.prometheus.exporters.postgres = {
         enable = true;
         listenAddress = "[::]";

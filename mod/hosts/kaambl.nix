@@ -44,7 +44,7 @@
             secureboot
             home
             chrony
-            auto-cpufreq
+            # auto-cpufreq
           ])
         )
         ++ [
