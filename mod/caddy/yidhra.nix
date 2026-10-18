@@ -133,7 +133,6 @@
                       module = "acme";
                       email = "mn1.674927211@gmail.com";
                       challenges.dns.provider = dns;
-                      preferred_chains.smallest = true;
                     }
                   ];
                   key_type = "p256";

@@ -51,6 +51,7 @@
             june
             vocat
             artex
+            magpie
             # ipex
             # scx
           ])
