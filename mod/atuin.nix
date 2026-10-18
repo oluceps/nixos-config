@@ -1,7 +1,12 @@
 {
   flake.modules.nixos.atuin =
-    { lib, pkgs, ... }:
+    { config, ... }:
     {
+      realm.serviceDiscovery.publish.atuin = {
+        unit = "atuin.service";
+        port = config.services.atuin.port;
+      };
+
       services.atuin = {
         enable = true;
         host = "fdcc::3";

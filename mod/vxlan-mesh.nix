@@ -1,3 +1,4 @@
+{ self, ... }:
 {
   flake.modules.nixos.vxlan-mesh =
     {
@@ -35,6 +36,8 @@
         }";
     in
     {
+      imports = [ self.modules.nixos.consul ];
+
       networking = {
         firewall = {
           allowedUDPPorts = [
