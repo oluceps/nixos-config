@@ -64,6 +64,9 @@ let
       ++ extra;
     }).config;
   cfg = evaluate [ ];
+  fixed = evaluate [
+    { realm.workloads.sender.egress.receiver.target = "[fdcc::3]:19429"; }
+  ];
   bad = evaluate [ { realm.workloads.receiver.ingress.http.allowedIDs = lib.mkForce [ ]; } ];
   realmAssertions =
     c: builtins.filter (a: !a.assertion && lib.hasPrefix "realm" a.message) c.assertions;
@@ -115,6 +118,22 @@ lib.runTests {
   testSocketPermissions = {
     expr = cfg.systemd.sockets.realm-egress-sender-receiver.socketConfig.SocketMode;
     expected = "0660";
+  };
+  testFixedEgressKeepsIdentityChecks = {
+    expr =
+      let
+        command = fixed.systemd.services.realm-egress-sender-receiver.serviceConfig.ExecStart;
+      in
+      lib.hasInfix "--target '[fdcc::3]:19429'" command
+      && lib.hasInfix "--use-workload-api" command
+      && lib.hasInfix "--verify-uri spiffe://nyaw.xyz/service/receiver" command
+      && !(lib.hasInfix "srv-egress.py" command)
+      && !(lib.hasInfix "python3" command);
+    expected = true;
+  };
+  testDefaultEgressUsesDiscovery = {
+    expr = lib.hasInfix "srv-egress.py" cfg.systemd.services.realm-egress-sender-receiver.serviceConfig.ExecStart;
+    expected = true;
   };
   testNoCredentialCopy = {
     expr = cfg.systemd.services.realm-egress-sender-receiver.serviceConfig.LoadCredential or [ ];

@@ -21,6 +21,11 @@ let
       options = {
         service = mkOption { type = types.str; };
         verifyID = mkOption { type = types.str; };
+        target = mkOption {
+          type = types.nullOr types.str;
+          default = null;
+          description = "Fixed TLS destination as host:port, instead of SRV discovery.";
+        };
         socket = mkOption {
           type = types.nullOr types.str;
           default = null;
@@ -267,30 +272,38 @@ let
                 User = user;
                 Group = user;
                 SupplementaryGroups = [ "realm-proxies" ];
-                ExecStart = lib.escapeShellArgs [
-                  "${python}/bin/python3"
-                  "${./realm/srv-egress.py}"
-                  "--service"
-                  "${e.service}.service.${cfg.discovery.domain}"
-                  "--resolver"
-                  cfg.discovery.resolver
-                  "--resolver-port"
-                  (toString cfg.discovery.port)
-                  "--"
-                  "${cfg.ghostunnelPackage}/bin/ghostunnel"
-                  "client"
-                  "--use-workload-api"
-                  "--cacert"
-                  "${pkgs.cacert}/etc/ssl/certs/ca-bundle.crt"
-                  "--use-workload-api-addr"
-                  "unix://${cfg.spire.socket}"
-                  "--listen"
-                  "systemd:egress"
-                  "--verify-uri"
-                  e.verifyID
-                  "--max-conn-lifetime"
-                  "1h"
-                ];
+                ExecStart = lib.escapeShellArgs (
+                  lib.optionals (e.target == null) [
+                    "${python}/bin/python3"
+                    "${./realm/srv-egress.py}"
+                    "--service"
+                    "${e.service}.service.${cfg.discovery.domain}"
+                    "--resolver"
+                    cfg.discovery.resolver
+                    "--resolver-port"
+                    (toString cfg.discovery.port)
+                    "--"
+                  ]
+                  ++ [
+                    "${cfg.ghostunnelPackage}/bin/ghostunnel"
+                    "client"
+                    "--use-workload-api"
+                    "--cacert"
+                    "${pkgs.cacert}/etc/ssl/certs/ca-bundle.crt"
+                    "--use-workload-api-addr"
+                    "unix://${cfg.spire.socket}"
+                    "--listen"
+                    "systemd:egress"
+                    "--verify-uri"
+                    e.verifyID
+                    "--max-conn-lifetime"
+                    "1h"
+                  ]
+                  ++ lib.optionals (e.target != null) [
+                    "--target"
+                    e.target
+                  ]
+                );
               };
             };
           }

@@ -65,16 +65,6 @@
           SystemMaxUse = lib.mkForce "0.1G";
         };
 
-        systemd.services.alloy.environment = {
-          GOMEMLIMIT = "40MiB";
-          GOGC = "50";
-          GOMAXPROCS = "1";
-        };
-        services.alloy.extraFlags = [
-          "--disable-reporting"
-          "--server.http.enable-pprof=false"
-        ];
-
         environment.etc."alloy/config.alloy".text = ''
           livedebugging {
             enabled = false
@@ -179,12 +169,12 @@
         };
         services = {
 
-          alloy.enable = true;
+          alloy.enable = lib.mkForce false;
 
           metrics.enable = true;
           qemuGuest.enable = false;
           hysteria.instances.main = {
-            enable = true;
+            enable = lib.mkForce false;
             serve = true;
             configFile = config.vaultix.secrets.hy.path;
             openFirewall = 4500;
