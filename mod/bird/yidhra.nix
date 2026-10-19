@@ -18,6 +18,7 @@
         };
         egress.postgresql = {
           service = "postgresql-autopeer";
+          target = "[${config.data.node.eihort.unique_addr_nomask}]:15438";
           verifyID = "spiffe://nyaw.xyz/service/postgresql";
           socket = "/run/realm/autopeer/egress/.s.PGSQL.5432";
         };
