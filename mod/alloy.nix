@@ -1,4 +1,19 @@
 {
+  flake.modules.nixos.alloy-realm =
+    { config, lib, ... }:
+    {
+      realm.workloads.alloy = lib.mkIf config.services.alloy.enable {
+        isolation.allowUnixSockets = [
+          "-/run/log/journal"
+          "-/run/systemd/journal"
+        ];
+        egress.loki = {
+          service = "loki";
+          verifyID = "spiffe://nyaw.xyz/service/loki";
+          localPort = 13030;
+        };
+      };
+    };
   flake.modules.nixos.alloy =
     {
       config,
@@ -151,7 +166,7 @@
 
           loki.write "default" {
           	endpoint {
-          		url = "http://[fdcc::3]:3030/loki/api/v1/push"
+              url = "http://127.0.0.1:13030/loki/api/v1/push"
           	}
           	external_labels = {}
           }

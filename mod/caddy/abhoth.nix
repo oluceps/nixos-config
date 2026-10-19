@@ -127,7 +127,7 @@
                   handle = [
                     {
                       handler = "reverse_proxy";
-                      upstreams = [ { dial = "[fdcc::3]:8888"; } ];
+                      upstreams = [ { dial = "unix//run/realm/caddy/egress/atuin.sock"; } ];
                     }
                   ];
                   match = [ { host = [ "api.atuin.nyaw.xyz" ]; } ];

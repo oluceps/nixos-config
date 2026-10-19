@@ -36,7 +36,10 @@
         }";
     in
     {
-      imports = [ self.modules.nixos.consul ];
+      imports = [
+        self.modules.nixos.consul
+        self.modules.nixos.realm
+      ];
 
       networking = {
         firewall = {

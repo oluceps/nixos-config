@@ -1,16 +1,44 @@
 {
   flake.modules.nixos.postgresql =
     {
-      config,
       lib,
       pkgs,
       ...
     }:
     {
-      realm.serviceDiscovery.publish.postgresql = {
-        unit = "postgresql.service";
-        port = config.services.postgresql.settings.port;
+      realm.workloads.postgresql = {
+        user = "postgres";
+        group = "postgres";
+        isolation.runtimePaths = [ "/run/postgresql" ];
+        ingress = {
+          misskey = {
+            port = 15432;
+            target = "unix:/run/postgresql/.s.PGSQL.5432";
+            consulService = "postgresql-misskey";
+            backendUser = "realm-pg-misskey";
+            allowedIDs = [ "spiffe://nyaw.xyz/service/misskey" ];
+          };
+          seaweedfs = {
+            port = 15433;
+            target = "unix:/run/postgresql/.s.PGSQL.5432";
+            consulService = "postgresql-seaweedfs";
+            backendUser = "realm-pg-seaweedfs";
+            allowedIDs = [ "spiffe://nyaw.xyz/service/seaweedfs" ];
+          };
+          atuin = {
+            port = 15434;
+            target = "unix:/run/postgresql/.s.PGSQL.5432";
+            consulService = "postgresql-atuin";
+            backendUser = "realm-pg-atuin";
+            allowedIDs = [ "spiffe://nyaw.xyz/service/atuin" ];
+          };
+        };
       };
+      users.groups.realm-pg = { };
+      users.users = lib.genAttrs [ "realm-pg-misskey" "realm-pg-seaweedfs" "realm-pg-atuin" ] (_: {
+        isSystemUser = true;
+        group = "realm-pg";
+      });
 
       services.prometheus.exporters.postgres = {
         enable = true;
@@ -27,7 +55,7 @@
           ps.pgvector
           ps.vectorchord
         ];
-        enableTCPIP = true;
+        enableTCPIP = false;
         settings = {
           allow_alter_system = false;
           port = 5432;
@@ -53,13 +81,16 @@
           search_path = "\"$user\", public, vectors";
         };
 
+        identMap = ''
+          realm-misskey realm-pg-misskey misskey
+          realm-seaweedfs realm-pg-seaweedfs seaweed
+          realm-atuin realm-pg-atuin atuin
+        '';
         authentication = lib.mkForce ''
-          local all       all     peer
-          host  all      all     127.0.0.1/32   scram-sha-256
-          host all       all     ::1/128        scram-sha-256
-          host all       all     10.88.0.0/16    scram-sha-256
-          host all       all     192.168.0.0/16    scram-sha-256
-          host all       all     fdcc::/64    scram-sha-256
+          local misskey misskey peer map=realm-misskey
+          local seaweedfs seaweed peer map=realm-seaweedfs
+          local atuin atuin peer map=realm-atuin
+          local all all peer
         '';
       };
     };

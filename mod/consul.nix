@@ -7,6 +7,7 @@
         "eihort"
         "abhoth"
         "nodens"
+        "hastur"
       ];
       hostName = config.networking.hostName;
       server = builtins.elem hostName serverNames;

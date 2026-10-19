@@ -141,7 +141,7 @@
         }
         loki.write "default" {
           endpoint {
-            url = "http://[fdcc::3]:3030/loki/api/v1/push"
+            url = "http://127.0.0.1:13030/loki/api/v1/push"
           }
           external_labels = {}
         }
@@ -187,6 +187,28 @@
 
       #----------
 
+      systemd.sockets.radicle-proxy = {
+        description = "Radicle forwarding socket";
+        wantedBy = [ "sockets.target" ];
+        listenStreams = [ "[::]:8776" ];
+        socketConfig = {
+          BindIPv6Only = "both";
+          FreeBind = true;
+        };
+      };
+
+      systemd.services.radicle-proxy = {
+        description = "Forward Radicle connections";
+        requires = [ "radicle-proxy.socket" ];
+        serviceConfig = {
+          ExecStart = "${config.systemd.package}/lib/systemd/systemd-socket-proxyd fdcc::3:8776";
+          DynamicUser = true;
+          NoNewPrivileges = true;
+          ProtectSystem = "strict";
+          ProtectHome = true;
+        };
+      };
+
       services = {
         alloy.enable = true;
         yggdrasil.settings.AllowedPublicKeys = [
@@ -214,23 +236,6 @@
         # };
         metrics.enable = true;
         qemuGuest.enable = true;
-
-        realm = {
-          enable = true;
-          settings = {
-            log.level = "warn";
-            network = {
-              no_tcp = false;
-              use_udp = true;
-            };
-            endpoints = [
-              {
-                listen = "[::]:8776";
-                remote = "[fdcc::3]:8776";
-              }
-            ];
-          };
-        };
 
       };
 
