@@ -7,29 +7,6 @@
       ...
     }:
     let
-      python = pkgs.python3.withPackages (p: [ p.pyyaml ]);
-      overlay = pkgs.writeText "misskey-realm.json" (
-        builtins.toJSON {
-          socket = "/realm/backend/http.sock";
-          chmodSocket = "660";
-          port = null;
-          db = {
-            host = "127.0.0.1";
-            port = 5432;
-          };
-          redis = {
-            host = "127.0.0.1";
-            port = 6379;
-          };
-          meilisearch = {
-            host = "127.0.0.1";
-            port = 7700;
-          };
-          proxy = "http://127.0.0.1:13128";
-          proxyBypassHosts = [ "s3.nyaw.xyz" ];
-          allowedPrivateNetworks = [ "127.0.0.0/8" ];
-        }
-      );
       routes = pkgs.writeText "misskey-routes.json" (
         builtins.toJSON (
           lib.mapAttrsToList (name: route: {
@@ -129,12 +106,6 @@
       systemd.services.podman-misskey = {
         after = [ "network-online.target" ];
         wants = [ "network-online.target" ];
-        preStart = ''
-          ${python}/bin/python3 ${../nixosModules/realm/render-yaml.py} ${config.vaultix.secrets.misskey.path} ${overlay} /run/misskey/realm.yml
-        '';
-        serviceConfig = {
-          RuntimeDirectoryMode = "0700";
-        };
       };
       virtualisation.oci-containers = {
         containers.misskey = {
@@ -147,7 +118,7 @@
               };
             in
             [
-              "/run/misskey/realm.yml:/misskey/.config/default.yml:ro"
+              "${config.vaultix.secrets.misskey.path}:/misskey/.config/default.yml:ro"
               "${cabundle}/etc/ssl/certs/ca-bundle.crt:/misskey/ca.crt:ro"
               "${cabundle}/etc/ssl/certs/ca-bundle.crt:/etc/ssl/certs/ca-certificates.crt"
               "/run/realm/misskey/egress:/realm/egress:ro"

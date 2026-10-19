@@ -140,23 +140,27 @@ through Caddy, instead of the public Internet gateway.
 
 ## Vaultix
 
-No secret values or encrypted secret files need to change for these profiles.
-The runtime YAML renderer reads the existing Vaultix files and applies only
-public networking overrides, preserving credentials and other settings.
+Loki and Misskey read complete configurations from Vaultix without a runtime
+merge step. Update their decrypted YAML with the networking settings below,
+then re-encrypt it into `sec/loki.age` and `sec/misskey.age` before deployment.
+Local working copies in `plaintext-secret/` are ignored by Git and must stay
+outside the Nix store. Credentials and unrelated settings are preserved.
 
-For Loki, it changes `server.http_listen_address` and
-`server.grpc_listen_address` to 127.0.0.1, and changes
+For Loki, set `server.http_listen_address` and
+`server.grpc_listen_address` to 127.0.0.1, and set
 `common.storage.s3.endpoint` to 127.0.0.1:18333 with `insecure=true`. That
 local plaintext hop is protected by the private namespace; inter-node
 transport remains authenticated TLS. The S3 keys, bucket and region remain
-in the original encrypted secret.
+in the encrypted secret. systemd passes the complete file through
+`LoadCredential`; Loki reads `/run/credentials/loki.service/config`.
 
-For Misskey, it selects the native Unix listener and mode 0660, removes the
-TCP port, changes database/cache/search hosts to loopback adapters, sets
-`proxy=http://127.0.0.1:13128`, restricts `proxyBypassHosts` to s3.nyaw.xyz, and limits
+For Misskey, select the native Unix listener `/realm/backend/http.sock` and
+mode 0660, remove the TCP port, change database/cache/search hosts to loopback
+adapters, set `proxy=http://127.0.0.1:13128`, restrict `proxyBypassHosts` to
+s3.nyaw.xyz, and limit
 `allowedPrivateNetworks` to loopback. Database and search credentials remain
 in Vaultix. With keep-id, Misskey's source secret can use mode 0400 instead
-of 0444. The rendered files exist only under `/run` with mode 0600.
+of 0444. Podman mounts this file read-only as `/misskey/.config/default.yml`.
 
 Grafana's secret key and SeaweedFS's S3 configuration use systemd credentials.
 Existing Grafana data sources saved in its database may need their URLs
