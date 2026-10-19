@@ -8,7 +8,56 @@
       };
       systemd.services.ncps = {
         requires = [ "seaweedfs.service" ];
-        serviceConfig.EnvironmentFile = config.vaultix.secrets.ncps.path;
+        serviceConfig = {
+          EnvironmentFile = config.vaultix.secrets.ncps.path;
+          ReadWritePaths = [ "/tmp" ];
+        };
+      };
+      realm.observability.endpoints.ncps.socket = "/run/realm/observability/egress/ncps.sock";
+      realm.workloads.observability.egress.ncps = {
+        service = "ncps-metrics";
+        verifyID = "spiffe://nyaw.xyz/service/ncps";
+      };
+      realm.workloads.ncps = {
+        isolation.dns = true;
+        isolation = {
+          runtimePaths = [ "/run/ncps" ];
+          allowUnixSockets = [ "/run/postgresql" ];
+          hosts."s3.nyaw.xyz" = "127.0.0.1";
+        };
+        ingress = {
+          http = {
+            port = 18501;
+            target = "127.0.0.1:8501";
+            privateLoopback = true;
+            consulService = "ncps";
+            allowedIDs = [ "spiffe://nyaw.xyz/service/nix-cache" ];
+          };
+          metrics = {
+            port = 19501;
+            target = "127.0.0.1:8501";
+            privateLoopback = true;
+            consulService = "ncps-metrics";
+            allowedIDs = [ "spiffe://nyaw.xyz/service/observability-${config.networking.hostName}" ];
+          };
+        };
+        egress = {
+          s3 = {
+            service = "s3-https";
+            verifyID = "spiffe://nyaw.xyz/service/caddy";
+            localPort = 443;
+          };
+          internet = {
+            service = "internet-proxy";
+            verifyID = "spiffe://nyaw.xyz/service/internet";
+            localPort = 13128;
+          };
+        };
+      };
+      systemd.services.ncps.environment = {
+        HTTP_PROXY = "http://127.0.0.1:13128";
+        HTTPS_PROXY = "http://127.0.0.1:13128";
+        NO_PROXY = "localhost,127.0.0.1,::1,s3.nyaw.xyz";
       };
       services.ncps = {
         enable = true;
@@ -37,7 +86,8 @@
             ];
           };
         };
-        server.addr = "[fdcc::3]:8501";
+        prometheus.enable = true;
+        server.addr = "127.0.0.1:8501";
       };
     };
 }

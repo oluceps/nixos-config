@@ -1,3 +1,4 @@
+{ self, ... }:
 {
   flake.modules.nixos.prometheus =
     {
@@ -7,7 +8,6 @@
       ...
     }:
     let
-      targets = map (n: "${n}.nyaw.xyz") (builtins.attrNames config.data.node);
       autopeer_challenge_url = "https://dn42.nyaw.xyz/api/challenges";
       autopeer_nodes = [
         {
@@ -23,6 +23,32 @@
           domain = "sgp-1.dn42.nyaw.xyz";
         }
       ];
+      socketFor = host: "/run/realm/vmagent/egress/observe-${host}.sock";
+      observed =
+        name: endpoint: extra:
+        let
+          hosts = builtins.filter (
+            host: self.nixosConfigurations.${host}.config.realm.observability.endpoints ? ${endpoint}
+          ) (builtins.attrNames config.data.node);
+        in
+        {
+          job_name = name;
+          scheme = "http";
+          metrics_path = "/${endpoint}/metrics";
+          scrape_timeout = "10s";
+          max_scrape_size = "32MB";
+          sample_limit = 200000;
+          label_limit = 100;
+          follow_redirects = false;
+          static_configs = map (host: {
+            targets = [ host ];
+            labels = {
+              instance = host;
+              __unix_socket__ = socketFor host;
+            };
+          }) hosts;
+        }
+        // extra;
       gen_relabel_configs = replacement: [
         {
           source_labels = [ "__address__" ];
@@ -34,33 +60,96 @@
         }
         {
           target_label = "__address__";
-          inherit replacement;
+          replacement = "observability";
         }
-      ];
-      fqdn_instance_relabel = [
         {
-          source_labels = [ "__address__" ];
-          regex = "(.+)\\.nyaw\\.xyz(:\\d+)?";
-          target_label = "instance";
-          replacement = "$1";
+          target_label = "__metrics_path__";
+          replacement =
+            if replacement == "10.255.0.1:9115" then "/sept-blackbox/probe" else "/blackbox/probe";
+        }
+        {
+          target_label = "__unix_socket__";
+          replacement = socketFor config.networking.hostName;
         }
       ];
-      fdcc_instance_relabel = map (name: {
-        source_labels = [ "__address__" ];
-        regex = "\\[fdcc::${toString (config.data.node.${name}.id + 1)}\\]:\\d+";
-        target_label = "instance";
-        replacement = name;
-      }) (builtins.attrNames config.data.node);
+      probeRules = [
+        {
+          module = "http_2xx";
+          target = "https://nyaw.xyz";
+        }
+        {
+          module = "http_2xx";
+          target = "https://blog.nyaw.xyz";
+        }
+        {
+          module = "http_2xx";
+          target = "https://abhoth.nyaw.xyz";
+        }
+      ]
+      ++ map (node: {
+        module = "autopeer_challenge_${node.name}";
+        target = autopeer_challenge_url;
+      }) autopeer_nodes
+      ++
+        map
+          (target: {
+            module = "tcp_connect";
+            inherit target;
+          })
+          [
+            "[2001:4860:4860::8888]:53"
+            "www.bilibili.com:80"
+            "www.baidu.com:80"
+          ]
+      ++
+        map
+          (target: {
+            module = "icmp";
+            inherit target;
+          })
+          (
+            [
+              "8.8.8.8"
+              "2001:4860:4860::8888"
+              "223.6.6.6"
+            ]
+            ++ lib.concatMap (entry: entry.targets) config.fn.targetsFromNodes
+          )
+      ++ lib.optional (config.networking.hostName == "eihort") {
+        module = "http_with_proxy_to_ext";
+        target = "http://connectivitycheck.gstatic.com/generate_204";
+      };
 
     in
     {
       realm.workloads.vmagent = {
         runtime = "external";
         isolation.privateNetwork = false;
-        egress.seaweedfs = {
-          service = "seaweedfs-metrics";
-          verifyID = "spiffe://nyaw.xyz/service/seaweedfs";
+        egress = lib.genAttrs (map (host: "observe-${host}") (builtins.attrNames config.data.node)) (
+          name:
+          let
+            host = lib.removePrefix "observe-" name;
+          in
+          {
+            service = "observability-${host}";
+            verifyID = "spiffe://nyaw.xyz/service/observability-${host}";
+          }
+        );
+      };
+      realm.observability.endpoints = {
+        vmagent.port = 8429;
+        vmalert.port = 8880;
+        alertmanager.port = 9093;
+        victoriametrics = {
+          port = 19090;
+          publicProxyPort = 9090;
         };
+      };
+      realm.observability.endpoints.blackbox = {
+        port = config.services.prometheus.exporters.blackbox.port;
+        path = "/probe";
+        kind = "probe";
+        probes = probeRules;
       };
       vaultix.secrets = {
         notifychan = {
@@ -89,7 +178,7 @@
 
       services.victoriametrics = {
         enable = true;
-        listenAddress = "[fdcc::${toString (config.data.node.${config.networking.hostName}.id + 1)}]:9090";
+        listenAddress = "127.0.0.1:19090";
         extraOptions = [
           "-enableTCP6"
           "-dedup.minScrapeInterval=10s"
@@ -99,6 +188,7 @@
       services.vmagent = {
         enable = true;
         extraArgs = [
+          "-httpListenAddr=127.0.0.1:8429"
           "-remoteWrite.maxDiskUsagePerURL=1GB"
           "-remoteWrite.queues=2"
           "-remoteWrite.url=http://[fdcc::1]:9090/api/v1/write"
@@ -114,189 +204,31 @@
               secPath = "/run/credentials/vmagent.service/prom";
             in
             [
-              {
-                job_name = "caddy";
-                scheme = "https";
-                tls_config.insecure_skip_verify = true;
-                basic_auth = {
-                  username = "prometheus";
-                  password_file = secPath;
-                };
-                metrics_path = "/caddy";
-                static_configs = [ { inherit targets; } ];
-                relabel_configs = fqdn_instance_relabel;
-              }
-              {
-                job_name = "ncps";
-                static_configs = [
-                  {
-                    targets = [ "[fdcc::3]:8501" ];
-                  }
-                ];
-                relabel_configs = fdcc_instance_relabel;
-              }
-              {
-                job_name = "metrics";
-                scheme = "https";
-                tls_config.insecure_skip_verify = true;
-                basic_auth = {
-                  username = "prometheus";
-                  password_file = secPath;
-                };
-                static_configs = [ { inherit targets; } ];
-                relabel_configs = fqdn_instance_relabel;
-              }
-              {
-                job_name = "minecraft_metrics";
-                scheme = "http";
-                static_configs = [
-                  {
-                    targets = [ "[fdcc::8]:19565" ];
-                  }
-                ];
-                relabel_configs = fdcc_instance_relabel;
-              }
-              {
-                job_name = "tg-online";
-                scheme = "http";
-                metrics_path = "/metrics";
-                static_configs = [ { targets = [ "[fdcc::3]:8087" ]; } ];
-                relabel_configs = fdcc_instance_relabel;
-              }
-              {
-                job_name = "seaweedfs_metrics";
-                scheme = "http";
-                static_configs = [
-                  {
-                    targets = [ "[fdcc::3]:9768" ];
-                    labels.__unix_socket__ = "/run/realm/vmagent/egress/seaweedfs.sock";
-                  }
-                ];
-                relabel_configs = fdcc_instance_relabel;
-              }
-              {
-                job_name = "centre_psql_metrics";
-                scheme = "http";
-                static_configs = [ { targets = [ "[fdcc::3]:9187" ]; } ];
-                relabel_configs = fdcc_instance_relabel;
-              }
-              {
-                job_name = "ntfy_metrics";
-                scheme = "http";
-                static_configs = [ { targets = [ "[fdcc::4]:9099" ]; } ];
-                relabel_configs = fdcc_instance_relabel;
-              }
-              {
-                job_name = "synapse_metrics";
-                scheme = "http";
-                metrics_path = "/_synapse/metrics";
-                static_configs = [ { targets = [ "[fdcc::3]:9031" ]; } ];
-                relabel_configs = fdcc_instance_relabel;
-              }
-
-              {
-                job_name = "wgmesh_metrics";
-                metrics_path = "/metrics";
-                scheme = "http";
-                static_configs = [
-                  {
-                    targets = [
-                      "[fdcc::6]:9586"
-                      "[fdcc::5]:9586"
-                      "[fdcc::8]:9586"
-                    ];
-                  }
-                ];
-                relabel_configs = fdcc_instance_relabel;
-              }
-              {
-                job_name = "bird_metrics";
-                scheme = "http";
-                static_configs = [
-                  {
-                    targets = [
-                      "[fdcc::5]:9324"
-                      "[fdcc::8]:9324"
-                      "[fdcc::4]:9324"
-                    ];
-                  }
-                ];
-                relabel_configs = fdcc_instance_relabel;
-              }
-              {
-                job_name = "chrony_metrics";
-                scheme = "http";
+              (observed "vmagent" "vmagent" { })
+              (observed "vmalert" "vmalert" { })
+              (observed "alertmanager" "alertmanager" { })
+              (observed "victoriametrics" "victoriametrics" { })
+              (observed "caddy" "caddy" { })
+              (observed "metrics" "node" { })
+              (observed "ncps" "ncps" { })
+              (observed "minecraft_metrics" "mc" { })
+              (observed "tg-online" "tg-online" { })
+              (observed "seaweedfs_metrics" "seaweedfs" { })
+              (observed "centre_psql_metrics" "postgres" { })
+              (observed "ntfy_metrics" "ntfy" { })
+              (observed "synapse_metrics" "synapse" { })
+              (observed "wgmesh_metrics" "wgmesh" { })
+              (observed "bird_metrics" "bird" { })
+              (observed "chrony_metrics" "chrony" {
                 scrape_interval = "60s";
                 scrape_timeout = "20s";
-                static_configs = [
-                  {
-                    targets = [
-                      "[fdcc::3]:9123"
-                      "[fdcc::2]:9123"
-                      "[fdcc::1]:9123"
-                    ];
-                  }
-                ];
-                relabel_configs = fdcc_instance_relabel;
-              }
-              {
-                job_name = "syncthing_metrics";
-                scheme = "http";
-                static_configs = [
-                  {
-                    targets = [
-                      "[fdcc::1]:8384"
-                    ];
-                  }
-                ];
-                relabel_configs = fdcc_instance_relabel;
-
+              })
+              (observed "syncthing_metrics" "syncthing" {
                 authorization.credentials_file = "/run/credentials/vmagent.service/syncthing-hastur-api";
-
-              }
-              {
-                job_name = "garage_metrics";
-                scheme = "http";
-                static_configs = [
-                  {
-                    targets = [
-                      "[fdcc::1]:3903"
-                      "[fdcc::2]:3903"
-                    ];
-                  }
-                ];
-                relabel_configs = fdcc_instance_relabel;
-              }
-              {
-                job_name = "eihort_cf_tunnel_metrics";
-                scheme = "http";
-                static_configs = [
-                  {
-                    targets = [
-                      "127.0.0.1:20241"
-                    ];
-                  }
-                ];
-                relabel_configs = [
-                  {
-                    source_labels = [ "__address__" ];
-                    regex = "127.0.0.1:20241";
-                    target_label = "instance";
-                    replacement = "eihort-cf";
-                  }
-                ];
-              }
-              {
-                job_name = "stalwart_metrics";
-                scheme = "https";
-                metrics_path = "/metrics/prometheus";
-                static_configs = [
-                  {
-                    targets = [
-                      "box.nyaw.xyz:443"
-                    ];
-                  }
-                ];
+              })
+              (observed "garage_metrics" "garage" { })
+              (observed "eihort_cf_tunnel_metrics" "cloudflared" { })
+              (observed "stalwart_metrics" "stalwart" {
                 basic_auth = {
                   username = "stalwart_metric";
                   password_file = secPath;
@@ -304,14 +236,13 @@
                 metric_relabel_configs = [
                   {
                     source_labels = [ "__name__" ];
-                    separator = "_";
                     regex = "(.*)";
                     target_label = "__name__";
                     replacement = "stalwart_$1";
                     action = "replace";
                   }
                 ];
-              }
+              })
               {
                 job_name = "http";
                 scheme = "http";
@@ -452,7 +383,13 @@
               {
                 job_name = "metrics-sept";
                 scheme = "http";
-                static_configs = [ { targets = [ "[fec0::1]:9100" ]; } ];
+                static_configs = [
+                  {
+                    targets = [ "sept" ];
+                    labels.__unix_socket__ = socketFor "eihort";
+                  }
+                ];
+                metrics_path = "/sept-node/metrics";
                 relabel_configs = [
                   {
                     target_label = "job";
@@ -469,7 +406,13 @@
               {
                 job_name = "sept-wg-stat";
                 scheme = "http";
-                static_configs = [ { targets = [ "10.255.0.1:9586" ]; } ];
+                static_configs = [
+                  {
+                    targets = [ "sept" ];
+                    labels.__unix_socket__ = socketFor "eihort";
+                  }
+                ];
+                metrics_path = "/sept-wg/metrics";
               }
               {
                 job_name = "bridge_alive";
@@ -500,6 +443,7 @@
               cfg = config.services.prometheus;
             in
             [ "http://${cfg.alertmanager.listenAddress}:${toString cfg.alertmanager.port}" ];
+          "httpListenAddr" = "127.0.0.1:8880";
           "datasource.url" = "http://[fdcc::${
             toString (config.data.node.${config.networking.hostName}.id + 1)
           }]:9090";
@@ -588,14 +532,17 @@
         exporters = {
           blackbox = {
             enable = true;
+            listenAddress = "127.0.0.1";
             configFile = (pkgs.formats.yaml { }).generate "config.yml" {
               modules = {
                 http_2xx = {
                   prober = "http";
+                  http.follow_redirects = false;
                 };
                 http_with_proxy_to_ext = {
                   prober = "http";
                   http = {
+                    follow_redirects = false;
                     proxy_url = "http://10.255.0.1:8080";
                     skip_resolve_phase_with_proxy = true;
                     valid_status_codes = [ 204 ];
@@ -649,7 +596,7 @@
           {
             enable = true;
             webExternalUrl = "https://alert.nyaw.xyz";
-            listenAddress = localAddr;
+            listenAddress = "127.0.0.1";
             port = 9093;
             logLevel = "info";
             extraFlags = [

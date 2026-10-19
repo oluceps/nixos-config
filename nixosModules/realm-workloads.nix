@@ -36,7 +36,15 @@ let
   ingressType = types.submodule {
     options = {
       port = mkOption { type = types.port; };
-      target = mkOption { type = types.str; };
+      target = mkOption {
+        type = types.nullOr types.str;
+        default = null;
+      };
+      native = mkOption {
+        type = types.bool;
+        default = false;
+        description = "The application terminates SPIFFE mTLS and enforces allowedIDs itself, using the Agent SDS API.";
+      };
       consulService = mkOption { type = types.str; };
       allowedIDs = mkOption {
         type = types.listOf types.str;
@@ -141,21 +149,23 @@ let
             "d ${base name}/egress 0750 root ${w.group} -"
             "d ${base name}/ingress 0750 root ${user} -"
           ];
-          systemd.services."realm-net-${name}" = mkIf (w.isolation.privateNetwork && w.runtime == "systemd") {
-            description = "Private loopback namespace for ${name}";
-            wantedBy = [ "multi-user.target" ];
-            before = [ "sockets.target" ];
-            after = [ "systemd-tmpfiles-setup.service" ];
-            unitConfig.DefaultDependencies = false;
-            serviceConfig = {
-              ExecStart = "${pkgs.coreutils}/bin/sleep infinity";
-              PrivateNetwork = true;
-              PrivateTmp = true;
-              DynamicUser = true;
-              NoNewPrivileges = true;
-              CapabilityBoundingSet = "";
-            };
-          };
+          systemd.services."realm-net-${name}" =
+            mkIf (w.isolation.privateNetwork && (w.runtime == "systemd" || w.socksProxy.enable))
+              {
+                description = "Private loopback namespace for ${name}";
+                wantedBy = [ "multi-user.target" ];
+                before = [ "sockets.target" ];
+                after = [ "systemd-tmpfiles-setup.service" ];
+                unitConfig.DefaultDependencies = false;
+                serviceConfig = {
+                  ExecStart = "${pkgs.coreutils}/bin/sleep infinity";
+                  PrivateNetwork = true;
+                  PrivateTmp = true;
+                  DynamicUser = true;
+                  NoNewPrivileges = true;
+                  CapabilityBoundingSet = "";
+                };
+              };
           systemd.services.${appName w} = mkIf (w.runtime == "systemd") (
             lib.mkMerge [
               (lib.optionalAttrs w.isolation.privateNetwork network)
@@ -179,8 +189,38 @@ let
                     "-/run/systemd/notify"
                     "-/run/current-system"
                   ]
-                  ++ lib.unique (lib.mapAttrsToList (route: e: builtins.dirOf (egressSocket route e)) w.egress)
-                  ++ w.isolation.allowUnixSockets;
+                  ++ lib.unique (
+                    lib.mapAttrsToList (route: e: builtins.dirOf (egressSocket route e)) w.egress
+                    ++ lib.optional w.isolation.dns "${base name}/egress"
+                  )
+                  ++ lib.optional w.isolation.dns "${pkgs.writeText "realm-resolv.conf" "nameserver 127.0.0.53\noptions edns0 trust-ad\n"}:/etc/resolv.conf"
+                  ++ w.isolation.allowUnixSockets
+                  ++ lib.optional (w.isolation.hosts != { }) (
+                    let
+                      aliases = pkgs.writeText "realm-${name}-host-aliases" (
+                        lib.concatStrings (lib.mapAttrsToList (host: address: "${address} ${host}\n") w.isolation.hosts)
+                      );
+                      hosts = pkgs.runCommand "realm-${name}-hosts" { } ''
+                        # Remove inherited names that are overridden, including other address families.
+                        awk '
+                          NR == FNR {
+                            for (i = 2; i <= NF; i++) replaced[tolower($i)] = 1
+                            print
+                            next
+                          }
+                          /^[[:space:]]*(#|$)/ { print; next }
+                          {
+                            line = $1; names = 0
+                            for (i = 2; i <= NF && substr($i, 1, 1) != "#"; i++) {
+                              if (!(tolower($i) in replaced)) { line = line " " $i; names++ }
+                            }
+                            if (names > 0) print line
+                          }
+                        ' ${aliases} ${config.environment.etc.hosts.source} > "$out"
+                      '';
+                    in
+                    "${hosts}:/etc/hosts"
+                  );
                   BindPaths = w.isolation.runtimePaths;
                 };
               }
@@ -254,24 +294,27 @@ let
               };
             };
           }
-          (mkIf (e.localPort != null && w.runtime == "systemd") {
-            systemd.sockets."realm-local-${name}-${route}" = network // {
-              wantedBy = [ "sockets.target" ];
-              listenStreams = [ "127.0.0.1:${toString e.localPort}" ];
-              socketConfig = {
-                PrivateNetwork = true;
+          (mkIf
+            (e.localPort != null && (w.runtime == "systemd" || (w.socksProxy.enable && route == "internet")))
+            {
+              systemd.sockets."realm-local-${name}-${route}" = network // {
+                wantedBy = [ "sockets.target" ];
+                listenStreams = [ "127.0.0.1:${toString e.localPort}" ];
+                socketConfig = {
+                  PrivateNetwork = true;
+                };
               };
-            };
-            systemd.services."realm-local-${name}-${route}" = network // {
-              serviceConfig = hardened // {
-                User = user;
-                Group = user;
-                SupplementaryGroups = [ w.group ];
-                PrivateNetwork = true;
-                ExecStart = "${proxy} ${egressSocket route e}";
+              systemd.services."realm-local-${name}-${route}" = network // {
+                serviceConfig = hardened // {
+                  User = user;
+                  Group = user;
+                  SupplementaryGroups = [ w.group ];
+                  PrivateNetwork = true;
+                  ExecStart = "${proxy} ${egressSocket route e}";
+                };
               };
-            };
-          })
+            }
+          )
         ]
       ) w.egress
       ++ lib.mapAttrsToList (
@@ -293,19 +336,45 @@ let
               }
               {
                 assertion =
-                  lib.hasPrefix "unix:" i.target
-                  || i.privateLoopback
-                  || (i.hostLoopback && lib.hasPrefix "127.0.0.1:" i.target);
+                  i.native
+                  || (
+                    i.target != null
+                    && (
+                      lib.hasPrefix "unix:" i.target
+                      || i.privateLoopback
+                      || (i.hostLoopback && lib.hasPrefix "127.0.0.1:" i.target)
+                    )
+                  );
                 message = "${unit}: backend must be a Unix socket or an explicit loopback adapter.";
               }
               {
                 assertion =
                   i.backendUser == null
-                  || (i.backendUser != "root" && builtins.length i.allowedIDs == 1 && lib.hasPrefix "unix:" i.target);
+                  || (
+                    !i.native
+                    && i.target != null
+                    && i.backendUser != "root"
+                    && builtins.length i.allowedIDs == 1
+                    && lib.hasPrefix "unix:" i.target
+                  );
                 message = "${unit}: peer authentication requires an unprivileged user, exactly one authorized identity and a Unix backend.";
               }
+              {
+                assertion =
+                  !i.native
+                  || (
+                    !w.isolation.privateNetwork
+                    && w.runtime != "container"
+                    && !i.privateLoopback
+                    && !i.hostLoopback
+                    && i.target == null
+                    && i.backendUser == null
+                    && (config.systemd.services.${appName w}.enable or false)
+                  );
+                message = "${unit}: native ingress requires a declared networked application unit and no proxy backend options.";
+              }
             ];
-            realm.spire.registrations.${unit} = {
+            realm.spire.registrations.${unit} = mkIf (!i.native) {
               spiffeID = w.spiffeID;
               selectors = [
                 "systemd:id:${unit}.service"
@@ -313,9 +382,9 @@ let
               ];
             };
             realm.serviceDiscovery.publish.${i.consulService} = {
-              unit = "${unit}.service";
+              unit = if i.native then w.unit else "${unit}.service";
               port = i.port;
-              checks = [
+              checks = lib.optionals (!i.native) [
                 {
                   id = "${config.networking.hostName}-${i.consulService}-backend";
                   name = "${w.unit} is active";
@@ -330,12 +399,12 @@ let
                 }
               ];
             };
-            systemd.sockets.${unit} = {
+            systemd.sockets.${unit} = mkIf (!i.native) {
               wantedBy = [ "sockets.target" ];
               listenStreams = [ "[${cfg.address}]:${toString i.port}" ];
               socketConfig.FileDescriptorName = "ingress";
             };
-            systemd.services.${unit} = {
+            systemd.services.${unit} = mkIf (!i.native) {
               wantedBy = [ "multi-user.target" ];
               requires = [
                 "spire-agent.service"
@@ -392,6 +461,129 @@ let
         ]
       ) w.ingress
       ++ [
+        (mkIf w.isolation.dns {
+          assertions = [
+            {
+              assertion = w.runtime == "systemd" && w.isolation.privateNetwork && !(w.egress ? dns);
+              message = "realm.workloads.${name}: local DNS requires a private systemd workload and reserves egress/dns.sock.";
+            }
+          ];
+          # DNS infrastructure remains host-local. Only this fixed resolver is reachable.
+          systemd.sockets."realm-dns-egress-${name}" = {
+            wantedBy = [ "sockets.target" ];
+            listenStreams = [ "${base name}/egress/dns.sock" ];
+            socketConfig = activation user w.group "dns";
+          };
+          systemd.services."realm-dns-egress-${name}".serviceConfig = hardened // {
+            User = user;
+            Group = user;
+            IPAddressDeny = "any";
+            IPAddressAllow = "localhost";
+            ExecStart = "${proxy} 127.0.0.53:53";
+          };
+          systemd.sockets."realm-dns-udp-${name}" = network // {
+            wantedBy = [ "sockets.target" ];
+            listenDatagrams = [ "127.0.0.53:53" ];
+            socketConfig.PrivateNetwork = true;
+          };
+          systemd.services."realm-dns-udp-${name}" = network // {
+            requires = network.requires ++ [ "realm-dns-egress-${name}.socket" ];
+            after = network.after ++ [ "realm-dns-egress-${name}.socket" ];
+            serviceConfig = hardened // {
+              User = user;
+              Group = user;
+              SupplementaryGroups = [ w.group ];
+              PrivateNetwork = true;
+              ExecStart = "${python}/bin/python3 ${./realm/dns-udp.py} ${base name}/egress/dns.sock";
+            };
+          };
+          systemd.sockets."realm-dns-tcp-${name}" = network // {
+            wantedBy = [ "sockets.target" ];
+            listenStreams = [ "127.0.0.53:53" ];
+            socketConfig.PrivateNetwork = true;
+          };
+          systemd.services."realm-dns-tcp-${name}" = network // {
+            requires = network.requires ++ [ "realm-dns-egress-${name}.socket" ];
+            after = network.after ++ [ "realm-dns-egress-${name}.socket" ];
+            serviceConfig = hardened // {
+              User = user;
+              Group = user;
+              SupplementaryGroups = [ w.group ];
+              PrivateNetwork = true;
+              ExecStart = "${proxy} ${base name}/egress/dns.sock";
+            };
+          };
+        })
+        (mkIf w.socksProxy.enable {
+          assertions = [
+            {
+              assertion =
+                w.isolation.privateNetwork
+                && w.runtime != "external"
+                && (w.egress ? internet)
+                && w.egress.internet.localPort != null;
+              message = "realm.workloads.${name}: SOCKS adaptation requires a private namespace and an internet egress with localPort.";
+            }
+          ];
+          systemd.services."realm-socks-${name}" = network // {
+            requires = network.requires ++ [ "realm-local-${name}-internet.socket" ];
+            after = network.after ++ [ "realm-local-${name}-internet.socket" ];
+            serviceConfig = hardened // {
+              User = w.user;
+              Group = w.group;
+              PrivateNetwork = true;
+              ExecStart = lib.escapeShellArgs [
+                "${pkgs.gost}/bin/gost"
+                "-L"
+                "socks5://127.0.0.1:${toString w.socksProxy.port}?notls=true&bind=false&udp=false"
+                "-F"
+                "http://127.0.0.1:${toString w.egress.internet.localPort}"
+              ];
+              ExecStartPost = pkgs.writeShellScript "wait-realm-socks-${name}" ''
+                for attempt in $(${pkgs.coreutils}/bin/seq 1 50); do
+                  if ${pkgs.netcat-openbsd}/bin/nc -z -w 1 127.0.0.1 ${toString w.socksProxy.port}; then exit 0; fi
+                  ${pkgs.coreutils}/bin/sleep 0.1
+                done
+                exit 1
+              '';
+            };
+          };
+          systemd.services.${appName w} = {
+            requires = [ "realm-socks-${name}.service" ];
+            after = [ "realm-socks-${name}.service" ];
+          };
+        })
+        (mkIf (w.socksProxy.enable && w.runtime == "container") {
+          systemd.sockets."realm-socks-unix-${name}" = {
+            wantedBy = [ "sockets.target" ];
+            listenStreams = [ "${base name}/egress/socks.sock" ];
+            socketConfig = activation w.user w.group "socks";
+          };
+          systemd.services."realm-socks-unix-${name}" = network // {
+            requires = network.requires ++ [ "realm-socks-${name}.service" ];
+            after = network.after ++ [ "realm-socks-${name}.service" ];
+            serviceConfig = hardened // {
+              User = w.user;
+              Group = w.group;
+              PrivateNetwork = true;
+              ExecStart = "${proxy} 127.0.0.1:${toString w.socksProxy.port}";
+            };
+          };
+        })
+        (mkIf (lib.any (i: i.native) (builtins.attrValues w.ingress)) {
+          realm.spire.registrations."realm-native-${name}" = {
+            spiffeID = w.spiffeID;
+            selectors = [
+              "systemd:id:${w.unit}"
+              "unix:user:${w.user}"
+            ];
+          };
+          systemd.services.${appName w} = {
+            requires = [ "spire-agent.service" ];
+            after = [ "spire-agent.service" ];
+            serviceConfig.SupplementaryGroups = [ "realm-proxies" ];
+          };
+        })
         (mkIf w.credentials.enable {
           realm.spire.registrations."realm-helper-${name}" = {
             spiffeID = w.spiffeID;
@@ -516,6 +708,7 @@ in
                 default = "spiffe://${cfg.trustDomain}/service/${name}";
               };
               isolation = {
+                dns = lib.mkEnableOption "a private DNS stub through a Unix socket to the existing host resolver";
                 privateNetwork = mkOption {
                   type = types.bool;
                   default = true;
@@ -523,6 +716,11 @@ in
                 allowUnixSockets = mkOption {
                   type = types.listOf types.str;
                   default = [ ];
+                };
+                hosts = mkOption {
+                  type = types.attrsOf types.str;
+                  default = { };
+                  description = "Workload-local host aliases, preserving TLS names when dialing private egress adapters.";
                 };
                 runtimePaths = mkOption {
                   type = types.listOf types.str;
@@ -550,6 +748,13 @@ in
                 settings = mkOption {
                   type = (pkgs.formats.hcl1 { }).type;
                   default = { };
+                };
+              };
+              socksProxy = {
+                enable = lib.mkEnableOption "a local SOCKS5 adapter through the authenticated HTTP Internet egress";
+                port = mkOption {
+                  type = types.port;
+                  default = 11080;
                 };
               };
             };

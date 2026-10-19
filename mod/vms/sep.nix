@@ -13,6 +13,29 @@
         self.modules.nixos.routed-subnet
       ];
 
+      realm.observability.endpoints = {
+        sept-node = {
+          address = "fec0::1";
+          port = 9100;
+        };
+        sept-wg = {
+          address = "10.255.0.1";
+          port = 9586;
+        };
+        sept-blackbox = {
+          address = "10.255.0.1";
+          port = 9115;
+          path = "/probe";
+          kind = "probe";
+          probes = [
+            {
+              module = "icmp";
+              target = "10.10.10.2";
+            }
+          ];
+        };
+      };
+
       systemd.sockets.fec0-ssh = {
         description = "Socket for fec0 SSH forwarding";
         wantedBy = [ "sockets.target" ];

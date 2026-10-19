@@ -59,6 +59,12 @@
             };
           };
         };
+        realm.observability.endpoints.caddy.port = 20242;
+        caddy.settings.apps.http.servers.observability = {
+          listen = [ "127.0.0.1:20242" ];
+          automatic_https.disable = true;
+          routes = [ { handle = [ { handler = "metrics"; } ]; } ];
+        };
         vaultix.secrets.caddy = { };
         networking.firewall = lib.mkIf (!config.data.node.${config.networking.hostName}.nat) {
           allowedTCPPorts = [
@@ -87,28 +93,7 @@
                 skip_certificates = [
                 ];
               };
-              routes = [
-                {
-                  match = [
-                    {
-                      host = [ config.networking.fqdn ];
-                      path = [ "/caddy" ];
-                    }
-                  ];
-                  handle = [
-                    {
-                      handler = "authentication";
-                      providers.http_basic.accounts = [
-                        {
-                          username = "prometheus";
-                          password = "$2b$05$9CaXvrYtguDwi190/llO9.qytgqCyPp1wqyO0.umxsTEfKkhpwr4q";
-                        }
-                      ];
-                    }
-                    { handler = "metrics"; }
-                  ];
-                }
-              ];
+
             };
 
           };
@@ -152,7 +137,6 @@
           ];
           requires = [ "network-online.target" ];
           reloadTriggers = [ configfile ];
-          restartIfChanged = false;
         };
       };
     };

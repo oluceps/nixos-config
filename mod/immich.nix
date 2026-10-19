@@ -1,29 +1,136 @@
 {
   flake.modules.nixos.immich =
-    { config, ... }:
+    { config, lib, ... }:
     {
       vaultix.secrets.immich = { };
       services = {
         immich = {
           enable = true;
-          host = "fdcc::3";
+          host = "127.0.0.1";
+          port = 2283;
+          openFirewall = false;
           secretsFile = config.vaultix.secrets.immich.path;
-          database.enable = false;
+          database = {
+            enable = false;
+            host = "127.0.0.1";
+            port = 15432;
+            name = "immich";
+            user = "immich";
+          };
+          environment.DB_URL = "postgresql://immich@127.0.0.1:15432/immich?sslmode=disable";
           machine-learning = {
             enable = true;
             environment = {
+              IMMICH_HOST = lib.mkForce "127.0.0.1";
               HF_XET_CACHE = "/var/cache/immich/huggingface-xet";
-              MPLCONFIGDIR = "/var/tmp/immich/mplconfig";
+              MPLCONFIGDIR = "/var/cache/immich/mplconfig";
+              HTTP_PROXY = "http://127.0.0.1:13128";
+              HTTPS_PROXY = "http://127.0.0.1:13128";
+              NO_PROXY = "localhost,127.0.0.1,::1";
+              HF_HUB_DISABLE_XET = "1";
             };
           };
-          redis.enable = true;
+          redis = {
+            enable = false;
+            host = "127.0.0.1";
+            port = 6379;
+          };
           settings = null;
-          # environment.IMMICH_LOG_LEVEL = "verbose";
+        };
+        redis.servers.immich = {
+          enable = true;
+          port = 0;
+          unixSocket = "/run/redis-immich/redis.sock";
+          unixSocketPerm = 660;
         };
         immich-public-proxy = {
           enable = true;
-          immichUrl = "http://[fdcc::3]:2283";
+          immichUrl = "http://127.0.0.1:2283";
           port = 3001;
+          openFirewall = false;
+        };
+      };
+
+      systemd.services.immich-machine-learning.serviceConfig = {
+        User = lib.mkForce "immich-ml";
+        Group = lib.mkForce "immich-ml";
+      };
+      systemd.services.immich-public-proxy.serviceConfig.DynamicUser = lib.mkForce false;
+
+      realm.workloads = {
+        immich = {
+          unit = "immich-server.service";
+          user = config.services.immich.user;
+          group = config.services.immich.group;
+          isolation.runtimePaths = [ "/run/immich" ];
+          ingress.http = {
+            port = 12283;
+            target = "127.0.0.1:2283";
+            privateLoopback = true;
+            consulService = "immich";
+            allowedIDs = [
+              "spiffe://nyaw.xyz/service/caddy"
+              "spiffe://nyaw.xyz/service/immich-public-proxy"
+            ];
+          };
+          egress = {
+            postgresql = {
+              service = "postgresql-immich";
+              verifyID = "spiffe://nyaw.xyz/service/postgresql";
+              localPort = 15432;
+            };
+            redis = {
+              service = "redis-immich";
+              verifyID = "spiffe://nyaw.xyz/service/redis-immich";
+              localPort = 6379;
+            };
+            ml = {
+              service = "immich-ml";
+              verifyID = "spiffe://nyaw.xyz/service/immich-ml";
+              localPort = 3003;
+            };
+          };
+        };
+        redis-immich = {
+          isolation.runtimePaths = [ "/run/redis-immich" ];
+          ingressGroups = [ "redis-immich" ];
+          ingress.redis = {
+            port = 16380;
+            target = "unix:/run/redis-immich/redis.sock";
+            consulService = "redis-immich";
+            allowedIDs = [ "spiffe://nyaw.xyz/service/immich" ];
+          };
+        };
+        immich-ml = {
+          unit = "immich-machine-learning.service";
+          ingress.http = {
+            port = 13003;
+            target = "127.0.0.1:3003";
+            privateLoopback = true;
+            consulService = "immich-ml";
+            allowedIDs = [ "spiffe://nyaw.xyz/service/immich" ];
+          };
+          egress.internet = {
+            service = "internet-proxy";
+            verifyID = "spiffe://nyaw.xyz/service/internet";
+            localPort = 13128;
+          };
+        };
+        immich-public-proxy = {
+          user = "ipp";
+          group = "ipp";
+          ingress.http = {
+            port = 13001;
+            target = "127.0.0.1:3001";
+            privateLoopback = true;
+            consulService = "immich-public-proxy";
+            allowedIDs = [ "spiffe://nyaw.xyz/service/caddy" ];
+          };
+          egress.immich = {
+            service = "immich";
+            verifyID = "spiffe://nyaw.xyz/service/immich";
+            localPort = 2283;
+          };
         };
       };
     };

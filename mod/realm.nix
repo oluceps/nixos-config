@@ -3,8 +3,12 @@
   flake.modules.nixos.realm =
     { config, lib, ... }:
     {
-      imports = [ self.modules.nixos.alloy-realm ];
+      imports = [
+        self.modules.nixos.alloy-realm
+        self.modules.nixos.ncps-client
+      ];
       realm = {
+        observability.enable = true;
         enable = true;
         address = config.data.node.${config.networking.hostName}.unique_addr_nomask;
         spire.server = lib.mkIf (config.networking.hostName == "eihort") {

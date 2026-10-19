@@ -201,6 +201,7 @@
           RuntimeWatchdogSec = "30s";
         };
       };
+      realm.observability.endpoints.syncthing.port = 8384;
       services = {
         # Did you read the comment?
         blueman.enable = true;
@@ -208,7 +209,7 @@
           enable = true;
           openDefaultPorts = true;
           inherit (config.identity) user;
-          guiAddress = "[::]:8384";
+          guiAddress = "127.0.0.1:8384";
         };
         smartd.notifications.systembus-notify.enable = true;
         metrics.enable = true;

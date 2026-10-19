@@ -80,6 +80,8 @@
 
       identity.user = "elen";
       incus.bridgeAddr = "fdcc:3::1/64";
+      realm.observability.endpoints.cloudflared.port = 20241;
+      realm.observability.endpoints.tg-online.port = 8087;
       # xray.configFile = config.vaultix.secrets.xray-cli.path;
 
       hardware.facter = {

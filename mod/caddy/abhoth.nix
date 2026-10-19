@@ -27,6 +27,26 @@
                 {
                   wrapper = "layer4";
                   routes = [
+                    # Metrics are served only through the SPIFFE observation listener.
+                    {
+                      match = [
+                        {
+                          host = [ "box.nyaw.xyz" ];
+                          path = [
+                            "/metrics/prometheus"
+                            "/metrics/prometheus/*"
+                            "/debug/*"
+                          ];
+                        }
+                      ];
+                      handle = [
+                        {
+                          handler = "static_response";
+                          status_code = 403;
+                        }
+                      ];
+                      terminal = true;
+                    }
                     {
                       handle = [
                         {

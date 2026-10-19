@@ -4,7 +4,31 @@
     {
       services.jellyfin = {
         enable = true;
-        openFirewall = true;
+        openFirewall = false;
+      };
+      realm.workloads.jellyfin = {
+        isolation.dns = true;
+        ingress.http = {
+          port = 18096;
+          target = "127.0.0.1:8096";
+          privateLoopback = true;
+          consulService = "jellyfin";
+          allowedIDs = [ "spiffe://nyaw.xyz/service/caddy" ];
+        };
+        egress.internet = {
+          service = "internet-proxy";
+          verifyID = "spiffe://nyaw.xyz/service/internet";
+          localPort = 13128;
+        };
+      };
+      systemd.services.jellyfin.environment = {
+        http_proxy = "http://127.0.0.1:13128";
+        https_proxy = "http://127.0.0.1:13128";
+        no_proxy = "localhost,127.0.0.1,::1";
+        HTTP_PROXY = "http://127.0.0.1:13128";
+        HTTPS_PROXY = "http://127.0.0.1:13128";
+        NO_PROXY = "localhost,127.0.0.1,::1";
+        JELLYFIN_PublishedServerUrl = "https://jellyfin.nyaw.xyz";
       };
       environment.systemPackages = [
         pkgs.jellyfin
