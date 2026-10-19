@@ -56,6 +56,13 @@
             backendUser = "realm-pg-immich";
             allowedIDs = [ "spiffe://nyaw.xyz/service/immich" ];
           };
+          autopeer = {
+            port = 15438;
+            target = "unix:/run/postgresql/.s.PGSQL.5432";
+            consulService = "postgresql-autopeer";
+            backendUser = "realm-pg-autopeer";
+            allowedIDs = [ "spiffe://nyaw.xyz/service/autopeer" ];
+          };
         };
       };
       users.groups.realm-pg = { };
@@ -68,6 +75,7 @@
             "realm-pg-atuin"
             "realm-pg-immich"
             "realm-pg-telegram-search"
+            "realm-pg-autopeer"
           ]
           (_: {
             isSystemUser = true;
@@ -90,7 +98,7 @@
           ps.pgvector
           ps.vectorchord
         ];
-        enableTCPIP = true;
+        enableTCPIP = false;
         settings = {
           allow_alter_system = false;
           port = 5432;
@@ -124,6 +132,7 @@
           realm-atuin realm-pg-atuin atuin
           realm-telegram-search realm-pg-telegram-search telegram_search
           realm-immich realm-pg-immich immich
+          realm-autopeer realm-pg-autopeer dn42
         '';
         # type db db_user auth_type map
         authentication = lib.mkForce ''
@@ -133,10 +142,10 @@
           local atuin atuin peer map=realm-atuin
           local telegram_search telegram_search peer map=realm-telegram-search
           local immich immich peer map=realm-immich
+          local dn42abhoth,dn42nodens,dn42yidhra dn42 peer map=realm-autopeer
           local all all peer
           host all all 127.0.0.1/32 scram-sha-256
           host all all ::1/128 scram-sha-256
-          host all all fdcc::/64 scram-sha-256
         '';
       };
     };

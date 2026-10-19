@@ -11,6 +11,7 @@
         observability.enable = true;
         enable = true;
         address = config.data.node.${config.networking.hostName}.unique_addr_nomask;
+        spire.serverAddress = config.data.node.eihort.unique_addr_nomask;
         spire.server = lib.mkIf (config.networking.hostName == "eihort") {
           enable = true;
           registrations = lib.mapAttrs (

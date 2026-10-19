@@ -173,7 +173,7 @@ let
                 serviceConfig = {
                   PrivateNetwork = w.isolation.privateNetwork;
                   NoNewPrivileges = true;
-                  CapabilityBoundingSet = "";
+                  CapabilityBoundingSet = lib.mkDefault "";
                   RestrictNamespaces = true;
                   PrivateTmp = true;
                   SystemCallArchitectures = "native";

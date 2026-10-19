@@ -101,16 +101,15 @@ maps the local proxy account to the existing database role:
 | SeaweedFS | postgresql-seaweedfs | realm-pg-seaweedfs | seaweed |
 | Atuin | postgresql-atuin | realm-pg-atuin | atuin |
 | Immich | postgresql-immich | realm-pg-immich | immich |
+| Autopeer | postgresql-autopeer | realm-pg-autopeer | dn42 |
 
 The ingress still presents the PostgreSQL SPIFFE identity to clients.
 Dedicated accounts avoid giving a proxy the same Unix identity as the
 application. Unrelated local database connections retain the general peer
-rule. PostgreSQL temporarily keeps its host-network TCP listener on port 5432
-for compatibility. Direct clients from `fdcc::/64` use SCRAM-SHA-256 password
-authentication; migrated clients retain the SPIFFE ingress and peer mapping
-path. Its workload explicitly sets `isolation.privateNetwork = false`, while
-the private runtime socket view is retained. Legacy host-local TCP clients
-also retain SCRAM-SHA-256 access through 127.0.0.1 and ::1; Unix sockets keep peer authentication.
+rule. Its workload explicitly sets `isolation.privateNetwork = false`, while
+the private runtime socket view is retained. Host-local TCP clients retain
+SCRAM-SHA-256 access through 127.0.0.1 and ::1; Unix sockets keep peer
+authentication.
 
 ## Existing service profiles
 
@@ -208,7 +207,9 @@ of 0444. Podman mounts this file read-only as `/misskey/.config/default.yml`.
 
 Grafana's secret key and SeaweedFS's S3 configuration use systemd credentials.
 Existing Grafana data sources saved in its database may need their URLs
-updated. The provisioned Loki source uses http://127.0.0.1:13030.
+updated. The provisioned Loki source uses http://127.0.0.1:13030. The
+provisioned VictoriaMetrics source uses http://127.0.0.1:13090, which reaches
+an authenticated API listener rather than the plaintext mesh port.
 Grafana itself uses its local PostgreSQL peer socket. systemd unsets the legacy
 `GF_DATABASE_URL` from its environment file so it cannot override that socket configuration;
 the other secret environment settings remain available. Loki's instance, memberlist
@@ -333,9 +334,14 @@ Exporter listeners bind loopback where supported. An input firewall rule
 additionally blocks external access to backend metric ports. NCPS runs in a
 private namespace; its cache ingress accepts only the Nix cache client identity.
 Its metrics use a separate observation-only ingress. The previous plaintext
-port 8501 is no longer exposed. VictoriaMetrics uses
+port 8501 is no longer exposed. VictoriaMetrics keeps
 a filtered Envoy listener for its existing query/write port;
-those business APIs retain their previous mesh access policy. Vmagent and
+those business APIs retain their previous mesh access policy. It also publishes
+an authenticated API listener. That listener forwards the complete backend API
+without path or method filtering, and admits only the identities in
+`businessAllowedIDs`; Grafana queries it through a protected Unix egress socket.
+Both listeners are separate ports, so the plaintext business port keeps its
+path restrictions. Vmagent and
 vmalert HTTP listeners bind loopback. Alertmanager HTTP binds loopback and its
 public Caddy route excludes metrics/debug paths; cluster gossip is unchanged.
 Stalwart's public Caddy route also excludes its metrics/debug paths. Synapse
@@ -346,7 +352,8 @@ exporters keep host visibility; infrastructure daemon networking is unchanged.
 
 `tests/realm-vm.nix` also tests the SOCKS chain, Synapse-specific federation
 permission, observation identity checks, path/query restrictions, blackbox
-allowlists, the shared business listener, and direct backend firewall denial.
+allowlists, the shared business listener, the authenticated API listener with
+its caller allowlist, and direct backend firewall denial.
 `tests/realm-container.nix` imports both actual Misskey and Telegram Search
 profiles with a fixture image, including the latter's TCP-to-Unix ingress,
 rootless mapping, environment override, and health check.

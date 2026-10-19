@@ -15,6 +15,7 @@ import socket
 import sys
 
 import dns.asyncresolver
+import dns.rdatatype
 
 
 def order_records(records):
@@ -41,6 +42,7 @@ class Connector:
         self.resolver.lifetime = timeout
         self.timeout = timeout
         self.records = []
+        self.additional = {}
         self.expires = 0
         self.lock = asyncio.Lock()
 
@@ -49,30 +51,51 @@ class Connector:
             now = asyncio.get_running_loop().time()
             if now >= self.expires:
                 answer = await self.resolver.resolve(self.service, "SRV")
+                additional = {}
+                for rrset in getattr(answer.response, "additional", ()):
+                    if rrset.rdtype == dns.rdatatype.AAAA:
+                        additional.setdefault(
+                            (rrset.name, socket.AF_INET6), []
+                        ).extend(item.address for item in rrset)
+                    elif rrset.rdtype == dns.rdatatype.A:
+                        additional.setdefault(
+                            (rrset.name, socket.AF_INET), []
+                        ).extend(item.address for item in rrset)
                 self.records = list(answer)
-                self.expires = now + min(answer.rrset.ttl, 30)
-        return order_records(self.records)
+                self.additional = additional
+                self.expires = now + min(max(answer.rrset.ttl, 5), 30)
+            return order_records(self.records), dict(self.additional)
+
+    async def addresses(self, target_name, family, kind, additional):
+        cached = additional.get((target_name, family))
+        if cached:
+            return cached
+        try:
+            answer = await self.resolver.resolve(target_name.to_text(), kind)
+        except (dns.resolver.NoAnswer, dns.resolver.NXDOMAIN):
+            return []
+        return [address.to_text() for address in answer]
 
     async def connect(self):
-        for record in await self.endpoints():
+        records, additional = await self.endpoints()
+        for record in records:
             target = record.target.to_text()
             if target == "." or record.port == 0:
                 continue
             for family, kind in ((socket.AF_INET6, "AAAA"), (socket.AF_INET, "A")):
-                try:
-                    answer = await self.resolver.resolve(target, kind)
-                except (dns.resolver.NoAnswer, dns.resolver.NXDOMAIN):
-                    continue
-                for address in answer:
+                for address in await self.addresses(
+                    record.target, family, kind, additional
+                ):
                     try:
                         return await asyncio.wait_for(
                             asyncio.open_connection(
-                                address.to_text(), record.port, family=family
+                                address, record.port, family=family
                             ),
                             self.timeout,
                         )
                     except (OSError, TimeoutError):
                         continue
+        self.expires = 0
         raise OSError("no reachable SRV endpoint")
 
     async def handle(self, reader, writer):

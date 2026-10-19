@@ -50,6 +50,24 @@ let
     name = "envoy.filters.http.router";
     typed_config."@type" = "type.googleapis.com/envoy.extensions.filters.http.router.v3.Router";
   };
+  downstreamTls = allowedIDs: {
+    name = "envoy.transport_sockets.tls";
+    typed_config = {
+      "@type" = "type.googleapis.com/envoy.extensions.transport_sockets.tls.v3.DownstreamTlsContext";
+      require_client_certificate = true;
+      common_tls_context = {
+        tls_params.tls_minimum_protocol_version = "TLSv1_3";
+        tls_certificate_sds_secret_configs = [ (sds config.realm.workloads.observability.spiffeID) ];
+        combined_validation_context = {
+          default_validation_context.match_typed_subject_alt_names = map (id: {
+            san_type = "URI";
+            matcher.exact = id;
+          }) allowedIDs;
+          validation_context_sds_secret_config = sds "spiffe://${config.realm.trustDomain}";
+        };
+      };
+    };
+  };
   protectedPorts = lib.unique (
     map (e: e.port) (
       builtins.attrValues (
@@ -104,53 +122,71 @@ in
     endpoints = lib.mkOption {
       default = { };
       type = lib.types.attrsOf (
-        lib.types.submodule {
-          options = {
-            enable = lib.mkOption {
-              type = lib.types.bool;
-              default = true;
+        lib.types.submodule (
+          { name, ... }:
+          {
+            options = {
+              enable = lib.mkOption {
+                type = lib.types.bool;
+                default = true;
+              };
+              address = lib.mkOption {
+                type = lib.types.str;
+                default = "127.0.0.1";
+              };
+              port = lib.mkOption {
+                type = lib.types.nullOr lib.types.port;
+                default = null;
+              };
+              socket = lib.mkOption {
+                type = lib.types.nullOr lib.types.str;
+                default = null;
+              };
+              path = lib.mkOption {
+                type = lib.types.str;
+                default = "/metrics";
+              };
+              kind = lib.mkOption {
+                type = lib.types.enum [
+                  "metrics"
+                  "probe"
+                ];
+                default = "metrics";
+              };
+              probes = lib.mkOption {
+                type = lib.types.listOf (
+                  lib.types.submodule {
+                    options = {
+                      module = lib.mkOption { type = lib.types.str; };
+                      target = lib.mkOption { type = lib.types.str; };
+                    };
+                  }
+                );
+                default = [ ];
+              };
+              publicProxyPort = lib.mkOption {
+                type = lib.types.nullOr lib.types.port;
+                default = null;
+                description = "Preserve a shared business HTTP port while denying metrics and debug paths there.";
+              };
+              businessProxyPort = lib.mkOption {
+                type = lib.types.nullOr lib.types.port;
+                default = null;
+                description = "Additional mTLS listener that forwards the complete API of this backend to an explicit caller allowlist.";
+              };
+              businessAllowedIDs = lib.mkOption {
+                type = lib.types.listOf lib.types.str;
+                default = [ ];
+                description = "SPIFFE IDs permitted to use businessProxyPort.";
+              };
+              businessConsulService = lib.mkOption {
+                type = lib.types.str;
+                default = "${name}-${config.networking.hostName}";
+                description = "Consul service name that advertises businessProxyPort for SRV discovery.";
+              };
             };
-            address = lib.mkOption {
-              type = lib.types.str;
-              default = "127.0.0.1";
-            };
-            port = lib.mkOption {
-              type = lib.types.nullOr lib.types.port;
-              default = null;
-            };
-            socket = lib.mkOption {
-              type = lib.types.nullOr lib.types.str;
-              default = null;
-            };
-            path = lib.mkOption {
-              type = lib.types.str;
-              default = "/metrics";
-            };
-            kind = lib.mkOption {
-              type = lib.types.enum [
-                "metrics"
-                "probe"
-              ];
-              default = "metrics";
-            };
-            probes = lib.mkOption {
-              type = lib.types.listOf (
-                lib.types.submodule {
-                  options = {
-                    module = lib.mkOption { type = lib.types.str; };
-                    target = lib.mkOption { type = lib.types.str; };
-                  };
-                }
-              );
-              default = [ ];
-            };
-            publicProxyPort = lib.mkOption {
-              type = lib.types.nullOr lib.types.port;
-              default = null;
-              description = "Preserve a shared business HTTP port while denying metrics and debug paths there.";
-            };
-          };
-        }
+          }
+        )
       );
     };
   };
@@ -172,7 +208,16 @@ in
         builtins.match "[a-z][a-z0-9-]*" name != null
         && ((e.port == null) != (e.socket == null))
         && (e.kind != "probe" || e.probes != [ ])
-        && (e.publicProxyPort == null || e.kind == "metrics");
+        && (e.publicProxyPort == null || e.kind == "metrics")
+        && (
+          e.businessProxyPort == null
+          || (
+            e.kind == "metrics"
+            && e.businessAllowedIDs != [ ]
+            && e.businessProxyPort != e.port
+            && e.businessProxyPort != e.publicProxyPort
+          )
+        );
       message = "realm.observability.endpoints.${name}: declare one backend and an explicit probe allowlist.";
     }) endpoints;
     services.envoy = {
@@ -193,24 +238,7 @@ in
               per_connection_buffer_limit_bytes = 65536;
               filter_chains = [
                 {
-                  transport_socket = {
-                    name = "envoy.transport_sockets.tls";
-                    typed_config = {
-                      "@type" = "type.googleapis.com/envoy.extensions.transport_sockets.tls.v3.DownstreamTlsContext";
-                      require_client_certificate = true;
-                      common_tls_context = {
-                        tls_params.tls_minimum_protocol_version = "TLSv1_3";
-                        tls_certificate_sds_secret_configs = [ (sds config.realm.workloads.observability.spiffeID) ];
-                        combined_validation_context = {
-                          default_validation_context.match_typed_subject_alt_names = map (id: {
-                            san_type = "URI";
-                            matcher.exact = id;
-                          }) cfg.allowedIDs;
-                          validation_context_sds_secret_config = sds "spiffe://${config.realm.trustDomain}";
-                        };
-                      };
-                    };
-                  };
+                  transport_socket = downstreamTls cfg.allowedIDs;
                   filters = [
                     (hcm (lib.mapAttrsToList (name: e: {
                       match.path = publicPath name e;
@@ -226,6 +254,33 @@ in
               ];
             }
           ]
+          ++ lib.mapAttrsToList (name: e: {
+            name = "observe_forward_${name}";
+            address.socket_address = {
+              address = config.realm.address;
+              port_value = e.businessProxyPort;
+            };
+            per_connection_buffer_limit_bytes = 65536;
+            filter_chains = [
+              {
+                transport_socket = downstreamTls e.businessAllowedIDs;
+                filters = [
+                  (hcm
+                    [
+                      {
+                        match.prefix = "/";
+                        route = {
+                          cluster = "observe_${name}";
+                          timeout = "0s";
+                        };
+                      }
+                    ]
+                    [ ]
+                  )
+                ];
+              }
+            ];
+          }) (lib.filterAttrs (_: e: e.businessProxyPort != null) endpoints)
           ++ lib.mapAttrsToList (name: e: {
             name = "observe_business_${name}";
             address.socket_address = {
@@ -331,14 +386,33 @@ in
         allowedIDs = cfg.allowedIDs;
       };
     };
-    realm.serviceDiscovery.publish."observability-${config.networking.hostName}".checks = [
-      {
-        id = "${config.networking.hostName}-observability-listener";
-        name = "Observability TLS listener is ready";
-        tcp = "[${config.realm.address}]:${toString cfg.port}";
-        interval = "10s";
-        timeout = "2s";
-      }
-    ];
+    realm.serviceDiscovery.publish =
+      lib.mapAttrs' (
+        name: e:
+        lib.nameValuePair e.businessConsulService {
+          unit = "envoy.service";
+          port = e.businessProxyPort;
+          checks = [
+            {
+              id = "${config.networking.hostName}-${e.businessConsulService}-listener";
+              name = "Authenticated ${name} API listener is ready";
+              tcp = "[${config.realm.address}]:${toString e.businessProxyPort}";
+              interval = "10s";
+              timeout = "2s";
+            }
+          ];
+        }
+      ) (lib.filterAttrs (_: e: e.businessProxyPort != null) endpoints)
+      // {
+        "observability-${config.networking.hostName}".checks = [
+          {
+            id = "${config.networking.hostName}-observability-listener";
+            name = "Observability TLS listener is ready";
+            tcp = "[${config.realm.address}]:${toString cfg.port}";
+            interval = "10s";
+            timeout = "2s";
+          }
+        ];
+      };
   };
 }

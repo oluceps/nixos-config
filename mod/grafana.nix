@@ -42,6 +42,11 @@
             verifyID = "spiffe://nyaw.xyz/service/loki";
             localPort = 13030;
           };
+          victoriametrics = {
+            service = "victoriametrics-${config.networking.hostName}";
+            verifyID = "spiffe://nyaw.xyz/service/observability-${config.networking.hostName}";
+            localPort = 13090;
+          };
           internet = {
             service = "internet-proxy";
             verifyID = "spiffe://nyaw.xyz/service/internet";
@@ -57,6 +62,16 @@
             type = "loki";
             access = "proxy";
             url = "http://127.0.0.1:13030";
+          }
+          {
+            name = "VictoriaMetrics";
+            type = "prometheus";
+            access = "proxy";
+            url = "http://127.0.0.1:13090";
+            jsonData = {
+              httpMethod = "POST";
+              prometheusType = "VictoriaMetrics";
+            };
           }
         ];
       };
