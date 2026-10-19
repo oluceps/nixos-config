@@ -81,11 +81,13 @@
           search_path = "\"$user\", public, vectors";
         };
 
+        # map_name connect_unix_user db_user
         identMap = ''
           realm-misskey realm-pg-misskey misskey
           realm-seaweedfs realm-pg-seaweedfs seaweed
           realm-atuin realm-pg-atuin atuin
         '';
+        # type db db_user auth_type map
         authentication = lib.mkForce ''
           local misskey misskey peer map=realm-misskey
           local seaweedfs seaweed peer map=realm-seaweedfs
