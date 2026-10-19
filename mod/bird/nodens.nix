@@ -7,10 +7,28 @@
         self.modules.nixos.bird
         inputs.autopeer.nixosModules.default
       ];
+      realm.workloads.autopeer = {
+        isolation = {
+          privateNetwork = false;
+          runtimePaths = [ config.services.autopeer.birdConfDir ];
+          allowUnixSockets = [
+            "-/run/bird"
+            "-/run/systemd/resolve"
+          ];
+        };
+        egress.postgresql = {
+          service = "postgresql-autopeer";
+          verifyID = "spiffe://nyaw.xyz/service/postgresql";
+          socket = "/run/realm/autopeer/egress/.s.PGSQL.5432";
+        };
+      };
       services.autopeer = {
         enable = true;
         localAsn = 4242420291;
         port = 9341;
+        databaseSocket = "/run/realm/autopeer/egress";
+        databaseUser = "dn42";
+        databaseName = "dn42nodens";
         environmentFile = config.vaultix.secrets."autopeer".path;
       };
       vaultix.secrets = {

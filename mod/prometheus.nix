@@ -143,6 +143,10 @@
         victoriametrics = {
           port = 19090;
           publicProxyPort = 9090;
+          # Grafana queries the full API through an authenticated listener; the
+          # plaintext business port stays available to the existing mesh clients.
+          businessProxyPort = 19091;
+          businessAllowedIDs = [ "spiffe://nyaw.xyz/service/grafana" ];
         };
       };
       realm.observability.endpoints.blackbox = {

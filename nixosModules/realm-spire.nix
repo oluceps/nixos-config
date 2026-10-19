@@ -109,14 +109,14 @@ in
             UMask = lib.mkForce "0007";
             RuntimeDirectoryMode = "0750";
             RestartSec = "5s";
+            TimeoutStartSec = "300s";
             ExecStartPost = pkgs.writeShellScript "wait-spire-agent" ''
-              for attempt in $(${pkgs.coreutils}/bin/seq 1 60); do
-                if ${spire}/bin/spire-agent healthcheck -socketPath ${lib.escapeShellArg scfg.socket} >/dev/null 2>&1; then
+              while true; do
+                if test -S ${lib.escapeShellArg scfg.socket} && ${spire}/bin/spire-agent healthcheck -socketPath ${lib.escapeShellArg scfg.socket} >/dev/null 2>&1; then
                   exit 0
                 fi
-                ${pkgs.coreutils}/bin/sleep 1
+                ${pkgs.coreutils}/bin/sleep 3
               done
-              exit 1
             '';
           };
         };

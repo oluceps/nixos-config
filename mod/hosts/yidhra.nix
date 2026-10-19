@@ -65,7 +65,20 @@
           SystemMaxUse = lib.mkForce "0.1G";
         };
 
+        systemd.services.alloy.environment = {
+          GOMEMLIMIT = "40MiB";
+          GOGC = "50";
+          GOMAXPROCS = "1";
+        };
+        services.alloy.extraFlags = [
+          "--disable-reporting"
+          "--server.http.enable-pprof=false"
+        ];
+
         environment.etc."alloy/config.alloy".text = ''
+          livedebugging {
+            enabled = false
+          }
           discovery.relabel "journal" {
             targets = []
             rule {
@@ -106,6 +119,8 @@
           loki.write "default" {
             endpoint {
               url = "http://127.0.0.1:13030/loki/api/v1/push"
+              batch_size = "64KiB"
+              batch_wait = "1s"
             }
             external_labels = {}
           }
