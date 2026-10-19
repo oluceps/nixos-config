@@ -26,5 +26,9 @@
         maxHistoryLength = 65536;
         database.uri = "postgresql://atuin@127.0.0.1:15432/atuin?sslmode=disable";
       };
+      systemd.services.atuin.serviceConfig = {
+        Restart = "on-failure";
+        RestartSec = "5s";
+      };
     };
 }

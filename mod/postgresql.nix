@@ -1,6 +1,7 @@
 {
   flake.modules.nixos.postgresql =
     {
+      config,
       lib,
       pkgs,
       ...
@@ -9,8 +10,17 @@
       realm.workloads.postgresql = {
         user = "postgres";
         group = "postgres";
+        # Keep direct mesh TCP access while legacy clients migrate to SPIFFE.
+        isolation.privateNetwork = false;
         isolation.runtimePaths = [ "/run/postgresql" ];
         ingress = {
+          vaultwarden = {
+            port = 15437;
+            target = "unix:/run/postgresql/.s.PGSQL.5432";
+            consulService = "postgresql-vaultwarden";
+            backendUser = "realm-pg-vaultwarden";
+            allowedIDs = [ "spiffe://nyaw.xyz/service/vaultwarden" ];
+          };
           misskey = {
             port = 15432;
             target = "unix:/run/postgresql/.s.PGSQL.5432";
@@ -32,17 +42,42 @@
             backendUser = "realm-pg-atuin";
             allowedIDs = [ "spiffe://nyaw.xyz/service/atuin" ];
           };
+          telegram-search = {
+            port = 15436;
+            target = "unix:/run/postgresql/.s.PGSQL.5432";
+            consulService = "postgresql-telegram-search";
+            backendUser = "realm-pg-telegram-search";
+            allowedIDs = [ "spiffe://nyaw.xyz/service/telegram-search" ];
+          };
+          immich = {
+            port = 15435;
+            target = "unix:/run/postgresql/.s.PGSQL.5432";
+            consulService = "postgresql-immich";
+            backendUser = "realm-pg-immich";
+            allowedIDs = [ "spiffe://nyaw.xyz/service/immich" ];
+          };
         };
       };
       users.groups.realm-pg = { };
-      users.users = lib.genAttrs [ "realm-pg-misskey" "realm-pg-seaweedfs" "realm-pg-atuin" ] (_: {
-        isSystemUser = true;
-        group = "realm-pg";
-      });
+      users.users =
+        lib.genAttrs
+          [
+            "realm-pg-vaultwarden"
+            "realm-pg-misskey"
+            "realm-pg-seaweedfs"
+            "realm-pg-atuin"
+            "realm-pg-immich"
+            "realm-pg-telegram-search"
+          ]
+          (_: {
+            isSystemUser = true;
+            group = "realm-pg";
+          });
 
+      realm.observability.endpoints.postgres.port = config.services.prometheus.exporters.postgres.port;
       services.prometheus.exporters.postgres = {
         enable = true;
-        listenAddress = "[::]";
+        listenAddress = "127.0.0.1";
         runAsLocalSuperUser = true;
       };
       systemd.services.postgresql.serviceConfig = {
@@ -55,7 +90,7 @@
           ps.pgvector
           ps.vectorchord
         ];
-        enableTCPIP = false;
+        enableTCPIP = true;
         settings = {
           allow_alter_system = false;
           port = 5432;
@@ -83,16 +118,25 @@
 
         # map_name connect_unix_user db_user
         identMap = ''
+          realm-vaultwarden realm-pg-vaultwarden vault
           realm-misskey realm-pg-misskey misskey
           realm-seaweedfs realm-pg-seaweedfs seaweed
           realm-atuin realm-pg-atuin atuin
+          realm-telegram-search realm-pg-telegram-search telegram_search
+          realm-immich realm-pg-immich immich
         '';
         # type db db_user auth_type map
         authentication = lib.mkForce ''
+          local vaultwarden vault peer map=realm-vaultwarden
           local misskey misskey peer map=realm-misskey
           local seaweedfs seaweed peer map=realm-seaweedfs
           local atuin atuin peer map=realm-atuin
+          local telegram_search telegram_search peer map=realm-telegram-search
+          local immich immich peer map=realm-immich
           local all all peer
+          host all all 127.0.0.1/32 scram-sha-256
+          host all all ::1/128 scram-sha-256
+          host all all fdcc::/64 scram-sha-256
         '';
       };
     };

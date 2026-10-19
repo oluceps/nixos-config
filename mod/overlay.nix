@@ -1,5 +1,49 @@
 { withSystem, inputs, ... }:
+let
+  envoyOverlay =
+    final: prev:
+    let
+      version = "1.40.0";
+      releases = {
+        x86_64-linux = {
+          arch = "x86_64";
+          hash = "sha256-iqE3p9AJlM5D9hNVb1oSBwkin2O+24bu3eXMvEAsK4A=";
+        };
+        aarch64-linux = {
+          arch = "aarch_64";
+          hash = "sha256-A8rMlSVhY1wLfSqCkpHzQdrb68MgUEde++cyGxu+GMI=";
+        };
+      };
+      release = releases.${final.stdenv.hostPlatform.system};
+    in
+    {
+      envoy = final.stdenvNoCC.mkDerivation {
+        pname = "envoy";
+        inherit version;
+        # 1.40 switched to bzlmod; use the upstream release with a pinned digest.
+        src = final.fetchurl {
+          url = "https://github.com/envoyproxy/envoy/releases/download/v${version}/envoy-${version}-linux-${release.arch}";
+          inherit (release) hash;
+        };
+        dontUnpack = true;
+        dontStrip = true;
+        nativeBuildInputs = [ final.autoPatchelfHook ];
+        buildInputs = [ final.stdenv.cc.cc.lib ];
+        installPhase = ''
+          runHook preInstall
+          install -Dm755 "$src" "$out/bin/envoy"
+          runHook postInstall
+        '';
+        meta = prev.envoy.meta // {
+          changelog = "https://github.com/envoyproxy/envoy/releases/tag/v${version}";
+          platforms = builtins.attrNames releases;
+          sourceProvenance = [ final.lib.sourceTypes.binaryNativeCode ];
+        };
+      };
+    };
+in
 {
+  flake.overlays.envoy = envoyOverlay;
   flake.modules.nixos.overlay =
     # Go: https://github.com/NixOS/nixpkgs/issues/86349#issuecomment-624489806
     # Rust:
@@ -67,6 +111,7 @@
         )
         ++ [
           inputs.self.overlays.default
+          envoyOverlay
           inputs.nix-topology.overlays.default
           inputs.nix-minecraft.overlay
         ]

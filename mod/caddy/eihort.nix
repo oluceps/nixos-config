@@ -11,6 +11,30 @@
 
       realm.workloads.caddy = {
         egress = {
+          jellyfin = {
+            service = "jellyfin";
+            verifyID = "spiffe://nyaw.xyz/service/jellyfin";
+          };
+          vaultwarden = {
+            service = "vaultwarden";
+            verifyID = "spiffe://nyaw.xyz/service/vaultwarden";
+          };
+          forgejo = {
+            service = "forgejo";
+            verifyID = "spiffe://nyaw.xyz/service/forgejo";
+          };
+          telegram-search = {
+            service = "telegram-search";
+            verifyID = "spiffe://nyaw.xyz/service/telegram-search";
+          };
+          synapse = {
+            service = "synapse";
+            verifyID = "spiffe://nyaw.xyz/service/synapse";
+          };
+          calibre = {
+            service = "calibre";
+            verifyID = "spiffe://nyaw.xyz/service/calibre";
+          };
           s3 = {
             service = "seaweedfs-s3";
             verifyID = "spiffe://nyaw.xyz/service/seaweedfs";
@@ -31,13 +55,27 @@
             service = "meilisearch";
             verifyID = "spiffe://nyaw.xyz/service/meilisearch";
           };
+          immich = {
+            service = "immich";
+            verifyID = "spiffe://nyaw.xyz/service/immich";
+          };
+          immich-public-proxy = {
+            service = "immich-public-proxy";
+            verifyID = "spiffe://nyaw.xyz/service/immich-public-proxy";
+          };
         };
         ingress.https = {
           port = 19443;
           target = "127.0.0.1:443";
           hostLoopback = true;
           consulService = "s3-https";
-          allowedIDs = [ "spiffe://nyaw.xyz/service/misskey" ];
+          allowedIDs = [
+            "spiffe://nyaw.xyz/service/forgejo"
+            "spiffe://nyaw.xyz/service/ncps"
+            "spiffe://nyaw.xyz/service/misskey"
+            "spiffe://nyaw.xyz/service/telegram-search"
+            "spiffe://nyaw.xyz/service/synapse"
+          ];
         };
       };
 
@@ -75,10 +113,29 @@
                         match = [ { host = [ "s3.nyaw.xyz" ]; } ];
                       }
                       {
+                        match = [
+                          {
+                            host = [ "alert.nyaw.xyz" ];
+                            path = [
+                              "/metrics"
+                              "/metrics/*"
+                              "/debug/*"
+                            ];
+                          }
+                        ];
+                        handle = [
+                          {
+                            handler = "static_response";
+                            status_code = 403;
+                          }
+                        ];
+                        terminal = true;
+                      }
+                      {
                         handle = [
                           {
                             handler = "reverse_proxy";
-                            upstreams = [ { dial = "[fdcc::3]:9093"; } ];
+                            upstreams = [ { dial = "127.0.0.1:9093"; } ];
                           }
                         ];
                         match = [ { host = [ "alert.nyaw.xyz" ]; } ];
@@ -88,7 +145,7 @@
                       #     {
                       #       handler = "reverse_proxy";
                       #       headers.request.set.X-Real-Ip = [ "{http.request.remote.host}" ];
-                      #       upstreams = [ { dial = "[fdcc::3]:8003"; } ];
+                      #       upstreams = [ { dial = "unix//run/realm/caddy/egress/vaultwarden.sock"; } ];
                       #     }
                       #   ];
                       #   match = [ { host = [ "vault.nyaw.xyz" ]; } ];
@@ -99,7 +156,7 @@
                           {
                             handler = "reverse_proxy";
                             upstreams = [
-                              { dial = "localhost:${toString config.services.forgejo.settings.server.HTTP_PORT}"; }
+                              { dial = "unix//run/realm/caddy/egress/forgejo.sock"; }
                             ];
                           }
                         ];
@@ -110,7 +167,7 @@
                         handle = [
                           {
                             handler = "reverse_proxy";
-                            upstreams = [ { dial = "localhost:3336"; } ];
+                            upstreams = [ { dial = "unix//run/realm/caddy/egress/telegram-search.sock"; } ];
                           }
                         ];
                         match = [ { host = [ "tgs.nyaw.xyz" ]; } ];
@@ -130,7 +187,7 @@
                         handle = [
                           {
                             handler = "reverse_proxy";
-                            upstreams = [ { dial = "localhost:8096"; } ];
+                            upstreams = [ { dial = "unix//run/realm/caddy/egress/jellyfin.sock"; } ];
                           }
                         ];
                         match = [ { host = [ "jellyfin.nyaw.xyz" ]; } ];
@@ -160,7 +217,7 @@
                         handle = [
                           {
                             handler = "reverse_proxy";
-                            upstreams = [ { dial = "[fdcc::3]:2283"; } ];
+                            upstreams = [ { dial = "unix//run/realm/caddy/egress/immich-public-proxy.sock"; } ];
                           }
                         ];
                         match = [ { host = [ "photo.nyaw.xyz" ]; } ];
@@ -211,7 +268,7 @@
                         handle = [
                           {
                             handler = "reverse_proxy";
-                            upstreams = [ { dial = "[fdcc::3]:8003"; } ];
+                            upstreams = [ { dial = "unix//run/realm/caddy/egress/vaultwarden.sock"; } ];
                           }
                         ];
                         match = [ { host = [ "vault.nyaw.xyz" ]; } ];
@@ -254,7 +311,7 @@
                                 };
                               };
                             };
-                            upstreams = [ { dial = "[fdcc::3]:8083"; } ];
+                            upstreams = [ { dial = "unix//run/realm/caddy/egress/calibre.sock"; } ];
                             handler = "reverse_proxy";
                           }
                         ];
@@ -273,7 +330,7 @@
                       }
                       (import ../../caddy/matrix.nix {
                         inherit pkgs;
-                        matrix-upstream = "[fdcc::3]:8196";
+                        matrix-upstream = "unix//run/realm/caddy/egress/synapse.sock";
                       })
                     ];
                   }

@@ -5,6 +5,13 @@
       services.grafana = {
         enable = true;
         settings = {
+          database = {
+            type = "postgres";
+            host = "/run/postgresql";
+            name = "grafana";
+            user = "grafana";
+            ssl_mode = "disable";
+          };
           server = {
             http_addr = "127.0.0.1";
             http_port = 3002;
@@ -21,6 +28,7 @@
       };
       realm.workloads.grafana = {
         isolation.runtimePaths = [ "/run/grafana" ];
+        isolation.allowUnixSockets = [ "/run/postgresql" ];
         ingress.http = {
           port = 13002;
           target = "127.0.0.1:3002";
@@ -53,6 +61,8 @@
         ];
       };
       systemd.services.grafana = {
+        requires = [ "postgresql.service" ];
+        after = [ "postgresql.service" ];
         environment = {
           HTTP_PROXY = "http://127.0.0.1:13128";
           HTTPS_PROXY = "http://127.0.0.1:13128";
@@ -61,6 +71,8 @@
         serviceConfig.LoadCredential = [
           "grafana-secretkey:${config.vaultix.secrets.grafana-secretkey.path}"
         ];
+        # The legacy secret URL selects host TCP and overrides the peer socket settings.
+        serviceConfig.UnsetEnvironment = [ "GF_DATABASE_URL" ];
       };
       vaultix.secrets = {
         grafana = {

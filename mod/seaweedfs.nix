@@ -6,6 +6,11 @@
       dataDir = "/var/lib/sea-volume";
     in
     {
+      realm.observability.endpoints.seaweedfs.socket = "/run/realm/observability/egress/seaweedfs.sock";
+      realm.workloads.observability.egress.seaweedfs = {
+        service = "seaweedfs-metrics";
+        verifyID = "spiffe://nyaw.xyz/service/seaweedfs";
+      };
       vaultix.secrets.weed-s3 = {
         owner = "seaweedfs";
         group = "seaweedfs";
@@ -45,6 +50,8 @@
             allowedIDs = [
               "spiffe://nyaw.xyz/service/loki"
               "spiffe://nyaw.xyz/service/caddy"
+              "spiffe://nyaw.xyz/service/synapse"
+              "spiffe://nyaw.xyz/service/synapse-s3-upload"
             ];
           };
           master = {
@@ -59,7 +66,7 @@
             target = "127.0.0.1:9768";
             privateLoopback = true;
             consulService = "seaweedfs-metrics";
-            allowedIDs = [ "spiffe://nyaw.xyz/service/vmagent" ];
+            allowedIDs = [ "spiffe://nyaw.xyz/service/observability-${config.networking.hostName}" ];
           };
         };
       };
@@ -68,6 +75,8 @@
         LoadCredential = [ "weed-s3:${config.vaultix.secrets.weed-s3.path}" ];
         ReadWritePaths = [
           dataDir
+          # SeaweedFS creates its local master gRPC sockets and scratch files here.
+          "/tmp"
         ];
         MemoryMax = "8G";
         MemoryHigh = "6G";
