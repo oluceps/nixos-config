@@ -118,13 +118,14 @@ let
               abhoth.unique_addr_nomask = "fdcc::5";
               nodens.unique_addr_nomask = "fdcc::8";
               hastur.unique_addr_nomask = "fdcc::1";
+              azasos.unique_addr_nomask = "fdcc::7";
             };
           };
         }
       )
     ];
   server = cluster "eihort";
-  client = cluster "hastur";
+  client = cluster "azasos";
 
   allPass =
     config:
@@ -247,11 +248,12 @@ let
       };
       expected = {
         server = true;
-        bootstrap_expect = 3;
+        bootstrap_expect = 4;
         retry_join = [
           "fdcc::3"
           "fdcc::5"
           "fdcc::8"
+          "fdcc::1"
         ];
         domain = "mesh.nyaw.xyz";
         datacenter = "nyaw";
@@ -275,17 +277,23 @@ let
           [
             "abhoth"
             "nodens"
+            "hastur"
           ];
       expected = [
         {
           server = true;
-          bootstrap_expect = 3;
+          bootstrap_expect = 4;
           address = "fdcc::5";
         }
         {
           server = true;
-          bootstrap_expect = 3;
+          bootstrap_expect = 4;
           address = "fdcc::8";
+        }
+        {
+          server = true;
+          bootstrap_expect = 4;
+          address = "fdcc::1";
         }
       ];
     };
@@ -302,9 +310,10 @@ let
           "fdcc::3"
           "fdcc::5"
           "fdcc::8"
+          "fdcc::1"
         ];
         bootstrap = false;
-        address = "fdcc::1";
+        address = "fdcc::7";
         services = [ ];
       };
     };

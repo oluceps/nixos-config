@@ -45,7 +45,7 @@
           NODE_EXTRA_CA_CERTS = "/search/ca.crt";
           TELEGRAM_API_ID = "611335";
           TELEGRAM_API_HASH = "d524b414d21f4d37f08684c1df41ac9c";
-          MINIO_URL = "http://10.89.2.1:8333";
+          MINIO_URL = "https://s3.nyaw.xyz";
           MINIO_BUCKET = "telegram-search";
           HOST = "::";
         };

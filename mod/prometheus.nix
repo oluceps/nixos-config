@@ -54,6 +54,14 @@
 
     in
     {
+      realm.workloads.vmagent = {
+        runtime = "external";
+        isolation.privateNetwork = false;
+        egress.seaweedfs = {
+          service = "seaweedfs-metrics";
+          verifyID = "spiffe://nyaw.xyz/service/seaweedfs";
+        };
+      };
       vaultix.secrets = {
         notifychan = {
           owner = "root";
@@ -158,7 +166,12 @@
               {
                 job_name = "seaweedfs_metrics";
                 scheme = "http";
-                static_configs = [ { targets = [ "[fdcc::3]:9768" ]; } ];
+                static_configs = [
+                  {
+                    targets = [ "[fdcc::3]:9768" ];
+                    labels.__unix_socket__ = "/run/realm/vmagent/egress/seaweedfs.sock";
+                  }
+                ];
                 relabel_configs = fdcc_instance_relabel;
               }
               {

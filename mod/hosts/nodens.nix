@@ -142,7 +142,7 @@
         }
         loki.write "default" {
           endpoint {
-            url = "http://[fdcc::3]:3030/loki/api/v1/push"
+            url = "http://127.0.0.1:13030/loki/api/v1/push"
           }
           external_labels = {}
         }

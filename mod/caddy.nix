@@ -44,6 +44,21 @@
       };
 
       config = {
+        users.groups.caddy = { };
+        users.users.caddy = {
+          isSystemUser = true;
+          group = "caddy";
+        };
+        realm.workloads.caddy = {
+          runtime = "external";
+          isolation.privateNetwork = false;
+          egress = {
+            atuin = {
+              service = "atuin";
+              verifyID = "spiffe://nyaw.xyz/service/atuin";
+            };
+          };
+        };
         vaultix.secrets.caddy = { };
         networking.firewall = lib.mkIf (!config.data.node.${config.networking.hostName}.nat) {
           allowedTCPPorts = [

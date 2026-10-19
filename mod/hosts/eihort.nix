@@ -57,6 +57,7 @@
             grafana
 
             loki
+            realm-internet
             alloy
             zeek
             jellyfin
@@ -160,6 +161,28 @@
           RuntimeWatchdogSec = "30s";
         };
       };
+      systemd.sockets.sept-proxy = {
+        description = "Sept forwarding socket";
+        wantedBy = [ "sockets.target" ];
+        listenStreams = [ "[::]:1905" ];
+        socketConfig = {
+          BindIPv6Only = "both";
+          FreeBind = true;
+        };
+      };
+
+      systemd.services.sept-proxy = {
+        description = "Forward connections to Sept";
+        requires = [ "sept-proxy.socket" ];
+        serviceConfig = {
+          ExecStart = "${config.systemd.package}/lib/systemd/systemd-socket-proxyd 10.255.0.1:1095";
+          DynamicUser = true;
+          NoNewPrivileges = true;
+          ProtectSystem = "strict";
+          ProtectHome = true;
+        };
+      };
+
       services = {
         zfs = {
           autoScrub.enable = true;
@@ -210,22 +233,6 @@
         #   key = config.vaultix.secrets.garden_key.path;
         #   interface = "eno1";
         # };
-        realm = {
-          enable = true;
-          settings = {
-            log.level = "warn";
-            network = {
-              no_tcp = false;
-              use_udp = true;
-            };
-            endpoints = [
-              {
-                listen = "[::]:1905";
-                remote = "10.255.0.1:1095";
-              }
-            ];
-          };
-        };
         pocket-id = {
           enable = true;
           settings = {

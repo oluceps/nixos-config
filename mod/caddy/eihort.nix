@@ -9,6 +9,38 @@
     {
       imports = [ self.modules.nixos.caddy ];
 
+      realm.workloads.caddy = {
+        egress = {
+          s3 = {
+            service = "seaweedfs-s3";
+            verifyID = "spiffe://nyaw.xyz/service/seaweedfs";
+          };
+          seaweedfs = {
+            service = "seaweedfs-master";
+            verifyID = "spiffe://nyaw.xyz/service/seaweedfs";
+          };
+          grafana = {
+            service = "grafana";
+            verifyID = "spiffe://nyaw.xyz/service/grafana";
+          };
+          misskey = {
+            service = "misskey";
+            verifyID = "spiffe://nyaw.xyz/service/misskey";
+          };
+          meilisearch = {
+            service = "meilisearch";
+            verifyID = "spiffe://nyaw.xyz/service/meilisearch";
+          };
+        };
+        ingress.https = {
+          port = 19443;
+          target = "127.0.0.1:443";
+          hostLoopback = true;
+          consulService = "s3-https";
+          allowedIDs = [ "spiffe://nyaw.xyz/service/misskey" ];
+        };
+      };
+
       vaultix.secrets."nyaw.key" = {
         mode = "400";
         owner = config.identity.user;
@@ -37,7 +69,7 @@
                         handle = [
                           {
                             handler = "reverse_proxy";
-                            upstreams = [ { dial = "[fdcc::3]:8333"; } ];
+                            upstreams = [ { dial = "unix//run/realm/caddy/egress/s3.sock"; } ];
                           }
                         ];
                         match = [ { host = [ "s3.nyaw.xyz" ]; } ];
@@ -108,7 +140,7 @@
                         handle = [
                           {
                             handler = "reverse_proxy";
-                            upstreams = [ { dial = "[fdcc::3]:9333"; } ];
+                            upstreams = [ { dial = "unix//run/realm/caddy/egress/seaweedfs.sock"; } ];
                           }
                         ];
                         match = [ { host = [ "seaweedfs.nyaw.xyz" ]; } ];
@@ -148,7 +180,7 @@
                         handle = [
                           {
                             handler = "reverse_proxy";
-                            upstreams = [ { dial = "[fdcc::3]:7700"; } ];
+                            upstreams = [ { dial = "unix//run/realm/caddy/egress/meilisearch.sock"; } ];
                           }
                         ];
                         match = [ { host = [ "ms.nyaw.xyz" ]; } ];
@@ -233,7 +265,7 @@
                         handle = [
                           {
                             handler = "reverse_proxy";
-                            upstreams = [ { dial = "[fdcc::3]:3002"; } ];
+                            upstreams = [ { dial = "unix//run/realm/caddy/egress/grafana.sock"; } ];
                           }
                         ];
                         match = [ { host = [ "gf.nyaw.xyz" ]; } ];
@@ -253,7 +285,7 @@
                   (import ../../caddy/nyaw-xyz-matrix-wellknown.nix)
                   {
                     handler = "reverse_proxy";
-                    upstreams = [ { dial = "127.1:3012"; } ];
+                    upstreams = [ { dial = "unix//run/realm/caddy/egress/misskey.sock"; } ];
                     trusted_proxies = [
                       "fdcc::4"
                       "fdcc::5"
