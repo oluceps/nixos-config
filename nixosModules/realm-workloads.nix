@@ -285,6 +285,14 @@ let
             "d ${base name} 0755 root root -"
             "d ${base name}/egress 0750 root ${w.group} -"
             "d ${base name}/ingress 0750 root ${user} -"
+            # `d` sets ownership only when it creates the directory. A workload
+            # whose group changes — a native gateway replacing the proxy account
+            # it used to run as — would keep the old group, and the application
+            # could no longer traverse the directory even though the sockets
+            # inside are recreated with the new one. `z` re-applies the group to
+            # the existing directory and, unlike `Z`, does not touch the sockets.
+            "z ${base name}/egress 0750 root ${w.group} -"
+            "z ${base name}/ingress 0750 root ${user} -"
           ]
           ++
             lib.optional (lib.any (e: e.target == null) (builtins.attrValues w.egress))

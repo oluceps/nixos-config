@@ -8,7 +8,6 @@
 //	realm-helper dns    --upstream SOCKET    own UDP/TCP 127.0.0.53:53
 //	realm-helper bridge --target ADDRESS     splice a socket-activated listener
 //	realm-helper launch COMMAND [ARG...]     container entrypoint adapter
-//	realm-helper health                      container health check
 //	realm-helper spire-register ...          apply the declared SPIRE entries
 //	realm-helper enroll NODE                 issue a join token and trust bundle
 //	realm-helper install-enrollment         consume that JSON on the target node
@@ -27,7 +26,6 @@ const usage = `usage:
   realm-helper dns    --upstream SOCKET
   realm-helper bridge --target ADDRESS
   realm-helper launch COMMAND [ARG...]
-  realm-helper health
   realm-helper spire-register --spire-server PATH --socket PATH --manifest PATH --state PATH
   realm-helper enroll NODE --spire-server PATH --socket PATH --manifest PATH --trust-domain DOMAIN
   realm-helper install-enrollment --node HOSTNAME --systemctl PATH < enrollment.json
@@ -60,8 +58,6 @@ func run(args []string) (int, error) {
 		return 0, bridgeCommand(args[1:])
 	case "launch":
 		return launchCommand(args[1:])
-	case "health":
-		return healthCommand(), nil
 	case "spire-register":
 		return 0, spireRegisterCommand(args[1:])
 	case "enroll":

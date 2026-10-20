@@ -123,6 +123,7 @@
           "/run/realm-telegram-search/backend:/realm/backend:rw"
           "${routes}:/realm/routes.json:ro"
           "${config.realm.helperPackage}/bin/realm-helper:/realm/helper:ro"
+          "${../nixosModules/realm/container-health.cjs}:/realm/health.cjs:ro"
         ];
         extraOptions = [
           "--userns=keep-id:uid=0,gid=0"
@@ -136,7 +137,7 @@
           "--security-opt=no-new-privileges"
           "--sysctl=net.ipv4.ip_unprivileged_port_start=0"
           "--add-host=s3.nyaw.xyz:127.0.0.1"
-          "--health-cmd=/realm/helper health"
+          "--health-cmd=node /realm/health.cjs"
           "--health-interval=30s"
           "--health-start-period=120s"
         ];

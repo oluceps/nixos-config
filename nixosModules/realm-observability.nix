@@ -110,10 +110,14 @@ let
   # normalized path, so escaped or repeated slashes and dot segments must not be
   # able to alias a protected path. Escaped slashes are a client error, as they
   # were under the previous gateway; the rest are refused.
+  #
+  # Only the path is checked. A query legitimately carries percent-encoded
+  # values — a probe target is sent as `https%3A%2F%2F…` — and rejecting those
+  # would refuse every URL probe.
   escapedSlashGuard = {
     match = [
       {
-        expression = "{http.request.uri}.contains(\"%2f\") || {http.request.uri}.contains(\"%2F\")";
+        expression = "{http.request.uri}.matches(\"^[^?]*(%2f|%2F)\")";
       }
     ];
     handle = [

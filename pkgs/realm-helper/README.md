@@ -9,7 +9,6 @@ images.
 realm-helper dns    --upstream SOCKET     UDP/TCP 127.0.0.53:53 -> DNS-over-TCP on a Unix socket
 realm-helper bridge --target ADDRESS      socket-activated listener -> TCP address or Unix socket
 realm-helper launch COMMAND [ARG...]      container entrypoint adapter
-realm-helper health                       container health check
 realm-helper spire-register ...           reconcile SPIRE registrations
 realm-helper enroll NODE                  issue a join token and trust bundle
 realm-helper install-enrollment           consume that JSON on the target node
@@ -45,7 +44,7 @@ Replaces a `systemd-socket-proxyd` instance where the target is a
 workload-private loopback address (the container SOCKS adapter) — same job, one
 fewer binary in the closure.
 
-## launch / health
+## launch
 
 `launch` runs inside the container as the entrypoint:
 
@@ -55,9 +54,6 @@ fewer binary in the closure.
   application that serves TCP but cannot create its own Unix listener;
 - the real command runs as a child; the helper forwards termination signals,
   reaps orphans (it may be PID 1) and exits with the child's status.
-
-`health` probes `REALM_HEALTH_PORT` + `/health`, or the mounted backend socket
-at `/`. Any response below 500 counts as healthy.
 
 ## spire-register
 
