@@ -10,7 +10,7 @@
           port = 18003;
           target = "127.0.0.1:8003";
           privateLoopback = true;
-          consulService = "vaultwarden";
+          service = "vaultwarden";
           allowedIDs = [ "spiffe://nyaw.xyz/service/caddy" ];
         };
         egress = {

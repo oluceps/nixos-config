@@ -30,6 +30,7 @@ pkgs.testers.runNixOSTest {
         pkgs.util-linux
         pkgs.postgresql
         pkgs.openssl
+        pkgs.dnsutils
       ];
       realm.observability = {
         enable = true;
@@ -83,15 +84,7 @@ pkgs.testers.runNixOSTest {
           }
         ];
       };
-      services.consul.extraConfig = {
-        server = true;
-        bootstrap_expect = 1;
-        bind_addr = "127.0.0.1";
-        advertise_addr = "127.0.0.1";
-        client_addr = "127.0.0.1";
-        domain = "mesh.nyaw.xyz";
-        dns_config.only_passing = true;
-      };
+
       realm = {
         enable = true;
         serviceDiscovery = {
@@ -165,7 +158,7 @@ pkgs.testers.runNixOSTest {
             ingress.sender = {
               port = 19432;
               target = "unix:/run/postgresql/.s.PGSQL.5432";
-              consulService = "postgresql-sender";
+              service = "postgresql-sender";
               backendUser = "realm-pg-sender";
               allowedIDs = [ "spiffe://nyaw.xyz/service/sender" ];
             };
@@ -199,7 +192,7 @@ pkgs.testers.runNixOSTest {
             port = 19429;
             target = "127.0.0.1:3030";
             privateLoopback = true;
-            consulService = "receiver";
+            service = "receiver";
             allowedIDs = [
               "spiffe://nyaw.xyz/service/sender"
               "spiffe://nyaw.xyz/service/wrong-server"
@@ -281,7 +274,8 @@ pkgs.testers.runNixOSTest {
     machine.succeed("realm-enroll machine | realm-install-enrollment")
     machine.wait_for_unit("spire-agent.service")
     machine.wait_for_unit("receiver.service")
-    machine.wait_until_succeeds("curl -sf 'http://127.0.0.1:8500/v1/health/service/receiver?passing' | grep -q 19429")
+    machine.wait_for_unit("coredns.service")
+    machine.succeed("dig @127.0.0.1 -p 8600 +short SRV receiver.svc.mesh.nyaw.xyz | grep -q '19429 receiver.machine.svc.mesh.nyaw.xyz.'")
 
     def probe(name):
         return f"nsenter -t $(systemctl show -p MainPID --value {name}.service) -n curl -fsS --max-time 10 http://127.0.0.1:13100/hostname"

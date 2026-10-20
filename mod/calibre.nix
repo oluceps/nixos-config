@@ -19,7 +19,7 @@
         port = 18083;
         target = "127.0.0.1:8083";
         privateLoopback = true;
-        consulService = "calibre";
+        service = "calibre";
         allowedIDs = [ "spiffe://nyaw.xyz/service/caddy" ];
       };
       egress.internet = {

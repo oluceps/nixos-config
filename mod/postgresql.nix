@@ -17,49 +17,49 @@
           vaultwarden = {
             port = 15437;
             target = "unix:/run/postgresql/.s.PGSQL.5432";
-            consulService = "postgresql-vaultwarden";
+            service = "postgresql-vaultwarden";
             backendUser = "realm-pg-vaultwarden";
             allowedIDs = [ "spiffe://nyaw.xyz/service/vaultwarden" ];
           };
           misskey = {
             port = 15432;
             target = "unix:/run/postgresql/.s.PGSQL.5432";
-            consulService = "postgresql-misskey";
+            service = "postgresql-misskey";
             backendUser = "realm-pg-misskey";
             allowedIDs = [ "spiffe://nyaw.xyz/service/misskey" ];
           };
           seaweedfs = {
             port = 15433;
             target = "unix:/run/postgresql/.s.PGSQL.5432";
-            consulService = "postgresql-seaweedfs";
+            service = "postgresql-seaweedfs";
             backendUser = "realm-pg-seaweedfs";
             allowedIDs = [ "spiffe://nyaw.xyz/service/seaweedfs" ];
           };
           atuin = {
             port = 15434;
             target = "unix:/run/postgresql/.s.PGSQL.5432";
-            consulService = "postgresql-atuin";
+            service = "postgresql-atuin";
             backendUser = "realm-pg-atuin";
             allowedIDs = [ "spiffe://nyaw.xyz/service/atuin" ];
           };
           telegram-search = {
             port = 15436;
             target = "unix:/run/postgresql/.s.PGSQL.5432";
-            consulService = "postgresql-telegram-search";
+            service = "postgresql-telegram-search";
             backendUser = "realm-pg-telegram-search";
             allowedIDs = [ "spiffe://nyaw.xyz/service/telegram-search" ];
           };
           immich = {
             port = 15435;
             target = "unix:/run/postgresql/.s.PGSQL.5432";
-            consulService = "postgresql-immich";
+            service = "postgresql-immich";
             backendUser = "realm-pg-immich";
             allowedIDs = [ "spiffe://nyaw.xyz/service/immich" ];
           };
           autopeer = {
             port = 15438;
             target = "unix:/run/postgresql/.s.PGSQL.5432";
-            consulService = "postgresql-autopeer";
+            service = "postgresql-autopeer";
             backendUser = "realm-pg-autopeer";
             allowedIDs = [ "spiffe://nyaw.xyz/service/autopeer" ];
           };

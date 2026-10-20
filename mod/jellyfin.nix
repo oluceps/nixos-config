@@ -12,7 +12,7 @@
           port = 18096;
           target = "127.0.0.1:8096";
           privateLoopback = true;
-          consulService = "jellyfin";
+          service = "jellyfin";
           allowedIDs = [ "spiffe://nyaw.xyz/service/caddy" ];
         };
         egress.internet = {

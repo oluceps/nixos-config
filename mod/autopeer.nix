@@ -21,7 +21,7 @@
           port = 19341;
           target = "127.0.0.1:${toString cfg.port}";
           hostLoopback = true;
-          consulService = "autopeer-${config.networking.hostName}";
+          service = "autopeer-${config.networking.hostName}";
           allowedIDs = [ "spiffe://nyaw.xyz/service/caddy" ];
         };
         egress.postgresql = {

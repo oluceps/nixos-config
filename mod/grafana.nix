@@ -33,7 +33,7 @@
           port = 13002;
           target = "127.0.0.1:3002";
           privateLoopback = true;
-          consulService = "grafana";
+          service = "grafana";
           allowedIDs = [ "spiffe://nyaw.xyz/service/caddy" ];
         };
         egress = {

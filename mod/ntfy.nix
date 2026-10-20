@@ -12,14 +12,14 @@
             port = 12586;
             target = "127.0.0.1:2586";
             privateLoopback = true;
-            consulService = "ntfy";
+            service = "ntfy";
             allowedIDs = [ "spiffe://nyaw.xyz/service/caddy" ];
           };
           metrics = {
             port = 19099;
             target = "127.0.0.1:9099";
             privateLoopback = true;
-            consulService = "ntfy-metrics";
+            service = "ntfy-metrics";
             allowedIDs = [ "spiffe://nyaw.xyz/service/observability-${config.networking.hostName}" ];
           };
         };

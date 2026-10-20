@@ -41,7 +41,7 @@
           port = 19317;
           target = "127.0.0.1:29317";
           privateLoopback = true;
-          consulService = "mautrix-telegram";
+          service = "mautrix-telegram";
           allowedIDs = [ "spiffe://nyaw.xyz/service/synapse" ];
         };
         egress = {

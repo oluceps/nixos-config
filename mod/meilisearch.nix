@@ -17,7 +17,7 @@
           port = 17700;
           target = "127.0.0.1:7700";
           privateLoopback = true;
-          consulService = "meilisearch";
+          service = "meilisearch";
           allowedIDs = [
             "spiffe://nyaw.xyz/service/misskey"
             "spiffe://nyaw.xyz/service/caddy"

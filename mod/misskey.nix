@@ -33,7 +33,7 @@
           ingress.http = {
             port = 13012;
             target = "unix:/run/realm-misskey/backend/http.sock";
-            consulService = "misskey";
+            service = "misskey";
             allowedIDs = [ "spiffe://nyaw.xyz/service/caddy" ];
           };
           egress = {
@@ -70,7 +70,7 @@
           ingress.redis = {
             port = 16379;
             target = "unix:/run/redis-misskey/redis.sock";
-            consulService = "redis-misskey";
+            service = "redis-misskey";
             allowedIDs = [ "spiffe://nyaw.xyz/service/misskey" ];
           };
         };

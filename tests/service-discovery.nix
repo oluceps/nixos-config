@@ -1,11 +1,7 @@
 { nixpkgs }:
 let
-  pkgs = import nixpkgs {
-    system = "x86_64-linux";
-    config.allowUnfree = true;
-  };
+  pkgs = import nixpkgs { system = "x86_64-linux"; };
   inherit (pkgs) lib;
-
   evaluate =
     modules:
     (import (nixpkgs + "/nixos/lib/eval-config.nix") {
@@ -19,7 +15,6 @@ let
       ]
       ++ modules;
     }).config;
-
   published = {
     realm.serviceDiscovery = {
       enable = true;
@@ -31,7 +26,6 @@ let
     };
     systemd.services.demo.serviceConfig.ExecStart = "${pkgs.coreutils}/bin/sleep infinity";
   };
-
   enabled = evaluate [ published ];
   disabled = evaluate [ { } ];
   portless = evaluate [
@@ -48,40 +42,15 @@ let
   ];
   custom = evaluate [
     published
-    {
-      realm.serviceDiscovery.publish.demo = {
-        address = "fdcc:3::10";
-        tags = [ "http" ];
-        checks = [
-          {
-            tcp = "[fdcc:3::10]:8888";
-            interval = "10s";
-          }
-        ];
-      };
-    }
+    { realm.serviceDiscovery.publish.demo.address = "fdcc:3::10"; }
   ];
-  container = evaluate [
-    (
-      { config, ... }:
-      {
-        realm.serviceDiscovery = {
-          enable = true;
-          address = "fdcc::3";
-          publish.demo = {
-            unit = "${config.virtualisation.oci-containers.containers.demo.serviceName}.service";
-            port = 8888;
-          };
-        };
-        virtualisation.oci-containers = {
-          backend = "podman";
-          containers.demo = {
-            image = "docker.io/library/nginx:alpine";
-            ports = [ "[fdcc::3]:8888:80" ];
-          };
-        };
-      }
-    )
+  replica = evaluate [
+    published
+    {
+      networking.hostName = lib.mkForce "replica";
+      realm.serviceDiscovery.address = lib.mkForce "fdcc::5";
+      realm.serviceDiscovery.publish.demo.port = lib.mkForce 9999;
+    }
   ];
   missingUnit = evaluate [
     published
@@ -99,124 +68,77 @@ let
     published
     { realm.serviceDiscovery.publish.demo.port = lib.mkForce 65536; }
   ];
-
-  clusterModule = (import ../mod/consul.nix).flake.modules.nixos.consul;
-  cluster =
-    hostName:
-    evaluate [
-      clusterModule
-      (
-        { lib, ... }:
-        {
-          options.data = lib.mkOption {
-            type = lib.types.attrsOf lib.types.anything;
+  clusterModule =
+    (import ../mod/mesh-dns.nix {
+      self.nixosConfigurations = {
+        test-node.config = enabled;
+        replica.config = replica;
+        disabled.config = disabled;
+      };
+    }).flake.modules.nixos.mesh-dns;
+  cluster = evaluate [
+    clusterModule
+    (
+      { lib, ... }:
+      {
+        options.data = lib.mkOption { type = lib.types.attrsOf lib.types.anything; };
+        config = {
+          networking.hostName = lib.mkForce "observer";
+          data.node = {
+            test-node.unique_addr_nomask = "fdcc::3";
+            replica.unique_addr_nomask = "fdcc::5";
+            observer.unique_addr_nomask = "fdcc::7";
           };
-          config = {
-            networking.hostName = lib.mkForce hostName;
-            data.node = {
-              eihort.unique_addr_nomask = "fdcc::3";
-              abhoth.unique_addr_nomask = "fdcc::5";
-              nodens.unique_addr_nomask = "fdcc::8";
-              hastur.unique_addr_nomask = "fdcc::1";
-              azasos.unique_addr_nomask = "fdcc::7";
-            };
-          };
-        }
-      )
-    ];
-  server = cluster "eihort";
-  client = cluster "azasos";
-
+        };
+      }
+    )
+  ];
   allPass =
     config:
     !lib.any (a: !a.assertion && lib.hasPrefix "realm.serviceDiscovery." a.message) config.assertions;
-  service = config: builtins.head config.services.consul.extraConfig.services;
-
+  contains = config: record: lib.hasInfix record config.realm.serviceDiscovery.zoneText;
   tests = {
     testDisabled = {
       expr = {
-        inherit (disabled.services.consul) enable extraConfig;
+        dns = disabled.services.coredns.enable;
+        consul = disabled.services.consul.enable;
       };
       expected = {
-        enable = false;
-        extraConfig = { };
+        dns = false;
+        consul = false;
       };
     };
-    testRegistration = {
-      expr = removeAttrs (service enabled) [ "checks" ];
-      expected = {
-        id = "test-node-demo";
-        name = "demo";
-        address = "fdcc::3";
-        port = 8888;
-        tags = [ ];
-      };
+    testLocalListener = {
+      expr =
+        enabled.services.coredns.enable
+        && lib.hasInfix "mesh.nyaw.xyz:8600" enabled.services.coredns.config
+        && lib.hasInfix "bind 127.0.0.1" enabled.services.coredns.config
+        && !enabled.services.consul.enable;
+      expected = true;
     };
-    testUnitCheck = {
-      expr = builtins.head (service enabled).checks;
-      expected = {
-        id = "test-node-demo-unit";
-        name = "demo.service is active";
-        args = [
-          "${enabled.systemd.package}/bin/systemctl"
-          "is-active"
-          "--quiet"
-          "demo.service"
-        ];
-        interval = "10s";
-        timeout = "2s";
-        status = "critical";
-      };
+    testNodeAAAA = {
+      expr = contains enabled "test-node.node IN AAAA fdcc::3";
+      expected = true;
     };
-    testLocalChecksOnly = {
-      expr = {
-        local = enabled.services.consul.extraConfig.enable_local_script_checks;
-        remote = enabled.services.consul.extraConfig.enable_script_checks or false;
-      };
-      expected = {
-        local = true;
-        remote = false;
-      };
+    testServiceRecords = {
+      expr = lib.all (contains enabled) [
+        "demo.svc IN AAAA fdcc::3"
+        "demo.test-node.svc IN AAAA fdcc::3"
+        "demo.svc IN SRV 0 1 8888 demo.test-node.svc.mesh.nyaw.xyz."
+      ];
+      expected = true;
     };
     testPortless = {
-      expr = (service portless) ? port;
-      expected = false;
+      expr = contains portless "demo.svc IN AAAA fdcc::3" && !contains portless " IN SRV ";
+      expected = true;
     };
     testSocketActivation = {
-      expr = {
-        valid = allPass socket;
-        unit = lib.last (builtins.head (service socket).checks).args;
-      };
-      expected = {
-        valid = true;
-        unit = "demo.socket";
-      };
+      expr = allPass socket;
+      expected = true;
     };
     testCustomEndpoint = {
-      expr = {
-        inherit (service custom) address tags;
-        check = lib.last (service custom).checks;
-      };
-      expected = {
-        address = "fdcc:3::10";
-        tags = [ "http" ];
-        check = {
-          tcp = "[fdcc:3::10]:8888";
-          interval = "10s";
-        };
-      };
-    };
-    testContainerUnit = {
-      expr = {
-        valid = allPass container;
-        unit = lib.last (builtins.head (service container).checks).args;
-        port = (service container).port;
-      };
-      expected = {
-        valid = true;
-        unit = "podman-demo.service";
-        port = 8888;
-      };
+      expr = contains custom "demo.svc IN AAAA fdcc:3::10";
+      expected = true;
     };
     testMissingUnit = {
       expr = allPass missingUnit;
@@ -231,128 +153,39 @@ let
       expected = false;
     };
     testInvalidPort = {
-      expr = (builtins.tryEval (builtins.deepSeq (service invalidPort) true)).success;
+      expr =
+        (builtins.tryEval (builtins.deepSeq invalidPort.realm.serviceDiscovery.zoneText true)).success;
       expected = false;
     };
-    testServer = {
-      expr = {
-        inherit (server.services.consul.extraConfig)
-          server
-          bootstrap_expect
-          retry_join
-          domain
-          datacenter
-          client_addr
-          ;
-        address = server.realm.serviceDiscovery.address;
-      };
-      expected = {
-        server = true;
-        bootstrap_expect = 4;
-        retry_join = [
-          "fdcc::3"
-          "fdcc::5"
-          "fdcc::8"
-          "fdcc::1"
-        ];
-        domain = "mesh.nyaw.xyz";
-        datacenter = "nyaw";
-        client_addr = "127.0.0.1";
-        address = "fdcc::3";
-      };
-    };
-    testAdditionalServers = {
-      expr =
-        map
-          (
-            hostName:
-            let
-              config = cluster hostName;
-            in
-            {
-              inherit (config.services.consul.extraConfig) server bootstrap_expect;
-              address = config.realm.serviceDiscovery.address;
-            }
-          )
-          [
-            "abhoth"
-            "nodens"
-            "hastur"
-          ];
+    testClusterCatalog = {
+      expr = builtins.attrNames cluster.realm.serviceDiscovery.catalog;
       expected = [
-        {
-          server = true;
-          bootstrap_expect = 4;
-          address = "fdcc::5";
-        }
-        {
-          server = true;
-          bootstrap_expect = 4;
-          address = "fdcc::8";
-        }
-        {
-          server = true;
-          bootstrap_expect = 4;
-          address = "fdcc::1";
-        }
+        "replica"
+        "test-node"
       ];
     };
-    testClient = {
-      expr = {
-        inherit (client.services.consul.extraConfig) server retry_join;
-        bootstrap = client.services.consul.extraConfig ? bootstrap_expect;
-        address = client.realm.serviceDiscovery.address;
-        services = client.services.consul.extraConfig.services;
-      };
-      expected = {
-        server = false;
-        retry_join = [
-          "fdcc::3"
-          "fdcc::5"
-          "fdcc::8"
-          "fdcc::1"
-        ];
-        bootstrap = false;
-        address = "fdcc::7";
-        services = [ ];
-      };
-    };
-    testMeshBinding = {
-      expr = {
-        inherit (client.services.consul) forceAddrFamily interface;
-        passing = client.services.consul.extraConfig.dns_config.only_passing;
-      };
-      expected = {
-        forceAddrFamily = "ipv6";
-        interface = {
-          bind = "anchor-0";
-          advertise = "anchor-0";
-        };
-        passing = true;
-      };
+    testReplicaRecords = {
+      expr = lib.all (contains cluster) [
+        "observer.node IN AAAA fdcc::7"
+        "demo.svc IN AAAA fdcc::3"
+        "demo.svc IN AAAA fdcc::5"
+        "demo.svc IN SRV 0 1 8888 demo.test-node.svc.mesh.nyaw.xyz."
+        "demo.svc IN SRV 0 1 9999 demo.replica.svc.mesh.nyaw.xyz."
+      ];
+      expected = true;
     };
     testDNSDelegation = {
-      expr = client.services.resolved.dnsDelegates.mesh.Delegate;
+      expr = cluster.services.resolved.dnsDelegates.mesh.Delegate;
       expected = {
         DNS = [ "127.0.0.1:8600" ];
         Domains = [ "~mesh.nyaw.xyz" ];
         DefaultRoute = false;
       };
     };
-    testRuntimeAddressFile = {
-      expr = {
-        source = client.environment.etc."consul-addrs.json".source;
-        directory = client.systemd.services.consul.serviceConfig.RuntimeDirectory;
-      };
-      expected = {
-        source = "/run/consul/addrs.json";
-        directory = "consul";
-      };
-    };
     testPrivateDNSSECAnchors = {
       expr =
         let
-          anchors = lib.splitString "\n" client.environment.etc."dnssec-trust-anchors.d/consul.negative".text;
+          anchors = lib.splitString "\n" cluster.environment.etc."dnssec-trust-anchors.d/mesh.negative".text;
         in
         lib.all (domain: builtins.elem domain anchors) [
           "mesh.nyaw.xyz"
@@ -362,6 +195,13 @@ let
           "16.172.in-addr.arpa"
           "31.172.in-addr.arpa"
         ];
+      expected = true;
+    };
+    testNoRuntimeHealthChecks = {
+      expr =
+        !(enabled.realm.serviceDiscovery.publish.demo ? checks)
+        && !(enabled.systemd.services ? consul)
+        && lib.hasInfix "$TTL 5" enabled.realm.serviceDiscovery.zoneText;
       expected = true;
     };
   };

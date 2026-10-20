@@ -3,7 +3,15 @@
 当前应按 **eihort → abhoth → eihort 业务验收 → hastur / uubboo → 其余节点** 的顺序切换。
 eihort 提供 SPIRE Server、Internet 出口及主要业务；abhoth 提供新的 SMTP ingress。
 这里的命令在仓库根目录、Bash 中执行，假设已有 `root@<hostname>` SSH 连通性。
-已有的 Consul、DNS 和 VXLAN mesh 必须继续可用，各 Agent 必须能连接 eihort 的 SPIRE Server TCP 8081。
+每个 mesh 节点运行本地 CoreDNS，继续在 127.0.0.1:8600 提供发现域解析。DNS 和 VXLAN mesh 必须可用，各 Agent 必须能连接 eihort 的 SPIRE Server TCP 8081。
+
+## 从 Consul 迁移到 CoreDNS
+
+每个节点的 zonefile 都来自同一套 flake；发布变动后需要部署到查询它的节点。
+替换现有集群时先部署 Consul client 节点，再逐台处理 server 节点。
+尚未切换的节点仍依赖 Consul，所以移除 server 前先执行 `consul leave`，
+让 Raft 成员数随退出缩减，避免直接停止多个 server 导致旧节点失去 quorum。
+CoreDNS 上线后检查 `systemctl is-active coredns`，并用下面的 dig 命令验证。
 
 ## 切换前
 
@@ -50,15 +58,15 @@ ssh root@eihort 'systemctl restart envoy.service'
 enrollment JSON 含一次性 token，通过 SSH 管道直接传输；不要输出、保存或粘贴到日志。
 业务 ingress 和 egress 大多会自动重试，触及启动次数限制的单元需要在 enrollment 后手动重启。
 
-确认出口与关键入口有健康的 SRV 记录：
+确认出口与关键入口有对应的 SRV 记录；记录存在不代表服务已经就绪：
 
 ```bash
-ssh root@eihort 'dig @127.0.0.1 -p 8600 +short SRV internet-proxy.service.mesh.nyaw.xyz'
-ssh root@eihort 'dig @127.0.0.1 -p 8600 +short SRV loki.service.mesh.nyaw.xyz'
+ssh root@eihort 'dig @127.0.0.1 -p 8600 +short SRV internet-proxy.svc.mesh.nyaw.xyz'
+ssh root@eihort 'dig @127.0.0.1 -p 8600 +short SRV loki.svc.mesh.nyaw.xyz'
 ssh root@eihort 'systemctl --failed --no-pager'
 ```
 
-Consul 只发布健康的 ingress。若记录为空，先检查 ingress、后端服务及其 Consul check；不要改为直接连接旧明文端口。
+CoreDNS 从整套 flake 配置生成节点 AAAA 和 ingress 的 AAAA/SRV，停止的服务仍保留记录。若记录为空，检查本机 coredns.service、/etc/coredns/mesh.zone 以及对应 ingress.service 声明；不要改为直接连接旧明文端口。服务增删或端口变化后，要把更新部署到所有查询它的节点。
 
 ## 2. 部署 abhoth 并 enrollment
 
@@ -70,7 +78,7 @@ ssh -n root@eihort realm-enroll abhoth |
 
 ssh root@abhoth 'systemctl restart envoy.service realm-ingress-stalwart-submission.service'
 ssh root@abhoth 'systemctl is-active spire-agent.service realm-ingress-stalwart-submission.service'
-ssh root@eihort 'dig @127.0.0.1 -p 8600 +short SRV smtp-submission.service.mesh.nyaw.xyz'
+ssh root@eihort 'dig @127.0.0.1 -p 8600 +short SRV smtp-submission.svc.mesh.nyaw.xyz'
 ```
 
 Stalwart 保留现有公网邮件监听；应用使用新增的 mTLS submission ingress。
@@ -156,5 +164,5 @@ yidhra 在 `util.nu` 中有单独部署流程；该流程会删除旧 generation
 以及 eihort 的 `/var/lib/realm-spire-registrations`；这些是运行状态，不能加入 Git 或 Nix store。
 长时间离线导致 Agent 身份过期时，重新生成 token 并 enrollment。
 
-遇到故障优先查看失败单元日志、Agent 健康和 Consul checks。需要系统回滚时使用保留的上一代 system profile；
+遇到故障优先查看失败单元日志、Agent 健康、本机 CoreDNS 和生成的 zonefile。需要系统回滚时使用保留的上一代 system profile；
 数据库和应用文件的回退另按备份恢复处理。

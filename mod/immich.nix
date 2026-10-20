@@ -67,7 +67,7 @@
             port = 12283;
             target = "127.0.0.1:2283";
             privateLoopback = true;
-            consulService = "immich";
+            service = "immich";
             allowedIDs = [
               "spiffe://nyaw.xyz/service/caddy"
               "spiffe://nyaw.xyz/service/immich-public-proxy"
@@ -97,7 +97,7 @@
           ingress.redis = {
             port = 16380;
             target = "unix:/run/redis-immich/redis.sock";
-            consulService = "redis-immich";
+            service = "redis-immich";
             allowedIDs = [ "spiffe://nyaw.xyz/service/immich" ];
           };
         };
@@ -107,7 +107,7 @@
             port = 13003;
             target = "127.0.0.1:3003";
             privateLoopback = true;
-            consulService = "immich-ml";
+            service = "immich-ml";
             allowedIDs = [ "spiffe://nyaw.xyz/service/immich" ];
           };
           egress.internet = {
@@ -123,7 +123,7 @@
             port = 13001;
             target = "127.0.0.1:3001";
             privateLoopback = true;
-            consulService = "immich-public-proxy";
+            service = "immich-public-proxy";
             allowedIDs = [ "spiffe://nyaw.xyz/service/caddy" ];
           };
           egress.immich = {

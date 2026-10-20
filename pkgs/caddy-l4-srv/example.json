@@ -8,7 +8,7 @@
           "routes": [{
             "handle": [{
               "handler": "srv_proxy",
-              "name": "loki.service.mesh.nyaw.xyz",
+              "name": "loki.svc.mesh.nyaw.xyz",
               "resolver": "127.0.0.1:8600",
               "refresh": "5s",
               "dial_timeout": "5s"
@@ -20,7 +20,7 @@
           "routes": [{
             "handle": [{
               "handler": "srv_proxy",
-              "name": "smtp-submission.service.mesh.nyaw.xyz",
+              "name": "smtp-submission.svc.mesh.nyaw.xyz",
               "resolver": "127.0.0.1:8600"
             }]
           }]

@@ -17,7 +17,7 @@
             port = 18004;
             target = "[::1]:8004";
             privateLoopback = true;
-            consulService = "subs";
+            service = "subs";
             allowedIDs = [ "spiffe://nyaw.xyz/service/caddy" ];
           };
           egress.internet = {
