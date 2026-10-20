@@ -860,6 +860,19 @@ in
       type = types.str;
       default = "nyaw.xyz";
     };
+    # The only place a SPIFFE ID string is assembled. Every other module
+    # composes IDs from these prefixes, so the trust domain appears once and a
+    # renamed identity is a one-line change instead of a repository-wide grep.
+    servicePrefix = mkOption {
+      type = types.str;
+      readOnly = true;
+      default = "spiffe://${cfg.trustDomain}/service/";
+    };
+    agentPrefix = mkOption {
+      type = types.str;
+      readOnly = true;
+      default = "spiffe://${cfg.trustDomain}/agent/";
+    };
     # Address ingress sockets bind to, normally the node's mesh IPv6 address.
     address = mkOption {
       type = types.str;
@@ -960,7 +973,7 @@ in
               # same ID twice merges their authorization.
               spiffeID = mkOption {
                 type = types.str;
-                default = "spiffe://${cfg.trustDomain}/service/${name}";
+                default = "${cfg.servicePrefix}${name}";
               };
               isolation = {
                 dns = lib.mkEnableOption "a private DNS stub through a Unix socket to the existing host resolver";

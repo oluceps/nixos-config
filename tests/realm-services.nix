@@ -3,12 +3,7 @@ let
   pkgs = import nixpkgs {
     system = "x86_64-linux";
     config.allowUnfree = true;
-    overlays = [
-      (import ../mod/overlay.nix {
-        inputs = { };
-        withSystem = null;
-      }).flake.overlays.envoy
-    ];
+    overlays = [ ];
   };
   inherit (pkgs) lib;
   dummyVault = pkgs.writeText "vault-fixture.env" ''
@@ -146,7 +141,6 @@ pkgs.testers.runNixOSTest {
         (import ../mod/vaultwarden.nix).flake.modules.nixos.vaultwarden
         (import ../mod/forgejo.nix).flake.modules.nixos.forgejo
         (import ../mod/ncps.nix).flake.modules.nixos.ncps
-        (import ../mod/ncps-client.nix).flake.modules.nixos.ncps-client
         (import ../mod/postgresql.nix).flake.modules.nixos.postgresql
         (import ../mod/atuin.nix).flake.modules.nixos.atuin
         (import ../mod/grafana.nix).flake.modules.nixos.grafana
@@ -213,7 +207,6 @@ pkgs.testers.runNixOSTest {
       users.groups.rqbit = { };
       virtualisation.podman.enable = true;
       services.gitea-actions-runner.instances.default.enable = lib.mkForce false;
-      services.envoy.package = pkgs.envoy;
       services.ncps.analytics.reporting.enable = false;
       services.stalwart.package = pkgs.hello;
       services.prometheus.exporters.postgres.enable = lib.mkForce false;
@@ -293,7 +286,7 @@ pkgs.testers.runNixOSTest {
             localPort = 13190;
           };
           # No service profile needs a resolver any more: every outbound name is
-          # either aliased in /etc/hosts or resolved by the Envoy gateway. This
+          # either aliased in /etc/hosts or resolved by the Internet gateway. This
           # fixture keeps the isolation.dns path itself under test.
           dnsfixture.isolation.dns = true;
           imposter.egress = {
@@ -393,11 +386,6 @@ pkgs.testers.runNixOSTest {
         machine.succeed("runuser -u postgres -- psql -c \"CREATE ROLE loopback_fixture LOGIN PASSWORD 'fixture-password'\"")
         machine.succeed("psql postgresql://loopback_fixture:fixture-password@127.0.0.1/postgres -Atc 'select current_user' | grep -x loopback_fixture")
         machine.fail("psql postgresql://loopback_fixture:wrong@127.0.0.1/postgres -Atc 'select current_user'")
-    with subtest("the internal cache is available through the Nix client identity"):
-        machine.wait_until_succeeds("curl -fsS --max-time 10 http://127.0.0.1:18502/nix-cache-info | grep 'StoreDir: /nix/store'", timeout=90)
-        for path in ["/metrics", "/%6detrics", "//metrics", "/debug/pprof"]:
-            assert machine.succeed(f"curl --noproxy '*' --path-as-is -s -o /dev/null -w '%{{http_code}}' http://127.0.0.1:18502{path}") == "403", path
-        assert machine.succeed("curl --noproxy '*' -X POST -s -o /dev/null -w '%{http_code}' http://127.0.0.1:18502/nix-cache-info") == "403"
     with subtest("public Internet requests and FFmpeg use authenticated egress"):
         machine.succeed("ip address add 198.51.100.1/32 dev lo")
         machine.succeed("mkdir -p /tmp/public-fixture")

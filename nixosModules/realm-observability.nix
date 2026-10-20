@@ -11,7 +11,7 @@ let
   workload = config.realm.workloads.observability;
   # One identity per process: the observation gateway keeps its own SVID so a
   # compromise of the public gateway cannot impersonate it.
-  spiffeID = "spiffe://${config.realm.trustDomain}/service/observability-${hostName}";
+  spiffeID = "${config.realm.servicePrefix}observability-${hostName}";
   # Stand-in TLS server name. Callers reach the mesh address directly and send
   # no SNI, so the connection policy supplies this name and the SPIFFE
   # certificate manager answers with the workload SVID.
@@ -269,7 +269,7 @@ in
     };
     allowedIDs = lib.mkOption {
       type = lib.types.listOf lib.types.str;
-      default = [ "spiffe://${config.realm.trustDomain}/service/vmagent" ];
+      default = [ "${config.realm.servicePrefix}vmagent" ];
       description = "SPIFFE IDs accepted by the observation listener.";
     };
     # One entry per exporter that should be reachable from the mesh. The
@@ -387,6 +387,10 @@ in
     # only for observations.
     systemd.services.realm-observability = {
       wantedBy = [ "multi-user.target" ];
+      # The admin endpoint is disabled, so Caddy cannot be reloaded in place: a
+      # changed configuration restarts the unit instead of being silently
+      # ignored until the next reboot.
+      restartTriggers = [ configfile ];
       requires = [ "spire-agent.service" ];
       after = [
         "network.target"
