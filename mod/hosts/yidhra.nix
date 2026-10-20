@@ -141,7 +141,7 @@
             };
           };
 
-          kernelPackages = pkgs.linuxPackages_latest;
+          kernelPackages = pkgs.linuxPackages_testing;
           kernelModules = [ "tcp_bbr" ];
           kernelParams = [
             "audit=0"
@@ -174,7 +174,7 @@
           metrics.enable = true;
           qemuGuest.enable = false;
           hysteria.instances.main = {
-            enable = lib.mkForce false;
+            enable = true;
             serve = true;
             configFile = config.vaultix.secrets.hy.path;
             openFirewall = 4500;

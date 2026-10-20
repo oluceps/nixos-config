@@ -94,7 +94,7 @@
           };
         };
 
-        kernelPackages = pkgs.linuxPackages_latest;
+        kernelPackages = pkgs.linuxPackages_testing;
         kernelParams = [
           "audit=0"
           "net.ifnames=0"

@@ -16,6 +16,7 @@
         wantedBy = [ "sockets.target" ];
         socketConfig = {
           BindIPv6Only = "ipv6-only";
+          FreeBind = true;
         };
       };
       systemd.services.mc-rcon-proxy = {

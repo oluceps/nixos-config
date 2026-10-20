@@ -1,5 +1,25 @@
 { withSystem, inputs, ... }:
 let
+  kernelOverlay =
+    final: prev:
+    let
+      master = import inputs.nixpkgs-master {
+        inherit (prev.stdenv.hostPlatform) system;
+        inherit (prev) config;
+      };
+    in
+    {
+      # Keep the kernel and its external modules from the same package set.
+      linux_testing = master.linux_latest;
+      linuxPackages_testing = master.linuxPackages_latest.extend (
+        _kernelFinal: kernelPrev: {
+          v4l2loopback = kernelPrev.v4l2loopback.overrideAttrs (old: {
+            # Generate depmod indexes only after merging the kernel and external modules.
+            makeFlags = (old.makeFlags or [ ]) ++ [ "DEPMOD=true" ];
+          });
+        }
+      );
+    };
   envoyOverlay =
     final: prev:
     let
@@ -43,6 +63,7 @@ let
     };
 in
 {
+  flake.overlays.kernel = kernelOverlay;
   flake.overlays.envoy = envoyOverlay;
   flake.modules.nixos.overlay =
     # Go: https://github.com/NixOS/nixpkgs/issues/86349#issuecomment-624489806
@@ -111,6 +132,7 @@ in
         )
         ++ [
           inputs.self.overlays.default
+          kernelOverlay
           envoyOverlay
           inputs.nix-topology.overlays.default
           inputs.nix-minecraft.overlay

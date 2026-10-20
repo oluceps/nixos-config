@@ -53,7 +53,7 @@
         algorithm = "lz4";
       };
       boot = {
-        kernelPackages = pkgs.linuxPackages_latest;
+        kernelPackages = pkgs.linuxPackages_testing;
         kernelParams = [
           "audit=0"
           "rootdelay=300"

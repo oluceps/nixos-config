@@ -49,6 +49,13 @@ let
     apps.layer4.servers = discoveryServers;
   };
   proxy = "${config.systemd.package}/lib/systemd/systemd-socket-proxyd";
+  # socket-proxyd splits at the last colon and passes the host to getaddrinfo.
+  proxyTarget =
+    target:
+    let
+      ipv6 = builtins.match "[[]([^]]+)[]]:([0-9]+)" target;
+    in
+    if ipv6 == null then target else "${builtins.elemAt ipv6 0}:${builtins.elemAt ipv6 1}";
   appName = w: lib.removeSuffix ".service" w.unit;
   proxyUser = name: "realm-${name}";
   base = name: "/run/realm/${name}";
@@ -432,7 +439,11 @@ let
             systemd.sockets.${unit} = mkIf (!i.native) {
               wantedBy = [ "sockets.target" ];
               listenStreams = [ "[${cfg.address}]:${toString i.port}" ];
-              socketConfig.FileDescriptorName = "ingress";
+              socketConfig = {
+                FileDescriptorName = "ingress";
+                # Mesh addresses may be assigned after sockets.target during boot.
+                FreeBind = true;
+              };
             };
             systemd.services.${unit} = mkIf (!i.native) {
               wantedBy = [ "multi-user.target" ];
@@ -484,7 +495,7 @@ let
                 User = user;
                 Group = user;
                 PrivateNetwork = true;
-                ExecStart = "${proxy} ${i.target}";
+                ExecStart = "${proxy} ${proxyTarget i.target}";
               };
             };
           })

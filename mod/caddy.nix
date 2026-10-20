@@ -51,13 +51,7 @@
           };
         };
         realm.discovery.integrateCaddy = true;
-        caddy.settings.apps.layer4.servers = mkIf config.realm.enable config.realm.discovery.servers;
         realm.observability.endpoints.caddy.port = 20242;
-        caddy.settings.apps.http.servers.observability = {
-          listen = [ "127.0.0.1:20242" ];
-          automatic_https.disable = true;
-          routes = [ { handle = [ { handler = "metrics"; } ]; } ];
-        };
         vaultix.secrets.caddy = { };
         networking.firewall = lib.mkIf (!config.data.node.${config.networking.hostName}.nat) {
           allowedTCPPorts = [
@@ -78,6 +72,13 @@
             insecure = false;
           };
           apps = {
+            layer4.servers = mkIf config.realm.enable config.realm.discovery.servers;
+            http.servers.observability = {
+              listen = [ "127.0.0.1:20242" ];
+              automatic_https.disable = true;
+              routes = [ { handle = [ { handler = "metrics"; } ]; } ];
+            };
+
             http.metrics = { };
             http.grace_period = "1s";
             http.servers.srv0 = {
@@ -87,9 +88,7 @@
                 skip_certificates = [
                 ];
               };
-
             };
-
           };
         };
 

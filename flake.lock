@@ -206,16 +206,14 @@
         "pre-commit-hooks": "pre-commit-hooks"
       },
       "locked": {
-        "dirtyRev": "867186d0e828d3c757897fd4786b4cb24c99b43d-dirty",
-        "dirtyShortRev": "867186d-dirty",
-        "lastModified": 1791960943,
-        "narHash": "sha256-01koD3E7oNlWn86b4kNPOB8MrjT7aK79/tOrRYedXQM=",
-        "type": "git",
-        "url": "file:///home/riro/Src/nyaw-dn42-autopeer"
+        "lastModified": 1792496034,
+        "narHash": "sha256-vpoNXDnE4u7I7cFBbe9Gyjvdde+beCELCX+2N8pFdDc=",
+        "path": "/home/riro/Src/nyaw-dn42-autopeer",
+        "type": "path"
       },
       "original": {
-        "type": "git",
-        "url": "file:///home/riro/Src/nyaw-dn42-autopeer"
+        "path": "/home/riro/Src/nyaw-dn42-autopeer",
+        "type": "path"
       }
     },
     "browser-previews": {
@@ -1913,17 +1911,14 @@
         "rust-overlay": "rust-overlay_6"
       },
       "locked": {
-        "lastModified": 1778001804,
-        "narHash": "sha256-VyShUCSBc/hCTKH8u6NaaHngwgUBNGsmU5d8ypa9SFk=",
-        "ref": "refs/heads/main",
-        "rev": "3845f389fd2324d82a71105277897e155723bd8b",
-        "revCount": 45,
-        "type": "git",
-        "url": "file:///home/riro/Src/limes-project/limes"
+        "lastModified": 1791143102,
+        "narHash": "sha256-MNHL/fqo/Q7XqMD2OXNCt/HlXacoqNQ8EWdEJnl3xCo=",
+        "path": "/home/riro/Src/limes-project/limes",
+        "type": "path"
       },
       "original": {
-        "type": "git",
-        "url": "file:///home/riro/Src/limes-project/limes"
+        "path": "/home/riro/Src/limes-project/limes",
+        "type": "path"
       }
     },
     "llm-agents": {
@@ -2607,11 +2602,11 @@
     },
     "nixpkgs-master": {
       "locked": {
-        "lastModified": 1786359146,
-        "narHash": "sha256-oTbvwxjmZPtCVbPPX+9jBvrE12cr++g/iuJ724sRcu8=",
+        "lastModified": 1792499622,
+        "narHash": "sha256-F/jCD6cmP+azrDUWN55CvUZhVlGkMwznLtVrjoR2fRM=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "d42f02e55e311d6d34aad6c522286bf3db3a186c",
+        "rev": "31374945f43dcffafd9f09b3ea04971391f2678a",
         "type": "github"
       },
       "original": {
@@ -3448,16 +3443,14 @@
         "nixpkgs": "nixpkgs_29"
       },
       "locked": {
-        "dirtyRev": "b892f12c89534e8d9c9457e14915aae7a5ac70c8-dirty",
-        "dirtyShortRev": "b892f12-dirty",
-        "lastModified": 1770923588,
-        "narHash": "sha256-BUS0rM69qNYC6rJJc3P1h17cRqwVNlMIJYodCH9ELro=",
-        "type": "git",
-        "url": "file:///home/riro/Src/nuanmonito"
+        "lastModified": 1771565892,
+        "narHash": "sha256-V751QWipmcqmsA5JQ3HhsydQXFhJEhLCkrExKwfcmGg=",
+        "path": "/home/riro/Src/nuanmonito",
+        "type": "path"
       },
       "original": {
-        "type": "git",
-        "url": "file:///home/riro/Src/nuanmonito"
+        "path": "/home/riro/Src/nuanmonito",
+        "type": "path"
       }
     },
     "nuenv": {
@@ -3504,17 +3497,14 @@
         "nixpkgs": "nixpkgs_31"
       },
       "locked": {
-        "lastModified": 1780578238,
-        "narHash": "sha256-gMxQjIhLPdp2Jov3Ug2VePXwtH9hcPq7IHzbLXT6s4s=",
-        "ref": "refs/heads/main",
-        "rev": "9ef382ae128b903530fd0d7b5e755228ec67c550",
-        "revCount": 5,
-        "type": "git",
-        "url": "file:///home/riro/Src/monitou"
+        "lastModified": 1780578269,
+        "narHash": "sha256-p/LprKkWUkdkNen2SQOIQ7q2ru7HrhGj7iYRdkwNR5Q=",
+        "path": "/home/riro/Src/monitou",
+        "type": "path"
       },
       "original": {
-        "type": "git",
-        "url": "file:///home/riro/Src/monitou"
+        "path": "/home/riro/Src/monitou",
+        "type": "path"
       }
     },
     "pgvectors-nixpkgs": {
@@ -3839,17 +3829,14 @@
         "nixpkgs": "nixpkgs_32"
       },
       "locked": {
-        "lastModified": 1771293368,
-        "narHash": "sha256-Uimdyw1xj9Y4xK7Y40bUv/JnngvmdRI3t46Zm/hKh1Y=",
-        "ref": "refs/heads/master",
-        "rev": "542e7d55f17a16e92d392d940fdc7b76289ce3ee",
-        "revCount": 198,
-        "type": "git",
-        "url": "file:///home/riro/Src/ranet"
+        "lastModified": 1775041212,
+        "narHash": "sha256-qttbajMSghx39kGynyJQhSCCXhJCqoce9jYr3IYnkKI=",
+        "path": "/home/riro/Src/ranet",
+        "type": "path"
       },
       "original": {
-        "type": "git",
-        "url": "file:///home/riro/Src/ranet"
+        "path": "/home/riro/Src/ranet",
+        "type": "path"
       }
     },
     "ranet-discover": {
@@ -3858,14 +3845,14 @@
         "nixpkgs": "nixpkgs_33"
       },
       "locked": {
-        "lastModified": 0,
-        "narHash": "sha256-GDpNgnnXdzeL8tr6QMFejlAtMS0bgdSV+zIcwPAHpXQ=",
-        "type": "git",
-        "url": "file:///home/riro/Src/ranet-discover"
+        "lastModified": 1775129490,
+        "narHash": "sha256-ppvfx0AMd1awXrHlmt2Bo4OS35ystqENMbTsqo+5LIU=",
+        "path": "/home/riro/Src/ranet-discover",
+        "type": "path"
       },
       "original": {
-        "type": "git",
-        "url": "file:///home/riro/Src/ranet-discover"
+        "path": "/home/riro/Src/ranet-discover",
+        "type": "path"
       }
     },
     "rocksdb": {
