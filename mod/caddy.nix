@@ -157,9 +157,9 @@
             "network.target"
             "network-online.target"
             "systemd-tmpfiles-setup.service"
-            "consul.service"
+            "coredns.service"
           ];
-          wants = [ "consul.service" ];
+          wants = [ "coredns.service" ];
           requires = [ "network-online.target" ];
           reloadTriggers = [ configfile ];
         };

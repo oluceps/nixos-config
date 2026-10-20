@@ -252,15 +252,7 @@ pkgs.testers.runNixOSTest {
           address = [ "/public.test/198.51.100.1" ];
         };
       };
-      services.consul.extraConfig = {
-        server = true;
-        bootstrap_expect = 1;
-        bind_addr = "127.0.0.1";
-        advertise_addr = "127.0.0.1";
-        client_addr = "127.0.0.1";
-        domain = "mesh.nyaw.xyz";
-        dns_config.only_passing = true;
-      };
+
       realm = {
         enable = true;
         observability.enable = true;
@@ -284,7 +276,7 @@ pkgs.testers.runNixOSTest {
               port = 19443;
               target = "127.0.0.1:18443";
               hostLoopback = true;
-              consulService = "s3-https";
+              service = "s3-https";
               allowedIDs = [
                 "spiffe://nyaw.xyz/service/forgejo"
                 "spiffe://nyaw.xyz/service/ncps"

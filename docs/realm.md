@@ -1,8 +1,9 @@
 # SPIFFE workload networking
 
 The `realm` flake module is imported by `vxlan-mesh`. SPIRE Server runs on
-eihort; mesh nodes run an Agent. Consul remains discovery-only. The trust
-domain is `nyaw.xyz`, independently of the Consul DNS domain `mesh.nyaw.xyz`.
+eihort; mesh nodes run an Agent. Each node runs a local CoreDNS discovery
+listener. The trust domain is `nyaw.xyz`, independently of the discovery
+DNS domain `mesh.nyaw.xyz`.
 
 ## Workload declarations
 
@@ -31,7 +32,7 @@ realm.workloads.example = {
     port = 18080;
     target = "127.0.0.1:8080";
     privateLoopback = true;
-    consulService = "example";
+    service = "example";
     allowedIDs = [ "spiffe://nyaw.xyz/service/caddy" ];
   };
 };
@@ -63,11 +64,11 @@ egress does not grant access at the receiver. ghostunnel enforces connection
 authorization; database roles and HTTP operation/tenant authorization remain
 application responsibilities.
 
-## SRV discovery and readiness
+## SRV discovery
 
 Each discovered egress connects ghostunnel's TLS output to
 `/run/realm-discovery/<workload>/<route>.sock`. The Caddy `srv_proxy` handler
-resolves `<service>.service.mesh.nyaw.xyz` through the local Consul DNS
+resolves `<service>.svc.mesh.nyaw.xyz` through the local CoreDNS
 listener on 127.0.0.1:8600. It reads SRV priority, weight, port and target,
 then resolves that target's AAAA/A records through the same resolver. Lower
 priorities are tried first; same-priority positive weights are selected
@@ -102,12 +103,29 @@ Established connections remain on their selected endpoint; new connections
 observe discovery changes. Reloading the Caddy configuration closes streams
 owned by old handlers. ghostunnel accepts subsequent connections normally.
 
-Only ingress addresses and ports are registered. Native TLS listeners can
-also be registered once the application enforces the equivalent identity
-policy. Proxies use systemd readiness notifications, so `is-active` does not
-report a proxy ready while it is still waiting for its initial SVID. Consul
-also checks the backend application unit. Services needing stronger readiness
-should supply an application-specific startup/readiness check.
+Only ingress addresses and ports are published. `mod/mesh-dns.nix` collects
+`realm.serviceDiscovery.publish` from all enabled cluster configurations.
+Node AAAA records come from `registry.toml` through `config.data.node`. Each
+node receives a complete immutable zone with `<host>.node`, `<service>.svc`
+AAAA records and SRV records targeting per-host ingress names. Multiple
+instances of a service produce multiple SRV records with their own ports.
+`ingress.<name>.service` names the published service; egresses keep their
+existing `service` and `verifyID` declarations. Native TLS listeners are
+published in the same way.
+
+CoreDNS serves only `mesh.nyaw.xyz` on loopback UDP/TCP 8600. systemd-resolved
+delegates this suffix to it; no runtime registration, gossip or quorum is
+required. Zone changes take effect when the updated NixOS configuration is
+deployed to each client node. Records have a five-second TTL; the Caddy SRV
+cache remains independent. The zone is immutable and CoreDNS restarts with
+a new Corefile when its store path changes, so no runtime SOA serial update
+is needed. `/etc/coredns/mesh.zone` exposes the generated file for inspection.
+
+Publication is independent of process health: stopped services stay in DNS.
+No probes or automatic health-based record removal are included. Failed TCP
+connections try other published candidates; a successful TCP connection
+followed by a TLS failure does not trigger SRV fallback or request replay.
+Proxies still use systemd readiness notifications while obtaining SVIDs.
 
 Certificates have a one-hour lifetime and ghostunnel connections have a
 one-hour maximum lifetime. Certificate expiry or removal of a SPIRE entry
@@ -155,8 +173,8 @@ are migrated; its SeaweedFS egress is already authenticated. These exceptions
 use `isolation.privateNetwork = false` explicitly; Envoy and vmagent also use
 `runtime = "external"`.
 Services without migration profiles and VM guests keep their previous isolation.
-BIRD, Yggdrasil, VXLAN, DNS and Consul keep their current network
-configuration.
+BIRD, Yggdrasil and VXLAN keep their current network configuration.
+The existing recursive DNS module is separate from mesh discovery.
 
 Public entrypoints (abhoth, nodens and azasos) import
 `mod/caddy/public.nix`. Shared HTTP routes use Caddy's authenticated Unix
@@ -234,9 +252,9 @@ interception. Downstream RBAC checks the resolved IP and port, and upstream
 RBAC rechecks the selected address before connecting. Both use default-deny
 rules permitting public HTTP on ports 80/443 and CONNECT only on port 443.
 Private, loopback, link-local, IPv4-mapped IPv6 and Yggdrasil destinations are
-denied, including names resolving into those ranges. Consul checks the Envoy
-unit and TCP listener; the listener becomes active after its SDS credentials
-arrive. Misskey's public proxy bypasses are removed. Its only bypass
+denied, including names resolving into those ranges. The Envoy listener
+becomes active after its SDS credentials arrive; DNS publication does not
+wait for this readiness. Misskey's public proxy bypasses are removed. Its only bypass
 is s3.nyaw.xyz, mapped inside the container to the dedicated local adapter
 through Caddy, instead of the public Internet gateway.
 
@@ -285,7 +303,7 @@ and frontend addresses are explicitly loopback, avoiding host interface discover
 An application implementing SPIFFE TLS itself can declare
 `ingress.<name>.native = true`, omitting the proxy `target`. The module binds
 the workload's SPIRE registration to its application unit and Unix user,
-grants access to the Agent socket, and registers its ingress with Consul.
+grants access to the Agent socket, and publishes its ingress in the generated DNS zone.
 The application must configure its own listener, consume SDS updates and
 enforce the declared `allowedIDs`; the Envoy gateway reads those declarations
 directly. Native ingress currently requires a host-networked application.
@@ -388,7 +406,7 @@ layout or behavior. ARTEX and Magpie are outside this migration.
 Each exporter declares its endpoint next to its service via
 `realm.observability.endpoints`. Envoy publishes one mTLS observation ingress
 per host, with a host-specific SPIFFE identity and a vmagent caller allowlist.
-Consul advertises that ingress. Vmagent uses protected Unix egress sockets,
+CoreDNS advertises that ingress. Vmagent uses protected Unix egress sockets,
 validates the expected host identity, and requests only `/NAME/metrics` or the
 explicitly configured `/NAME/probe` routes. Business and debug paths, metrics
 query parameters, and non-GET methods are rejected. Blackbox probe module and

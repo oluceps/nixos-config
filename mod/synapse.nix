@@ -46,7 +46,7 @@
               port = 18196;
               target = "127.0.0.1:8196";
               privateLoopback = true;
-              consulService = "synapse";
+              service = "synapse";
               allowedIDs = [
                 "spiffe://nyaw.xyz/service/caddy"
                 "spiffe://nyaw.xyz/service/mautrix-telegram"
@@ -56,7 +56,7 @@
               port = 19031;
               target = "127.0.0.1:9031";
               privateLoopback = true;
-              consulService = "synapse-metrics";
+              service = "synapse-metrics";
               allowedIDs = [ "spiffe://nyaw.xyz/service/observability-${config.networking.hostName}" ];
             };
           };

@@ -201,10 +201,10 @@ in
                 default = [ ];
                 description = "SPIFFE IDs permitted to use businessProxyPort.";
               };
-              businessConsulService = lib.mkOption {
+              businessService = lib.mkOption {
                 type = lib.types.str;
                 default = "${name}-${config.networking.hostName}";
-                description = "Consul service name that advertises businessProxyPort for SRV discovery.";
+                description = "DNS service name that advertises businessProxyPort for SRV discovery.";
               };
             };
           }
@@ -391,37 +391,16 @@ in
       ingress.metrics = {
         native = true;
         port = cfg.port;
-        consulService = "observability-${config.networking.hostName}";
+        service = "observability-${config.networking.hostName}";
         allowedIDs = cfg.allowedIDs;
       };
     };
-    realm.serviceDiscovery.publish =
-      lib.mapAttrs' (
-        name: e:
-        lib.nameValuePair e.businessConsulService {
-          unit = "envoy.service";
-          port = e.businessProxyPort;
-          checks = [
-            {
-              id = "${config.networking.hostName}-${e.businessConsulService}-listener";
-              name = "Authenticated ${name} API listener is ready";
-              tcp = "[${config.realm.address}]:${toString e.businessProxyPort}";
-              interval = "10s";
-              timeout = "2s";
-            }
-          ];
-        }
-      ) (lib.filterAttrs (_: e: e.businessProxyPort != null) endpoints)
-      // {
-        "observability-${config.networking.hostName}".checks = [
-          {
-            id = "${config.networking.hostName}-observability-listener";
-            name = "Observability TLS listener is ready";
-            tcp = "[${config.realm.address}]:${toString cfg.port}";
-            interval = "10s";
-            timeout = "2s";
-          }
-        ];
-      };
+    realm.serviceDiscovery.publish = lib.mapAttrs' (
+      name: e:
+      lib.nameValuePair e.businessService {
+        unit = "envoy.service";
+        port = e.businessProxyPort;
+      }
+    ) (lib.filterAttrs (_: e: e.businessProxyPort != null) endpoints);
   };
 }

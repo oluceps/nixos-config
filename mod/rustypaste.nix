@@ -4,7 +4,7 @@
       port = 13999;
       target = "127.0.0.1:3999";
       privateLoopback = true;
-      consulService = "rustypaste";
+      service = "rustypaste";
       allowedIDs = [ "spiffe://nyaw.xyz/service/caddy" ];
     };
     services.rustypaste = {

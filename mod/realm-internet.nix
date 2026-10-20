@@ -300,7 +300,7 @@
         ingress.http = {
           native = true;
           port = 19328;
-          consulService = "internet-proxy";
+          service = "internet-proxy";
           allowedIDs = [
             "spiffe://nyaw.xyz/service/misskey"
             "spiffe://nyaw.xyz/service/grafana"
@@ -318,15 +318,5 @@
           ];
         };
       };
-      # The listener starts accepting only after its SDS certificate and bundle arrive.
-      realm.serviceDiscovery.publish.internet-proxy.checks = [
-        {
-          id = "${config.networking.hostName}-internet-proxy-listener";
-          name = "Envoy mTLS listener is accepting connections";
-          tcp = "[${config.realm.address}]:${toString ingress.port}";
-          interval = "10s";
-          timeout = "2s";
-        }
-      ];
     };
 }

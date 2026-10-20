@@ -71,14 +71,14 @@
           port = 19444;
           target = "127.0.0.1:443";
           hostLoopback = true;
-          consulService = "internal-https";
+          service = "internal-https";
           allowedIDs = [ "spiffe://nyaw.xyz/service/caddy" ];
         };
         ingress.https = {
           port = 19443;
           target = "127.0.0.1:443";
           hostLoopback = true;
-          consulService = "s3-https";
+          service = "s3-https";
           allowedIDs = [
             "spiffe://nyaw.xyz/service/forgejo"
             "spiffe://nyaw.xyz/service/ncps"

@@ -104,15 +104,7 @@ pkgs.testers.runNixOSTest {
           huge_pages = lib.mkForce "off";
         };
       };
-      services.consul.extraConfig = {
-        server = true;
-        bootstrap_expect = 1;
-        bind_addr = "127.0.0.1";
-        advertise_addr = "127.0.0.1";
-        client_addr = "127.0.0.1";
-        domain = "mesh.nyaw.xyz";
-        dns_config.only_passing = true;
-      };
+
       realm = {
         enable = true;
         serviceDiscovery = {

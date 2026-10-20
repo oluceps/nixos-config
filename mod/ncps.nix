@@ -30,14 +30,14 @@
             port = 18501;
             target = "127.0.0.1:8501";
             privateLoopback = true;
-            consulService = "ncps";
+            service = "ncps";
             allowedIDs = [ "spiffe://nyaw.xyz/service/nix-cache" ];
           };
           metrics = {
             port = 19501;
             target = "127.0.0.1:8501";
             privateLoopback = true;
-            consulService = "ncps-metrics";
+            service = "ncps-metrics";
             allowedIDs = [ "spiffe://nyaw.xyz/service/observability-${config.networking.hostName}" ];
           };
         };

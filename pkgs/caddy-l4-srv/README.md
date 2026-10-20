@@ -58,7 +58,7 @@ systemd 挂载限制保证。
 同样支持 caddy-l4 的 Caddyfile handler 语法：
 
 ```caddyfile
-srv_proxy loki.service.mesh.nyaw.xyz {
+srv_proxy loki.svc.mesh.nyaw.xyz {
     resolver 127.0.0.1:8600
     refresh 5s
     dial_timeout 5s
@@ -84,7 +84,7 @@ srv_proxy loki.service.mesh.nyaw.xyz {
   插件不会重放数据或在不同 ingress 之间扇出流量。
 - SRV 变化只影响后续连接，已建立连接继续转发。Caddy 配置卸载/重载会取消旧 handler
   并关闭其连接，因此建议将发现进程与经常修改的 HTTP Caddy 配置分开。
-- 仅支持 TCP 和 Unix stream，不支持 UDP；不做主动健康检查，使用 Consul 的服务健康结果。
+- 仅支持 TCP 和 Unix stream，不支持 UDP；不做主动健康检查，使用 DNS 发布的候选入口；当前 zonefile 不按健康状态摘除入口。
 - 对端身份仍由 ghostunnel 验证。DNS 决定连接地址，不能代替 SPIFFE 身份授权。
 
 插件源代码沿用仓库根目录的 MIT 许可证。

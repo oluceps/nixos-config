@@ -35,7 +35,7 @@ let
                   port = 19429;
                   target = "127.0.0.1:3030";
                   privateLoopback = true;
-                  consulService = "receiver";
+                  service = "receiver";
                   allowedIDs = [ "spiffe://nyaw.xyz/service/sender" ];
                 };
               };
@@ -152,7 +152,7 @@ lib.runTests {
           handle = [
             {
               handler = "srv_proxy";
-              name = "receiver.service.mesh.nyaw.xyz";
+              name = "receiver.svc.mesh.nyaw.xyz";
               resolver = "127.0.0.1:8600";
               refresh = "5s";
               dial_timeout = "5s";

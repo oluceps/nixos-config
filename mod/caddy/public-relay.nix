@@ -9,7 +9,7 @@
         ingress.public-relay = {
           port = 19445;
           target = "unix:/run/realm/caddy/public/http.sock";
-          consulService = "public-http";
+          service = "public-http";
           allowedIDs = [ "spiffe://nyaw.xyz/service/caddy" ];
         };
       };

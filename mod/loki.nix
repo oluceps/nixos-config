@@ -31,7 +31,7 @@
           port = 19429;
           target = "127.0.0.1:3030";
           privateLoopback = true;
-          consulService = "loki";
+          service = "loki";
           allowedIDs = [
             "spiffe://nyaw.xyz/service/alloy"
             "spiffe://nyaw.xyz/service/grafana"

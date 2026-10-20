@@ -24,7 +24,7 @@
           port = 16462;
           target = "127.0.0.1:36462";
           privateLoopback = true;
-          consulService = "forgejo";
+          service = "forgejo";
           allowedIDs = [ "spiffe://nyaw.xyz/service/caddy" ];
         };
         egress = {

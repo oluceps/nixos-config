@@ -12,7 +12,7 @@
           port = 18888;
           target = "127.0.0.1:8888";
           privateLoopback = true;
-          consulService = "atuin";
+          service = "atuin";
           allowedIDs = [ "spiffe://nyaw.xyz/service/caddy" ];
         };
       };

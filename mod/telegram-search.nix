@@ -79,7 +79,7 @@
         ingress.http = {
           port = 13336;
           target = "unix:/run/realm-telegram-search/backend/http.sock";
-          consulService = "telegram-search";
+          service = "telegram-search";
           allowedIDs = [ "spiffe://nyaw.xyz/service/caddy" ];
         };
         egress = {

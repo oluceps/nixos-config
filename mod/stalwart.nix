@@ -25,7 +25,7 @@
           port = 14650;
           target = "127.0.0.1:465";
           hostLoopback = true;
-          consulService = "smtp-submission";
+          service = "smtp-submission";
           allowedIDs = [
             "spiffe://nyaw.xyz/service/forgejo"
             "spiffe://nyaw.xyz/service/vaultwarden"
@@ -40,7 +40,7 @@
         path = "/metrics/prometheus";
         businessProxyPort = 19313;
         businessAllowedIDs = [ "spiffe://nyaw.xyz/service/caddy" ];
-        businessConsulService = "stalwart-web";
+        businessService = "stalwart-web";
       };
     };
 }

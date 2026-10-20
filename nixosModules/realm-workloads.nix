@@ -29,7 +29,7 @@ let
             handle = [
               {
                 handler = "srv_proxy";
-                name = "${e.service}.service.${cfg.discovery.domain}";
+                name = "${e.service}.svc.${cfg.discovery.domain}";
                 resolver = "${resolverHost}:${toString cfg.discovery.port}";
                 refresh = cfg.discovery.refresh;
                 dial_timeout = cfg.discovery.dialTimeout;
@@ -89,7 +89,7 @@ let
         default = false;
         description = "The application terminates SPIFFE mTLS and enforces allowedIDs itself, using the Agent SDS API.";
       };
-      consulService = mkOption { type = types.str; };
+      service = mkOption { type = types.str; };
       allowedIDs = mkOption {
         type = types.listOf types.str;
         default = [ ];
@@ -425,23 +425,9 @@ let
                 "unix:user:${ingressUser}"
               ];
             };
-            realm.serviceDiscovery.publish.${i.consulService} = {
+            realm.serviceDiscovery.publish.${i.service} = {
               unit = if i.native then w.unit else "${unit}.service";
               port = i.port;
-              checks = lib.optionals (!i.native) [
-                {
-                  id = "${config.networking.hostName}-${i.consulService}-backend";
-                  name = "${w.unit} is active";
-                  args = [
-                    "${config.systemd.package}/bin/systemctl"
-                    "is-active"
-                    "--quiet"
-                    w.unit
-                  ];
-                  interval = "10s";
-                  timeout = "2s";
-                }
-              ];
             };
             systemd.sockets.${unit} = mkIf (!i.native) {
               wantedBy = [ "sockets.target" ];
@@ -719,7 +705,7 @@ in
       };
       domain = mkOption {
         type = types.str;
-        default = "mesh.nyaw.xyz";
+        default = config.realm.serviceDiscovery.domain;
       };
       resolver = mkOption {
         type = types.str;
@@ -727,7 +713,7 @@ in
       };
       port = mkOption {
         type = types.port;
-        default = 8600;
+        default = config.realm.serviceDiscovery.port;
       };
       refresh = mkOption {
         type = types.str;
@@ -854,9 +840,9 @@ in
         realm-discovery = mkIf (hasDiscovery && !cfg.discovery.integrateCaddy) {
           description = "Realm SRV discovery and TLS stream forwarding";
           wantedBy = [ "multi-user.target" ];
-          wants = [ "consul.service" ];
+          wants = [ "coredns.service" ];
           after = [
-            "consul.service"
+            "coredns.service"
             "systemd-tmpfiles-setup.service"
           ];
           serviceConfig = hardened // {
@@ -887,7 +873,7 @@ in
       [
         {
           assertion = config.realm.serviceDiscovery.enable;
-          message = "realm: Consul service discovery must be enabled.";
+          message = "realm: CoreDNS service discovery must be enabled.";
         }
         {
           assertion = !cfg.discovery.integrateCaddy || (config.systemd.services.caddy.enable or false);

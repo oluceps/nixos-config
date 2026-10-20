@@ -46,7 +46,7 @@
             port = 18333;
             target = "127.0.0.1:8333";
             privateLoopback = true;
-            consulService = "seaweedfs-s3";
+            service = "seaweedfs-s3";
             allowedIDs = [
               "spiffe://nyaw.xyz/service/loki"
               "spiffe://nyaw.xyz/service/caddy"
@@ -58,14 +58,14 @@
             port = 19333;
             target = "127.0.0.1:9333";
             privateLoopback = true;
-            consulService = "seaweedfs-master";
+            service = "seaweedfs-master";
             allowedIDs = [ "spiffe://nyaw.xyz/service/caddy" ];
           };
           metrics = {
             port = 19768;
             target = "127.0.0.1:9768";
             privateLoopback = true;
-            consulService = "seaweedfs-metrics";
+            service = "seaweedfs-metrics";
             allowedIDs = [ "spiffe://nyaw.xyz/service/observability-${config.networking.hostName}" ];
           };
         };
