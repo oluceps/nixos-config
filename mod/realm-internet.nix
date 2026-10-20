@@ -313,6 +313,8 @@
             "spiffe://nyaw.xyz/service/calibre"
             "spiffe://nyaw.xyz/service/mautrix-telegram"
             "spiffe://nyaw.xyz/service/telegram-search"
+            "spiffe://nyaw.xyz/service/ntfy"
+            "spiffe://nyaw.xyz/service/subs"
           ];
         };
       };

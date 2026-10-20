@@ -1,27 +1,12 @@
-{ self, inputs, ... }:
+{ self, ... }:
 {
   flake.modules.nixos."bird/abhoth" =
     { lib, config, ... }:
     {
       imports = [
         self.modules.nixos.bird
-        inputs.autopeer.nixosModules.default
+        self.modules.nixos.autopeer
       ];
-      realm.workloads.autopeer = {
-        isolation = {
-          privateNetwork = false;
-          runtimePaths = [ config.services.autopeer.birdConfDir ];
-          allowUnixSockets = [
-            "-/run/bird"
-            "-/run/systemd/resolve"
-          ];
-        };
-        egress.postgresql = {
-          service = "postgresql-autopeer";
-          verifyID = "spiffe://nyaw.xyz/service/postgresql";
-          socket = "/run/realm/autopeer/egress/.s.PGSQL.5432";
-        };
-      };
       services.autopeer = {
         enable = true;
         localAsn = 4242420291;

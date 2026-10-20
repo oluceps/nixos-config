@@ -50,6 +50,28 @@ let
     name = "envoy.filters.http.router";
     typed_config."@type" = "type.googleapis.com/envoy.extensions.filters.http.router.v3.Router";
   };
+  businessRoutes = e: [
+    {
+      match.path = "/metrics";
+      direct_response.status = 403;
+    }
+    {
+      match.prefix = "/metrics/";
+      direct_response.status = 403;
+    }
+    {
+      match.path = e.path;
+      direct_response.status = 403;
+    }
+    {
+      match.prefix = e.path + "/";
+      direct_response.status = 403;
+    }
+    {
+      match.prefix = "/debug";
+      direct_response.status = 403;
+    }
+  ];
   downstreamTls = allowedIDs: {
     name = "envoy.transport_sockets.tls";
     typed_config = {
@@ -172,7 +194,7 @@ in
               businessProxyPort = lib.mkOption {
                 type = lib.types.nullOr lib.types.port;
                 default = null;
-                description = "Additional mTLS listener that forwards the complete API of this backend to an explicit caller allowlist.";
+                description = "Additional mTLS business API listener with an explicit caller allowlist, excluding metrics and debug paths.";
               };
               businessAllowedIDs = lib.mkOption {
                 type = lib.types.listOf lib.types.str;
@@ -265,8 +287,9 @@ in
               {
                 transport_socket = downstreamTls e.businessAllowedIDs;
                 filters = [
-                  (hcm
-                    [
+                  (hcm (
+                    businessRoutes e
+                    ++ [
                       {
                         match.prefix = "/";
                         route = {
@@ -275,8 +298,7 @@ in
                         };
                       }
                     ]
-                    [ ]
-                  )
+                  ) [ ])
                 ];
               }
             ];
@@ -291,20 +313,7 @@ in
               {
                 filters = [
                   (hcm (
-                    [
-                      {
-                        match.path = e.path;
-                        direct_response.status = 403;
-                      }
-                      {
-                        match.prefix = e.path + "/";
-                        direct_response.status = 403;
-                      }
-                      {
-                        match.prefix = "/debug";
-                        direct_response.status = 403;
-                      }
-                    ]
+                    businessRoutes e
                     ++ [
                       {
                         match.prefix = "/";

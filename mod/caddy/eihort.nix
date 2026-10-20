@@ -7,7 +7,10 @@
       ...
     }:
     {
-      imports = [ self.modules.nixos.caddy ];
+      imports = [
+        self.modules.nixos.caddy-public
+        self.modules.nixos.caddy-public-relay
+      ];
 
       realm.workloads.caddy = {
         egress = {
@@ -63,6 +66,13 @@
             service = "immich-public-proxy";
             verifyID = "spiffe://nyaw.xyz/service/immich-public-proxy";
           };
+        };
+        ingress.public-edge = {
+          port = 19444;
+          target = "127.0.0.1:443";
+          hostLoopback = true;
+          consulService = "internal-https";
+          allowedIDs = [ "spiffe://nyaw.xyz/service/caddy" ];
         };
         ingress.https = {
           port = 19443;
@@ -171,6 +181,16 @@
                           }
                         ];
                         match = [ { host = [ "tgs.nyaw.xyz" ]; } ];
+                        terminal = true;
+                      }
+                      {
+                        handle = [
+                          {
+                            handler = "reverse_proxy";
+                            upstreams = [ { dial = "[fdcc::1]:3010"; } ];
+                          }
+                        ];
+                        match = [ { host = [ "heartrate.nyaw.xyz" ]; } ];
                         terminal = true;
                       }
                       {

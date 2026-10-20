@@ -1,12 +1,60 @@
 {
   flake.modules.nixos.ntfy =
-    { config, ... }:
+    { config, lib, ... }:
     {
-      realm.observability.endpoints.ntfy.port = 9099;
+      realm.workloads.ntfy = {
+        unit = "ntfy-sh.service";
+        user = "ntfy-sh";
+        group = "ntfy-sh";
+        isolation.runtimePaths = [ "/run/ntfy-sh" ];
+        ingress = {
+          http = {
+            port = 12586;
+            target = "127.0.0.1:2586";
+            privateLoopback = true;
+            consulService = "ntfy";
+            allowedIDs = [ "spiffe://nyaw.xyz/service/caddy" ];
+          };
+          metrics = {
+            port = 19099;
+            target = "127.0.0.1:9099";
+            privateLoopback = true;
+            consulService = "ntfy-metrics";
+            allowedIDs = [ "spiffe://nyaw.xyz/service/observability-${config.networking.hostName}" ];
+          };
+        };
+        egress.internet = {
+          service = "internet-proxy";
+          verifyID = "spiffe://nyaw.xyz/service/internet";
+          localPort = 13128;
+        };
+      };
+      realm.workloads.caddy = lib.mkIf (config ? caddy) {
+        egress.ntfy = {
+          service = "ntfy";
+          verifyID = "spiffe://nyaw.xyz/service/ntfy";
+        };
+      };
+      realm.workloads.observability.egress.ntfy = {
+        service = "ntfy-metrics";
+        verifyID = "spiffe://nyaw.xyz/service/ntfy";
+      };
+      realm.observability.endpoints.ntfy.socket = "/run/realm/observability/egress/ntfy.sock";
+      systemd.services.ntfy-sh = {
+        environment = {
+          HTTP_PROXY = "http://127.0.0.1:13128";
+          HTTPS_PROXY = "http://127.0.0.1:13128";
+          NO_PROXY = "localhost,127.0.0.1,::1";
+        };
+        serviceConfig = {
+          AmbientCapabilities = lib.mkForce [ ];
+          CapabilityBoundingSet = lib.mkForce [ ];
+        };
+      };
       services.ntfy-sh = {
         enable = true;
         settings = {
-          listen-http = ":2586";
+          listen-http = "127.0.0.1:2586";
           behind-proxy = true;
           auth-default-access = "deny-all";
           base-url = "http://ntfy.nyaw.xyz";
