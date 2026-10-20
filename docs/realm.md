@@ -404,7 +404,7 @@ is migrated once to the rootless service account. The existing upstream
 layout or behavior. ARTEX and Magpie are outside this migration.
 
 Each exporter declares its endpoint next to its service via
-`realm.observability.endpoints`. Envoy publishes one mTLS observation ingress
+`realm.observability.endpoints`. Caddy publishes one mTLS observation ingress
 per host, with a host-specific SPIFFE identity and a vmagent caller allowlist.
 CoreDNS advertises that ingress. Vmagent uses protected Unix egress sockets,
 validates the expected host identity, and requests only `/NAME/metrics` or the
@@ -413,12 +413,29 @@ query parameters, and non-GET methods are rejected. Blackbox probe module and
 target pairs are enumerated from the configured jobs; extra and duplicate
 parameters are rejected. Redirects are disabled for HTTP probes.
 
+The gateway runs on `caddy-realm`, whose `tls.get_certificate.spiffe` module
+serves the workload SVID from the Workload API on every handshake, so SVID
+rotation needs no reload and no key ever reaches disk. Client certificates are
+verified against the SPIRE trust bundle (`tls.ca_pool.source.spiffe`), and the
+URI SAN is then matched against `allowedIDs` with an anchored regular
+expression: the SAN placeholder yields a URL value, which the expression
+matcher cannot convert. The trust bundle is built once per configuration, so CA
+rotation requires a reload. Public paths are only the gateway's names for an
+exporter path; a URI rewrite restores the exporter's own `/metrics` or `/probe`
+before proxying and keeps the probe query string intact.
+
+The observation gateway keeps its own process, `realm-observability.service`,
+rather than merging into the public Caddy instance. One process holds one SPIFFE
+identity, and this identity is authorized for observations only: sharing the
+public gateway's identity would let a compromise of one role impersonate the
+other, and would require the Agent to serve two SVIDs to the same unit.
+
 Exporter listeners bind loopback where supported. An input firewall rule
 additionally blocks external access to backend metric ports. NCPS runs in a
 private namespace; its cache ingress accepts only the Nix cache client identity.
 Its metrics use a separate observation-only ingress. The previous plaintext
 port 8501 is no longer exposed. VictoriaMetrics keeps
-a filtered Envoy listener for its existing query/write port;
+a filtered mTLS listener for its existing query/write port;
 those business APIs retain their previous mesh access policy. It also publishes
 an authenticated API listener. That listener rejects metrics/debug paths,
 preserves other business paths and methods, and admits only the identities in

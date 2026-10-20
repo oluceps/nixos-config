@@ -1,33 +1,3 @@
-# SPIFFE authenticated observation gateway (realm.observability).
-#
-# Exporters bind loopback and are not meant to be reachable from the mesh. This
-# module therefore puts one Envoy listener on the node's mesh address that
-# obtains its own SVID from the local SPIRE Agent over SDS, requires a client
-# certificate whose URI SAN is listed in allowedIDs (vmagent by default) and
-# then forwards only the paths derived from the declared endpoints:
-#
-#   vmagent -> ghostunnel egress (mTLS) -> observability_<host>:19490
-#            -> /<endpoint>/metrics -> 127.0.0.1:<exporter port>
-#
-# A Lua filter matches the normalized path against the allowlist, so a caller
-# cannot select another backend, add query parameters or use another method.
-#
-# Two optional listeners reuse the same upstreams:
-#   businessProxyPort  extra mTLS business API listener; forwards everything
-#                      except metrics/debug paths, allowlist in
-#                      businessAllowedIDs.
-#   publicProxyPort    keeps an existing public port while denying the same
-#                      paths there.
-#
-# Declare an endpoint next to its exporter:
-#
-#   realm.observability.endpoints.garage.port = 3903;
-#
-#   realm.observability.endpoints.blackbox = {
-#     kind = "probe";
-#     port = 9115;
-#     probes = [ { module = "http_2xx"; target = "https://example.org"; } ];
-#   };
 {
   config,
   lib,
@@ -36,99 +6,183 @@
 }:
 let
   cfg = config.realm.observability;
+  hostName = config.networking.hostName;
   endpoints = lib.filterAttrs (_: e: e.enable) cfg.endpoints;
+  workload = config.realm.workloads.observability;
+  # One identity per process: the observation gateway keeps its own SVID so a
+  # compromise of the public gateway cannot impersonate it.
+  spiffeID = "spiffe://${config.realm.trustDomain}/service/observability-${hostName}";
+  # Stand-in TLS server name. Callers reach the mesh address directly and send
+  # no SNI, so the connection policy supplies this name and the SPIFFE
+  # certificate manager answers with the workload SVID.
+  certSubject = "observability-${hostName}";
   # Public path per endpoint. Probe endpoints additionally require the exact
   # module/target pair, so only enumerated checks can be run.
   publicPath = name: e: "/${name}/${if e.kind == "probe" then "probe" else "metrics"}";
-  # SDS keeps the SVID and trust bundle fresh without restarting Envoy.
-  sds = name: {
-    inherit name;
-    sds_config = {
-      resource_api_version = "V3";
-      api_config_source = {
-        api_type = "GRPC";
-        transport_api_version = "V3";
-        grpc_services = [ { envoy_grpc.cluster_name = "observe_spire"; } ];
-      };
-    };
+  spiffeCA = {
+    provider = "spiffe";
+    socket_path = config.realm.spire.socket;
   };
-  # Generated allowlist: public path -> true (metrics) or
-  # {module -> {target -> true}} (probe).
-  luaRules = lib.concatStringsSep "\n" (
-    lib.mapAttrsToList (
-      name: e:
-      let
-        modules = lib.unique (map (p: p.module) e.probes);
-        probes = lib.concatMapStringsSep "," (
-          module:
-          "[${builtins.toJSON module}] = {"
-          + lib.concatMapStringsSep "," (p: "[${builtins.toJSON p.target}] = true") (
-            builtins.filter (p: p.module == module) e.probes
-          )
-          + "}"
-        ) modules;
-      in
-      "[${builtins.toJSON (publicPath name e)}] = ${
-        if e.kind == "metrics" then "true" else "{${probes}}"
-      },"
-    ) endpoints
-  );
-  httpFilter = {
-    name = "envoy.filters.http.lua";
-    typed_config = {
-      "@type" = "type.googleapis.com/envoy.extensions.filters.http.lua.v3.Lua";
-      default_source_code.inline_string =
-        "local allowed_paths = {\n${luaRules}\n}\n" + builtins.readFile ./realm/metrics-filter.lua;
-    };
+  denied = {
+    handler = "static_response";
+    status_code = 403;
   };
-  router = {
-    name = "envoy.filters.http.router";
-    typed_config."@type" = "type.googleapis.com/envoy.extensions.filters.http.router.v3.Router";
+  # Callers authenticate with an SVID from the SPIRE trust bundle; the exact URI
+  # SAN is then compared against the configured allowlist. Matching the ID rather
+  # than the issuing CA keeps every other workload out.
+  #
+  # The SAN placeholder yields an URL value, which the expression matcher cannot
+  # convert, so the regular-expression matcher is used: it stringifies the value
+  # and anchors the pattern to the complete ID.
+  authorized =
+    ids:
+    map (id: {
+      vars_regexp."{http.request.tls.client.san.uris.0}".pattern = "^${lib.escapeRegex id}$";
+    }) ids;
+  # Upstream exporters expect their loopback name, not the mesh host name.
+  proxy = e: {
+    handler = "reverse_proxy";
+    upstreams = [
+      (
+        if e.socket != null then
+          { dial = "unix/${e.socket}"; }
+        else
+          { dial = "${e.address}:${toString e.port}"; }
+      )
+    ];
+    headers.request.set.Host = [ "localhost" ];
+  };
+  # The endpoint path is the whole policy: a metrics endpoint accepts no query
+  # at all, and a probe endpoint accepts exactly one enumerated module/target
+  # pair, in either order and with no further parameters. The parameter count
+  # is checked on the raw query, because the query matcher ignores parameters
+  # it was not told about and resolves repeated keys leniently.
+  exactlyTwoParameters = {
+    expression = "{http.request.uri.query}.matches(\"^[^&=]+=[^&]*&[^&=]+=[^&]*$\")";
+  };
+  endpointRoutes =
+    name: e:
+    (
+      if e.kind == "metrics" then
+        [
+          {
+            match = [
+              {
+                path = [ (publicPath name e) ];
+                method = [ "GET" ];
+                expression = "{http.request.uri.query} == \"\"";
+              }
+            ];
+            handle = [
+              {
+                handler = "rewrite";
+                uri = e.path;
+              }
+              (proxy e)
+            ];
+          }
+        ]
+      else
+        map (p: {
+          match = [
+            (
+              {
+                path = [ (publicPath name e) ];
+                method = [ "GET" ];
+                query = {
+                  module = [ p.module ];
+                  target = [ p.target ];
+                };
+              }
+              // exactlyTwoParameters
+            )
+          ];
+          handle = [
+            {
+              handler = "rewrite";
+              uri = e.path;
+            }
+            (proxy e)
+          ];
+        }) e.probes
+    );
+  # Path normalization is part of the policy: the allowlist above matches the
+  # normalized path, so escaped or repeated slashes and dot segments must not be
+  # able to alias a protected path. Escaped slashes are a client error, as they
+  # were under the previous gateway; the rest are refused.
+  escapedSlashGuard = {
+    match = [
+      {
+        expression = "{http.request.uri}.contains(\"%2f\") || {http.request.uri}.contains(\"%2F\")";
+      }
+    ];
+    handle = [
+      {
+        handler = "static_response";
+        status_code = 400;
+      }
+    ];
+  };
+  pathGuard = {
+    match = [
+      {
+        expression = "{http.request.uri.path}.contains(\"//\") || {http.request.uri.path}.contains(\"/../\") || {http.request.uri.path}.endsWith(\"/..\")";
+      }
+    ];
+    handle = [ denied ];
+  };
+  # Anything on an mTLS listener that does not present an allowlisted identity
+  # is refused before routing.
+  identityGuard = ids: {
+    match = [ { not = authorized ids; } ];
+    handle = [ denied ];
   };
   # Paths a business or public listener must never expose, even though all
   # other traffic there is forwarded verbatim.
-  businessRoutes = e: [
+  # Path policy for listeners that forward everything else verbatim.
+  forwardedRoutes = e: [
+    escapedSlashGuard
+    pathGuard
     {
-      match.path = "/metrics";
-      direct_response.status = 403;
+      match = [
+        {
+          path = lib.unique [
+            "/metrics"
+            "/metrics/*"
+            "/debug"
+            "/debug/*"
+            e.path
+            "${e.path}/*"
+          ];
+        }
+      ];
+      handle = [ denied ];
     }
-    {
-      match.prefix = "/metrics/";
-      direct_response.status = 403;
-    }
-    {
-      match.path = e.path;
-      direct_response.status = 403;
-    }
-    {
-      match.prefix = e.path + "/";
-      direct_response.status = 403;
-    }
-    {
-      match.prefix = "/debug";
-      direct_response.status = 403;
-    }
+    { handle = [ (proxy e) ]; }
   ];
-  # mTLS for callers: TLS 1.3, client certificate required, matched by exact
-  # URI SAN instead of by CA.
-  downstreamTls = allowedIDs: {
-    name = "envoy.transport_sockets.tls";
-    typed_config = {
-      "@type" = "type.googleapis.com/envoy.extensions.transport_sockets.tls.v3.DownstreamTlsContext";
-      require_client_certificate = true;
-      common_tls_context = {
-        tls_params.tls_minimum_protocol_version = "TLSv1_3";
-        tls_certificate_sds_secret_configs = [ (sds config.realm.workloads.observability.spiffeID) ];
-        combined_validation_context = {
-          default_validation_context.match_typed_subject_alt_names = map (id: {
-            san_type = "URI";
-            matcher.exact = id;
-          }) allowedIDs;
-          validation_context_sds_secret_config = sds "spiffe://${config.realm.trustDomain}";
+  # The mTLS business listener additionally requires an allowlisted identity;
+  # the plaintext compatibility port keeps only the path policy.
+  businessRoutes = e: [ (identityGuard e.businessAllowedIDs) ] ++ forwardedRoutes e;
+  # mTLS for callers: client certificate required and verified against the
+  # SPIRE bundle, TLS 1.3 only, SVID served by the get_certificate module.
+  mtls = {
+    automatic_https.disable = true;
+    # With client authentication Caddy otherwise requires the request Host to
+    # match the TLS SNI. Callers reach this listener through a local adapter and
+    # keep their own Host, and authorization is the client identity below.
+    strict_sni_host = false;
+    tls_connection_policies = [
+      {
+        default_sni = certSubject;
+        protocol_min = "tls1.3";
+        client_authentication = {
+          mode = "require_and_verify";
+          ca = spiffeCA;
         };
-      };
-    };
+      }
+    ];
   };
+  address = "[${config.realm.address}]";
   # Exporters binding loopback are still reachable through the host's mesh
   # address, so the module blocks them at the firewall. A port that a public
   # listener already re-exposes is skipped, because that forwarding is
@@ -148,31 +202,57 @@ let
       )
     )
   );
-  # Path normalization is part of the policy: the Lua filter matches the
-  # normalized path, so escaped or repeated slashes cannot alias a protected
-  # path past the allowlist.
-  hcm = routes: filters: {
-    name = "envoy.filters.network.http_connection_manager";
-    typed_config = {
-      "@type" =
-        "type.googleapis.com/envoy.extensions.filters.network.http_connection_manager.v3.HttpConnectionManager";
-      stat_prefix = "observability";
-      normalize_path = true;
-      merge_slashes = true;
-      path_with_escaped_slashes_action = "REJECT_REQUEST";
-      max_request_headers_kb = 16;
-      stream_idle_timeout = "30s";
-      route_config = {
-        name = "observability";
-        virtual_hosts = [
-          {
-            name = "observability";
-            domains = [ "*" ];
-            inherit routes;
+  # Called by path so the gateway also evaluates without this flake's overlay.
+  caddy = pkgs.callPackage ../pkgs/by-name/caddy-realm.nix { };
+  format = pkgs.formats.json { };
+  configfile = format.generate "realm-observability.json" {
+    admin.disabled = true;
+    apps = {
+      tls.automation.policies = [
+        # No subject list on purpose: a policy only applies to a connection whose
+        # SNI it matches, and callers dial a mesh address, so the ClientHello
+        # carries no server name at all. An unfiltered policy is the only one
+        # that answers it; default_sni then names the certificate to serve.
+        {
+          get_certificate = [
+            {
+              via = "spiffe";
+              socket_path = config.realm.spire.socket;
+              spiffe_id = spiffeID;
+            }
+          ];
+        }
+      ];
+      http.servers = {
+        observation = mtls // {
+          listen = [ "${address}:${toString cfg.port}" ];
+          routes = [
+            (identityGuard cfg.allowedIDs)
+            escapedSlashGuard
+            pathGuard
+          ]
+          ++ lib.concatLists (lib.mapAttrsToList endpointRoutes endpoints)
+          ++ [ { handle = [ denied ]; } ];
+        };
+      }
+      // lib.mapAttrs' (
+        name: e:
+        lib.nameValuePair "business-${name}" (
+          mtls
+          // {
+            listen = [ "${address}:${toString e.businessProxyPort}" ];
+            routes = businessRoutes e;
           }
-        ];
-      };
-      http_filters = filters ++ [ router ];
+        )
+      ) (lib.filterAttrs (_: e: e.businessProxyPort != null) endpoints)
+      // lib.mapAttrs' (
+        name: e:
+        lib.nameValuePair "public-${name}" {
+          listen = [ "${address}:${toString e.publicProxyPort}" ];
+          automatic_https.disable = true;
+          routes = forwardedRoutes e;
+        }
+      ) (lib.filterAttrs (_: e: e.publicProxyPort != null) endpoints);
     };
   };
 in
@@ -293,168 +373,73 @@ in
         );
       message = "realm.observability.endpoints.${name}: declare one backend and an explicit probe allowlist.";
     }) endpoints;
-    services.envoy = {
-      enable = true;
-      settings = {
-        node = {
-          id = config.networking.hostName;
-          cluster = lib.mkDefault "realm-observability";
-        };
-        static_resources = {
-          listeners = [
-            # Observation listener: the only listener whose routes come from the
-            # generated allowlist.
-            {
-              name = "observability_mtls";
-              address.socket_address = {
-                address = config.realm.address;
-                port_value = cfg.port;
-              };
-              per_connection_buffer_limit_bytes = 65536;
-              filter_chains = [
-                {
-                  transport_socket = downstreamTls cfg.allowedIDs;
-                  filters = [
-                    (hcm (lib.mapAttrsToList (name: e: {
-                      match.path = publicPath name e;
-                      route = {
-                        cluster = "observe_${name}";
-                        prefix_rewrite = e.path;
-                        timeout = "20s";
-                        host_rewrite_literal = "localhost";
-                      };
-                    }) endpoints) [ httpFilter ])
-                  ];
-                }
-              ];
-            }
-          ]
-          ++ lib.mapAttrsToList (name: e: {
-            # Business listener with mTLS: everything is forwarded except the
-            # denied paths; businessAllowedIDs is the caller policy.
-            name = "observe_forward_${name}";
-            address.socket_address = {
-              address = config.realm.address;
-              port_value = e.businessProxyPort;
-            };
-            per_connection_buffer_limit_bytes = 65536;
-            filter_chains = [
-              {
-                transport_socket = downstreamTls e.businessAllowedIDs;
-                filters = [
-                  (hcm (
-                    businessRoutes e
-                    ++ [
-                      {
-                        match.prefix = "/";
-                        route = {
-                          cluster = "observe_${name}";
-                          timeout = "0s";
-                        };
-                      }
-                    ]
-                  ) [ ])
-                ];
-              }
-            ];
-          }) (lib.filterAttrs (_: e: e.businessProxyPort != null) endpoints)
-          ++ lib.mapAttrsToList (name: e: {
-            # Public port kept for compatibility: no mTLS, but the same denied
-            # paths, so metrics and debug endpoints stay private.
-            name = "observe_business_${name}";
-            address.socket_address = {
-              address = config.realm.address;
-              port_value = e.publicProxyPort;
-            };
-            filter_chains = [
-              {
-                filters = [
-                  (hcm (
-                    businessRoutes e
-                    ++ [
-                      {
-                        match.prefix = "/";
-                        route = {
-                          cluster = "observe_${name}";
-                          timeout = "0s";
-                        };
-                      }
-                    ]
-                  ) [ ])
-                ];
-              }
-            ];
-          }) (lib.filterAttrs (_: e: e.publicProxyPort != null) endpoints);
-          clusters = [
-            {
-              name = "observe_spire";
-              type = "STATIC";
-              connect_timeout = "1s";
-              typed_extension_protocol_options."envoy.extensions.upstreams.http.v3.HttpProtocolOptions" = {
-                "@type" = "type.googleapis.com/envoy.extensions.upstreams.http.v3.HttpProtocolOptions";
-                explicit_http_config.http2_protocol_options = { };
-              };
-              load_assignment = {
-                cluster_name = "observe_spire";
-                endpoints = [ { lb_endpoints = [ { endpoint.address.pipe.path = config.realm.spire.socket; } ]; } ];
-              };
-            }
-          ]
-          ++ lib.mapAttrsToList (name: e: {
-            name = "observe_${name}";
-            type = "STATIC";
-            connect_timeout = "3s";
-            load_assignment = {
-              cluster_name = "observe_${name}";
-              endpoints = [
-                {
-                  lb_endpoints = [
-                    {
-                      endpoint.address =
-                        if e.socket != null then
-                          { pipe.path = e.socket; }
-                        else
-                          {
-                            socket_address = {
-                              inherit (e) address;
-                              port_value = e.port;
-                            };
-                          };
-                    }
-                  ];
-                }
-              ];
-            };
-          }) endpoints;
-        };
+    environment.etc."realm-observability/config.json".source = configfile;
+    # Caddy replaces Envoy here because the same plugin set already ships in
+    # caddy-realm: the SVID and the trust bundle come from the Workload API, so
+    # no certificate files exist on disk and renewal needs no reload.
+    #
+    # The gateway keeps a separate process from the public Caddy instance on
+    # purpose: one process holds one SPIFFE identity, and this one is authorized
+    # only for observations.
+    systemd.services.realm-observability = {
+      wantedBy = [ "multi-user.target" ];
+      requires = [ "spire-agent.service" ];
+      after = [
+        "network.target"
+        "spire-agent.service"
+      ];
+      serviceConfig = {
+        Type = "notify";
+        User = workload.user;
+        Group = workload.group;
+        ExecStartPre = "${caddy}/bin/caddy validate --config /etc/realm-observability/config.json";
+        ExecStart = "${caddy}/bin/caddy run --config /etc/realm-observability/config.json";
+        Restart = "on-failure";
+        RestartSec = "3s";
+        StateDirectory = "realm-observability";
+        RuntimeDirectory = "realm-observability";
+        RuntimeDirectoryMode = "0700";
+        Environment = [
+          "XDG_DATA_HOME=/var/lib/realm-observability"
+          "XDG_CONFIG_HOME=/var/lib/realm-observability"
+          "HOME=/var/lib/realm-observability"
+        ];
+        ProtectSystem = "strict";
+        ProtectHome = true;
+        PrivateDevices = true;
+        PrivateTmp = true;
+        ProtectKernelTunables = true;
+        ProtectKernelModules = true;
+        ProtectKernelLogs = true;
+        ProtectControlGroups = true;
+        ProtectClock = true;
+        ProtectHostname = true;
+        ProtectProc = "invisible";
+        RestrictSUIDSGID = true;
+        RestrictRealtime = true;
+        LockPersonality = true;
+        NoNewPrivileges = true;
+        RestrictAddressFamilies = [
+          "AF_UNIX"
+          "AF_INET"
+          "AF_INET6"
+          "AF_NETLINK"
+        ];
+        UMask = "0027";
       };
     };
-    systemd.services.envoy.serviceConfig = {
-      # The workload registration attests unix:user:envoy, so the unit must not
-      # run as a DynamicUser whose name changes per start.
-      DynamicUser = lib.mkForce false;
-      User = "envoy";
-      Group = "envoy";
-      AmbientCapabilities = lib.mkForce [ ];
-      CapabilityBoundingSet = lib.mkForce [ ];
-      Restart = lib.mkForce "on-failure";
-      RestartSec = "3s";
-    };
-    # Envoy is the native SPIFFE terminator: it reads SDS directly, so no
-    # ghostunnel sits in front of it. It keeps host networking because it binds
-    # the mesh address and must reach loopback exporters. Its identity is
-    # host-specific, so one node's SVID cannot be replayed on another.
+    # Caddy is the native SPIFFE terminator: it reads the Workload API directly,
+    # so no ghostunnel sits in front of it. It keeps host networking because it
+    # binds the mesh address and must reach loopback exporters.
     realm.workloads.observability = {
-      unit = "envoy.service";
-      user = "envoy";
-      group = "envoy";
-      spiffeID = "spiffe://${config.realm.trustDomain}/service/observability-${config.networking.hostName}";
+      unit = "realm-observability.service";
       runtime = "external";
+      inherit spiffeID;
       isolation.privateNetwork = false;
       ingress.metrics = {
         native = true;
         port = cfg.port;
-        service = "observability-${config.networking.hostName}";
+        service = "observability-${hostName}";
         allowedIDs = cfg.allowedIDs;
       };
     };
@@ -463,7 +448,7 @@ in
     realm.serviceDiscovery.publish = lib.mapAttrs' (
       name: e:
       lib.nameValuePair e.businessService {
-        unit = "envoy.service";
+        unit = "realm-observability.service";
         port = e.businessProxyPort;
       }
     ) (lib.filterAttrs (_: e: e.businessProxyPort != null) endpoints);
