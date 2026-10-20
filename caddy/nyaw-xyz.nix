@@ -12,7 +12,7 @@
             handle = [
               {
                 handler = "reverse_proxy";
-                upstreams = [ { dial = "[fdcc::3]:3001"; } ];
+                upstreams = [ { dial = "unix//run/realm/caddy/egress/immich-public-proxy.sock"; } ];
               }
             ];
             match = [
@@ -37,7 +37,7 @@
               }
               {
                 handler = "reverse_proxy";
-                upstreams = [ { dial = "[fdcc::3]:2283"; } ];
+                upstreams = [ { dial = "unix//run/realm/caddy/egress/immich.sock"; } ];
               }
             ];
           }
@@ -56,7 +56,11 @@
     handle = [
       {
         handler = "reverse_proxy";
-        upstreams = [ { dial = "[fdcc::3]:8084"; } ];
+        upstreams = [ { dial = "unix//run/realm/caddy/egress/internal-https.sock"; } ];
+        transport = {
+          protocol = "http";
+          tls.server_name = "seed.nyaw.xyz";
+        };
       }
     ];
     match = [ { host = [ "seed.nyaw.xyz" ]; } ];
@@ -99,8 +103,12 @@
               {
                 handler = "reverse_proxy";
                 upstreams = [
-                  { dial = "[fdcc::1]:3010"; }
+                  { dial = "unix//run/realm/caddy/egress/internal-https.sock"; }
                 ];
+                transport = {
+                  protocol = "http";
+                  tls.server_name = "heartrate.nyaw.xyz";
+                };
               }
             ];
           }
@@ -127,7 +135,11 @@
       }
       {
         handler = "reverse_proxy";
-        upstreams = [ { dial = "[fdcc::3]:9093"; } ];
+        upstreams = [ { dial = "unix//run/realm/caddy/egress/internal-https.sock"; } ];
+        transport = {
+          protocol = "http";
+          tls.server_name = "alert.nyaw.xyz";
+        };
       }
     ];
     match = [ { host = [ "alert.nyaw.xyz" ]; } ];
@@ -137,7 +149,11 @@
     handle = [
       {
         handler = "reverse_proxy";
-        upstreams = [ { dial = "[fdcc::3]:1411"; } ];
+        upstreams = [ { dial = "unix//run/realm/caddy/egress/internal-https.sock"; } ];
+        transport = {
+          protocol = "http";
+          tls.server_name = "oidc.nyaw.xyz";
+        };
         response_buffers = 2097152;
       }
     ];
@@ -171,7 +187,7 @@
               {
                 handler = "reverse_proxy";
                 headers.request.set.X-Real-Ip = [ "{http.request.remote.host}" ];
-                upstreams = [ { dial = "[fdcc::3]:8003"; } ];
+                upstreams = [ { dial = "unix//run/realm/caddy/egress/vaultwarden.sock"; } ];
               }
             ];
           }
@@ -185,13 +201,7 @@
     handle = [
       {
         handler = "reverse_proxy";
-        upstreams = [ { dial = "[fdcc::3]:443"; } ];
-        transport = {
-          protocol = "http";
-          tls = {
-            server_name = "s3.nyaw.xyz";
-          };
-        };
+        upstreams = [ { dial = "unix//run/realm/caddy/egress/s3.sock"; } ];
       }
     ];
     match = [ { host = [ "s3.nyaw.xyz" ]; } ];
@@ -201,7 +211,7 @@
     handle = [
       {
         handler = "reverse_proxy";
-        upstreams = [ { dial = "[fdcc::3]:443"; } ];
+        upstreams = [ { dial = "unix//run/realm/caddy/egress/internal-https.sock"; } ];
         transport = {
           protocol = "http";
           tls = {
@@ -240,7 +250,7 @@
             };
           };
         };
-        upstreams = [ { dial = "[fdcc::3]:8083"; } ];
+        upstreams = [ { dial = "unix//run/realm/caddy/egress/calibre.sock"; } ];
         handler = "reverse_proxy";
       }
     ];
@@ -249,7 +259,7 @@
   }
   (import ./matrix.nix {
     inherit pkgs;
-    matrix-upstream = "[fdcc::3]:8196";
+    matrix-upstream = "unix//run/realm/caddy/egress/synapse.sock";
   })
 
   {
@@ -261,7 +271,7 @@
             handle = [
               {
                 handler = "reverse_proxy";
-                upstreams = [ { dial = "[fdcc::3]:7700"; } ];
+                upstreams = [ { dial = "unix//run/realm/caddy/egress/meilisearch.sock"; } ];
               }
             ];
           }
@@ -275,7 +285,7 @@
     handle = [
       {
         handler = "reverse_proxy";
-        upstreams = [ { dial = "[fdcc::3]:3002"; } ];
+        upstreams = [ { dial = "unix//run/realm/caddy/egress/grafana.sock"; } ];
       }
     ];
     match = [ { host = [ "gf.nyaw.xyz" ]; } ];

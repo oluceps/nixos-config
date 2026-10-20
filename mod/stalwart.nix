@@ -19,8 +19,8 @@
       };
       # Keep public mail protocols on the edge; mesh applications use this ingress.
       realm.workloads.stalwart = {
-        runtime = "external";
         isolation.privateNetwork = false;
+        isolation.allowUnixSockets = [ "-/run/systemd/resolve" ];
         ingress.submission = {
           port = 14650;
           target = "127.0.0.1:465";
@@ -38,6 +38,9 @@
       realm.observability.endpoints.stalwart = {
         port = 9313;
         path = "/metrics/prometheus";
+        businessProxyPort = 19313;
+        businessAllowedIDs = [ "spiffe://nyaw.xyz/service/caddy" ];
+        businessConsulService = "stalwart-web";
       };
     };
 }

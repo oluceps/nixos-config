@@ -1,5 +1,12 @@
 {
   flake.modules.nixos.rustypaste = {
+    realm.workloads.rustypaste.ingress.http = {
+      port = 13999;
+      target = "127.0.0.1:3999";
+      privateLoopback = true;
+      consulService = "rustypaste";
+      allowedIDs = [ "spiffe://nyaw.xyz/service/caddy" ];
+    };
     services.rustypaste = {
       enable = true;
       settings = {

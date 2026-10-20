@@ -7,7 +7,11 @@
       ...
     }:
     {
-      imports = [ self.modules.nixos.caddy ];
+      imports = [ self.modules.nixos.caddy-public ];
+      realm.workloads.caddy.egress.stalwart-web = {
+        service = "stalwart-web";
+        verifyID = "spiffe://nyaw.xyz/service/observability-abhoth";
+      };
 
       caddy = {
         expose = true;
@@ -74,7 +78,7 @@
                             }
                             {
                               handler = "reverse_proxy";
-                              upstreams = [ { dial = "127.0.0.1:3999"; } ];
+                              upstreams = [ { dial = "unix//run/realm/caddy/egress/rustypaste.sock"; } ];
                             }
                           ];
                           match = [ { host = [ "pb.nyaw.xyz" ]; } ];
@@ -98,7 +102,7 @@
                                   handle = [
                                     {
                                       handler = "reverse_proxy";
-                                      upstreams = [ { dial = "localhost:9313"; } ];
+                                      upstreams = [ { dial = "unix//run/realm/caddy/egress/stalwart-web.sock"; } ];
                                     }
                                   ];
                                 }
@@ -129,7 +133,7 @@
                   handle = [
                     {
                       handler = "reverse_proxy";
-                      upstreams = [ { dial = "localhost:${toString config.services.autopeer.port}"; } ];
+                      upstreams = [ { dial = "unix//run/realm/caddy/egress/autopeer.sock"; } ];
                     }
                   ];
                   match = [ { host = [ "jp-tyo-2.dn42.nyaw.xyz" ]; } ];

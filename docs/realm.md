@@ -146,13 +146,52 @@ backends over its own authenticated egress sockets. The legacy SeaweedFS
 metrics job uses vmagent's `__unix_socket__` label to scrape through its
 authenticated egress.
 
-Caddy is an external edge workload. Envoy is an external Internet gateway.
+Caddy is a systemd edge workload with host networking and a private `/run`
+view. Its management API listens on `/run/caddy/admin.sock` (0600), inside a
+0700 directory. Only its own egress directories, discovery listeners, runtime
+directory and DNS resolver sockets are exposed. Envoy is an external Internet gateway.
 vmagent keeps its existing network access while its other monitoring targets
 are migrated; its SeaweedFS egress is already authenticated. These exceptions
-use `runtime = "external"` and `isolation.privateNetwork = false` explicitly.
-Other repository services and VM guests have not yet received isolation
-profiles. BIRD, Yggdrasil, VXLAN, DNS and Consul keep their current network
+use `isolation.privateNetwork = false` explicitly; Envoy and vmagent also use
+`runtime = "external"`.
+Services without migration profiles and VM guests keep their previous isolation.
+BIRD, Yggdrasil, VXLAN, DNS and Consul keep their current network
 configuration.
+
+Public entrypoints (abhoth, nodens and azasos) import
+`mod/caddy/public.nix`. Shared HTTP routes use Caddy's authenticated Unix
+egress sockets, with SRV discovery and fixed remote SPIFFE IDs. Legacy routes
+for seed, Pocket ID, Memos, Alertmanager and heartrate cross the mesh through
+eihort's separately authorized `internal-https` ingress (19444); their final
+legacy backend connections are unchanged. The existing `s3-https` ingress
+keeps its application allowlist. The zone apex reaches Misskey directly via
+its own ingress and still serves Matrix discovery responses.
+
+Yidhra has fixed 457 MiB memory and uses a smaller edge profile: local TLS
+and Autopeer remain, while shared Web routes use one authenticated
+`public-http` egress. Eihort serves that public route set on a separate
+Unix socket behind ingress 19445. It preserves public route authentication
+and trusts forwarded client headers only on that protected Unix listener.
+Unknown hostnames receive 404. Yidhra sets Go memory tuning to a 48 MiB
+soft limit and GOGC=50; these are not a hard process memory limit.
+
+Rustypaste, ntfy and subs run in private loopback namespaces. Their business
+ingresses allow only Caddy. ntfy's metrics use a separate ingress authorizing
+only the local observation gateway. ntfy and subs fetch public HTTP(S)
+resources through the authenticated Internet gateway. Subs uses a dedicated
+account and receives its secret script via `LoadCredential`, rather than
+running as the administrator.
+
+Autopeer retains host netlink/WireGuard access and its PostgreSQL egress. Its
+node-specific HTTP ingress authorizes Caddy; nftables rejects non-loopback
+connections to the original API port. Stalwart retains public mail networking,
+but its Web API is exposed through the authenticated `stalwart-web` listener
+on the observation gateway. That business listener rejects metrics/debug paths.
+Public Caddy nodes without a local Rustypaste or Stalwart use their advertised
+ingresses, rather than stale localhost routes. Xray and Hysteria retain their
+gateway networking with process/filesystem sandboxes; a normal Hysteria server
+no longer receives NET_ADMIN, NET_RAW, BPF or PERFMON capabilities, or realtime
+CPU priority.
 
 Misskey uses rootless Podman with `network=none`. Its UID/GID 1000 maps to
 the host misskey account using keep-id. A Node launcher adapts its local
@@ -363,8 +402,8 @@ Its metrics use a separate observation-only ingress. The previous plaintext
 port 8501 is no longer exposed. VictoriaMetrics keeps
 a filtered Envoy listener for its existing query/write port;
 those business APIs retain their previous mesh access policy. It also publishes
-an authenticated API listener. That listener forwards the complete backend API
-without path or method filtering, and admits only the identities in
+an authenticated API listener. That listener rejects metrics/debug paths,
+preserves other business paths and methods, and admits only the identities in
 `businessAllowedIDs`; Grafana queries it through a protected Unix egress socket.
 Both listeners are separate ports, so the plaintext business port keeps its
 path restrictions. Vmagent and

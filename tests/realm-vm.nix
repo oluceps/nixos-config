@@ -354,11 +354,13 @@ pkgs.testers.runNixOSTest {
     def business(path, flags="", name="sender", port=13191):
         return f"nsenter -t $(systemctl show -p MainPID --value {name}.service) -n curl --path-as-is -sS --max-time 5 {flags} 'http://127.0.0.1:{port}{path}'"
 
-    with subtest("the authenticated API listener serves the complete backend API"):
+    with subtest("the authenticated business API excludes observation and debugging endpoints"):
         machine.wait_until_succeeds(business("/index", "-f"), timeout=90)
         machine.succeed(business("/index", "-f") + " | grep -F /index")
         machine.succeed(business("/api/v1/query?query=up", "-f"))
-        machine.succeed(business("/debug/pprof", "-f"))
+        for path in ["/metrics", "/metrics/extra", "/debug/pprof", "/metrics?format=prometheus", "/a/../metrics", "//metrics"]:
+            assert machine.succeed(business(path, "--path-as-is -o /dev/null -w '%{http_code}'")) == "403"
+        assert machine.succeed(business("/metrics%2fextra", "--path-as-is -o /dev/null -w '%{http_code}'")) == "400"
         assert machine.succeed(business("/index", "-X POST -o /dev/null -w '%{http_code}'")) in ["200", "405", "501"]
     with subtest("the authenticated API listener rejects unauthorized identities"):
         machine.fail(business("/index", "-f", "imposter", 13192))
