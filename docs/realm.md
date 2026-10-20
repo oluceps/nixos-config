@@ -212,7 +212,7 @@ no longer receives NET_ADMIN, NET_RAW, BPF or PERFMON capabilities, or realtime
 CPU priority.
 
 Misskey uses rootless Podman with `network=none`. Its UID/GID 1000 maps to
-the host misskey account using keep-id. A Node launcher adapts its local
+the host misskey account using keep-id. The realm helper adapts its local
 PostgreSQL, Redis, Meilisearch, S3 and HTTP proxy connections to mounted egress
 sockets. The application serves its native Unix socket; no host application
 port is published. The container receives neither SVID keys nor the Agent
@@ -353,8 +353,8 @@ Each command issues a short-lived, single-use token and transfers the public
 trust bundle directly to its destination. Do not print or save the enrollment
 JSON in a public log. Enroll each deployed mesh node and restart any failed
 workload units. Registration entries are generated from workload declarations
-across hosts, reconciled idempotently and pruned only from the reconciler's
-own managed set.
+across hosts, reconciled idempotently by `realm-helper spire-register` and
+pruned only from that reconciler's own managed set.
 
 Agent keys survive a restart. If an Agent's cached node identity expires
 while it is offline, join-token attestation requires fresh enrollment. The
@@ -439,7 +439,8 @@ allowlists, the shared business listener, the authenticated API listener with
 its caller allowlist, and direct backend firewall denial.
 `tests/realm-container.nix` imports both actual Misskey and Telegram Search
 profiles with a fixture image, including the latter's TCP-to-Unix ingress,
-rootless mapping, environment override, and health check.
+rootless mapping, environment override, health check and the socket-activated
+SOCKS bridge.
 
 
 Jellyfin, Vaultwarden, Forgejo and NCPS are isolated workloads declared in their
@@ -461,13 +462,16 @@ SMTP for Forgejo and Vaultwarden uses Stalwart's SPIFFE-authenticated
 `smtp-submission` ingress. S3 for Forgejo and NCPS uses Caddy's authenticated
 S3 ingress. Workload-local `/etc/hosts` aliases direct the original SMTP/S3
 hostnames to the local adapters, preserving application TLS verification and
-SNI. These aliases do not change host-wide DNS. Applications needing DNS also use
-`isolation.dns`: a namespace-local UDP/TCP stub forwards DNS-over-TCP through a
-protected Unix socket to the existing host systemd-resolved stub. The host-side
-adapter can reach only loopback, and clients cannot choose its upstream. This
-preserves DNS-dependent URL checks while granting no direct network route;
-existing DNS infrastructure and upstream selection are unchanged. No secret
-values need changing.
+SNI. These aliases do not change host-wide DNS. No migrated profile needs a
+resolver: every outbound name is either aliased here or resolved by the Envoy
+gateway on the far side of a CONNECT request. `isolation.dns` remains available
+for a profile that resolves names it cannot enumerate: one static helper owns
+UDP and TCP 127.0.0.53 inside the namespace and relays every query as
+DNS-over-TCP over a protected Unix socket to the existing host
+systemd-resolved stub. The host-side adapter can reach only loopback, and
+clients cannot choose its upstream. This preserves DNS-dependent URL checks
+while granting no direct network route; existing DNS infrastructure and
+upstream selection are unchanged. No secret values need changing.
 Stalwart keeps its public mail edge networking. The existing Forgejo Actions
 runner remains a separate execution boundary with its existing container
 runtime access; the Forgejo daemon's private namespace does not isolate CI
@@ -477,7 +481,8 @@ jobs or remove runner privileges.
 NCPS executables with real PostgreSQL, SPIRE and Envoy. Local SMTP/S3 fixtures
 supply dummy credentials and certificates. It checks application startup,
 authenticated ingress, SMTP/S3 certificate names, PostgreSQL role isolation,
-NCPS observation, FFmpeg proxy requests, scoped UDP/TCP DNS, hidden runtime sockets and blocked direct network access.
+NCPS observation, FFmpeg proxy requests, scoped UDP/TCP DNS through a dedicated
+fixture workload, hidden runtime sockets and blocked direct network access.
 It does not exercise real SMTP delivery, S3 durability or CI jobs.
 
 

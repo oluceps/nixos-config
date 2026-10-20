@@ -109,7 +109,7 @@ pkgs.testers.runNixOSTest {
         image = lib.mkForce "realm-container-fixture:test";
         imageFile = image;
         cmd = lib.mkForce [
-          "/realm/launch.cjs"
+          "launch"
           "${pkgs.nodejs}/bin/node"
           "${backend}"
         ];
@@ -147,6 +147,12 @@ pkgs.testers.runNixOSTest {
         assert actual == "postgresql://telegram_search@127.0.0.1:15432/telegram_search?sslmode=disable", actual
         machine.fail("runuser -u nobody -- curl -sf --max-time 2 --unix-socket /run/realm-telegram-search/backend/http.sock http://localhost/")
         machine.fail("curl -sf --max-time 2 http://127.0.0.1:3336/")
+    with subtest("the SOCKS adapter is bridged to the container through a Unix socket"):
+        # The bridge service is socket-activated, so this also proves that
+        # realm-helper receives the listening descriptor from systemd.
+        machine.succeed(
+            "runuser -u telegram-search -- ${pkgs.python3}/bin/python3 -c 'import socket; s=socket.socket(socket.AF_UNIX); s.connect(\"/run/realm/telegram-search/egress/socks.sock\"); s.sendall(b\"\\x05\\x01\\x00\"); assert s.recv(2) == b\"\\x05\\x00\"'"
+        )
     with subtest("container receives prepared configuration unchanged"):
         expected = machine.succeed("cat ${source}")
         actual = machine.succeed("runuser -u misskey -- podman exec misskey cat /misskey/.config/default.yml")

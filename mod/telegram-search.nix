@@ -106,9 +106,11 @@
         user = "0:0";
         podman.user = "telegram-search";
         podman.sdnotify = "healthy";
-        entrypoint = "node";
+        # The helper replaces the image entrypoint: it publishes the loopback
+        # adapters and the ingress socket, then runs the real command.
+        entrypoint = "/realm/helper";
         cmd = [
-          "/realm/launch.cjs"
+          "launch"
           "/bin/sh"
           "-c"
           "mkdir -p /var/lib/nginx/tmp /var/lib/nginx/logs; exec /bin/sh /entrypoint.sh"
@@ -120,8 +122,7 @@
           "/run/realm/telegram-search/egress:/realm/egress:ro"
           "/run/realm-telegram-search/backend:/realm/backend:rw"
           "${routes}:/realm/routes.json:ro"
-          "${../nixosModules/realm/container-launch.cjs}:/realm/launch.cjs:ro"
-          "${../nixosModules/realm/container-health.cjs}:/realm/health.cjs:ro"
+          "${config.realm.helperPackage}/bin/realm-helper:/realm/helper:ro"
         ];
         extraOptions = [
           "--userns=keep-id:uid=0,gid=0"
@@ -135,7 +136,7 @@
           "--security-opt=no-new-privileges"
           "--sysctl=net.ipv4.ip_unprivileged_port_start=0"
           "--add-host=s3.nyaw.xyz:127.0.0.1"
-          "--health-cmd=node /realm/health.cjs"
+          "--health-cmd=/realm/helper health"
           "--health-interval=30s"
           "--health-start-period=120s"
         ];

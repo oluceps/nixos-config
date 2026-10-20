@@ -11,7 +11,6 @@
     in
     {
       realm.workloads.forgejo = {
-        isolation.dns = true;
         isolation = {
           runtimePaths = [ "/run/forgejo" ];
           allowUnixSockets = [ "/run/postgresql" ];

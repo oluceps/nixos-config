@@ -292,6 +292,10 @@ pkgs.testers.runNixOSTest {
             verifyID = "spiffe://nyaw.xyz/service/observability-machine";
             localPort = 13190;
           };
+          # No service profile needs a resolver any more: every outbound name is
+          # either aliased in /etc/hosts or resolved by the Envoy gateway. This
+          # fixture keeps the isolation.dns path itself under test.
+          dnsfixture.isolation.dns = true;
           imposter.egress = {
             ncps = {
               service = "ncps";
@@ -337,6 +341,14 @@ pkgs.testers.runNixOSTest {
           serviceConfig = {
             User = "imposter";
             Group = "imposter";
+            ExecStart = "${pkgs.coreutils}/bin/sleep infinity";
+          };
+        };
+        dnsfixture = {
+          wantedBy = [ "multi-user.target" ];
+          serviceConfig = {
+            User = "dnsfixture";
+            Group = "dnsfixture";
             ExecStart = "${pkgs.coreutils}/bin/sleep infinity";
           };
         };
@@ -395,12 +407,12 @@ pkgs.testers.runNixOSTest {
             machine.wait_until_succeeds(inside(unit, "curl --noproxy \"\" -fsS --max-time 10 --proxy http://127.0.0.1:13128 http://public.test/"), timeout=30)
         machine.succeed(inside("jellyfin", "env http_proxy=http://127.0.0.1:13128 ${pkgs.jellyfin-ffmpeg}/bin/ffprobe -v error -show_entries format=format_name -of default=noprint_wrappers=1 http://public.test/tone.wav | grep -x format_name=wav"))
     with subtest("DNS works through the protected Unix capability over UDP and TCP"):
-        for unit in ["jellyfin", "vaultwarden", "forgejo", "ncps"]:
-            pid = machine.succeed(f"systemctl show -p MainPID --value {unit}.service").strip()
-            machine.succeed(f"nsenter -t {pid} -m -n getent hosts public.test | grep 198.51.100.1")
-            machine.succeed(f"nsenter -t {pid} -m -n dig +tcp +short public.test | grep -x 198.51.100.1")
-        machine.fail("runuser -u nobody -- ${pkgs.python3}/bin/python3 -c 'import socket; s=socket.socket(socket.AF_UNIX); s.connect(\"/run/realm/forgejo/egress/dns.sock\")'")
-    with subtest("workload-local DNS preserves S3 and SMTP TLS identities"):
+        pid = machine.succeed("systemctl show -p MainPID --value dnsfixture.service").strip()
+        machine.succeed(f"nsenter -t {pid} -m -n getent hosts public.test | grep 198.51.100.1")
+        machine.succeed(f"nsenter -t {pid} -m -n dig +tcp +short public.test | grep -x 198.51.100.1")
+        machine.succeed(f"nsenter -t {pid} -m -n dig +short public.test | grep -x 198.51.100.1")
+        machine.fail("runuser -u nobody -- ${pkgs.python3}/bin/python3 -c 'import socket; s=socket.socket(socket.AF_UNIX); s.connect(\"/run/realm/dnsfixture/egress/dns.sock\")'")
+    with subtest("workload-local host aliases preserve S3 and SMTP TLS identities"):
         for unit, host, port in [("forgejo", "s3.nyaw.xyz", 443), ("ncps", "s3.nyaw.xyz", 443), ("forgejo", "box.nyaw.xyz", 465), ("vaultwarden", "box.nyaw.xyz", 465)]:
             machine.succeed(f"nsenter -t $(systemctl show -p MainPID --value {unit}.service) -n -m ${pkgs.python3}/bin/python3 -c 'import socket; assert {{entry[4][0] for entry in socket.getaddrinfo(\"{host}\", {port}, type=socket.SOCK_STREAM)}} == {{\"127.0.0.1\"}}'")
             machine.wait_until_succeeds(f"nsenter -t $(systemctl show -p MainPID --value {unit}.service) -n -m sh -c 'printf \"QUIT\\r\\n\" | openssl s_client -connect {host}:{port} -servername {host} -verify_hostname {host} -verify_return_error -CAfile /var/lib/fixture/cert.pem >/dev/null'", timeout=45)

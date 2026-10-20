@@ -1,3 +1,45 @@
+# SPIFFE workload networking (realm).
+#
+# Goal: a service can reach its declared peers over authenticated TLS and has no
+# route to anything else. Each workload is therefore a small stack of processes
+# rather than one trusted daemon:
+#
+#   application (private namespace, no route out)
+#     -> egress Unix socket      systemd-socket-proxyd, or the app directly
+#     -> ghostunnel client       runs as realm-<name>, holds the SVID
+#     -> SRV discovery           Caddy selects a remote ingress from DNS
+#     -> remote ghostunnel       checks the caller against allowedIDs
+#     -> ingress socket          adapter in the backend's namespace
+#
+# The application holds no key and, on the proxy path, never sees the SPIRE
+# Agent socket. Authorization is stated by the receiver: an ingress names the
+# exact SPIFFE IDs it accepts and ghostunnel enforces that list. DNS only selects
+# a candidate address, so it cannot change the expected identity.
+#
+# Declare a workload next to the service it describes in mod/:
+#
+#   realm.workloads.example = {
+#     unit = "example.service";        # default: <name>.service
+#     user = "example";
+#     group = "example";
+#
+#     egress.loki = {                  # this workload acts as a client
+#       service = "loki";              # SRV name loki.svc.mesh.nyaw.xyz
+#       verifyID = "spiffe://nyaw.xyz/service/loki";
+#       localPort = 13030;             # optional loopback adapter
+#     };
+#
+#     ingress.http = {                 # this workload acts as a server
+#       port = 18080;
+#       target = "127.0.0.1:8080";
+#       privateLoopback = true;
+#       service = "example";           # name published in DNS
+#       allowedIDs = [ "spiffe://nyaw.xyz/service/caddy" ];
+#     };
+#   };
+#
+# Options that relax the default isolation (runtime, privateNetwork, native,
+# hostLoopback, credentials) are explained where they are consumed below.
 {
   config,
   lib,
@@ -7,17 +49,28 @@
 let
   inherit (lib) mkIf mkOption types;
   cfg = config.realm;
+  # A declaration with enable = false contributes no units at all.
   active = lib.filterAttrs (_: w: w.enable) cfg.workloads;
-  python = pkgs.python3.withPackages (p: [ p.dnspython ]);
+  # One static binary covers every per-namespace helper job: the DNS relay and
+  # the socket bridges. It has no interpreter and no library dependencies, so the
+  # same artifact also runs inside container images.
+  helper = cfg.helperPackage;
   json = pkgs.formats.json { };
+  # Discovery runs inside the shared Caddy profile when one exists, otherwise in
+  # a dedicated Caddy instance that only speaks srv_proxy.
   discoveryUnit = if cfg.discovery.integrateCaddy then "caddy.service" else "realm-discovery.service";
   discoveryUser = if cfg.discovery.integrateCaddy then "caddy" else "realm-discovery";
   discoveryPath = name: route: "/run/realm-discovery/${name}/${route}.sock";
+  # Caddy needs a bracketed literal when the resolver is an IPv6 address.
   resolverHost =
     if lib.hasInfix ":" cfg.discovery.resolver then
       "[${cfg.discovery.resolver}]"
     else
       cfg.discovery.resolver;
+  # One Unix listener per discovered egress. The listener name fixes the SRV
+  # record, so a stream is routed by the socket it arrived on, not by SNI or by
+  # anything the application sends. An egress with a fixed target gets no
+  # listener and no DNS dependency.
   discoveryServers = lib.concatMapAttrs (
     name: w:
     lib.mapAttrs' (
@@ -41,6 +94,7 @@ let
     ) (lib.filterAttrs (_: e: e.target == null) w.egress)
   ) active;
   hasDiscovery = discoveryServers != { };
+  # The standalone instance runs from generated JSON with its admin API off.
   discoveryConfig = json.generate "realm-discovery.json" {
     admin = {
       disabled = true;
@@ -48,14 +102,21 @@ let
     };
     apps.layer4.servers = discoveryServers;
   };
+  # systemd-socket-proxyd bridges one systemd socket to a plain TCP or Unix
+  # target. It is what connects a workload-local loopback address to an
+  # authenticated socket, and it always runs inside a private namespace.
   proxy = "${config.systemd.package}/lib/systemd/systemd-socket-proxyd";
-  # socket-proxyd splits at the last colon and passes the host to getaddrinfo.
+  # socket-proxyd splits the target at the last colon and hands the host part to
+  # getaddrinfo, so bracketed IPv6 literals must lose their brackets here.
   proxyTarget =
     target:
     let
       ipv6 = builtins.match "[[]([^]]+)[]]:([0-9]+)" target;
     in
     if ipv6 == null then target else "${builtins.elemAt ipv6 0}:${builtins.elemAt ipv6 1}";
+  # Naming contract: realm-<name> is the proxy account of workload <name>,
+  # w.unit is the application, and /run/realm/<name> is the only runtime path
+  # the two sides share.
   appName = w: lib.removeSuffix ".service" w.unit;
   proxyUser = name: "realm-${name}";
   base = name: "/run/realm/${name}";
@@ -65,13 +126,17 @@ let
     { name, ... }:
     {
       options = {
+        # SRV name, resolved as <service>.svc.<discovery domain>.
         service = mkOption { type = types.str; };
+        # Exact URI SAN expected from the peer; DNS cannot override it.
         verifyID = mkOption { type = types.str; };
         target = mkOption {
           type = types.nullOr types.str;
           default = null;
           description = "Fixed TLS destination as host:port or unix:/path, instead of SRV discovery.";
         };
+        # Use an existing socket instead of the generated path, when another
+        # module owns the listener.
         socket = mkOption {
           type = types.nullOr types.str;
           default = null;
@@ -86,7 +151,9 @@ let
   );
   ingressType = types.submodule {
     options = {
+      # Port on the node's mesh address; the published SRV record uses it.
       port = mkOption { type = types.port; };
+      # Plaintext backend the ingress process dials after terminating mTLS.
       target = mkOption {
         type = types.nullOr types.str;
         default = null;
@@ -96,7 +163,10 @@ let
         default = false;
         description = "The application terminates SPIFFE mTLS and enforces allowedIDs itself, using the Agent SDS API.";
       };
+      # Service name this ingress publishes for SRV discovery.
       service = mkOption { type = types.str; };
+      # Callers ghostunnel (or the native application) accepts. The module
+      # rejects an empty list, so access is always stated explicitly.
       allowedIDs = mkOption {
         type = types.listOf types.str;
         default = [ ];
@@ -118,6 +188,9 @@ let
       };
     };
   };
+  # Baseline sandbox for every unit this module creates. Proxy, adapter and
+  # helper processes need no privileges, no writable system paths and only Unix
+  # and IP sockets, so none of these settings has to be relaxed per workload.
   hardened = {
     NoNewPrivileges = true;
     CapabilityBoundingSet = "";
@@ -137,6 +210,9 @@ let
     Restart = "on-failure";
     RestartSec = "3s";
   };
+  # Socket ownership. The socket user accepts connections, the group names the
+  # local peer allowed to connect, and mode 0660 lets exactly those two parties
+  # through.
   activation = user: group: fd: {
     SocketUser = user;
     SocketGroup = group;
@@ -150,6 +226,9 @@ let
       netUnit = "realm-net-${name}.service";
       user = proxyUser name;
       egressSocket = route: e: if e.socket == null then egressPath name route else e.socket;
+      # Shared settings for units that must live in the workload's loopback
+      # namespace. bindsTo stops them with the namespace holder instead of
+      # leaving them inside a torn-down private network.
       network = {
         requires = [ netUnit ];
         after = [ netUnit ];
@@ -160,6 +239,8 @@ let
     lib.mkMerge (
       [
         {
+          # Reject declarations that would deploy with weaker isolation than
+          # they appear to request.
           assertions = [
             {
               assertion = builtins.match "[a-z][a-z0-9-]*" name != null && builtins.stringLength user < 32;
@@ -184,6 +265,9 @@ let
               message = "realm.workloads.${name}: the application unit must exist and be enabled.";
             }
           ];
+          # Three identities: the application (<user>/<group>), one proxy
+          # account per workload, and the shared realm-proxies group whose
+          # members may read the SPIRE Agent socket.
           users.groups.${user} = { };
           users.groups.${w.group} = { };
           users.users.${w.user} = {
@@ -195,6 +279,8 @@ let
             group = user;
             extraGroups = [ "realm-proxies" ];
           };
+          # egress is reachable by the application group, ingress only by the
+          # proxy account, and both hold sockets rather than plain files.
           systemd.tmpfiles.rules = [
             "d ${base name} 0755 root root -"
             "d ${base name}/egress 0750 root ${w.group} -"
@@ -204,6 +290,10 @@ let
             lib.optional (lib.any (e: e.target == null) (builtins.attrValues w.egress))
               # Inherit this workload's proxy group on sockets created by Caddy.
               "d /run/realm-discovery/${name} 2750 ${discoveryUser} ${user} -";
+          # Namespace holder. Socket units bind inside this namespace, so it
+          # must exist before sockets.target and outlive every unit that joins
+          # it. It runs nothing but sleep, and DefaultDependencies = false keeps
+          # it out of the normal boot and shutdown ordering.
           systemd.services."realm-net-${name}" =
             mkIf (w.isolation.privateNetwork && (w.runtime == "systemd" || w.socksProxy.enable))
               {
@@ -225,6 +315,9 @@ let
             lib.mkMerge [
               (lib.optionalAttrs w.isolation.privateNetwork network)
               {
+                # The application keeps its private namespace and gets a
+                # read-only /run, so the Agent socket stays invisible. Only the
+                # paths listed below are mounted back.
                 serviceConfig = {
                   PrivateNetwork = w.isolation.privateNetwork;
                   NoNewPrivileges = true;
@@ -248,8 +341,12 @@ let
                     lib.mapAttrsToList (route: e: builtins.dirOf (egressSocket route e)) w.egress
                     ++ lib.optional w.isolation.dns "${base name}/egress"
                   )
+                  # With isolation.dns the application talks to the stub in its
+                  # own namespace and never to the host resolver.
                   ++ lib.optional w.isolation.dns "${pkgs.writeText "realm-resolv.conf" "nameserver 127.0.0.53\noptions edns0 trust-ad\n"}:/etc/resolv.conf"
                   ++ w.isolation.allowUnixSockets
+                  # Aliases keep the original hostnames for SNI and certificate
+                  # verification while the address points at a local adapter.
                   ++ lib.optional (w.isolation.hosts != { }) (
                     let
                       aliases = pkgs.writeText "realm-${name}-host-aliases" (
@@ -300,6 +397,9 @@ let
                 message = "${unit}: localPort requires a private namespace.";
               }
             ];
+            # Registration of the egress proxy. Both selectors are required:
+            # systemd creates the socket first and only then starts the proxy as
+            # the workload's proxy account, and SPIRE must observe both facts.
             realm.spire.registrations.${unit} = {
               spiffeID = w.spiffeID;
               selectors = [
@@ -325,6 +425,10 @@ let
                 User = user;
                 Group = user;
                 SupplementaryGroups = [ "realm-proxies" ];
+                # ghostunnel fetches the SVID and trust bundle from the Agent,
+                # verifies the peer URI SAN and serves plaintext on the egress
+                # socket. A one-hour connection lifetime bounds the effect of a
+                # later policy change; certificate expiry alone closes nothing.
                 ExecStart = lib.escapeShellArgs ([
                   "${cfg.ghostunnelPackage}/bin/ghostunnel"
                   "client"
@@ -345,6 +449,9 @@ let
               };
             };
           }
+          # Loopback adapter for clients that cannot use Unix sockets. It
+          # exists only inside the workload namespace, so 127.0.0.1:<localPort>
+          # is unreachable from the host and from other workloads.
           (mkIf
             (e.localPort != null && (w.runtime == "systemd" || (w.socksProxy.enable && route == "internet")))
             {
@@ -425,6 +532,8 @@ let
                 message = "${unit}: native ingress requires a declared networked application unit and no proxy backend options.";
               }
             ];
+            # Ingress registration. allowedIDs is the complete authorization
+            # policy; publishing the port does not grant access by itself.
             realm.spire.registrations.${unit} = mkIf (!i.native) {
               spiffeID = w.spiffeID;
               selectors = [
@@ -482,6 +591,9 @@ let
               };
             };
           }
+          # Ingress-side adapter. The backend keeps listening on loopback inside
+          # the workload namespace, so ghostunnel reaches it through this socket
+          # and the backend never sees the mesh address.
           (mkIf i.privateLoopback {
             systemd.sockets."realm-backend-${name}-${route}" = {
               wantedBy = [ "sockets.target" ];
@@ -502,6 +614,10 @@ let
         ]
       ) w.ingress
       ++ [
+        # Namespace-local DNS. The application queries UDP/TCP 127.0.0.53 inside
+        # its namespace; every query travels over one protected Unix socket to
+        # the host systemd-resolved stub. The adapter can reach loopback only,
+        # so DNS-dependent checks keep working without granting a network route.
         (mkIf w.isolation.dns {
           assertions = [
             {
@@ -509,7 +625,8 @@ let
               message = "realm.workloads.${name}: local DNS requires a private systemd workload and reserves egress/dns.sock.";
             }
           ];
-          # DNS infrastructure remains host-local. Only this fixed resolver is reachable.
+          # Host side: the only upstream the namespace can reach. The adapter may
+          # connect to loopback only, so a client cannot choose a resolver.
           systemd.sockets."realm-dns-egress-${name}" = {
             wantedBy = [ "sockets.target" ];
             listenStreams = [ "${base name}/egress/dns.sock" ];
@@ -522,39 +639,59 @@ let
             IPAddressAllow = "localhost";
             ExecStart = "${proxy} 127.0.0.53:53";
           };
+          # Namespace side: one helper owns both DNS transports, so UDP and TCP
+          # share a single process and a single upstream socket. systemd creates
+          # the sockets inside the namespace and names them, which is how the
+          # helper tells the datagram socket from the stream socket.
           systemd.sockets."realm-dns-udp-${name}" = network // {
             wantedBy = [ "sockets.target" ];
             listenDatagrams = [ "127.0.0.53:53" ];
-            socketConfig.PrivateNetwork = true;
-          };
-          systemd.services."realm-dns-udp-${name}" = network // {
-            requires = network.requires ++ [ "realm-dns-egress-${name}.socket" ];
-            after = network.after ++ [ "realm-dns-egress-${name}.socket" ];
-            serviceConfig = hardened // {
-              User = user;
-              Group = user;
-              SupplementaryGroups = [ w.group ];
+            socketConfig = {
               PrivateNetwork = true;
-              ExecStart = "${python}/bin/python3 ${./realm/dns-udp.py} ${base name}/egress/dns.sock";
+              FileDescriptorName = "dns-udp";
+              Service = "realm-dns-${name}.service";
             };
           };
           systemd.sockets."realm-dns-tcp-${name}" = network // {
             wantedBy = [ "sockets.target" ];
             listenStreams = [ "127.0.0.53:53" ];
-            socketConfig.PrivateNetwork = true;
+            socketConfig = {
+              PrivateNetwork = true;
+              FileDescriptorName = "dns-tcp";
+              Service = "realm-dns-${name}.service";
+            };
           };
-          systemd.services."realm-dns-tcp-${name}" = network // {
-            requires = network.requires ++ [ "realm-dns-egress-${name}.socket" ];
-            after = network.after ++ [ "realm-dns-egress-${name}.socket" ];
+          systemd.services."realm-dns-${name}" = network // {
+            wantedBy = [ "multi-user.target" ];
+            requires = network.requires ++ [
+              "realm-dns-egress-${name}.socket"
+              "realm-dns-udp-${name}.socket"
+              "realm-dns-tcp-${name}.socket"
+            ];
+            after = network.after ++ [
+              # The sockets must exist before this start, otherwise systemd has no
+              # descriptors to pass and the helper would have nothing to serve.
+              "realm-dns-egress-${name}.socket"
+              "realm-dns-udp-${name}.socket"
+              "realm-dns-tcp-${name}.socket"
+            ];
             serviceConfig = hardened // {
               User = user;
               Group = user;
               SupplementaryGroups = [ w.group ];
               PrivateNetwork = true;
-              ExecStart = "${proxy} ${base name}/egress/dns.sock";
+              ExecStart = lib.escapeShellArgs [
+                "${helper}/bin/realm-helper"
+                "dns"
+                "--upstream"
+                "${base name}/egress/dns.sock"
+              ];
             };
           };
         })
+        # gost turns the authenticated HTTP Internet egress into a SOCKS5
+        # listener for applications that only speak SOCKS. UDP and BIND stay
+        # disabled, so the adapter cannot be used as a general relay.
         (mkIf w.socksProxy.enable {
           assertions = [
             {
@@ -594,6 +731,8 @@ let
             after = [ "realm-socks-${name}.service" ];
           };
         })
+        # A container cannot join the namespace listener, so it receives the
+        # same SOCKS port over a mounted Unix socket instead.
         (mkIf (w.socksProxy.enable && w.runtime == "container") {
           systemd.sockets."realm-socks-unix-${name}" = {
             wantedBy = [ "sockets.target" ];
@@ -607,10 +746,18 @@ let
               User = w.user;
               Group = w.group;
               PrivateNetwork = true;
-              ExecStart = "${proxy} 127.0.0.1:${toString w.socksProxy.port}";
+              ExecStart = lib.escapeShellArgs [
+                "${helper}/bin/realm-helper"
+                "bridge"
+                "--target"
+                "127.0.0.1:${toString w.socksProxy.port}"
+              ];
             };
           };
         })
+        # Native ingress: the application terminates mTLS itself and consumes
+        # SDS. The registration therefore attests the application unit and user,
+        # and the application joins realm-proxies for Agent socket access.
         (mkIf (lib.any (i: i.native) (builtins.attrValues w.ingress)) {
           realm.spire.registrations."realm-native-${name}" = {
             spiffeID = w.spiffeID;
@@ -625,6 +772,13 @@ let
             serviceConfig.SupplementaryGroups = [ "realm-proxies" ];
           };
         })
+        # Credential adapter for applications that read PEM files but cannot
+        # speak SDS. spiffe-helper writes svid.pem, key.pem and bundle.pem with
+        # UMask 0027, so the application group can read the key.
+        #
+        # This hands out key material and is an explicit exception to proxy
+        # isolation: the application must verify SPIFFE IDs and reload both its
+        # identity and trust bundle on renewal.
         (mkIf w.credentials.enable {
           realm.spire.registrations."realm-helper-${name}" = {
             spiffeID = w.spiffeID;
@@ -677,6 +831,9 @@ let
         })
       ]
     );
+  # The fragments above are mkMerge trees that may contain mkIf nodes, but each
+  # option below needs its own merge. `select` walks such a tree and projects one
+  # option path out of it while preserving the conditions.
   generated = lib.mkMerge (lib.mapAttrsToList workloadConfig active);
   select =
     path: fallback: fragment:
@@ -690,15 +847,27 @@ in
 {
   options.realm = {
     enable = lib.mkEnableOption "SPIFFE workload networking";
+    # Identity namespace of every SVID. The discovery DNS domain is separate.
     trustDomain = mkOption {
       type = types.str;
       default = "nyaw.xyz";
     };
+    # Address ingress sockets bind to, normally the node's mesh IPv6 address.
     address = mkOption {
       type = types.str;
       default = config.realm.serviceDiscovery.address;
     };
     ghostunnelPackage = lib.mkPackageOption pkgs "ghostunnel" { };
+    # Static helper for the per-workload and per-node jobs that are too small to
+    # justify their own binary: the isolation.dns relay, socket bridges, the
+    # container entrypoint adapters and the SPIRE registration reconciler.
+    helperPackage = mkOption {
+      type = types.package;
+      default = pkgs.callPackage ../pkgs/realm-helper { };
+      defaultText = lib.literalExpression "pkgs.callPackage ../pkgs/realm-helper { }";
+      description = "Binary implementing the per-namespace helper subcommands.";
+    };
+    # SRV discovery: how an egress turns a service name into a remote ingress.
     discovery = {
       integrateCaddy = lib.mkEnableOption "merge SRV discovery listeners into the existing Caddy JSON configuration";
       package = mkOption {
@@ -718,6 +887,8 @@ in
         type = types.str;
         default = config.realm.serviceDiscovery.domain;
       };
+      # Local CoreDNS listener used for the SRV query and for the target
+      # address lookup.
       resolver = mkOption {
         type = types.str;
         default = "127.0.0.1";
@@ -737,6 +908,7 @@ in
         description = "Timeout for each DNS lookup and individual TCP connection attempt.";
       };
     };
+    # One entry per service that must talk to, or be reached by, the mesh.
     workloads = mkOption {
       default = { };
       type = types.attrsOf (
@@ -748,10 +920,12 @@ in
                 type = types.bool;
                 default = true;
               };
+              # Application unit whose sandbox and dependencies are configured.
               unit = mkOption {
                 type = types.strMatching ".+\\.service";
                 default = "${name}.service";
               };
+              # Account the application itself runs as.
               user = mkOption {
                 type = types.str;
                 default = name;
@@ -760,6 +934,10 @@ in
                 type = types.str;
                 default = name;
               };
+              # systemd:    the module builds the sandbox, sockets and adapters.
+              # container:  the container engine mounts the egress sockets.
+              # external:   only DNS, registrations and egress helpers are
+              #             generated; the application is wired elsewhere.
               runtime = mkOption {
                 type = types.enum [
                   "systemd"
@@ -768,16 +946,22 @@ in
                 ];
                 default = "systemd";
               };
+              # Identity shared by every process of this workload; declaring the
+              # same ID twice merges their authorization.
               spiffeID = mkOption {
                 type = types.str;
                 default = "spiffe://${cfg.trustDomain}/service/${name}";
               };
               isolation = {
                 dns = lib.mkEnableOption "a private DNS stub through a Unix socket to the existing host resolver";
+                # Remove the route to the host and the Internet. Disable it only
+                # for an edge or gateway role that must accept public traffic.
                 privateNetwork = mkOption {
                   type = types.bool;
                   default = true;
                 };
+                # Additional host runtime paths the application may use, e.g.
+                # journal sockets for log collection.
                 allowUnixSockets = mkOption {
                   type = types.listOf types.str;
                   default = [ ];
@@ -792,6 +976,8 @@ in
                   default = [ ];
                 };
               };
+              # Extra groups allowed to connect to this workload's ingress
+              # sockets; the proxy group is always included.
               ingressGroups = mkOption {
                 type = types.listOf types.str;
                 default = [ ];
@@ -804,6 +990,8 @@ in
                 type = types.attrsOf ingressType;
                 default = { };
               };
+              # PEM files for an application that cannot speak SDS. Grants key
+              # access, so use it only where the proxy path is impossible.
               credentials = {
                 enable = lib.mkEnableOption "spiffe-helper for an explicitly configured native SPIFFE TLS consumer";
                 directory = mkOption {
@@ -815,6 +1003,7 @@ in
                   default = { };
                 };
               };
+              # SOCKS5 adapter for clients that cannot use an HTTP proxy.
               socksProxy = {
                 enable = lib.mkEnableOption "a local SOCKS5 adapter through the authenticated HTTP Internet egress";
                 port = mkOption {
@@ -829,6 +1018,8 @@ in
     };
   };
   config = mkIf cfg.enable {
+    # realm-proxies is the group that may read the SPIRE Agent socket; only
+    # proxy, adapter and helper accounts are members.
     users.groups = lib.mkMerge [
       {
         realm-proxies = { };
@@ -848,6 +1039,9 @@ in
     systemd.services = lib.mkMerge [
       (select [ "systemd" "services" ] { } generated)
       {
+        # Fallback discovery daemon for nodes without the shared Caddy profile.
+        # It terminates no TLS; it only forwards ciphertext to a selected
+        # ingress.
         realm-discovery = mkIf (hasDiscovery && !cfg.discovery.integrateCaddy) {
           description = "Realm SRV discovery and TLS stream forwarding";
           wantedBy = [ "multi-user.target" ];

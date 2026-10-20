@@ -1,3 +1,33 @@
+# SPIFFE authenticated observation gateway (realm.observability).
+#
+# Exporters bind loopback and are not meant to be reachable from the mesh. This
+# module therefore puts one Envoy listener on the node's mesh address that
+# obtains its own SVID from the local SPIRE Agent over SDS, requires a client
+# certificate whose URI SAN is listed in allowedIDs (vmagent by default) and
+# then forwards only the paths derived from the declared endpoints:
+#
+#   vmagent -> ghostunnel egress (mTLS) -> observability_<host>:19490
+#            -> /<endpoint>/metrics -> 127.0.0.1:<exporter port>
+#
+# A Lua filter matches the normalized path against the allowlist, so a caller
+# cannot select another backend, add query parameters or use another method.
+#
+# Two optional listeners reuse the same upstreams:
+#   businessProxyPort  extra mTLS business API listener; forwards everything
+#                      except metrics/debug paths, allowlist in
+#                      businessAllowedIDs.
+#   publicProxyPort    keeps an existing public port while denying the same
+#                      paths there.
+#
+# Declare an endpoint next to its exporter:
+#
+#   realm.observability.endpoints.garage.port = 3903;
+#
+#   realm.observability.endpoints.blackbox = {
+#     kind = "probe";
+#     port = 9115;
+#     probes = [ { module = "http_2xx"; target = "https://example.org"; } ];
+#   };
 {
   config,
   lib,
@@ -7,7 +37,10 @@
 let
   cfg = config.realm.observability;
   endpoints = lib.filterAttrs (_: e: e.enable) cfg.endpoints;
+  # Public path per endpoint. Probe endpoints additionally require the exact
+  # module/target pair, so only enumerated checks can be run.
   publicPath = name: e: "/${name}/${if e.kind == "probe" then "probe" else "metrics"}";
+  # SDS keeps the SVID and trust bundle fresh without restarting Envoy.
   sds = name: {
     inherit name;
     sds_config = {
@@ -19,6 +52,8 @@ let
       };
     };
   };
+  # Generated allowlist: public path -> true (metrics) or
+  # {module -> {target -> true}} (probe).
   luaRules = lib.concatStringsSep "\n" (
     lib.mapAttrsToList (
       name: e:
@@ -50,6 +85,8 @@ let
     name = "envoy.filters.http.router";
     typed_config."@type" = "type.googleapis.com/envoy.extensions.filters.http.router.v3.Router";
   };
+  # Paths a business or public listener must never expose, even though all
+  # other traffic there is forwarded verbatim.
   businessRoutes = e: [
     {
       match.path = "/metrics";
@@ -72,6 +109,8 @@ let
       direct_response.status = 403;
     }
   ];
+  # mTLS for callers: TLS 1.3, client certificate required, matched by exact
+  # URI SAN instead of by CA.
   downstreamTls = allowedIDs: {
     name = "envoy.transport_sockets.tls";
     typed_config = {
@@ -90,6 +129,10 @@ let
       };
     };
   };
+  # Exporters binding loopback are still reachable through the host's mesh
+  # address, so the module blocks them at the firewall. A port that a public
+  # listener already re-exposes is skipped, because that forwarding is
+  # deliberate.
   protectedPorts = lib.unique (
     map (e: e.port) (
       builtins.attrValues (
@@ -105,6 +148,9 @@ let
       )
     )
   );
+  # Path normalization is part of the policy: the Lua filter matches the
+  # normalized path, so escaped or repeated slashes cannot alias a protected
+  # path past the allowlist.
   hcm = routes: filters: {
     name = "envoy.filters.network.http_connection_manager";
     typed_config = {
@@ -140,7 +186,11 @@ in
     allowedIDs = lib.mkOption {
       type = lib.types.listOf lib.types.str;
       default = [ "spiffe://${config.realm.trustDomain}/service/vmagent" ];
+      description = "SPIFFE IDs accepted by the observation listener.";
     };
+    # One entry per exporter that should be reachable from the mesh. The
+    # attribute name becomes the public path, so `garage` is reachable as
+    # /garage/metrics.
     endpoints = lib.mkOption {
       default = { };
       type = lib.types.attrsOf (
@@ -215,6 +265,7 @@ in
   config = lib.mkIf cfg.enable {
     networking.nftables = {
       enable = true;
+      # Defence in depth for exporters that apply no authentication of their own.
       tables.realm-observability = lib.mkIf (protectedPorts != [ ]) {
         family = "inet";
         content = ''
@@ -251,6 +302,8 @@ in
         };
         static_resources = {
           listeners = [
+            # Observation listener: the only listener whose routes come from the
+            # generated allowlist.
             {
               name = "observability_mtls";
               address.socket_address = {
@@ -277,6 +330,8 @@ in
             }
           ]
           ++ lib.mapAttrsToList (name: e: {
+            # Business listener with mTLS: everything is forwarded except the
+            # denied paths; businessAllowedIDs is the caller policy.
             name = "observe_forward_${name}";
             address.socket_address = {
               address = config.realm.address;
@@ -304,6 +359,8 @@ in
             ];
           }) (lib.filterAttrs (_: e: e.businessProxyPort != null) endpoints)
           ++ lib.mapAttrsToList (name: e: {
+            # Public port kept for compatibility: no mTLS, but the same denied
+            # paths, so metrics and debug endpoints stay private.
             name = "observe_business_${name}";
             address.socket_address = {
               address = config.realm.address;
@@ -373,6 +430,8 @@ in
       };
     };
     systemd.services.envoy.serviceConfig = {
+      # The workload registration attests unix:user:envoy, so the unit must not
+      # run as a DynamicUser whose name changes per start.
       DynamicUser = lib.mkForce false;
       User = "envoy";
       Group = "envoy";
@@ -381,6 +440,10 @@ in
       Restart = lib.mkForce "on-failure";
       RestartSec = "3s";
     };
+    # Envoy is the native SPIFFE terminator: it reads SDS directly, so no
+    # ghostunnel sits in front of it. It keeps host networking because it binds
+    # the mesh address and must reach loopback exporters. Its identity is
+    # host-specific, so one node's SVID cannot be replayed on another.
     realm.workloads.observability = {
       unit = "envoy.service";
       user = "envoy";
@@ -395,6 +458,8 @@ in
         allowedIDs = cfg.allowedIDs;
       };
     };
+    # Business listeners are published like any other ingress, so egresses use
+    # SRV discovery instead of a hard-coded host:port.
     realm.serviceDiscovery.publish = lib.mapAttrs' (
       name: e:
       lib.nameValuePair e.businessService {

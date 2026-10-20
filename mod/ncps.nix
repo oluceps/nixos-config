@@ -19,7 +19,6 @@
         verifyID = "spiffe://nyaw.xyz/service/ncps";
       };
       realm.workloads.ncps = {
-        isolation.dns = true;
         isolation = {
           runtimePaths = [ "/run/ncps" ];
           allowUnixSockets = [ "/run/postgresql" ];

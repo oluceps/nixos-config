@@ -4,7 +4,6 @@
     {
       vaultix.secrets.vault = { };
       realm.workloads.vaultwarden = {
-        isolation.dns = true;
         isolation.hosts."box.nyaw.xyz" = "127.0.0.1";
         ingress.http = {
           port = 18003;
