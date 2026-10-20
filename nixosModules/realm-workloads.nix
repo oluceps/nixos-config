@@ -872,7 +872,9 @@ in
       integrateCaddy = lib.mkEnableOption "merge SRV discovery listeners into the existing Caddy JSON configuration";
       package = mkOption {
         type = types.package;
-        default = pkgs.callPackage ../pkgs/caddy-l4-srv { };
+        # The by-name package is called directly so the fallback also works in
+        # evaluations that do not apply this flake's overlay (the test suites).
+        default = pkgs.callPackage ../pkgs/by-name/caddy-srv.nix { };
         defaultText = lib.literalExpression "pkgs.caddy-srv";
         description = "Caddy with srv_proxy for nodes without the shared Caddy profile.";
       };
