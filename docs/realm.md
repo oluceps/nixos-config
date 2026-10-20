@@ -43,7 +43,7 @@ the loopback adapter in their private namespace. Neither path gives the
 application a route to the host or the Internet.
 
 The generated namespace holder starts before sockets.target. systemd owns
-the listening sockets; systemd-socket-proxyd bridges private loopback and
+the workload-facing sockets; systemd-socket-proxyd bridges private loopback and
 Unix sockets. No application needs to implement systemd socket activation.
 
 Application units receive a private `/run` containing their egress directory,
@@ -65,16 +65,42 @@ application responsibilities.
 
 ## SRV discovery and readiness
 
-The egress resolves `<service>.service.mesh.nyaw.xyz` through the local
-Consul DNS listener on 127.0.0.1:8600. It reads SRV priority, weight, port and
-target, then resolves that target's addresses. Positive SRV records are
-cached for their TTL, capped at 30 seconds. An expired cache is not used when
-discovery fails. Connections try alternative endpoints before failing.
+Each discovered egress connects ghostunnel's TLS output to
+`/run/realm-discovery/<workload>/<route>.sock`. The Caddy `srv_proxy` handler
+resolves `<service>.service.mesh.nyaw.xyz` through the local Consul DNS
+listener on 127.0.0.1:8600. It reads SRV priority, weight, port and target,
+then resolves that target's AAAA/A records through the same resolver. Lower
+priorities are tried first; same-priority positive weights are selected
+before zero weights, with IPv6 preferred over IPv4. Failed TCP connections
+fall back to other addresses and endpoints. There is no per-route connector
+process or local TCP forwarding listener.
 
-The small Python connector forwards encrypted bytes between ghostunnel and
-the discovered address. ghostunnel owns the SVID and checks `verifyID`.
-DNS answers cannot change the expected identity. Existing connections remain
-on their selected endpoint; new connections observe discovery changes.
+`mod/caddy.nix` enables `realm.discovery.integrateCaddy`, merging generated
+listeners into the existing `caddy.settings.apps.layer4.servers` JSON.
+`pkgs.caddy-realm` retains all existing HTTP plugins and adds `srv_proxy`.
+Nodes without that Caddy profile run one `realm-discovery.service`, using
+`pkgs.caddy-srv` and generated JSON with its admin API disabled. A fixed
+egress `target` bypasses discovery and has no dependency on either instance.
+
+The discovered egress starts after the selected Caddy unit is ready, using
+`Wants` and `After`. A Caddy restart leaves egress listeners available and
+avoids socket activation cancelling the discovery daemon's stop job. Each
+workload's discovery directory is owned by the Caddy user, with mode 2750
+and that workload's proxy group. Unix sockets inherit this group and have
+mode 0660. Applications' private `/run` does not expose discovery sockets.
+Caddy only forwards TLS ciphertext; ghostunnel owns the SVID and checks
+`verifyID`. Routing uses the local socket, so it does not require SNI.
+DNS answers cannot change the expected identity.
+
+SRV results are cached for `realm.discovery.refresh` (default `5s`),
+independently of DNS TTL. Expired answers are not used when discovery fails;
+negative answers are cached for at most one second. Complete TCP connection
+failure invalidates the cache for the next attempt.
+`realm.discovery.dialTimeout` (default `5s`) bounds each DNS lookup and
+individual TCP attempt, rather than the total time across all endpoints.
+Established connections remain on their selected endpoint; new connections
+observe discovery changes. Reloading the Caddy configuration closes streams
+owned by old handlers. ghostunnel accepts subsequent connections normally.
 
 Only ingress addresses and ports are registered. Native TLS listeners can
 also be registered once the application enforces the equivalent identity
