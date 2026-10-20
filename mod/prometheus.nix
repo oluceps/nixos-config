@@ -18,10 +18,10 @@
           name = "nodens";
           domain = "jp-tyo-2.dn42.nyaw.xyz";
         }
-        # {
-        #   name = "yidhra";
-        #   domain = "sgp-1.dn42.nyaw.xyz";
-        # }
+        {
+          name = "yidhra";
+          domain = "sgp-1.dn42.nyaw.xyz";
+        }
       ];
       socketFor = host: "/run/realm/vmagent/egress/observe-${host}.sock";
       observed =
