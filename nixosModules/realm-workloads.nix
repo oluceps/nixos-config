@@ -9,6 +9,45 @@ let
   cfg = config.realm;
   active = lib.filterAttrs (_: w: w.enable) cfg.workloads;
   python = pkgs.python3.withPackages (p: [ p.dnspython ]);
+  json = pkgs.formats.json { };
+  discoveryUnit = if cfg.discovery.integrateCaddy then "caddy.service" else "realm-discovery.service";
+  discoveryUser = if cfg.discovery.integrateCaddy then "caddy" else "realm-discovery";
+  discoveryPath = name: route: "/run/realm-discovery/${name}/${route}.sock";
+  resolverHost =
+    if lib.hasInfix ":" cfg.discovery.resolver then
+      "[${cfg.discovery.resolver}]"
+    else
+      cfg.discovery.resolver;
+  discoveryServers = lib.concatMapAttrs (
+    name: w:
+    lib.mapAttrs' (
+      route: e:
+      lib.nameValuePair "realm-egress-${name}-${route}" {
+        listen = [ "unix/${discoveryPath name route}|0660" ];
+        routes = [
+          {
+            handle = [
+              {
+                handler = "srv_proxy";
+                name = "${e.service}.service.${cfg.discovery.domain}";
+                resolver = "${resolverHost}:${toString cfg.discovery.port}";
+                refresh = cfg.discovery.refresh;
+                dial_timeout = cfg.discovery.dialTimeout;
+              }
+            ];
+          }
+        ];
+      }
+    ) (lib.filterAttrs (_: e: e.target == null) w.egress)
+  ) active;
+  hasDiscovery = discoveryServers != { };
+  discoveryConfig = json.generate "realm-discovery.json" {
+    admin = {
+      disabled = true;
+      config.persist = false;
+    };
+    apps.layer4.servers = discoveryServers;
+  };
   proxy = "${config.systemd.package}/lib/systemd/systemd-socket-proxyd";
   appName = w: lib.removeSuffix ".service" w.unit;
   proxyUser = name: "realm-${name}";
@@ -24,7 +63,7 @@ let
         target = mkOption {
           type = types.nullOr types.str;
           default = null;
-          description = "Fixed TLS destination as host:port, instead of SRV discovery.";
+          description = "Fixed TLS destination as host:port or unix:/path, instead of SRV discovery.";
         };
         socket = mkOption {
           type = types.nullOr types.str;
@@ -153,7 +192,11 @@ let
             "d ${base name} 0755 root root -"
             "d ${base name}/egress 0750 root ${w.group} -"
             "d ${base name}/ingress 0750 root ${user} -"
-          ];
+          ]
+          ++
+            lib.optional (lib.any (e: e.target == null) (builtins.attrValues w.egress))
+              # Inherit this workload's proxy group on sockets created by Caddy.
+              "d /run/realm-discovery/${name} 2750 ${discoveryUser} ${user} -";
           systemd.services."realm-net-${name}" =
             mkIf (w.isolation.privateNetwork && (w.runtime == "systemd" || w.socksProxy.enable))
               {
@@ -264,7 +307,10 @@ let
             };
             systemd.services.${unit} = {
               requires = [ "spire-agent.service" ];
-              after = [ "spire-agent.service" ];
+              # Socket activation must not cancel a discovery daemon's stop
+              # job by starting a dependent egress while it is restarting.
+              wants = lib.optional (e.target == null) discoveryUnit;
+              after = [ "spire-agent.service" ] ++ lib.optional (e.target == null) discoveryUnit;
               serviceConfig = hardened // {
                 Type = "notify";
                 NotifyAccess = "all";
@@ -272,38 +318,23 @@ let
                 User = user;
                 Group = user;
                 SupplementaryGroups = [ "realm-proxies" ];
-                ExecStart = lib.escapeShellArgs (
-                  lib.optionals (e.target == null) [
-                    "${python}/bin/python3"
-                    "${./realm/srv-egress.py}"
-                    "--service"
-                    "${e.service}.service.${cfg.discovery.domain}"
-                    "--resolver"
-                    cfg.discovery.resolver
-                    "--resolver-port"
-                    (toString cfg.discovery.port)
-                    "--"
-                  ]
-                  ++ [
-                    "${cfg.ghostunnelPackage}/bin/ghostunnel"
-                    "client"
-                    "--use-workload-api"
-                    "--cacert"
-                    "${pkgs.cacert}/etc/ssl/certs/ca-bundle.crt"
-                    "--use-workload-api-addr"
-                    "unix://${cfg.spire.socket}"
-                    "--listen"
-                    "systemd:egress"
-                    "--verify-uri"
-                    e.verifyID
-                    "--max-conn-lifetime"
-                    "1h"
-                  ]
-                  ++ lib.optionals (e.target != null) [
-                    "--target"
-                    e.target
-                  ]
-                );
+                ExecStart = lib.escapeShellArgs ([
+                  "${cfg.ghostunnelPackage}/bin/ghostunnel"
+                  "client"
+                  "--use-workload-api"
+                  "--cacert"
+                  "${pkgs.cacert}/etc/ssl/certs/ca-bundle.crt"
+                  "--use-workload-api-addr"
+                  "unix://${cfg.spire.socket}"
+                  "--listen"
+                  "systemd:egress"
+                  "--verify-uri"
+                  e.verifyID
+                  "--max-conn-lifetime"
+                  "1h"
+                  "--target"
+                  (if e.target == null then "unix:${discoveryPath name route}" else e.target)
+                ]);
               };
             };
           }
@@ -672,6 +703,20 @@ in
     };
     ghostunnelPackage = lib.mkPackageOption pkgs "ghostunnel" { };
     discovery = {
+      integrateCaddy = lib.mkEnableOption "merge SRV discovery listeners into the existing Caddy JSON configuration";
+      package = mkOption {
+        type = types.package;
+        default = pkgs.callPackage ../pkgs/caddy-l4-srv { };
+        defaultText = lib.literalExpression "pkgs.caddy-srv";
+        description = "Caddy with srv_proxy for nodes without the shared Caddy profile.";
+      };
+      servers = mkOption {
+        type = json.type;
+        readOnly = true;
+        internal = true;
+        default = discoveryServers;
+        description = "Generated Caddy L4 servers, merged by the shared Caddy profile.";
+      };
       domain = mkOption {
         type = types.str;
         default = "mesh.nyaw.xyz";
@@ -683,6 +728,16 @@ in
       port = mkOption {
         type = types.port;
         default = 8600;
+      };
+      refresh = mkOption {
+        type = types.str;
+        default = "5s";
+        description = "SRV cache lifetime as a positive Caddy duration; independent of DNS TTL.";
+      };
+      dialTimeout = mkOption {
+        type = types.str;
+        default = "5s";
+        description = "Timeout for each DNS lookup and individual TCP connection attempt.";
       };
     };
     workloads = mkOption {
@@ -778,13 +833,53 @@ in
   };
   config = mkIf cfg.enable {
     users.groups = lib.mkMerge [
-      { realm-proxies = { }; }
+      {
+        realm-proxies = { };
+        realm-discovery = mkIf (hasDiscovery && !cfg.discovery.integrateCaddy) { };
+      }
       (select [ "users" "groups" ] { } generated)
     ];
-    users.users = select [ "users" "users" ] { } generated;
-    systemd.services = select [ "systemd" "services" ] { } generated;
+    users.users = lib.mkMerge [
+      (select [ "users" "users" ] { } generated)
+      {
+        realm-discovery = mkIf (hasDiscovery && !cfg.discovery.integrateCaddy) {
+          isSystemUser = true;
+          group = "realm-discovery";
+        };
+      }
+    ];
+    systemd.services = lib.mkMerge [
+      (select [ "systemd" "services" ] { } generated)
+      {
+        realm-discovery = mkIf (hasDiscovery && !cfg.discovery.integrateCaddy) {
+          description = "Realm SRV discovery and TLS stream forwarding";
+          wantedBy = [ "multi-user.target" ];
+          wants = [ "consul.service" ];
+          after = [
+            "consul.service"
+            "systemd-tmpfiles-setup.service"
+          ];
+          serviceConfig = hardened // {
+            Type = "notify";
+            User = discoveryUser;
+            Group = "realm-discovery";
+            StateDirectory = "realm-discovery";
+            Environment = [
+              "XDG_DATA_HOME=%S/realm-discovery"
+              "XDG_CONFIG_HOME=%S/realm-discovery"
+            ];
+            ReadWritePaths = [ "/run/realm-discovery" ];
+            ExecStartPre = "${cfg.discovery.package}/bin/caddy validate --config ${discoveryConfig}";
+            ExecStart = "${cfg.discovery.package}/bin/caddy run --config ${discoveryConfig}";
+          };
+        };
+      }
+    ];
     systemd.sockets = select [ "systemd" "sockets" ] { } generated;
-    systemd.tmpfiles.rules = select [ "systemd" "tmpfiles" "rules" ] [ ] generated;
+    systemd.tmpfiles.rules = lib.mkMerge [
+      (lib.optional hasDiscovery "d /run/realm-discovery 0711 ${discoveryUser} root -")
+      (select [ "systemd" "tmpfiles" "rules" ] [ ] generated)
+    ];
     realm.spire.registrations = select [ "realm" "spire" "registrations" ] { } generated;
     realm.serviceDiscovery.publish = select [ "realm" "serviceDiscovery" "publish" ] { } generated;
     assertions = lib.mkMerge [
@@ -793,6 +888,10 @@ in
         {
           assertion = config.realm.serviceDiscovery.enable;
           message = "realm: Consul service discovery must be enabled.";
+        }
+        {
+          assertion = !cfg.discovery.integrateCaddy || (config.systemd.services.caddy.enable or false);
+          message = "realm.discovery.integrateCaddy requires the shared Caddy service.";
         }
       ]
     ];

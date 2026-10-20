@@ -132,7 +132,42 @@ lib.runTests {
     expected = true;
   };
   testDefaultEgressUsesDiscovery = {
-    expr = lib.hasInfix "srv-egress.py" cfg.systemd.services.realm-egress-sender-receiver.serviceConfig.ExecStart;
+    expr =
+      let
+        unit = cfg.systemd.services.realm-egress-sender-receiver;
+      in
+      lib.hasInfix "--target unix:/run/realm-discovery/sender/receiver.sock" unit.serviceConfig.ExecStart
+      && lib.elem "realm-discovery.service" unit.wants
+      && !(lib.elem "realm-discovery.service" unit.requires)
+      && lib.elem "realm-discovery.service" unit.after
+      && !(lib.hasInfix "python3" unit.serviceConfig.ExecStart);
+    expected = true;
+  };
+  testDiscoveryJSON = {
+    expr = cfg.realm.discovery.servers.realm-egress-sender-receiver;
+    expected = {
+      listen = [ "unix//run/realm-discovery/sender/receiver.sock|0660" ];
+      routes = [
+        {
+          handle = [
+            {
+              handler = "srv_proxy";
+              name = "receiver.service.mesh.nyaw.xyz";
+              resolver = "127.0.0.1:8600";
+              refresh = "5s";
+              dial_timeout = "5s";
+            }
+          ];
+        }
+      ];
+    };
+  };
+  testFixedEgressNeedsNoDiscovery = {
+    expr =
+      fixed.realm.discovery.servers == { }
+      && !(lib.elem "realm-discovery.service" fixed.systemd.services.realm-egress-sender-receiver.requires)
+      && !(lib.elem "realm-discovery.service" fixed.systemd.services.realm-egress-sender-receiver.wants)
+      && !(fixed.systemd.services ? realm-discovery);
     expected = true;
   };
   testNoCredentialCopy = {

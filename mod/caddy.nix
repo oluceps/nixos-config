@@ -22,18 +22,7 @@
           expose = lib.mkEnableOption "API env";
           package = lib.mkOption {
             type = lib.types.package;
-            default = (
-              pkgs.caddy.withPlugins {
-                plugins = [
-                  "github.com/caddy-dns/cloudflare@v0.0.0-20250724223520-f589a18c0f5d"
-                  "github.com/mholt/caddy-ratelimit@v0.1.0"
-                  "github.com/ss098/certmagic-s3@v0.0.0-20250607141218-0c4ff782fbd0"
-                  "github.com/greenpau/caddy-security@v1.1.31"
-                  "github.com/mholt/caddy-l4@v0.0.0-20260112235400-e24201789f06"
-                ];
-                hash = "sha256-AgRty5tIy8foRR2U/MGl4NwDHc6rVuc5S9pQSeE12wo=";
-              }
-            );
+            default = pkgs.caddy-realm;
             # ;
           };
           settings = lib.mkOption {
@@ -59,6 +48,8 @@
             };
           };
         };
+        realm.discovery.integrateCaddy = true;
+        caddy.settings.apps.layer4.servers = mkIf config.realm.enable config.realm.discovery.servers;
         realm.observability.endpoints.caddy.port = 20242;
         caddy.settings.apps.http.servers.observability = {
           listen = [ "127.0.0.1:20242" ];
@@ -118,6 +109,9 @@
               ExecReload = "${caddyBin} reload --force --config /etc/caddy/config.json";
               DynamicUser = true;
               StateDirectory = "caddy";
+              ReadWritePaths = lib.optionals (config.realm.enable && config.realm.discovery.servers != { }) [
+                "/run/realm-discovery"
+              ];
               AmbientCapabilities = [ "CAP_NET_BIND_SERVICE" ];
               Environment = [ "XDG_DATA_HOME=%S" ];
               Restart = "always";
@@ -134,7 +128,10 @@
           after = [
             "network.target"
             "network-online.target"
+            "systemd-tmpfiles-setup.service"
+            "consul.service"
           ];
+          wants = [ "consul.service" ];
           requires = [ "network-online.target" ];
           reloadTriggers = [ configfile ];
         };
