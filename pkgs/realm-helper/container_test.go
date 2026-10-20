@@ -3,7 +3,6 @@ package main
 import (
 	"encoding/json"
 	"net"
-	"net/http"
 	"os"
 	"path/filepath"
 	"strconv"
@@ -105,35 +104,6 @@ func TestStartContainerRoutesBridgesLoopbackAndIngress(t *testing.T) {
 			t.Fatalf("unexpected payload %q", got)
 		}
 	})
-}
-
-func TestHealthChecksUnixBackend(t *testing.T) {
-	directory := t.TempDir()
-	socket := filepath.Join(directory, "backend.sock")
-	listener, err := net.Listen("unix", socket)
-	if err != nil {
-		t.Fatalf("listen: %v", err)
-	}
-	t.Cleanup(func() { listener.Close() })
-
-	status := 200
-	server := &http.Server{Handler: http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
-		w.WriteHeader(status)
-	})}
-	go server.Serve(listener)
-	t.Cleanup(func() { server.Close() })
-
-	previous := backendPath
-	backendPath = socket
-	t.Cleanup(func() { backendPath = previous })
-
-	if code := healthCommand(); code != 0 {
-		t.Fatalf("healthy backend reported %d", code)
-	}
-	status = 503
-	if code := healthCommand(); code != 1 {
-		t.Fatalf("failing backend reported %d", code)
-	}
 }
 
 // TestHelperProcessExit is not a test: it is the child that supervise starts.

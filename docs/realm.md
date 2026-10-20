@@ -220,6 +220,13 @@ socket. The official image's tini entrypoint and migrateandstart command are
 preserved. Verify the actual deployed image when upgrading the existing
 `latest` tag.
 
+The container health probe is `node /realm/health.cjs`, a script mounted next to
+the helper: it requests `/health` on `REALM_HEALTH_PORT`, or the mounted backend
+socket at `/`, and treats any response below 500 as healthy. It runs on the
+image's own Node runtime so the check can be extended without giving the static
+helper a probing surface; an image with neither a shell nor Node would need a
+separate static prober instead.
+
 Immich uses separate private namespaces for `immich-server`, `redis-immich`,
 `immich-machine-learning` and `immich-public-proxy`. The server connects to
 PostgreSQL on 127.0.0.1:15432, Redis on 127.0.0.1:6379 and ML on

@@ -514,6 +514,36 @@
               ];
             }
             {
+              name = "realm_observability";
+              rules = [
+                {
+                  # A monitoring host whose Workload API is unavailable stops
+                  # scraping almost entirely: each egress adapter waits for an
+                  # SVID, the targets time out, and the scrape counter hardly
+                  # moves. A failure-rate alert therefore stays quiet, and so does
+                  # systemd, because an Agent without an enrollment is skipped
+                  # rather than failed.
+                  #
+                  # Every target here is scraped at least twice per 30 minutes
+                  # (the slowest interval is 10m for the autopeer probes), while a
+                  # healthy host reaches roughly twenty. Three times the target
+                  # count separates the two, and only the adapter-free self-scrape
+                  # keeps counting after a stall.
+                  alert = "RealmScraperStalled";
+                  expr = ''
+                    sum by (instance) (increase(vm_promscrape_scrapes_total[30m]))
+                      < sum by (instance) (vm_promscrape_targets) * 3
+                  '';
+                  for = "15m";
+                  labels.severity = "critical";
+                  annotations = {
+                    summary = "scraping through the realm gateway has stalled on {{ $labels.instance }}";
+                    description = "Check `systemctl status spire-agent` and that /var/lib/realm-spire/trust-bundle.pem exists on {{ $labels.instance }}, then the egress adapters in `journalctl -u realm-egress-...`. An unenrolled Agent is skipped silently, which leaves every adapter without an SVID.";
+                  };
+                }
+              ];
+            }
+            {
               name = "pier_health";
               rules = [
                 {

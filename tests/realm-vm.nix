@@ -53,6 +53,12 @@ pkgs.testers.runNixOSTest {
                 module = "icmp";
                 target = "198.51.100.1";
               }
+              # A URL target is percent-encoded in the query, which the gateway
+              # must accept: only the path is subject to the slash checks.
+              {
+                module = "http_2xx";
+                target = "https://example.invalid";
+              }
             ];
           };
         };
@@ -339,6 +345,7 @@ pkgs.testers.runNixOSTest {
     with subtest("probe requires an exact module and target without duplicate or extra parameters"):
         machine.succeed(observe("/prober/probe?module=icmp&target=198.51.100.1", "-f"))
         machine.succeed(observe("/prober/probe?target=198.51.100.1&module=icmp", "-f"))
+        machine.succeed(observe("/prober/probe?module=http_2xx&target=https%3A%2F%2Fexample.invalid", "-f"))
         for query in ["module=icmp&target=127.0.0.1", "module=unknown&target=198.51.100.1", "module=icmp&target=198.51.100.1&target=127.0.0.1", "module=icmp&target=198.51.100.1&%74arget=127.0.0.1", "module=icmp&target=198.51.100.1&debug=true", "module=icmp&target=198.51.100.1&module=http_2xx"]:
             assert machine.succeed(observe("/prober/probe?" + query, "-o /dev/null -w '%{http_code}'")) == "403", query
     with subtest("the plaintext business port keeps its path restrictions"):
