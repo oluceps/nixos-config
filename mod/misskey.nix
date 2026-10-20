@@ -124,16 +124,17 @@
               "/run/realm/misskey/egress:/realm/egress:ro"
               "/run/realm-misskey/backend:/realm/backend:rw"
               "${routes}:/realm/routes.json:ro"
-              "${../nixosModules/realm/container-launch.cjs}:/realm/launch.cjs:ro"
-              "${../nixosModules/realm/container-health.cjs}:/realm/health.cjs:ro"
+              "${config.realm.helperPackage}/bin/realm-helper:/realm/helper:ro"
             ];
           # pull = "always";
           image = "misskey/misskey:latest";
           networks = [ "none" ];
           user = "1000:1000";
+          # The image's tini entrypoint stays in place; tini runs the adapter,
+          # which publishes the local sockets and then runs the migrate command.
           cmd = [
-            "node"
-            "/realm/launch.cjs"
+            "/realm/helper"
+            "launch"
             "pnpm"
             "run"
             "migrateandstart"
@@ -144,7 +145,7 @@
             "--cap-drop=ALL"
             "--security-opt=no-new-privileges"
             "--sysctl=net.ipv4.ip_unprivileged_port_start=0"
-            "--health-cmd=node /realm/health.cjs"
+            "--health-cmd=/realm/helper health"
             "--health-interval=30s"
             "--health-start-period=120s"
           ];

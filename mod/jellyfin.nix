@@ -7,7 +7,6 @@
         openFirewall = false;
       };
       realm.workloads.jellyfin = {
-        isolation.dns = true;
         ingress.http = {
           port = 18096;
           target = "127.0.0.1:8096";

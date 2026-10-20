@@ -1,4 +1,8 @@
--- allowed_paths is generated from the declared endpoints; no caller-selected backend.
+-- Request filter for the observation listener. `allowed_paths` is generated in
+-- Nix from realm.observability.endpoints; no caller-selected backend exists.
+-- Metrics paths map to true, probe paths map to the exact module/target pairs
+-- that may be requested. Everything else is denied, including non-GET methods,
+-- unexpected query parameters and paths hidden behind odd escaping.
 local function decode(value)
   local out, i = {}, 1
   while i <= #value do
