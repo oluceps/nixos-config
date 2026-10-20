@@ -172,7 +172,7 @@
           #   };
           # in
           # helpers.kernelModuleLLVMOverride (pkgs.linuxKernel.packagesFor rawKernel);
-          pkgs.linuxPackages_latest;
+          pkgs.linuxPackages_testing;
         blacklistedKernelModules = [ "hid_nintendo" ];
         kernelParams = [
           "amd_pstate=active"
