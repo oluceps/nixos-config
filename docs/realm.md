@@ -167,10 +167,11 @@ authenticated egress.
 Caddy is a systemd edge workload with host networking and a private `/run`
 view. Its management API listens on `/run/caddy/admin.sock` (0600), inside a
 0700 directory. Only its own egress directories, discovery listeners, runtime
-directory and DNS resolver sockets are exposed. Envoy is an external Internet gateway.
+directory and DNS resolver sockets are exposed. The Internet gateway is a separate Caddy process.
 vmagent keeps its existing network access while its other monitoring targets
 are migrated; its SeaweedFS egress is already authenticated. These exceptions
-use `isolation.privateNetwork = false` explicitly; Envoy and vmagent also use
+use `isolation.privateNetwork = false` explicitly; the Internet gateway and vmagent
+also use
 `runtime = "external"`.
 Services without migration profiles and VM guests keep their previous isolation.
 BIRD, Yggdrasil and VXLAN keep their current network configuration.
@@ -247,29 +248,32 @@ other optional server-side network integrations require separate egress
 declarations when enabled. Check database extension upgrades and backup
 privileges separately from the SPIFFE/peer authentication path.
 
-Internet access uses Envoy's HTTP dynamic forward proxy and CONNECT
-termination. Envoy is the native SPIFFE ingress on port 19328, registered as
-`internet-proxy`; there is no separate gateway ghostunnel or plaintext proxy
-listener. The clients' local proxy addresses remain unchanged. Envoy obtains
-its SVID and trust bundle directly from the SPIRE Agent over SDS and requires
-a client certificate with one of the ingress's exact `allowedIDs` URI SANs.
+Internet access uses Caddy's forward proxy and CONNECT termination. Caddy is
+the native SPIFFE ingress on port 19328, registered as `internet-proxy`; there
+is no separate gateway ghostunnel or plaintext proxy listener. The clients'
+local proxy addresses remain unchanged. Caddy obtains its SVID and trust bundle
+directly from the SPIRE Agent over the Workload API and requires a client
+certificate with one of the ingress's exact `allowedIDs` URI SANs.
 
 The gateway has no domain whitelist and performs no application TLS
-interception. Downstream RBAC checks the resolved IP and port, and upstream
-RBAC rechecks the selected address before connecting. Both use default-deny
-rules permitting public HTTP on ports 80/443 and CONNECT only on port 443.
-Private, loopback, link-local, IPv4-mapped IPv6 and Yggdrasil destinations are
-denied, including names resolving into those ranges. The Envoy listener
-becomes active after its SDS credentials arrive; DNS publication does not
-wait for this readiness. Misskey's public proxy bypasses are removed. Its only bypass
-is s3.nyaw.xyz, mapped inside the container to the dedicated local adapter
-through Caddy, instead of the public Internet gateway.
+interception. The proxy resolves a destination, checks the ACL against the
+resolved address, and then dials exactly that address, so a name cannot resolve
+somewhere else between the check and the connection. The ACL denies private,
+loopback, link-local, multicast and Yggdrasil destinations, including names
+resolving into those ranges, and then permits the rest. Two route groups split
+the ports, because the proxy cannot tell CONNECT from a plain request when it
+checks a port: a tunnel may reach 443, an absolute-URI request 80 and 443, and
+Synapse additionally reaches 8448 through a route its identity selects. The
+listener becomes available once the Workload API has issued the SVID; DNS
+publication does not wait for it. Misskey's public proxy bypasses are removed.
+Its only bypass is s3.nyaw.xyz, mapped inside the container to the dedicated
+local adapter through Caddy, instead of the public Internet gateway.
 
-`mod/overlay.nix` exports `overlays.envoy` and applies it to hosts importing
-the overlay module. It pins the official Envoy 1.40.0 release binaries and
-SHA-256 digests for x86_64-linux and aarch64-linux, with their ELF dependencies
-patched for NixOS. This avoids reusing the older nixpkgs Bazel WORKSPACE
-packaging for the release's bzlmod build.
+`mod/overlay.nix` still exports `overlays.envoy` and applies it, but no module
+uses `pkgs.envoy` any more: the Internet gateway runs on Caddy and the cache
+adapter it also provided was unused. The overlay and its application can be
+deleted; it pinned the official Envoy 1.40.0 release binaries and SHA-256
+digests for x86_64-linux and aarch64-linux.
 
 ## Vaultix
 
@@ -312,7 +316,7 @@ An application implementing SPIFFE TLS itself can declare
 the workload's SPIRE registration to its application unit and Unix user,
 grants access to the Agent socket, and publishes its ingress in the generated DNS zone.
 The application must configure its own listener, consume SDS updates and
-enforce the declared `allowedIDs`; the Envoy gateway reads those declarations
+enforce the declared `allowedIDs`; the Internet gateway reads those declarations
 directly. Native ingress currently requires a host-networked application.
 Applications without SDS support can instead use the helper below.
 
@@ -470,7 +474,7 @@ SOCKS bridge.
 Jellyfin, Vaultwarden, Forgejo and NCPS are isolated workloads declared in their
 own `mod/` service profiles. Caddy reaches the application HTTP backends through Unix
 mTLS egress sockets; NCPS instead accepts the dedicated Nix cache client. Their public Internet requests use the authenticated
-Envoy gateway; Forgejo explicitly enables its application proxy and also sets
+Internet gateway; Forgejo explicitly enables its application proxy and also sets
 libcurl proxy variables for Git subprocesses. Jellyfin media paths and device
 permissions are preserved; LAN discovery and direct media ports do not cross
 its private network namespace.
@@ -487,7 +491,7 @@ SMTP for Forgejo and Vaultwarden uses Stalwart's SPIFFE-authenticated
 S3 ingress. Workload-local `/etc/hosts` aliases direct the original SMTP/S3
 hostnames to the local adapters, preserving application TLS verification and
 SNI. These aliases do not change host-wide DNS. No migrated profile needs a
-resolver: every outbound name is either aliased here or resolved by the Envoy
+resolver: every outbound name is either aliased here or resolved by the gateway
 gateway on the far side of a CONNECT request. `isolation.dns` remains available
 for a profile that resolves names it cannot enumerate: one static helper owns
 UDP and TCP 127.0.0.53 inside the namespace and relays every query as
@@ -502,7 +506,7 @@ runtime access; the Forgejo daemon's private namespace does not isolate CI
 jobs or remove runner privileges.
 
 `tests/realm-services.nix` runs the actual Jellyfin, Vaultwarden, Forgejo and
-NCPS executables with real PostgreSQL, SPIRE and Envoy. Local SMTP/S3 fixtures
+NCPS executables with real PostgreSQL and SPIRE. Local SMTP/S3 fixtures
 supply dummy credentials and certificates. It checks application startup,
 authenticated ingress, SMTP/S3 certificate names, PostgreSQL role isolation,
 NCPS observation, FFmpeg proxy requests, scoped UDP/TCP DNS through a dedicated

@@ -3,12 +3,7 @@ let
   pkgs = import nixpkgs {
     system = "x86_64-linux";
     config.allowUnfree = true;
-    overlays = [
-      (import ../mod/overlay.nix {
-        inputs = { };
-        withSystem = null;
-      }).flake.overlays.envoy
-    ];
+    overlays = [ ];
   };
 in
 pkgs.testers.runNixOSTest {
