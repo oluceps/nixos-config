@@ -26,10 +26,10 @@
             service = "forgejo";
             verifyID = "spiffe://nyaw.xyz/service/forgejo";
           };
-          telegram-search = {
-            service = "telegram-search";
-            verifyID = "spiffe://nyaw.xyz/service/telegram-search";
-          };
+          # telegram-search = {
+          #   service = "telegram-search";
+          #   verifyID = "spiffe://nyaw.xyz/service/telegram-search";
+          # };
           synapse = {
             service = "synapse";
             verifyID = "spiffe://nyaw.xyz/service/synapse";
