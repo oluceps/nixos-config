@@ -1,6 +1,6 @@
 {
   flake.modules.nixos.vaultwarden =
-    { config, ... }:
+    { config, pkgs, ... }:
     {
       vaultix.secrets.vault = { };
       realm.workloads.vaultwarden = {
@@ -10,14 +10,9 @@
           target = "127.0.0.1:8003";
           privateLoopback = true;
           service = "vaultwarden";
-          allowedIDs = [ "spiffe://nyaw.xyz/service/caddy" ];
+          allowedIDs = config.realm.caddy.allowedIDs.vaultwarden;
         };
         egress = {
-          postgresql = {
-            service = "postgresql-vaultwarden";
-            verifyID = "spiffe://nyaw.xyz/service/postgresql";
-            localPort = 5432;
-          };
           smtp = {
             service = "smtp-submission";
             verifyID = "spiffe://nyaw.xyz/service/stalwart";
@@ -29,6 +24,11 @@
             localPort = 13128;
           };
         };
+      };
+      systemd.services.vaultwarden = {
+        after = [ "postgresql.target" ];
+        requires = [ "postgresql.target" ];
+        serviceConfig.BindReadOnlyPaths = [ "/run/postgresql" ];
       };
       systemd.services.vaultwarden.environment = {
         HTTP_PROXY = "http://127.0.0.1:13128";
@@ -48,7 +48,13 @@
           rocketPort = 8003;
         };
         # backupDir = "/var/lib/bitwarden_rs/backup";
-        environmentFile = config.vaultix.secrets.vault.path;
+        environmentFile = [
+          config.vaultix.secrets.vault.path
+          # This file overrides the database URL from the encrypted environment.
+          (pkgs.writeText "vaultwarden-database.env" ''
+            DATABASE_URL=postgresql://vault@localhost/vaultwarden?host=/run/postgresql&sslmode=disable
+          '')
+        ];
       };
     };
 }

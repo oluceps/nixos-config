@@ -16,7 +16,7 @@
   ];
 
   meta = {
-    description = "Realm workload helper: DNS relay, socket bridge, container adapter";
+    description = "Realm workload helper: socket bridge, container adapter, SPIRE enrollment";
     license = lib.licenses.mit;
     mainProgram = "realm-helper";
     platforms = lib.platforms.linux;

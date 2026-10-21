@@ -33,7 +33,7 @@ realm.workloads.example = {
     target = "127.0.0.1:8080";
     privateLoopback = true;
     service = "example";
-    allowedIDs = [ "spiffe://nyaw.xyz/service/caddy" ];
+    allowedIDs = [ config.realm.caddy.localID ];
   };
 };
 ```
@@ -56,104 +56,82 @@ SPIRE Agent socket to an application using proxy mode.
 
 Each workload has a separate proxy account. Its SPIRE registrations require
 both the actual proxy/helper systemd unit and its Unix user. The default
-SPIFFE ID is `spiffe://nyaw.xyz/service/<workload>`. Instances sharing an ID
-share authorization. Root on a node remains trusted.
+SPIFFE ID is `spiffe://nyaw.xyz/service/<workload>`. Caddy uses
+`spiffe://nyaw.xyz/service/caddy-<host>`. Its receiver policies live in
+`mod/realm-caddy-policy.nix` and admit only the nodes that need each route.
+Other instances that share an ID still share authorization. Root on a node remains trusted.
 
 An ingress requires an explicit nonempty `allowedIDs` list. Declaring an
 egress does not grant access at the receiver. ghostunnel enforces connection
 authorization; database roles and HTTP operation/tenant authorization remain
 application responsibilities.
 
-## SRV discovery
+## Direct TLS connections and CoreDNS
 
-Each discovered egress connects ghostunnel's TLS output to
-`/run/realm-discovery/<workload>/<route>.sock`. The Caddy `srv_proxy` handler
-resolves `<service>.svc.mesh.nyaw.xyz` through the local CoreDNS
-listener on 127.0.0.1:8600. It reads SRV priority, weight, port and target,
-then resolves that target's AAAA/A records through the same resolver. Lower
-priorities are tried first; same-priority positive weights are selected
-before zero weights, with IPv6 preferred over IPv4. Failed TCP connections
-fall back to other addresses and endpoints. There is no per-route connector
-process or local TCP forwarding listener.
+The ghostunnel client connects directly to the receiver's mesh address and port.
+Nix gets that destination from `realm.serviceDiscovery.catalog`, the same catalog
+that generates the CoreDNS zone. No Caddy SRV connector or discovery socket sits
+between the two ghostunnel processes. The client still checks the exact
+`verifyID`, and the receiver still checks its explicit `allowedIDs`.
 
-`mod/caddy.nix` enables `realm.discovery.integrateCaddy`, merging generated
-listeners into the existing `caddy.settings.apps.layer4.servers` JSON.
-`pkgs.caddy-realm` retains all existing HTTP plugins and adds `srv_proxy`.
-Nodes without that Caddy profile run one `realm-discovery.service`, using
-`pkgs.caddy-srv` and generated JSON with its admin API disabled. A fixed
-egress `target` bypasses discovery and has no dependency on either instance.
+A service must have exactly one catalog endpoint unless its egress declares an
+explicit `target`. Missing or multiple endpoints fail configuration validation.
+There is no runtime endpoint selection, SRV cache or automatic failover.
+Address and port changes require deployment to the affected clients.
 
-The discovered egress starts after the selected Caddy unit is ready, using
-`Wants` and `After`. A Caddy restart leaves egress listeners available and
-avoids socket activation cancelling the discovery daemon's stop job. Each
-workload's discovery directory is owned by the Caddy user, with mode 2750
-and that workload's proxy group. Unix sockets inherit this group and have
-mode 0660. Applications' private `/run` does not expose discovery sockets.
-Caddy only forwards TLS ciphertext; ghostunnel owns the SVID and checks
-`verifyID`. Routing uses the local socket, so it does not require SNI.
-DNS answers cannot change the expected identity.
+CoreDNS continues to serve the complete immutable `mesh.nyaw.xyz` zone on
+loopback UDP/TCP 8600. Node AAAA records come from `registry.toml`. Ingress
+AAAA and SRV records come from the catalog. systemd-resolved retains its suffix
+delegation, and `/etc/coredns/mesh.zone` remains available for inspection.
+Stopped services remain in the zone. DNS publication does not imply readiness.
 
-SRV results are cached for `realm.discovery.refresh` (default `5s`),
-independently of DNS TTL. Expired answers are not used when discovery fails;
-negative answers are cached for at most one second. Complete TCP connection
-failure invalidates the cache for the next attempt.
-`realm.discovery.dialTimeout` (default `5s`) bounds each DNS lookup and
-individual TCP attempt, rather than the total time across all endpoints.
-Established connections remain on their selected endpoint; new connections
-observe discovery changes. Reloading the Caddy configuration closes streams
-owned by old handlers. ghostunnel accepts subsequent connections normally.
-
-Only ingress addresses and ports are published. `mod/mesh-dns.nix` collects
-`realm.serviceDiscovery.publish` from all enabled cluster configurations.
-Node AAAA records come from `registry.toml` through `config.data.node`. Each
-node receives a complete immutable zone with `<host>.node`, `<service>.svc`
-AAAA records and SRV records targeting per-host ingress names. Multiple
-instances of a service produce multiple SRV records with their own ports.
-`ingress.<name>.service` names the published service; egresses keep their
-existing `service` and `verifyID` declarations. Native TLS listeners are
-published in the same way.
-
-CoreDNS serves only `mesh.nyaw.xyz` on loopback UDP/TCP 8600. systemd-resolved
-delegates this suffix to it; no runtime registration, gossip or quorum is
-required. Zone changes take effect when the updated NixOS configuration is
-deployed to each client node. Records have a five-second TTL; the Caddy SRV
-cache remains independent. The zone is immutable and CoreDNS restarts with
-a new Corefile when its store path changes, so no runtime SOA serial update
-is needed. `/etc/coredns/mesh.zone` exposes the generated file for inspection.
-
-Publication is independent of process health: stopped services stay in DNS.
-No probes or automatic health-based record removal are included. Failed TCP
-connections try other published candidates; a successful TCP connection
-followed by a TLS failure does not trigger SRV fallback or request replay.
-Proxies still use systemd readiness notifications while obtaining SVIDs.
-
-Certificates have a one-hour lifetime and ghostunnel connections have a
-one-hour maximum lifetime. Certificate expiry or removal of a SPIRE entry
-does not immediately terminate every established connection. A policy change
-that restarts an ingress also closes its connections.
+Certificates and ghostunnel connections have a one-hour maximum lifetime.
+Removing a SPIRE entry does not immediately close an established connection.
+Restart the affected ingress when a policy change must close its connections.
 
 ## PostgreSQL peer authentication
 
-PostgreSQL retains peer authentication and exposes its Unix socket. For each
-remote consumer, a separate ingress runs as a dedicated `realm-pg-*` account.
-The ingress accepts exactly that consumer's SPIFFE ID. A narrow pg_ident map
-maps the local proxy account to the existing database role:
+PostgreSQL runs in a private network namespace with `listen_addresses = ""`.
+Its shared Unix socket remains at `/run/postgresql/.s.PGSQL.5432`.
+No TCP HBA rules remain. Existing database passwords can remain stored, but
+peer authentication does not use them.
 
-| Consumer | Ingress service | Local proxy account | SQL role |
-| --- | --- | --- | --- |
-| Misskey | postgresql-misskey | realm-pg-misskey | misskey |
-| SeaweedFS | postgresql-seaweedfs | realm-pg-seaweedfs | seaweed |
-| Atuin | postgresql-atuin | realm-pg-atuin | atuin |
-| Immich | postgresql-immich | realm-pg-immich | immich |
-| Autopeer | postgresql-autopeer | realm-pg-autopeer | dn42 |
+Same-host applications mount `/run/postgresql` read-only. PostgreSQL checks the
+connecting Unix user. Narrow peer maps retain the existing database roles:
 
-The ingress still presents the PostgreSQL SPIFFE identity to clients.
-Dedicated accounts avoid giving a proxy the same Unix identity as the
-application. Unrelated local database connections retain the general peer
-rule. Its workload explicitly sets `isolation.privateNetwork = false`, while
-the private runtime socket view is retained. Host-local TCP clients retain
-SCRAM-SHA-256 access through 127.0.0.1 and ::1; Unix sockets keep peer
-authentication.
+| Consumer Unix user | Database | SQL role |
+| --- | --- | --- |
+| `vaultwarden` | `vaultwarden` | `vault` |
+| `misskey` | `misskey` | `misskey` |
+| `seaweedfs` | `seaweedfs` | `seaweed` |
+| `atuin` | `atuin` | `atuin` |
+| `immich` | `immich` | `immich` |
+| `pocket-id` | `pocketid` | `pocket-id` |
+
+The general `local all all peer` rule remains for other local applications.
+Database grants still control access to tables and other databases.
+
+Misskey keeps its existing loopback database address inside its rootless
+container. Its helper connects that address directly to the mounted PostgreSQL
+Unix socket as the host `misskey` user. No database ghostunnel or secret rewrite
+is required.
+
+Remote Autopeer instances retain the mTLS ingress `postgresql-autopeer` on
+15438. Its dedicated `realm-pg-autopeer` Unix account maps to SQL role `dn42`
+for the listed Autopeer databases. Removing same-host TLS changes the identity
+check from a SPIFFE proxy to the kernel's Unix peer credentials. It does not
+grant a compromised application another application's Unix identity.
+
+## Unix backend listeners
+
+Forgejo, Grafana, Calibre-Web, Synapse, ntfy and mautrix-telegram serve native
+Unix sockets. Their ingress proxies receive only the group access needed to
+connect. Synapse has separate HTTP and metrics sockets. ntfy uses a Unix
+business socket and retains a separate private TCP adapter for metrics.
+
+TCP-only applications retain `privateLoopback` adapters in their private
+network namespaces. These adapters remain necessary for Atuin, Vaultwarden,
+Immich and other backends without a verified Unix listener.
 
 ## Existing service profiles
 
@@ -166,8 +144,7 @@ authenticated egress.
 
 Caddy is a systemd edge workload with host networking and a private `/run`
 view. Its management API listens on `/run/caddy/admin.sock` (0600), inside a
-0700 directory. Only its own egress directories, discovery listeners, runtime
-directory and DNS resolver sockets are exposed. The Internet gateway is a separate Caddy process.
+0700 directory. Only its own egress directories, runtime directory and DNS resolver sockets are exposed. The Internet gateway is a separate Caddy process.
 vmagent keeps its existing network access while its other monitoring targets
 are migrated; its SeaweedFS egress is already authenticated. These exceptions
 use `isolation.privateNetwork = false` explicitly; the Internet gateway and vmagent
@@ -179,8 +156,8 @@ The existing recursive DNS module is separate from mesh discovery.
 
 Public entrypoints (abhoth, nodens and azasos) import
 `mod/caddy/public.nix`. Shared HTTP routes use Caddy's authenticated Unix
-egress sockets, with SRV discovery and fixed remote SPIFFE IDs. Legacy routes
-for seed, Pocket ID, Memos, Alertmanager and heartrate cross the mesh through
+egress sockets, with direct catalog destinations and fixed remote SPIFFE IDs. Legacy routes
+for seed, Memos, Alertmanager and heartrate cross the mesh through
 eihort's separately authorized `internal-https` ingress (19444); their final
 legacy backend connections are unchanged. The existing `s3-https` ingress
 keeps its application allowlist. The zone apex reaches Misskey directly via
@@ -202,8 +179,7 @@ account and receives its secret script via `LoadCredential`, rather than
 running as the administrator.
 
 Autopeer retains host netlink/WireGuard access and its PostgreSQL egress. Its
-node-specific HTTP ingress authorizes Caddy; nftables rejects non-loopback
-connections to the original API port. Stalwart retains public mail networking,
+node-specific HTTP ingress authorizes Caddy; the original API binds only 127.0.0.1. Stalwart retains public mail networking,
 but its Web API is exposed through the authenticated `stalwart-web` listener
 on the observation gateway. That business listener rejects metrics/debug paths.
 Public Caddy nodes without a local Rustypaste or Stalwart use their advertised
@@ -213,9 +189,8 @@ no longer receives NET_ADMIN, NET_RAW, BPF or PERFMON capabilities, or realtime
 CPU priority.
 
 Misskey uses rootless Podman with `network=none`. Its UID/GID 1000 maps to
-the host misskey account using keep-id. The realm helper adapts its local
-PostgreSQL, Redis, Meilisearch, S3 and HTTP proxy connections to mounted egress
-sockets. The application serves its native Unix socket; no host application
+the host misskey account using keep-id. The realm helper adapts PostgreSQL through the mounted database socket. It
+adapts Redis, Meilisearch, S3 and HTTP proxy connections through egress sockets. The application serves its native Unix socket; no host application
 port is published. The container receives neither SVID keys nor the Agent
 socket. The official image's tini entrypoint and migrateandstart command are
 preserved. Verify the actual deployed image when upgrading the existing
@@ -230,8 +205,8 @@ separate static prober instead.
 
 Immich uses separate private namespaces for `immich-server`, `redis-immich`,
 `immich-machine-learning` and `immich-public-proxy`. The server connects to
-PostgreSQL on 127.0.0.1:15432, Redis on 127.0.0.1:6379 and ML on
-127.0.0.1:3003 through its authenticated egress adapters. ML runs as the
+PostgreSQL through `/run/postgresql`. Redis on 127.0.0.1:6379 and ML on
+127.0.0.1:3003 still use authenticated egress adapters. ML runs as the
 separate `immich-ml` user; its HTTP/HTTPS proxy on 127.0.0.1:13128 reaches the
 Internet gateway under the ML SPIFFE identity. Xet downloads are disabled;
 verify model downloading and inference with the installed model versions.
@@ -243,7 +218,7 @@ administration UI. Do not rely on `IMMICH_MACHINE_LEARNING_URL` alone.
 connects to its own 127.0.0.1:2283 adapter. The full Immich server remains
 available through its mesh ingress rather than this public hostname.
 Its existing Vaultix file contains only a database password and is unchanged;
-the peer authentication path does not use that password. SMTP, OAuth and
+the Unix peer connection does not use that password. SMTP, OAuth and
 other optional server-side network integrations require separate egress
 declarations when enabled. Check database extension upgrades and backup
 privileges separately from the SPIFFE/peer authentication path.
@@ -269,11 +244,8 @@ publication does not wait for it. Misskey's public proxy bypasses are removed.
 Its only bypass is s3.nyaw.xyz, mapped inside the container to the dedicated
 local adapter through Caddy, instead of the public Internet gateway.
 
-`mod/overlay.nix` still exports `overlays.envoy` and applies it, but no module
-uses `pkgs.envoy` any more: the Internet gateway runs on Caddy and the cache
-adapter it also provided was unused. The overlay and its application can be
-deleted; it pinned the official Envoy 1.40.0 release binaries and SHA-256
-digests for x86_64-linux and aarch64-linux.
+The Internet gateway uses Caddy. The local Nix cache adapter still uses Envoy
+in `mod/ncps-client.nix`, so Envoy remains a live dependency.
 
 ## Vaultix
 
@@ -309,6 +281,29 @@ Grafana itself uses its local PostgreSQL peer socket. systemd unsets the legacy
 the other secret environment settings remain available. Loki's instance, memberlist
 and frontend addresses are explicitly loopback, avoiding host interface discovery.
 
+## Pocket ID
+
+The public OIDC route still reaches eihort through `internal-https`. Eihort Caddy
+then uses its dedicated `pocket-id` egress. Pocket ID's business ingress accepts
+only `caddy-eihort` and forwards to `/run/pocket-id/http.sock`. The application
+runs in a private network namespace and shares no Workload API socket.
+
+The existing `pocketid` PostgreSQL database and encryption key remain in use.
+The last generated settings file overrides the old TCP database URL with the
+Unix socket URL. Unix user and SQL role are both `pocket-id`, so the general
+peer rule applies without a name map. The database remains named `pocketid`.
+After deploying this URI, remove the temporary role-migration override
+`/run/systemd/system/pocket-id.service.d/90-role-rename.conf` and its environment
+file `/run/pocket-id-role-rename.env`, then run `systemctl daemon-reload`.
+These runtime files bridge the live role rename until the generated unit is updated.
+No database copy or encryption-key change is part of this migration.
+
+The persisted SMTP address `box.nyaw.xyz:465` resolves to its local adapter only
+inside the workload. The adapter uses the authenticated Stalwart ingress, and
+application TLS still checks `box.nyaw.xyz`. HTTP(S) requests use the Internet
+gateway. LDAP is not enabled and receives no route. Prometheus remains on
+private loopback 9464, behind a separate observation-only ingress.
+
 ## Native certificate consumers
 
 An application implementing SPIFFE TLS itself can declare
@@ -318,28 +313,8 @@ grants access to the Agent socket, and publishes its ingress in the generated DN
 The application must configure its own listener, consume SDS updates and
 enforce the declared `allowedIDs`; the Internet gateway reads those declarations
 directly. Native ingress currently requires a host-networked application.
-Applications without SDS support can instead use the helper below.
-
-```nix
-realm.workloads.native = {
-  isolation.privateNetwork = false;
-  credentials.enable = true;
-};
-```
-
-This produces `svid.pem`, `key.pem` and `bundle.pem` under
-`/run/realm/native/credentials`. The helper owns the files; the application
-group can read the private key with mode 0640. The application starts after
-the initial certificate has been written. The helper watches renewal events.
-
-This is only a credential adapter. The application must verify SPIFFE URI
-identities, enforce its caller policy and reload both identity and trust
-bundle. Merely supporting PEM certificates is insufficient. Applications
-watching certificate files can use the default helper configuration;
-`credentials.settings` exposes upstream helper settings for other reload
-mechanisms. Commands run as the helper account; a reload command may need
-narrow permission to signal or reload its application. Direct network access
-in this mode is an explicit exception to proxy isolation.
+The PEM credential adapter was removed. Applications on the proxy path receive
+neither a private key nor the Workload API socket.
 
 ## Initial enrollment and deployment
 
@@ -374,9 +349,9 @@ enrollment tools are administrative commands, not workload capabilities.
 ## Verification
 
 `tests/realm-workloads.nix` checks evaluation and policy wiring.
-`tests/realm-vm.nix` checks actual SPIRE enrollment, SRV discovery, authorized
+`tests/realm-vm.nix` checks actual SPIRE enrollment, direct TLS connections, authorized
 and rejected mTLS peers, PostgreSQL peer authentication, socket isolation,
-helper key access, Internet proxy destination restrictions and registration
+Internet proxy destination restrictions and registration
 reconciliation. `tests/realm-immich.nix` imports the actual Immich, PostgreSQL
 and Internet gateway profiles with fixture application processes, real
 PostgreSQL/Redis and real SPIRE. It checks dependency forwarding, peer role
@@ -479,12 +454,10 @@ libcurl proxy variables for Git subprocesses. Jellyfin media paths and device
 permissions are preserved; LAN discovery and direct media ports do not cross
 its private network namespace.
 
-Forgejo and NCPS retain their local PostgreSQL peer sockets. Vaultwarden's
-existing database URL remains valid inside its namespace through a dedicated
-PostgreSQL ingress, whose operating-system account maps only to database role
-`vault` in database `vaultwarden`. Presenting the old password cannot select
-another database role through that ingress. Existing PostgreSQL mesh TCP
-compatibility remains unchanged.
+Forgejo and NCPS retain their local PostgreSQL peer sockets. Vaultwarden's final
+environment file selects the mounted Unix socket. Its peer map accepts Unix
+user `vaultwarden` as SQL role `vault` in database `vaultwarden`.
+PostgreSQL TCP listeners and SCRAM HBA entries are removed.
 
 SMTP for Forgejo and Vaultwarden uses Stalwart's SPIFFE-authenticated
 `smtp-submission` ingress. S3 for Forgejo and NCPS uses Caddy's authenticated
@@ -492,14 +465,9 @@ S3 ingress. Workload-local `/etc/hosts` aliases direct the original SMTP/S3
 hostnames to the local adapters, preserving application TLS verification and
 SNI. These aliases do not change host-wide DNS. No migrated profile needs a
 resolver: every outbound name is either aliased here or resolved by the gateway
-gateway on the far side of a CONNECT request. `isolation.dns` remains available
-for a profile that resolves names it cannot enumerate: one static helper owns
-UDP and TCP 127.0.0.53 inside the namespace and relays every query as
-DNS-over-TCP over a protected Unix socket to the existing host
-systemd-resolved stub. The host-side adapter can reach only loopback, and
-clients cannot choose its upstream. This preserves DNS-dependent URL checks
-while granting no direct network route; existing DNS infrastructure and
-upstream selection are unchanged. No secret values need changing.
+on the far side of a CONNECT request. The unused private DNS relay
+was removed. CoreDNS and the host resolver remain available to infrastructure.
+No secret values need changing.
 Stalwart keeps its public mail edge networking. The existing Forgejo Actions
 runner remains a separate execution boundary with its existing container
 runtime access; the Forgejo daemon's private namespace does not isolate CI
@@ -509,8 +477,7 @@ jobs or remove runner privileges.
 NCPS executables with real PostgreSQL and SPIRE. Local SMTP/S3 fixtures
 supply dummy credentials and certificates. It checks application startup,
 authenticated ingress, SMTP/S3 certificate names, PostgreSQL role isolation,
-NCPS observation, FFmpeg proxy requests, scoped UDP/TCP DNS through a dedicated
-fixture workload, hidden runtime sockets and blocked direct network access.
+NCPS observation, FFmpeg proxy requests, hidden runtime sockets and blocked direct network access.
 It does not exercise real SMTP delivery, S3 durability or CI jobs.
 
 

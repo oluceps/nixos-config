@@ -240,6 +240,7 @@
             "${config.realm.servicePrefix}mautrix-telegram"
             "${config.realm.servicePrefix}ntfy"
             "${config.realm.servicePrefix}subs"
+            "${config.realm.servicePrefix}pocket-id"
           ];
         };
       };

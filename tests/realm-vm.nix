@@ -131,10 +131,6 @@ pkgs.testers.runNixOSTest {
             "spiffe://nyaw.xyz/service/sender"
             "spiffe://nyaw.xyz/service/synapse"
           ];
-          native = {
-            isolation.privateNetwork = false;
-            credentials.enable = true;
-          };
           sender.egress = {
             internet = {
               service = "internet-proxy";
@@ -207,7 +203,6 @@ pkgs.testers.runNixOSTest {
         receiver = { };
         imposter = { };
         wrong-server = { };
-        native = { };
         vmagent = { };
         realm-pg = { };
       };
@@ -219,7 +214,6 @@ pkgs.testers.runNixOSTest {
             "receiver"
             "imposter"
             "wrong-server"
-            "native"
             "vmagent"
           ]
           (name: {
@@ -233,7 +227,7 @@ pkgs.testers.runNixOSTest {
           };
         };
       systemd.services =
-        (pkgs.lib.genAttrs [ "synapse" "sender" "imposter" "wrong-server" "native" "vmagent" ] (name: {
+        (pkgs.lib.genAttrs [ "synapse" "sender" "imposter" "wrong-server" "vmagent" ] (name: {
           wantedBy = [ "multi-user.target" ];
           serviceConfig = {
             User = name;
@@ -281,7 +275,7 @@ pkgs.testers.runNixOSTest {
     def probe(name):
         return f"nsenter -t $(systemctl show -p MainPID --value {name}.service) -n curl -fsS --max-time 10 http://127.0.0.1:13100/hostname"
 
-    with subtest("SRV discovery and authorized mTLS"):
+    with subtest("CoreDNS publication and direct authorized mTLS"):
         machine.wait_until_succeeds(probe("sender"), timeout=90)
     with subtest("unauthorized client identity"):
         machine.fail(probe("imposter"))
@@ -373,10 +367,6 @@ pkgs.testers.runNixOSTest {
     with subtest("host sockets are hidden from workload"):
         machine.succeed("nsenter -t $(systemctl show -p MainPID --value sender.service) -m ${pkgs.coreutils}/bin/test ! -e /run/spire/agent/public/api.sock")
         machine.succeed("nsenter -t $(systemctl show -p MainPID --value sender.service) -m ${pkgs.coreutils}/bin/test ! -e /run/realm/imposter/egress/receiver.sock")
-    with subtest("native consumer can read helper credentials"):
-        machine.wait_for_unit("realm-helper-native.service")
-        machine.succeed("runuser -u native -- test -r /run/realm/native/credentials/key.pem")
-        machine.succeed("nsenter -t $(systemctl show -p MainPID --value native.service) -m ${pkgs.coreutils}/bin/test -s /run/realm/native/credentials/svid.pem")
     with subtest("workload cannot connect directly to ingress"):
         machine.fail("nsenter -t $(systemctl show -p MainPID --value sender.service) -n curl -skf --max-time 2 https://[::1]:19429/")
     with subtest("idempotent registration synchronization"):

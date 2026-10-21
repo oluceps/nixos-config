@@ -12,12 +12,12 @@
           secretsFile = config.vaultix.secrets.immich.path;
           database = {
             enable = false;
-            host = "127.0.0.1";
-            port = 15432;
+            host = "/run/postgresql";
+            port = 5432;
             name = "immich";
             user = "immich";
           };
-          environment.DB_URL = "postgresql://immich@127.0.0.1:15432/immich?sslmode=disable";
+          environment.DB_URL = lib.mkForce "postgresql://immich@localhost/immich?host=/run/postgresql&sslmode=disable";
           machine-learning = {
             enable = true;
             environment = {
@@ -51,6 +51,11 @@
         };
       };
 
+      systemd.services.immich-server = {
+        after = [ "postgresql.target" ];
+        requires = [ "postgresql.target" ];
+        serviceConfig.BindReadOnlyPaths = [ "/run/postgresql" ];
+      };
       systemd.services.immich-machine-learning.serviceConfig = {
         User = lib.mkForce "immich-ml";
         Group = lib.mkForce "immich-ml";
@@ -68,17 +73,11 @@
             target = "127.0.0.1:2283";
             privateLoopback = true;
             service = "immich";
-            allowedIDs = [
-              "spiffe://nyaw.xyz/service/caddy"
+            allowedIDs = config.realm.caddy.allowedIDs.immich ++ [
               "spiffe://nyaw.xyz/service/immich-public-proxy"
             ];
           };
           egress = {
-            postgresql = {
-              service = "postgresql-immich";
-              verifyID = "spiffe://nyaw.xyz/service/postgresql";
-              localPort = 15432;
-            };
             redis = {
               service = "redis-immich";
               verifyID = "spiffe://nyaw.xyz/service/redis-immich";
@@ -124,7 +123,7 @@
             target = "127.0.0.1:3001";
             privateLoopback = true;
             service = "immich-public-proxy";
-            allowedIDs = [ "spiffe://nyaw.xyz/service/caddy" ];
+            allowedIDs = config.realm.caddy.allowedIDs.immich-public-proxy;
           };
           egress.immich = {
             service = "immich";

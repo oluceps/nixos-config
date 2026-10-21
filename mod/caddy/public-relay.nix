@@ -1,6 +1,6 @@
 {
   flake.modules.nixos.caddy-public-relay =
-    { pkgs, ... }:
+    { config, pkgs, ... }:
     {
       # Only the Caddy proxy account can reach this backend socket. It is
       # separate from the internal entrypoint and keeps the public route ACLs.
@@ -10,7 +10,7 @@
           port = 19445;
           target = "unix:/run/realm/caddy/public/http.sock";
           service = "public-http";
-          allowedIDs = [ "spiffe://nyaw.xyz/service/caddy" ];
+          allowedIDs = config.realm.caddy.allowedIDs.public-http;
         };
       };
       systemd.tmpfiles.rules = [ "d /run/realm/caddy/public 2750 caddy realm-caddy -" ];

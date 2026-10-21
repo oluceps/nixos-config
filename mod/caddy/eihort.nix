@@ -14,6 +14,10 @@
 
       realm.workloads.caddy = {
         egress = {
+          pocket-id = {
+            service = "pocket-id";
+            verifyID = "${config.realm.servicePrefix}pocket-id";
+          };
           jellyfin = {
             service = "jellyfin";
             verifyID = "spiffe://nyaw.xyz/service/jellyfin";
@@ -72,7 +76,7 @@
           target = "127.0.0.1:443";
           hostLoopback = true;
           service = "internal-https";
-          allowedIDs = [ "spiffe://nyaw.xyz/service/caddy" ];
+          allowedIDs = config.realm.caddy.allowedIDs.internal-https;
         };
         ingress.https = {
           port = 19443;
@@ -277,7 +281,7 @@
                         handle = [
                           {
                             handler = "reverse_proxy";
-                            upstreams = [ { dial = "[fdcc::3]:1411"; } ];
+                            upstreams = [ { dial = "unix//run/realm/caddy/egress/pocket-id.sock"; } ];
                             response_buffers = 2097152;
                           }
                         ];

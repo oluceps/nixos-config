@@ -36,11 +36,12 @@
       vaultix.secrets.mautrix-tg = { };
       realm.workloads.mautrix-telegram = {
         isolation.allowUnixSockets = [ "/run/postgresql" ];
+        isolation.runtimePaths = [ "/run/mautrix-telegram" ];
+        ingressGroups = [ "mautrix-telegram" ];
         socksProxy.enable = true;
         ingress.appservice = {
           port = 19317;
-          target = "127.0.0.1:29317";
-          privateLoopback = true;
+          target = "unix:/run/mautrix-telegram/appservice.sock";
           service = "mautrix-telegram";
           allowedIDs = [ "spiffe://nyaw.xyz/service/synapse" ];
         };
@@ -62,7 +63,11 @@
         HTTPS_PROXY = "http://127.0.0.1:13128";
         NO_PROXY = "localhost,127.0.0.1,::1";
       };
-      systemd.services.mautrix-telegram.serviceConfig.RuntimeMaxSec = 86400;
+      systemd.services.mautrix-telegram.serviceConfig = {
+        RuntimeMaxSec = 86400;
+        RuntimeDirectory = "mautrix-telegram";
+        UMask = lib.mkForce "0007";
+      };
       services.mautrix-telegram = {
         enable = true;
         package = mautrix-telegram-go;
@@ -75,8 +80,8 @@
           };
           appservice = {
             address = "http://127.0.0.1:29317";
-            hostname = "127.0.0.1";
-            port = 29317;
+            hostname = "/run/mautrix-telegram/appservice.sock";
+            port = 0;
             # Nullify default python options to prevent mautrix-go legacy config migration
             database = lib.mkForce null;
             database_opts = lib.mkForce null;

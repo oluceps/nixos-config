@@ -3,7 +3,7 @@
 当前应按 **eihort → abhoth → eihort 业务验收 → hastur / uubboo → 其余节点** 的顺序切换。
 eihort 提供 SPIRE Server、Internet 出口及主要业务；abhoth 提供新的 SMTP ingress。
 这里的命令在仓库根目录、Bash 中执行，假设已有 `root@<hostname>` SSH 连通性。
-每个 mesh 节点运行本地 CoreDNS，继续在 127.0.0.1:8600 提供发现域解析。DNS 和 VXLAN mesh 必须可用，各 Agent 必须能连接 eihort 的 SPIRE Server TCP 8081。
+每个 mesh 节点运行本地 CoreDNS，继续在 127.0.0.1:8600 提供发现域解析。ghostunnel 直接连接构建期 catalog 中的目标，不再通过 Caddy 解析 SRV。VXLAN mesh 必须可用，各 Agent 必须能连接 eihort 的 SPIRE Server TCP 8081。
 
 ## 从 Consul 迁移到 CoreDNS
 
@@ -12,6 +12,18 @@ eihort 提供 SPIRE Server、Internet 出口及主要业务；abhoth 提供新�
 尚未切换的节点仍依赖 Consul，所以移除 server 前先执行 `consul leave`，
 让 Raft 成员数随退出缩减，避免直接停止多个 server 导致旧节点失去 quorum。
 CoreDNS 上线后检查 `systemctl is-active coredns`，并用下面的 dig 命令验证。
+
+## 本轮身份与连接迁移
+
+先部署 eihort，使 SPIRE 注册清单包含各节点的 `caddy-<hostname>` 身份。
+再逐台部署 Caddy 调用节点和接收入口。旧 `service/caddy` 与新身份不互通，
+因此分批切换期间可能出现短暂的业务中断。不要为避免中断而永久保留共享身份授权。
+注册地址不变，但地址或端口变更仍需部署到使用该目标的客户端。
+
+同机 PostgreSQL 客户端改用 Unix peer。Misskey 保留原配置中的本地 TCP 地址，
+helper 直接连接挂载的 Unix socket，容器仍为 `network=none`。
+Vaultwarden 的最后一份环境文件覆盖旧数据库 URL。其他秘密值不需要改动。
+Garage 已从 eihort 的导入中移除，数据目录不删除。
 
 ## 切换前
 
@@ -66,7 +78,7 @@ ssh root@eihort 'dig @127.0.0.1 -p 8600 +short SRV loki.svc.mesh.nyaw.xyz'
 ssh root@eihort 'systemctl --failed --no-pager'
 ```
 
-CoreDNS 从整套 flake 配置生成节点 AAAA 和 ingress 的 AAAA/SRV，停止的服务仍保留记录。若记录为空，检查本机 coredns.service、/etc/coredns/mesh.zone 以及对应 ingress.service 声明；不要改为直接连接旧明文端口。服务增删或端口变化后，要把更新部署到所有查询它的节点。
+CoreDNS 从整套 flake 配置生成节点 AAAA 和 ingress 的 AAAA/SRV，停止的服务仍保留记录。若记录为空，检查本机 coredns.service、/etc/coredns/mesh.zone 以及对应 ingress.service 声明；不要改为直接连接旧明文端口。服务增删或端口变化后，要把更新部署到相关客户端节点。ghostunnel 的目标来自构建期 catalog，运行时不查询 SRV。
 
 ## 2. 部署 abhoth 并 enrollment
 
@@ -103,7 +115,7 @@ ssh root@eihort 'journalctl -u spire-agent.service -u envoy.service -u realm-spi
 正常依赖由 systemd 管理，无需逐个停止或重启所有服务。对仍失败的单元执行 `systemctl restart <unit>`；
 例如 Forgejo / NCPS 若在首次 enrollment 前启动失败，可以单独重启 `forgejo.service ncps.service`。
 首次从 DynamicUser 迁移到静态代理账户时，要重启 Caddy，使进程使用新的 UID/GID；仅 reload 配置不会更新进程凭据。
-若 PostgreSQL 仍拒绝 localhost 客户端，用 `SHOW hba_file` 核实实际加载的配置，必要时重启 PostgreSQL。
+PostgreSQL 只接受 Unix socket。用 `runuser -u postgres -- psql -Atc "SHOW listen_addresses"` 检查空监听地址，并检查实际 HBA 配置。
 SeaweedFS 的私有 `/tmp` 需要可写，它会在其中创建内部 gRPC Unix socket；只有 master 监听、没有 S3 监听时不能视为就绪。
 
 验收实际使用的功能：
@@ -114,7 +126,7 @@ SeaweedFS 的私有 `/tmp` 需要可写，它会在其中创建内部 gRPC Unix 
 - Forgejo / Vaultwarden 检查发信；Forgejo / NCPS 检查 S3 读写。
 - 本地缓存适配器应返回 cache info：`ssh root@eihort 'curl -fsS http://127.0.0.1:18502/nix-cache-info'`。
   它的 `/metrics` 应返回 403；观测走独立 ingress。
-- 用现有数据库账号从 mesh 测试 PostgreSQL。TCP 5432 暂时保留，`fdcc::/64` 继续使用 SCRAM 密码认证。
+- 在应用用户下通过 `/run/postgresql` 检查 peer 登录和错误角色拒绝。宿主机和私有 namespace 都不应有 TCP 5432 监听。跨主机仅保留 Autopeer 的 mTLS 入口 15438。
 
 新配置的 Misskey、Telegram Search 都是 rootless Podman。检查容器时使用对应用户，例如：
 

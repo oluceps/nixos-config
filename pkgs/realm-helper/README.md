@@ -6,37 +6,12 @@ artifact runs in a hardened systemd sandbox and inside arbitrary container
 images.
 
 ```text
-realm-helper dns    --upstream SOCKET     UDP/TCP 127.0.0.53:53 -> DNS-over-TCP on a Unix socket
 realm-helper bridge --target ADDRESS      socket-activated listener -> TCP address or Unix socket
 realm-helper launch COMMAND [ARG...]      container entrypoint adapter
 realm-helper spire-register ...           reconcile SPIRE registrations
 realm-helper enroll NODE                  issue a join token and trust bundle
 realm-helper install-enrollment           consume that JSON on the target node
 ```
-
-## dns
-
-Used by `realm.workloads.<name>.isolation.dns`. The workload namespace has no
-route out, and `systemd-socket-proxyd` cannot carry datagrams, so one process
-owns both DNS transports inside the namespace:
-
-```text
-application --UDP/TCP 127.0.0.53:53--> realm-helper dns
-                                        └--(length-prefixed frames)--> /run/realm/<name>/egress/dns.sock
-                                                                       --> host adapter --> systemd-resolved
-```
-
-Behaviour worth knowing:
-
-- a UDP answer larger than the client's advertised EDNS0 payload size (or 512
-  bytes without EDNS0) is replaced by a header-only answer with TC set, so the
-  resolver retries over TCP — which this same process serves;
-- answers whose ID or question does not match the query are rejected, and an
-  unreachable upstream becomes `SERVFAIL`, never a silent drop;
-- at most 32 UDP queries are in flight; beyond that new datagrams are dropped
-  and the client's retry takes over;
-- the sockets come from systemd (`FileDescriptorName=dns-udp` / `dns-tcp`), so
-  the helper never binds a privileged port itself.
 
 ## bridge
 
@@ -92,6 +67,5 @@ cd pkgs/realm-helper
 go test -race ./...
 ```
 
-The tests use real sockets: a Unix-socket upstream, ephemeral UDP/TCP listeners,
-and a temporary `routes.json`, so the protocol behaviour (truncation, SERVFAIL,
-pipelining, socket bridging, exit-status propagation) is exercised without a VM.
+The tests use Unix sockets, temporary files and local listeners to check socket
+bridging, registration updates, enrollment and child process exit status.

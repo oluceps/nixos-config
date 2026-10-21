@@ -19,17 +19,17 @@
             "box.nyaw.xyz" = "127.0.0.1";
           };
         };
+        ingressGroups = [ "forgejo" ];
         ingress.http = {
           port = 16462;
-          target = "127.0.0.1:36462";
-          privateLoopback = true;
+          target = "unix:/run/forgejo/forgejo.sock";
           service = "forgejo";
-          allowedIDs = [ "spiffe://nyaw.xyz/service/caddy" ];
+          allowedIDs = config.realm.caddy.allowedIDs.forgejo;
         };
         egress = {
           s3 = {
             service = "s3-https";
-            verifyID = "spiffe://nyaw.xyz/service/caddy";
+            verifyID = config.realm.caddy.entrypointID;
             localPort = 443;
           };
           smtp = {
@@ -61,8 +61,9 @@
           server = {
             DOMAIN = "git.nyaw.xyz";
             ROOT_URL = "https://${srv.DOMAIN}/";
-            HTTP_ADDR = "127.0.0.1";
-            HTTP_PORT = 36462;
+            PROTOCOL = "http+unix";
+            HTTP_ADDR = "/run/forgejo/forgejo.sock";
+            UNIX_SOCKET_PERMISSION = "660";
             DISABLE_SSH = true;
           };
           service = {

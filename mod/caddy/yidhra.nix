@@ -2,6 +2,7 @@
 {
   flake.modules.nixos."caddy/yidhra" =
     {
+      config,
       pkgs,
       lib,
       ...
@@ -17,7 +18,7 @@
       imports = [ self.modules.nixos.caddy ];
       realm.workloads.caddy.egress.public-http = {
         service = "public-http";
-        verifyID = "spiffe://nyaw.xyz/service/caddy";
+        verifyID = config.realm.caddy.entrypointID;
       };
       systemd.services.caddy = {
         environment = {
