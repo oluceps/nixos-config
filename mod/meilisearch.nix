@@ -18,9 +18,8 @@
           target = "127.0.0.1:7700";
           privateLoopback = true;
           service = "meilisearch";
-          allowedIDs = [
+          allowedIDs = config.realm.caddy.allowedIDs.meilisearch ++ [
             "spiffe://nyaw.xyz/service/misskey"
-            "spiffe://nyaw.xyz/service/caddy"
           ];
         };
       };

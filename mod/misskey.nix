@@ -9,7 +9,13 @@
     let
       routes = pkgs.writeText "misskey-routes.json" (
         builtins.toJSON (
-          lib.mapAttrsToList (name: route: {
+          [
+            {
+              port = 5432;
+              socket = "/run/postgresql/.s.PGSQL.5432";
+            }
+          ]
+          ++ lib.mapAttrsToList (name: route: {
             port = route.localPort;
             socket = "/realm/egress/${name}.sock";
           }) config.realm.workloads.misskey.egress
@@ -34,14 +40,9 @@
             port = 13012;
             target = "unix:/run/realm-misskey/backend/http.sock";
             service = "misskey";
-            allowedIDs = [ "spiffe://nyaw.xyz/service/caddy" ];
+            allowedIDs = config.realm.caddy.allowedIDs.misskey;
           };
           egress = {
-            postgresql = {
-              service = "postgresql-misskey";
-              verifyID = "spiffe://nyaw.xyz/service/postgresql";
-              localPort = 5432;
-            };
             redis = {
               service = "redis-misskey";
               verifyID = "spiffe://nyaw.xyz/service/redis-misskey";
@@ -54,7 +55,7 @@
             };
             s3 = {
               service = "s3-https";
-              verifyID = "spiffe://nyaw.xyz/service/caddy";
+              verifyID = config.realm.caddy.entrypointID;
               localPort = 443;
             };
             internet = {
@@ -104,7 +105,11 @@
       };
 
       systemd.services.podman-misskey = {
-        after = [ "network-online.target" ];
+        after = [
+          "network-online.target"
+          "postgresql.target"
+        ];
+        requires = [ "postgresql.target" ];
         wants = [ "network-online.target" ];
       };
       virtualisation.oci-containers = {
@@ -121,6 +126,7 @@
               "${config.vaultix.secrets.misskey.path}:/misskey/.config/default.yml:ro"
               "${cabundle}/etc/ssl/certs/ca-bundle.crt:/misskey/ca.crt:ro"
               "${cabundle}/etc/ssl/certs/ca-bundle.crt:/etc/ssl/certs/ca-certificates.crt"
+              "/run/postgresql:/run/postgresql:ro"
               "/run/realm/misskey/egress:/realm/egress:ro"
               "/run/realm-misskey/backend:/realm/backend:rw"
               "${routes}:/realm/routes.json:ro"

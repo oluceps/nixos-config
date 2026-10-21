@@ -1,0 +1,116 @@
+direction: right
+title: "Realm service mesh · active host overview"
+  abhoth: "ABHOTH\n7 active realm workloads" {shape: rectangle; style.fill: "#eef4ff"}
+  azasos: "AZASOS\n5 active realm workloads" {shape: rectangle; style.fill: "#eef4ff"}
+  eihort: "EIHORT\n26 active realm workloads" {shape: rectangle; style.fill: "#eef4ff"}
+  hastur: "HASTUR\n5 active realm workloads" {shape: rectangle; style.fill: "#eef4ff"}
+  kaambl: "KAAMBL\n3 active realm workloads" {shape: rectangle; style.fill: "#eef4ff"}
+  nodens: "NODENS\n5 active realm workloads" {shape: rectangle; style.fill: "#eef4ff"}
+  uubboo: "UUBBOO\n5 active realm workloads" {shape: rectangle; style.fill: "#eef4ff"}
+  yidhra: "YIDHRA\n4 active realm workloads" {shape: rectangle; style.fill: "#eef4ff"}
+  abhoth -> abhoth: "3 catalogued Ghostunnel mTLS routes\ncaddy → autopeer-abhoth\ncaddy → rustypaste\ncaddy → stalwart-web" {
+    style.stroke: "#2878b5"
+  }
+  abhoth -> eihort: "14 catalogued Ghostunnel mTLS routes\nalloy → loki\nautopeer → postgresql-autopeer\ncaddy → atuin\ncaddy → calibre\ncaddy → grafana\ncaddy → immich\ncaddy → immich-public-proxy\ncaddy → internal-https\ncaddy → meilisearch\ncaddy → misskey\ncaddy → seaweedfs-s3\ncaddy → synapse\ncaddy → vaultwarden\nnix-cache → ncps" {
+    style.stroke: "#2878b5"
+  }
+  azasos -> abhoth: "1 catalogued Ghostunnel mTLS routes\ncaddy → rustypaste" {
+    style.stroke: "#2878b5"
+  }
+  azasos -> azasos: "3 catalogued Ghostunnel mTLS routes\ncaddy → ntfy\ncaddy → subs\nobservability → ntfy-metrics" {
+    style.stroke: "#2878b5"
+  }
+  azasos -> eihort: "14 catalogued Ghostunnel mTLS routes\ncaddy → atuin\ncaddy → calibre\ncaddy → grafana\ncaddy → immich\ncaddy → immich-public-proxy\ncaddy → internal-https\ncaddy → meilisearch\ncaddy → misskey\ncaddy → seaweedfs-s3\ncaddy → synapse\ncaddy → vaultwarden\nnix-cache → ncps\nntfy → internet-proxy\nsubs → internet-proxy" {
+    style.stroke: "#2878b5"
+  }
+  eihort -> abhoth: "4 catalogued Ghostunnel mTLS routes\ncaddy → rustypaste\nforgejo → smtp-submission\nvaultwarden → smtp-submission\nvmagent → observability-abhoth" {
+    style.stroke: "#2878b5"
+  }
+  eihort -> azasos: "1 catalogued Ghostunnel mTLS routes\nvmagent → observability-azasos" {
+    style.stroke: "#2878b5"
+  }
+  eihort -> eihort: "45 catalogued Ghostunnel mTLS routes\nalloy → loki\ncaddy → atuin\ncaddy → calibre\ncaddy → forgejo\ncaddy → grafana\ncaddy → immich\ncaddy → immich-public-proxy\ncaddy → internal-https\ncaddy → jellyfin\ncaddy → meilisearch\ncaddy → misskey\ncaddy → seaweedfs-master\ncaddy → seaweedfs-s3\ncaddy → synapse\ncaddy → vaultwarden\ncalibre → internet-proxy\nforgejo → internet-proxy\nforgejo → s3-https\ngrafana → internet-proxy\ngrafana → loki\ngrafana → victoriametrics-eihort\nimmich → immich-ml\nimmich → redis-immich\nimmich-ml → internet-proxy\nimmich-public-proxy → immich\njellyfin → internet-proxy\nloki → seaweedfs-s3\nmautrix-telegram → internet-proxy\nmautrix-telegram → synapse\nmisskey → internet-proxy\nmisskey → meilisearch\nmisskey → redis-misskey\nmisskey → s3-https\nncps → internet-proxy\nncps → s3-https\nnix-cache → ncps\nobservability → ncps-metrics\nobservability → seaweedfs-metrics\nobservability → synapse-metrics\nsynapse → internet-proxy\nsynapse → mautrix-telegram\nsynapse → seaweedfs-s3\nsynapse-s3-upload → seaweedfs-s3\nvaultwarden → internet-proxy\nvmagent → observability-eihort" {
+    style.stroke: "#2878b5"
+  }
+  eihort -> hastur: "1 catalogued Ghostunnel mTLS routes\nvmagent → observability-hastur" {
+    style.stroke: "#2878b5"
+  }
+  eihort -> kaambl: "1 catalogued Ghostunnel mTLS routes\nvmagent → observability-kaambl" {
+    style.stroke: "#2878b5"
+  }
+  eihort -> nodens: "1 catalogued Ghostunnel mTLS routes\nvmagent → observability-nodens" {
+    style.stroke: "#2878b5"
+  }
+  eihort -> uubboo: "1 catalogued Ghostunnel mTLS routes\nvmagent → observability-uubboo" {
+    style.stroke: "#2878b5"
+  }
+  eihort -> yidhra: "1 catalogued Ghostunnel mTLS routes\nvmagent → observability-yidhra" {
+    style.stroke: "#2878b5"
+  }
+  hastur -> abhoth: "1 catalogued Ghostunnel mTLS routes\nvmagent → observability-abhoth" {
+    style.stroke: "#2878b5"
+  }
+  hastur -> azasos: "1 catalogued Ghostunnel mTLS routes\nvmagent → observability-azasos" {
+    style.stroke: "#2878b5"
+  }
+  hastur -> eihort: "3 catalogued Ghostunnel mTLS routes\nalloy → loki\nnix-cache → ncps\nvmagent → observability-eihort" {
+    style.stroke: "#2878b5"
+  }
+  hastur -> hastur: "1 catalogued Ghostunnel mTLS routes\nvmagent → observability-hastur" {
+    style.stroke: "#2878b5"
+  }
+  hastur -> kaambl: "1 catalogued Ghostunnel mTLS routes\nvmagent → observability-kaambl" {
+    style.stroke: "#2878b5"
+  }
+  hastur -> nodens: "1 catalogued Ghostunnel mTLS routes\nvmagent → observability-nodens" {
+    style.stroke: "#2878b5"
+  }
+  hastur -> uubboo: "1 catalogued Ghostunnel mTLS routes\nvmagent → observability-uubboo" {
+    style.stroke: "#2878b5"
+  }
+  hastur -> yidhra: "1 catalogued Ghostunnel mTLS routes\nvmagent → observability-yidhra" {
+    style.stroke: "#2878b5"
+  }
+  kaambl -> eihort: "1 catalogued Ghostunnel mTLS routes\nnix-cache → ncps" {
+    style.stroke: "#2878b5"
+  }
+  nodens -> abhoth: "2 catalogued Ghostunnel mTLS routes\ncaddy → rustypaste\ncaddy → stalwart-web" {
+    style.stroke: "#2878b5"
+  }
+  nodens -> eihort: "14 catalogued Ghostunnel mTLS routes\nalloy → loki\nautopeer → postgresql-autopeer\ncaddy → atuin\ncaddy → calibre\ncaddy → grafana\ncaddy → immich\ncaddy → immich-public-proxy\ncaddy → internal-https\ncaddy → meilisearch\ncaddy → misskey\ncaddy → seaweedfs-s3\ncaddy → synapse\ncaddy → vaultwarden\nnix-cache → ncps" {
+    style.stroke: "#2878b5"
+  }
+  nodens -> nodens: "1 catalogued Ghostunnel mTLS routes\ncaddy → autopeer-nodens" {
+    style.stroke: "#2878b5"
+  }
+  uubboo -> abhoth: "1 catalogued Ghostunnel mTLS routes\nvmagent → observability-abhoth" {
+    style.stroke: "#2878b5"
+  }
+  uubboo -> azasos: "1 catalogued Ghostunnel mTLS routes\nvmagent → observability-azasos" {
+    style.stroke: "#2878b5"
+  }
+  uubboo -> eihort: "3 catalogued Ghostunnel mTLS routes\nalloy → loki\nnix-cache → ncps\nvmagent → observability-eihort" {
+    style.stroke: "#2878b5"
+  }
+  uubboo -> hastur: "1 catalogued Ghostunnel mTLS routes\nvmagent → observability-hastur" {
+    style.stroke: "#2878b5"
+  }
+  uubboo -> kaambl: "1 catalogued Ghostunnel mTLS routes\nvmagent → observability-kaambl" {
+    style.stroke: "#2878b5"
+  }
+  uubboo -> nodens: "1 catalogued Ghostunnel mTLS routes\nvmagent → observability-nodens" {
+    style.stroke: "#2878b5"
+  }
+  uubboo -> uubboo: "1 catalogued Ghostunnel mTLS routes\nvmagent → observability-uubboo" {
+    style.stroke: "#2878b5"
+  }
+  uubboo -> yidhra: "1 catalogued Ghostunnel mTLS routes\nvmagent → observability-yidhra" {
+    style.stroke: "#2878b5"
+  }
+  yidhra -> eihort: "3 catalogued Ghostunnel mTLS routes\nautopeer → postgresql-autopeer\ncaddy → public-http\nnix-cache → ncps" {
+    style.stroke: "#2878b5"
+  }
+  yidhra -> yidhra: "1 catalogued Ghostunnel mTLS routes\ncaddy → autopeer-yidhra" {
+    style.stroke: "#2878b5"
+  }
+  note: "Each edge summarizes exact workload links. Open host-<name>.d2 for service, port, SVID check, socket path, ingress ACL and backend details." {shape: rectangle}

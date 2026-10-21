@@ -67,6 +67,23 @@ let
   fixed = evaluate [
     { realm.workloads.sender.egress.receiver.target = "[fdcc::3]:19429"; }
   ];
+  ambiguous = evaluate [
+    {
+      realm.serviceDiscovery.catalog = {
+        first.receiver = {
+          unit = "receiver.service";
+          address = "fdcc::4";
+          port = 19429;
+        };
+        second.receiver = {
+          unit = "receiver.service";
+          address = "fdcc::5";
+          port = 19429;
+        };
+      };
+    }
+  ];
+  missing = evaluate [ { realm.workloads.sender.egress.receiver.service = lib.mkForce "missing"; } ];
   bad = evaluate [ { realm.workloads.receiver.ingress.http.allowedIDs = lib.mkForce [ ]; } ];
   realmAssertions =
     c: builtins.filter (a: !a.assertion && lib.hasPrefix "realm" a.message) c.assertions;
@@ -131,43 +148,35 @@ lib.runTests {
       && !(lib.hasInfix "python3" command);
     expected = true;
   };
-  testDefaultEgressUsesDiscovery = {
+  testDefaultEgressConnectsDirectly = {
     expr =
       let
         unit = cfg.systemd.services.realm-egress-sender-receiver;
       in
-      lib.hasInfix "--target unix:/run/realm-discovery/sender/receiver.sock" unit.serviceConfig.ExecStart
-      && lib.elem "realm-discovery.service" unit.wants
-      && !(lib.elem "realm-discovery.service" unit.requires)
-      && lib.elem "realm-discovery.service" unit.after
-      && !(lib.hasInfix "python3" unit.serviceConfig.ExecStart);
+      lib.hasInfix "--target '[fdcc::3]:19429'" unit.serviceConfig.ExecStart
+      && lib.hasInfix "--verify-uri spiffe://nyaw.xyz/service/receiver" unit.serviceConfig.ExecStart
+      && !(lib.elem "caddy.service" unit.after)
+      && !(cfg.systemd.services ? realm-discovery);
     expected = true;
   };
-  testDiscoveryJSON = {
-    expr = cfg.realm.discovery.servers.realm-egress-sender-receiver;
-    expected = {
-      listen = [ "unix//run/realm-discovery/sender/receiver.sock|0660" ];
-      routes = [
-        {
-          handle = [
-            {
-              handler = "srv_proxy";
-              name = "receiver.svc.mesh.nyaw.xyz";
-              resolver = "127.0.0.1:8600";
-              refresh = "5s";
-              dial_timeout = "5s";
-            }
-          ];
-        }
-      ];
-    };
+  testCoreDNSRetained = {
+    expr =
+      cfg.services.coredns.enable
+      && lib.hasInfix "receiver.svc IN SRV" cfg.realm.serviceDiscovery.zoneText;
+    expected = true;
+  };
+  testRejectAmbiguousDestination = {
+    expr = lib.any (a: !a.assertion) (realmAssertions ambiguous);
+    expected = true;
+  };
+  testRejectMissingDestination = {
+    expr = lib.any (a: !a.assertion) (realmAssertions missing);
+    expected = true;
   };
   testFixedEgressNeedsNoDiscovery = {
     expr =
-      fixed.realm.discovery.servers == { }
-      && !(lib.elem "realm-discovery.service" fixed.systemd.services.realm-egress-sender-receiver.requires)
-      && !(lib.elem "realm-discovery.service" fixed.systemd.services.realm-egress-sender-receiver.wants)
-      && !(fixed.systemd.services ? realm-discovery);
+      !(fixed.systemd.services ? realm-discovery)
+      && !(lib.hasInfix "/run/realm-discovery" fixed.systemd.services.realm-egress-sender-receiver.serviceConfig.ExecStart);
     expected = true;
   };
   testNoCredentialCopy = {

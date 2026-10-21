@@ -135,6 +135,7 @@ pkgs.testers.runNixOSTest {
         ../nixosModules/realm-spire.nix
         ../nixosModules/realm-observability.nix
         ../nixosModules/service-discovery.nix
+        (import ../mod/realm-caddy-policy.nix).flake.modules.nixos.realm
         ../nixosModules/ncps.nix
         ../nixosModules/stalwart.nix
         (import ../mod/jellyfin.nix).flake.modules.nixos.jellyfin
@@ -264,6 +265,7 @@ pkgs.testers.runNixOSTest {
         };
         workloads = {
           caddy = {
+            spiffeID = config.realm.caddy.entrypointID;
             isolation.privateNetwork = false;
             ingress.https = {
               port = 19443;
@@ -280,15 +282,14 @@ pkgs.testers.runNixOSTest {
               verifyID = "spiffe://nyaw.xyz/service/${name}";
             });
           };
+          # These optional dependencies are not exercised by this fixture.
+          grafana.egress.victoriametrics.target = "[::1]:1";
+          loki.egress.s3.target = "[::1]:1";
           vmagent.egress.observation = {
             service = "observability-machine";
             verifyID = "spiffe://nyaw.xyz/service/observability-machine";
             localPort = 13190;
           };
-          # No service profile needs a resolver any more: every outbound name is
-          # either aliased in /etc/hosts or resolved by the Internet gateway. This
-          # fixture keeps the isolation.dns path itself under test.
-          dnsfixture.isolation.dns = true;
           imposter.egress = {
             ncps = {
               service = "ncps";
@@ -301,7 +302,7 @@ pkgs.testers.runNixOSTest {
               localPort = 465;
             };
             postgresql = {
-              service = "postgresql-vaultwarden";
+              service = "postgresql-autopeer";
               verifyID = "spiffe://nyaw.xyz/service/postgresql";
               localPort = 5432;
             };
@@ -334,14 +335,6 @@ pkgs.testers.runNixOSTest {
           serviceConfig = {
             User = "imposter";
             Group = "imposter";
-            ExecStart = "${pkgs.coreutils}/bin/sleep infinity";
-          };
-        };
-        dnsfixture = {
-          wantedBy = [ "multi-user.target" ];
-          serviceConfig = {
-            User = "dnsfixture";
-            Group = "dnsfixture";
             ExecStart = "${pkgs.coreutils}/bin/sleep infinity";
           };
         };
@@ -384,7 +377,7 @@ pkgs.testers.runNixOSTest {
         machine.succeed("systemctl is-active grafana.service loki.service")
         machine.wait_until_succeeds(inside("grafana", "curl -fsS --max-time 10 http://127.0.0.1:13030/ready"), timeout=60)
         machine.succeed("runuser -u postgres -- psql -c \"CREATE ROLE loopback_fixture LOGIN PASSWORD 'fixture-password'\"")
-        machine.succeed("psql postgresql://loopback_fixture:fixture-password@127.0.0.1/postgres -Atc 'select current_user' | grep -x loopback_fixture")
+        machine.fail("psql postgresql://loopback_fixture:fixture-password@127.0.0.1/postgres?connect_timeout=2 -Atc 'select current_user'")
         machine.fail("psql postgresql://loopback_fixture:wrong@127.0.0.1/postgres -Atc 'select current_user'")
     with subtest("public Internet requests and FFmpeg use authenticated egress"):
         machine.succeed("ip address add 198.51.100.1/32 dev lo")
@@ -394,20 +387,14 @@ pkgs.testers.runNixOSTest {
         for unit in ["jellyfin", "vaultwarden", "forgejo", "ncps"]:
             machine.wait_until_succeeds(inside(unit, "curl --noproxy \"\" -fsS --max-time 10 --proxy http://127.0.0.1:13128 http://public.test/"), timeout=30)
         machine.succeed(inside("jellyfin", "env http_proxy=http://127.0.0.1:13128 ${pkgs.jellyfin-ffmpeg}/bin/ffprobe -v error -show_entries format=format_name -of default=noprint_wrappers=1 http://public.test/tone.wav | grep -x format_name=wav"))
-    with subtest("DNS works through the protected Unix capability over UDP and TCP"):
-        pid = machine.succeed("systemctl show -p MainPID --value dnsfixture.service").strip()
-        machine.succeed(f"nsenter -t {pid} -m -n getent hosts public.test | grep 198.51.100.1")
-        machine.succeed(f"nsenter -t {pid} -m -n dig +tcp +short public.test | grep -x 198.51.100.1")
-        machine.succeed(f"nsenter -t {pid} -m -n dig +short public.test | grep -x 198.51.100.1")
-        machine.fail("runuser -u nobody -- ${pkgs.python3}/bin/python3 -c 'import socket; s=socket.socket(socket.AF_UNIX); s.connect(\"/run/realm/dnsfixture/egress/dns.sock\")'")
     with subtest("workload-local host aliases preserve S3 and SMTP TLS identities"):
         for unit, host, port in [("forgejo", "s3.nyaw.xyz", 443), ("ncps", "s3.nyaw.xyz", 443), ("forgejo", "box.nyaw.xyz", 465), ("vaultwarden", "box.nyaw.xyz", 465)]:
             machine.succeed(f"nsenter -t $(systemctl show -p MainPID --value {unit}.service) -n -m ${pkgs.python3}/bin/python3 -c 'import socket; assert {{entry[4][0] for entry in socket.getaddrinfo(\"{host}\", {port}, type=socket.SOCK_STREAM)}} == {{\"127.0.0.1\"}}'")
             machine.wait_until_succeeds(f"nsenter -t $(systemctl show -p MainPID --value {unit}.service) -n -m sh -c 'printf \"QUIT\\r\\n\" | openssl s_client -connect {host}:{port} -servername {host} -verify_hostname {host} -verify_return_error -CAfile /var/lib/fixture/cert.pem >/dev/null'", timeout=45)
         machine.fail("getent hosts s3.nyaw.xyz | grep 127.0.0.1")
     with subtest("PostgreSQL peer identity is bound to the application route"):
-        machine.succeed(inside("vaultwarden", "psql postgresql://vault:unused@127.0.0.1:5432/vaultwarden -Atc 'select current_user' | grep -x vault"))
-        machine.fail(inside("vaultwarden", "psql postgresql://forgejo@127.0.0.1:5432/forgejo -Atc 'select current_user'"))
+        machine.succeed("nsenter -t $(systemctl show -p MainPID --value vaultwarden.service) -m runuser -u vaultwarden -- psql -h /run/postgresql -U vault -d vaultwarden -Atc 'select current_user' | grep -x vault")
+        machine.fail("nsenter -t $(systemctl show -p MainPID --value vaultwarden.service) -m runuser -u vaultwarden -- psql -h /run/postgresql -U forgejo -d forgejo -Atc 'select current_user'")
         machine.fail(inside("imposter", "psql 'postgresql://vault@127.0.0.1:5432/vaultwarden?connect_timeout=5' -Atc 'select current_user'"))
     with subtest("unapproved callers cannot reach cache or SMTP ingress"):
         machine.fail(inside("imposter", "curl --noproxy '*' -fsS --max-time 5 http://127.0.0.1:18501/nix-cache-info"))

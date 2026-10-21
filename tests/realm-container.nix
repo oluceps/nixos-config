@@ -59,6 +59,7 @@ pkgs.testers.runNixOSTest {
       ../nixosModules/realm-workloads.nix
       ../nixosModules/realm-spire.nix
       ../nixosModules/service-discovery.nix
+      (import ../mod/realm-caddy-policy.nix).flake.modules.nixos.realm
       (import ../mod/misskey.nix).flake.modules.nixos.misskey
       (import ../mod/telegram-search.nix).flake.modules.nixos.telegram-search
       (
@@ -97,6 +98,20 @@ pkgs.testers.runNixOSTest {
       serviceDiscovery = {
         enable = true;
         address = "::1";
+        catalog.fixture =
+          lib.genAttrs
+            [
+              "postgresql-telegram-search"
+              "redis-misskey"
+              "meilisearch"
+              "s3-https"
+              "internet-proxy"
+            ]
+            (_: {
+              address = "::1";
+              port = 1;
+              unit = "fixture.service";
+            });
       };
     };
     vaultix.secrets.tg-search.path = toString (
@@ -127,13 +142,19 @@ pkgs.testers.runNixOSTest {
         ExecStart = lib.mkForce "${pkgs.python3}/bin/python3 ${echo}";
       };
     };
-    systemd.services.realm-egress-misskey-postgresql = {
-      requires = lib.mkForce [ ];
-      after = lib.mkForce [ ];
-      serviceConfig = {
-        Type = lib.mkForce "simple";
-        ExecStart = lib.mkForce "${pkgs.python3}/bin/python3 ${echo}";
+    systemd.targets.postgresql = { };
+    systemd.sockets.fixture-postgresql = {
+      wantedBy = [ "sockets.target" ];
+      listenStreams = [ "/run/postgresql/.s.PGSQL.5432" ];
+      socketConfig = {
+        SocketUser = "misskey";
+        SocketGroup = "misskey";
+        SocketMode = "0660";
       };
+    };
+    systemd.services.fixture-postgresql.serviceConfig = {
+      User = "misskey";
+      ExecStart = "${pkgs.python3}/bin/python3 ${echo}";
     };
   };
   testScript = ''

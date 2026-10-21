@@ -5,7 +5,6 @@
 // namespace crosses the boundary as a Unix socket. A few small jobs must still
 // run inside that namespace, and this one binary covers all of them:
 //
-//	realm-helper dns    --upstream SOCKET    own UDP/TCP 127.0.0.53:53
 //	realm-helper bridge --target ADDRESS     splice a socket-activated listener
 //	realm-helper launch COMMAND [ARG...]     container entrypoint adapter
 //	realm-helper spire-register ...          apply the declared SPIRE entries
@@ -23,7 +22,6 @@ import (
 )
 
 const usage = `usage:
-  realm-helper dns    --upstream SOCKET
   realm-helper bridge --target ADDRESS
   realm-helper launch COMMAND [ARG...]
   realm-helper spire-register --spire-server PATH --socket PATH --manifest PATH --state PATH
@@ -52,8 +50,6 @@ func main() {
 // confused with a helper failure.
 func run(args []string) (int, error) {
 	switch args[0] {
-	case "dns":
-		return 0, dnsCommand(args[1:])
 	case "bridge":
 		return 0, bridgeCommand(args[1:])
 	case "launch":

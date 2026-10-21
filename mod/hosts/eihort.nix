@@ -8,9 +8,65 @@
     {
       config,
       pkgs,
+      lib,
       ...
     }:
     {
+      realm.workloads.pocket-id = {
+        user = config.services.pocket-id.user;
+        group = config.services.pocket-id.group;
+        isolation = {
+          runtimePaths = [ "/run/pocket-id" ];
+          allowUnixSockets = [ "/run/postgresql" ];
+          hosts."box.nyaw.xyz" = "127.0.0.1";
+        };
+        ingressGroups = [ config.services.pocket-id.group ];
+        ingress = {
+          http = {
+            port = 11411;
+            target = "unix:/run/pocket-id/http.sock";
+            service = "pocket-id";
+            allowedIDs = config.realm.caddy.allowedIDs.pocket-id;
+          };
+          metrics = {
+            port = 19464;
+            target = "127.0.0.1:9464";
+            privateLoopback = true;
+            service = "pocket-id-metrics";
+            allowedIDs = [ config.realm.workloads.observability.spiffeID ];
+          };
+        };
+        egress = {
+          smtp = {
+            service = "smtp-submission";
+            verifyID = "${config.realm.servicePrefix}stalwart";
+            localPort = 465;
+          };
+          internet = {
+            service = "internet-proxy";
+            verifyID = "${config.realm.servicePrefix}internet";
+            localPort = 13128;
+          };
+        };
+      };
+      realm.workloads.observability.egress.pocket-id = {
+        service = "pocket-id-metrics";
+        verifyID = "${config.realm.servicePrefix}pocket-id";
+      };
+      realm.observability.endpoints.pocket-id.socket = "/run/realm/observability/egress/pocket-id.sock";
+      systemd.services.pocket-id = {
+        requires = [ "postgresql.target" ];
+        after = [ "postgresql.target" ];
+        environment = {
+          HTTP_PROXY = "http://127.0.0.1:13128";
+          HTTPS_PROXY = "http://127.0.0.1:13128";
+          NO_PROXY = "localhost,127.0.0.1,::1,box.nyaw.xyz";
+        };
+        serviceConfig = {
+          PrivateNetwork = lib.mkForce true;
+          RuntimeDirectory = "pocket-id";
+        };
+      };
       imports =
         with self.modules;
         (
@@ -33,7 +89,6 @@
             base
             dev
             plugIn
-            garage
             vxlan-mesh
             yggdrasil
             scrutiny
@@ -239,8 +294,13 @@
           enable = true;
           settings = {
             APP_URL = "https://oidc.nyaw.xyz";
+            UNIX_SOCKET = "/run/pocket-id/http.sock";
+            UNIX_SOCKET_MODE = "0660";
+            DB_CONNECTION_STRING = "postgresql://pocket-id@localhost/pocketid?host=/run/postgresql&sslmode=disable";
             TRUST_PROXY = true;
             OTEL_METRICS_EXPORTER = "prometheus";
+            OTEL_EXPORTER_PROMETHEUS_HOST = "127.0.0.1";
+            OTEL_EXPORTER_PROMETHEUS_PORT = 9464;
           };
           environmentFile = config.vaultix.secrets.pocketid.path;
         };

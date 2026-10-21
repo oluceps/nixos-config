@@ -1,9 +1,10 @@
 {
   flake.modules.nixos.seaweedfs =
-    { config, ... }:
+    { config, pkgs, ... }:
     let
       # filerDir = "/var/lib/sea-filer";
       dataDir = "/var/lib/sea-volume";
+      filerConfig = builtins.fromTOML (builtins.readFile ./filer.toml);
     in
     {
       realm.observability.endpoints.seaweedfs.socket = "/run/realm/observability/egress/seaweedfs.sock";
@@ -36,11 +37,6 @@
       };
       realm.workloads.seaweedfs = {
         isolation.runtimePaths = [ "/run/seaweedfs" ];
-        egress.postgresql = {
-          service = "postgresql-seaweedfs";
-          verifyID = "spiffe://nyaw.xyz/service/postgresql";
-          localPort = 5432;
-        };
         ingress = {
           s3 = {
             port = 18333;
@@ -49,7 +45,9 @@
             service = "seaweedfs-s3";
             allowedIDs = [
               "spiffe://nyaw.xyz/service/loki"
-              "spiffe://nyaw.xyz/service/caddy"
+            ]
+            ++ config.realm.caddy.allowedIDs.seaweedfs-s3
+            ++ [
               "spiffe://nyaw.xyz/service/synapse"
               "spiffe://nyaw.xyz/service/synapse-s3-upload"
             ];
@@ -59,7 +57,7 @@
             target = "127.0.0.1:9333";
             privateLoopback = true;
             service = "seaweedfs-master";
-            allowedIDs = [ "spiffe://nyaw.xyz/service/caddy" ];
+            allowedIDs = config.realm.caddy.allowedIDs.seaweedfs-master;
           };
           metrics = {
             port = 19768;
@@ -70,7 +68,10 @@
           };
         };
       };
+      systemd.services.seaweedfs.after = [ "postgresql.target" ];
+      systemd.services.seaweedfs.requires = [ "postgresql.target" ];
       systemd.services.seaweedfs.serviceConfig = {
+        BindReadOnlyPaths = [ "/run/postgresql" ];
         RuntimeDirectory = "seaweedfs";
         LoadCredential = [ "weed-s3:${config.vaultix.secrets.weed-s3.path}" ];
         ReadWritePaths = [
@@ -83,6 +84,14 @@
         Environment = [ "GOMEMLIMIT=6GiB" ];
       };
 
-      environment.etc."seaweedfs/filer.toml".source = ./filer.toml;
+      environment.etc."seaweedfs/filer.toml".source = (pkgs.formats.toml { }).generate "filer.toml" (
+        filerConfig
+        // {
+          postgres2 = filerConfig.postgres2 // {
+            hostname = "/run/postgresql";
+            password = "";
+          };
+        }
+      );
     };
 }

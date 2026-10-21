@@ -43,7 +43,7 @@
         egress = {
           s3 = {
             service = "s3-https";
-            verifyID = "spiffe://nyaw.xyz/service/caddy";
+            verifyID = config.realm.caddy.entrypointID;
             localPort = 443;
           };
           internet = {

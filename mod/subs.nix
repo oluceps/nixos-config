@@ -18,7 +18,7 @@
             target = "[::1]:8004";
             privateLoopback = true;
             service = "subs";
-            allowedIDs = [ "spiffe://nyaw.xyz/service/caddy" ];
+            allowedIDs = config.realm.caddy.allowedIDs.subs;
           };
           egress.internet = {
             service = "internet-proxy";

@@ -29,6 +29,7 @@
           allowedIDs = [
             "spiffe://nyaw.xyz/service/forgejo"
             "spiffe://nyaw.xyz/service/vaultwarden"
+            "${config.realm.servicePrefix}pocket-id"
           ];
         };
       };
@@ -39,7 +40,7 @@
         port = 9313;
         path = "/metrics/prometheus";
         businessProxyPort = 19313;
-        businessAllowedIDs = [ "spiffe://nyaw.xyz/service/caddy" ];
+        businessAllowedIDs = config.realm.caddy.allowedIDs.stalwart-web;
         businessService = "stalwart-web";
       };
     };

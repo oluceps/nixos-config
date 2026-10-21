@@ -61,7 +61,9 @@ pkgs.testers.runNixOSTest {
       imports = [
         ../nixosModules/realm-workloads.nix
         ../nixosModules/realm-spire.nix
+        ../nixosModules/realm-observability.nix
         ../nixosModules/service-discovery.nix
+        (import ../mod/realm-caddy-policy.nix).flake.modules.nixos.realm
         (import ../mod/immich.nix).flake.modules.nixos.immich
         (import ../mod/postgresql.nix).flake.modules.nixos.postgresql
         (import ../mod/realm-internet.nix).flake.modules.nixos.realm-internet
@@ -90,10 +92,7 @@ pkgs.testers.runNixOSTest {
           {
             name = "immich";
             ensureDBOwnership = true;
-            ensureClauses = {
-              login = true;
-              password = "dummy";
-            };
+            ensureClauses.login = true;
           }
         ];
         settings = {
@@ -125,6 +124,7 @@ pkgs.testers.runNixOSTest {
           };
         };
         workloads = {
+          caddy.spiffeID = config.realm.caddy.entrypointID;
           caddy.egress = {
             immich = {
               service = "immich";
@@ -144,7 +144,7 @@ pkgs.testers.runNixOSTest {
               localPort = 12283;
             };
             postgresql = {
-              service = "postgresql-immich";
+              service = "postgresql-autopeer";
               verifyID = "spiffe://nyaw.xyz/service/postgresql";
               localPort = 15432;
             };
@@ -190,11 +190,17 @@ pkgs.testers.runNixOSTest {
         assert result == {"database": "immich|immich", "redis": "+PONG", "ml": "immich-ml"}, result
         machine.succeed(inside("caddy", "curl -fsS --max-time 20 http://127.0.0.1:12283/"))
 
-    with subtest("dedicated PostgreSQL peer identity cannot become another database role"):
-        machine.succeed("runuser -u realm-pg-immich -- psql -h /run/postgresql -U immich -d immich -Atc 'select current_user' | grep -x immich")
-        machine.fail("runuser -u realm-pg-atuin -- psql -h /run/postgresql -U immich -d immich -Atc 'select current_user'")
+    with subtest("local PostgreSQL peer identity cannot become another database role"):
+        machine.succeed("runuser -u immich -- psql -h /run/postgresql -U immich -d immich -Atc 'select current_user' | grep -x immich")
+        machine.fail("runuser -u nobody -- psql -h /run/postgresql -U immich -d immich -Atc 'select current_user'")
+        machine.fail("runuser -u immich -- psql -h /run/postgresql -U postgres -d postgres -Atc 'select current_user'")
+        machine.succeed("test ! -e /run/realm/immich/egress/postgresql.sock")
+        machine.succeed("systemctl show -p PrivateNetwork --value postgresql.service | grep -x yes")
+        assert machine.succeed("runuser -u postgres -- psql -Atc 'show listen_addresses'").strip() == ""
 
-    with subtest("mesh TCP password authentication is disabled"):
+    with subtest("PostgreSQL TCP listeners are disabled"):
+        for address in ["127.0.0.1", "::1"]:
+            machine.fail(f"timeout 5 psql -h {address} -U immich -d immich -Atc 'select current_user'")
         machine.succeed("ip -6 address add fdcc::3/128 dev lo")
         machine.fail("PGPASSWORD=dummy psql -h fdcc::3 -U immich -d immich -Atc 'select current_user'")
         machine.fail(inside("immich-server", "timeout 5 psql -h fdcc::3 -U immich -d immich -Atc 'select current_user'"))
@@ -218,7 +224,8 @@ pkgs.testers.runNixOSTest {
         for port in [2283, 3003, 3001]:
             machine.fail(f"curl -fsS --max-time 2 http://127.0.0.1:{port}/")
         pid = machine.succeed("systemctl show -p MainPID --value immich-server.service").strip()
-        for path in ["/run/spire/agent/public/api.sock", "/run/postgresql/.s.PGSQL.5432", "/run/redis-immich/redis.sock"]:
+        machine.succeed(f"nsenter -t {pid} -m ${pkgs.coreutils}/bin/test -S /run/postgresql/.s.PGSQL.5432")
+        for path in ["/run/spire/agent/public/api.sock", "/run/redis-immich/redis.sock"]:
             machine.succeed(f"nsenter -t {pid} -m ${pkgs.coreutils}/bin/test ! -e {path}")
         machine.fail(inside("immich-server", "curl --noproxy '*' -fsS --max-time 2 http://198.51.100.1/hostname"))
   '';

@@ -1,6 +1,6 @@
 {
   flake.modules.nixos.jellyfin =
-    { pkgs, ... }:
+    { config, pkgs, ... }:
     {
       services.jellyfin = {
         enable = true;
@@ -12,7 +12,7 @@
           target = "127.0.0.1:8096";
           privateLoopback = true;
           service = "jellyfin";
-          allowedIDs = [ "spiffe://nyaw.xyz/service/caddy" ];
+          allowedIDs = config.realm.caddy.allowedIDs.jellyfin;
         };
         egress.internet = {
           service = "internet-proxy";

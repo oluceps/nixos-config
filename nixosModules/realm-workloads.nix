@@ -7,7 +7,7 @@
 #   application (private namespace, no route out)
 #     -> egress Unix socket      systemd-socket-proxyd, or the app directly
 #     -> ghostunnel client       runs as realm-<name>, holds the SVID
-#     -> SRV discovery           Caddy selects a remote ingress from DNS
+#     -> direct TLS connection   target compiled from the ingress catalog
 #     -> remote ghostunnel       checks the caller against allowedIDs
 #     -> ingress socket          adapter in the backend's namespace
 #
@@ -39,7 +39,7 @@
 #   };
 #
 # Options that relax the default isolation (runtime, privateNetwork, native,
-# hostLoopback, credentials) are explained where they are consumed below.
+# hostLoopback) are explained where they are consumed below.
 {
   config,
   lib,
@@ -51,57 +51,24 @@ let
   cfg = config.realm;
   # A declaration with enable = false contributes no units at all.
   active = lib.filterAttrs (_: w: w.enable) cfg.workloads;
-  # One static binary covers every per-namespace helper job: the DNS relay and
-  # the socket bridges. It has no interpreter and no library dependencies, so the
+  # One static binary covers the socket bridges and container adapters. It has no interpreter and no library dependencies, so the
   # same artifact also runs inside container images.
   helper = cfg.helperPackage;
-  json = pkgs.formats.json { };
-  # Discovery runs inside the shared Caddy profile when one exists, otherwise in
-  # a dedicated Caddy instance that only speaks srv_proxy.
-  discoveryUnit = if cfg.discovery.integrateCaddy then "caddy.service" else "realm-discovery.service";
-  discoveryUser = if cfg.discovery.integrateCaddy then "caddy" else "realm-discovery";
-  discoveryPath = name: route: "/run/realm-discovery/${name}/${route}.sock";
-  # Caddy needs a bracketed literal when the resolver is an IPv6 address.
-  resolverHost =
-    if lib.hasInfix ":" cfg.discovery.resolver then
-      "[${cfg.discovery.resolver}]"
-    else
-      cfg.discovery.resolver;
-  # One Unix listener per discovered egress. The listener name fixes the SRV
-  # record, so a stream is routed by the socket it arrived on, not by SNI or by
-  # anything the application sends. An egress with a fixed target gets no
-  # listener and no DNS dependency.
-  discoveryServers = lib.concatMapAttrs (
-    name: w:
-    lib.mapAttrs' (
-      route: e:
-      lib.nameValuePair "realm-egress-${name}-${route}" {
-        listen = [ "unix/${discoveryPath name route}|0660" ];
-        routes = [
-          {
-            handle = [
-              {
-                handler = "srv_proxy";
-                name = "${e.service}.svc.${cfg.discovery.domain}";
-                resolver = "${resolverHost}:${toString cfg.discovery.port}";
-                refresh = cfg.discovery.refresh;
-                dial_timeout = cfg.discovery.dialTimeout;
-              }
-            ];
-          }
-        ];
-      }
-    ) (lib.filterAttrs (_: e: e.target == null) w.egress)
-  ) active;
-  hasDiscovery = discoveryServers != { };
-  # The standalone instance runs from generated JSON with its admin API off.
-  discoveryConfig = json.generate "realm-discovery.json" {
-    admin = {
-      disabled = true;
-      config.persist = false;
-    };
-    apps.layer4.servers = discoveryServers;
-  };
+  # Compile a direct destination from the same catalog that publishes CoreDNS.
+  # Multiple instances require an explicit target instead of implicit selection.
+  destinations =
+    service:
+    lib.concatLists (
+      lib.mapAttrsToList (
+        _: published:
+        lib.optional (published ? ${service} && published.${service}.port != null) (
+          let
+            endpoint = published.${service};
+          in
+          "[${endpoint.address}]:${toString endpoint.port}"
+        )
+      ) cfg.serviceDiscovery.catalog
+    );
   # systemd-socket-proxyd bridges one systemd socket to a plain TCP or Unix
   # target. It is what connects a workload-local loopback address to an
   # authenticated socket, and it always runs inside a private namespace.
@@ -126,14 +93,14 @@ let
     { name, ... }:
     {
       options = {
-        # SRV name, resolved as <service>.svc.<discovery domain>.
+        # Service name in the declarative ingress catalog.
         service = mkOption { type = types.str; };
         # Exact URI SAN expected from the peer; DNS cannot override it.
         verifyID = mkOption { type = types.str; };
         target = mkOption {
           type = types.nullOr types.str;
           default = null;
-          description = "Fixed TLS destination as host:port or unix:/path, instead of SRV discovery.";
+          description = "Fixed TLS destination as host:port or unix:/path, instead of the declarative catalog.";
         };
         # Use an existing socket instead of the generated path, when another
         # module owns the listener.
@@ -293,11 +260,7 @@ let
             # the existing directory and, unlike `Z`, does not touch the sockets.
             "z ${base name}/egress 0750 root ${w.group} -"
             "z ${base name}/ingress 0750 root ${user} -"
-          ]
-          ++
-            lib.optional (lib.any (e: e.target == null) (builtins.attrValues w.egress))
-              # Inherit this workload's proxy group on sockets created by Caddy.
-              "d /run/realm-discovery/${name} 2750 ${discoveryUser} ${user} -";
+          ];
           # Namespace holder. Socket units bind inside this namespace, so it
           # must exist before sockets.target and outlive every unit that joins
           # it. It runs nothing but sleep, and DefaultDependencies = false keeps
@@ -345,13 +308,7 @@ let
                     "-/run/systemd/notify"
                     "-/run/current-system"
                   ]
-                  ++ lib.unique (
-                    lib.mapAttrsToList (route: e: builtins.dirOf (egressSocket route e)) w.egress
-                    ++ lib.optional w.isolation.dns "${base name}/egress"
-                  )
-                  # With isolation.dns the application talks to the stub in its
-                  # own namespace and never to the host resolver.
-                  ++ lib.optional w.isolation.dns "${pkgs.writeText "realm-resolv.conf" "nameserver 127.0.0.53\noptions edns0 trust-ad\n"}:/etc/resolv.conf"
+                  ++ lib.unique (lib.mapAttrsToList (route: e: builtins.dirOf (egressSocket route e)) w.egress)
                   ++ w.isolation.allowUnixSockets
                   # Aliases keep the original hostnames for SNI and certificate
                   # verification while the address points at a local adapter.
@@ -392,10 +349,22 @@ let
         route: e:
         let
           unit = "realm-egress-${name}-${route}";
+          candidates = destinations e.service;
+          target =
+            if e.target != null then
+              e.target
+            else if builtins.length candidates == 1 then
+              builtins.head candidates
+            else
+              "[::1]:1";
         in
         lib.mkMerge [
           {
             assertions = [
+              {
+                assertion = e.target != null || builtins.length candidates == 1;
+                message = "${unit}: service ${e.service} must have exactly one catalog endpoint, or set an explicit target.";
+              }
               {
                 assertion = lib.hasPrefix "spiffe://" e.verifyID;
                 message = "${unit}: verifyID must be an explicit SPIFFE ID.";
@@ -422,10 +391,7 @@ let
             };
             systemd.services.${unit} = {
               requires = [ "spire-agent.service" ];
-              # Socket activation must not cancel a discovery daemon's stop
-              # job by starting a dependent egress while it is restarting.
-              wants = lib.optional (e.target == null) discoveryUnit;
-              after = [ "spire-agent.service" ] ++ lib.optional (e.target == null) discoveryUnit;
+              after = [ "spire-agent.service" ];
               serviceConfig = hardened // {
                 Type = "notify";
                 NotifyAccess = "all";
@@ -452,7 +418,7 @@ let
                   "--max-conn-lifetime"
                   "1h"
                   "--target"
-                  (if e.target == null then "unix:${discoveryPath name route}" else e.target)
+                  target
                 ]);
               };
             };
@@ -622,81 +588,6 @@ let
         ]
       ) w.ingress
       ++ [
-        # Namespace-local DNS. The application queries UDP/TCP 127.0.0.53 inside
-        # its namespace; every query travels over one protected Unix socket to
-        # the host systemd-resolved stub. The adapter can reach loopback only,
-        # so DNS-dependent checks keep working without granting a network route.
-        (mkIf w.isolation.dns {
-          assertions = [
-            {
-              assertion = w.runtime == "systemd" && w.isolation.privateNetwork && !(w.egress ? dns);
-              message = "realm.workloads.${name}: local DNS requires a private systemd workload and reserves egress/dns.sock.";
-            }
-          ];
-          # Host side: the only upstream the namespace can reach. The adapter may
-          # connect to loopback only, so a client cannot choose a resolver.
-          systemd.sockets."realm-dns-egress-${name}" = {
-            wantedBy = [ "sockets.target" ];
-            listenStreams = [ "${base name}/egress/dns.sock" ];
-            socketConfig = activation user w.group "dns";
-          };
-          systemd.services."realm-dns-egress-${name}".serviceConfig = hardened // {
-            User = user;
-            Group = user;
-            IPAddressDeny = "any";
-            IPAddressAllow = "localhost";
-            ExecStart = "${proxy} 127.0.0.53:53";
-          };
-          # Namespace side: one helper owns both DNS transports, so UDP and TCP
-          # share a single process and a single upstream socket. systemd creates
-          # the sockets inside the namespace and names them, which is how the
-          # helper tells the datagram socket from the stream socket.
-          systemd.sockets."realm-dns-udp-${name}" = network // {
-            wantedBy = [ "sockets.target" ];
-            listenDatagrams = [ "127.0.0.53:53" ];
-            socketConfig = {
-              PrivateNetwork = true;
-              FileDescriptorName = "dns-udp";
-              Service = "realm-dns-${name}.service";
-            };
-          };
-          systemd.sockets."realm-dns-tcp-${name}" = network // {
-            wantedBy = [ "sockets.target" ];
-            listenStreams = [ "127.0.0.53:53" ];
-            socketConfig = {
-              PrivateNetwork = true;
-              FileDescriptorName = "dns-tcp";
-              Service = "realm-dns-${name}.service";
-            };
-          };
-          systemd.services."realm-dns-${name}" = network // {
-            wantedBy = [ "multi-user.target" ];
-            requires = network.requires ++ [
-              "realm-dns-egress-${name}.socket"
-              "realm-dns-udp-${name}.socket"
-              "realm-dns-tcp-${name}.socket"
-            ];
-            after = network.after ++ [
-              # The sockets must exist before this start, otherwise systemd has no
-              # descriptors to pass and the helper would have nothing to serve.
-              "realm-dns-egress-${name}.socket"
-              "realm-dns-udp-${name}.socket"
-              "realm-dns-tcp-${name}.socket"
-            ];
-            serviceConfig = hardened // {
-              User = user;
-              Group = user;
-              SupplementaryGroups = [ w.group ];
-              PrivateNetwork = true;
-              ExecStart = lib.escapeShellArgs [
-                "${helper}/bin/realm-helper"
-                "dns"
-                "--upstream"
-                "${base name}/egress/dns.sock"
-              ];
-            };
-          };
-        })
         # gost turns the authenticated HTTP Internet egress into a SOCKS5
         # listener for applications that only speak SOCKS. UDP and BIND stay
         # disabled, so the adapter cannot be used as a general relay.
@@ -780,63 +671,7 @@ let
             serviceConfig.SupplementaryGroups = [ "realm-proxies" ];
           };
         })
-        # Credential adapter for applications that read PEM files but cannot
-        # speak SDS. spiffe-helper writes svid.pem, key.pem and bundle.pem with
-        # UMask 0027, so the application group can read the key.
-        #
-        # This hands out key material and is an explicit exception to proxy
-        # isolation: the application must verify SPIFFE IDs and reload both its
-        # identity and trust bundle on renewal.
-        (mkIf w.credentials.enable {
-          realm.spire.registrations."realm-helper-${name}" = {
-            spiffeID = w.spiffeID;
-            selectors = [
-              "systemd:id:realm-helper-${name}.service"
-              "unix:user:${user}"
-            ];
-          };
-          systemd.tmpfiles.rules = [ "d ${w.credentials.directory} 0750 ${user} ${w.group} -" ];
-          systemd.services."realm-helper-${name}" = {
-            wantedBy = [ "multi-user.target" ];
-            requires = [ "spire-agent.service" ];
-            after = [ "spire-agent.service" ];
-            serviceConfig = hardened // {
-              User = user;
-              Group = w.group;
-              SupplementaryGroups = [ "realm-proxies" ];
-              UMask = "0027";
-              ReadWritePaths = [ w.credentials.directory ];
-              ExecStartPost = pkgs.writeShellScript "wait-realm-helper-${name}" ''
-                for attempt in $(${pkgs.coreutils}/bin/seq 1 60); do
-                  if ${pkgs.openssl}/bin/openssl x509 -in ${lib.escapeShellArg "${w.credentials.directory}/svid.pem"} -noout -checkend 0 >/dev/null 2>&1 && test -s ${lib.escapeShellArg "${w.credentials.directory}/key.pem"}; then
-                    exit 0
-                  fi
-                  ${pkgs.coreutils}/bin/sleep 1
-                done
-                exit 1
-              '';
-              ExecStart = "${pkgs.spiffe-helper}/bin/spiffe-helper -config ${
-                (pkgs.formats.hcl1 { }).generate "realm-helper-${name}.conf" (
-                  {
-                    agent_address = cfg.spire.socket;
-                    cert_dir = w.credentials.directory;
-                    svid_file_name = "svid.pem";
-                    svid_key_file_name = "key.pem";
-                    svid_bundle_file_name = "bundle.pem";
-                    daemon_mode = true;
-                    key_file_mode = 416;
-                  }
-                  // w.credentials.settings
-                )
-              }";
-            };
-          };
-          systemd.services.${appName w} = {
-            requires = [ "realm-helper-${name}.service" ];
-            after = [ "realm-helper-${name}.service" ];
-            serviceConfig.BindReadOnlyPaths = [ w.credentials.directory ];
-          };
-        })
+
       ]
     );
   # The fragments above are mkMerge trees that may contain mkIf nodes, but each
@@ -868,11 +703,6 @@ in
       readOnly = true;
       default = "spiffe://${cfg.trustDomain}/service/";
     };
-    agentPrefix = mkOption {
-      type = types.str;
-      readOnly = true;
-      default = "spiffe://${cfg.trustDomain}/agent/";
-    };
     # Address ingress sockets bind to, normally the node's mesh IPv6 address.
     address = mkOption {
       type = types.str;
@@ -880,56 +710,13 @@ in
     };
     ghostunnelPackage = lib.mkPackageOption pkgs "ghostunnel" { };
     # Static helper for the per-workload and per-node jobs that are too small to
-    # justify their own binary: the isolation.dns relay, socket bridges, the
+    # justify their own binary: socket bridges, the
     # container entrypoint adapters and the SPIRE registration reconciler.
     helperPackage = mkOption {
       type = types.package;
       default = pkgs.callPackage ../pkgs/realm-helper { };
       defaultText = lib.literalExpression "pkgs.callPackage ../pkgs/realm-helper { }";
       description = "Binary implementing the per-namespace helper subcommands.";
-    };
-    # SRV discovery: how an egress turns a service name into a remote ingress.
-    discovery = {
-      integrateCaddy = lib.mkEnableOption "merge SRV discovery listeners into the existing Caddy JSON configuration";
-      package = mkOption {
-        type = types.package;
-        # The by-name package is called directly so the fallback also works in
-        # evaluations that do not apply this flake's overlay (the test suites).
-        default = pkgs.callPackage ../pkgs/by-name/caddy-srv.nix { };
-        defaultText = lib.literalExpression "pkgs.caddy-srv";
-        description = "Caddy with srv_proxy for nodes without the shared Caddy profile.";
-      };
-      servers = mkOption {
-        type = json.type;
-        readOnly = true;
-        internal = true;
-        default = discoveryServers;
-        description = "Generated Caddy L4 servers, merged by the shared Caddy profile.";
-      };
-      domain = mkOption {
-        type = types.str;
-        default = config.realm.serviceDiscovery.domain;
-      };
-      # Local CoreDNS listener used for the SRV query and for the target
-      # address lookup.
-      resolver = mkOption {
-        type = types.str;
-        default = "127.0.0.1";
-      };
-      port = mkOption {
-        type = types.port;
-        default = config.realm.serviceDiscovery.port;
-      };
-      refresh = mkOption {
-        type = types.str;
-        default = "5s";
-        description = "SRV cache lifetime as a positive Caddy duration; independent of DNS TTL.";
-      };
-      dialTimeout = mkOption {
-        type = types.str;
-        default = "5s";
-        description = "Timeout for each DNS lookup and individual TCP connection attempt.";
-      };
     };
     # One entry per service that must talk to, or be reached by, the mesh.
     workloads = mkOption {
@@ -976,7 +763,6 @@ in
                 default = "${cfg.servicePrefix}${name}";
               };
               isolation = {
-                dns = lib.mkEnableOption "a private DNS stub through a Unix socket to the existing host resolver";
                 # Remove the route to the host and the Internet. Disable it only
                 # for an edge or gateway role that must accept public traffic.
                 privateNetwork = mkOption {
@@ -1013,19 +799,6 @@ in
                 type = types.attrsOf ingressType;
                 default = { };
               };
-              # PEM files for an application that cannot speak SDS. Grants key
-              # access, so use it only where the proxy path is impossible.
-              credentials = {
-                enable = lib.mkEnableOption "spiffe-helper for an explicitly configured native SPIFFE TLS consumer";
-                directory = mkOption {
-                  type = types.str;
-                  default = "/run/realm/${name}/credentials";
-                };
-                settings = mkOption {
-                  type = (pkgs.formats.hcl1 { }).type;
-                  default = { };
-                };
-              };
               # SOCKS5 adapter for clients that cannot use an HTTP proxy.
               socksProxy = {
                 enable = lib.mkEnableOption "a local SOCKS5 adapter through the authenticated HTTP Internet egress";
@@ -1044,56 +817,13 @@ in
     # realm-proxies is the group that may read the SPIRE Agent socket; only
     # proxy, adapter and helper accounts are members.
     users.groups = lib.mkMerge [
-      {
-        realm-proxies = { };
-        realm-discovery = mkIf (hasDiscovery && !cfg.discovery.integrateCaddy) { };
-      }
+      { realm-proxies = { }; }
       (select [ "users" "groups" ] { } generated)
     ];
-    users.users = lib.mkMerge [
-      (select [ "users" "users" ] { } generated)
-      {
-        realm-discovery = mkIf (hasDiscovery && !cfg.discovery.integrateCaddy) {
-          isSystemUser = true;
-          group = "realm-discovery";
-        };
-      }
-    ];
-    systemd.services = lib.mkMerge [
-      (select [ "systemd" "services" ] { } generated)
-      {
-        # Fallback discovery daemon for nodes without the shared Caddy profile.
-        # It terminates no TLS; it only forwards ciphertext to a selected
-        # ingress.
-        realm-discovery = mkIf (hasDiscovery && !cfg.discovery.integrateCaddy) {
-          description = "Realm SRV discovery and TLS stream forwarding";
-          wantedBy = [ "multi-user.target" ];
-          wants = [ "coredns.service" ];
-          after = [
-            "coredns.service"
-            "systemd-tmpfiles-setup.service"
-          ];
-          serviceConfig = hardened // {
-            Type = "notify";
-            User = discoveryUser;
-            Group = "realm-discovery";
-            StateDirectory = "realm-discovery";
-            Environment = [
-              "XDG_DATA_HOME=%S/realm-discovery"
-              "XDG_CONFIG_HOME=%S/realm-discovery"
-            ];
-            ReadWritePaths = [ "/run/realm-discovery" ];
-            ExecStartPre = "${cfg.discovery.package}/bin/caddy validate --config ${discoveryConfig}";
-            ExecStart = "${cfg.discovery.package}/bin/caddy run --config ${discoveryConfig}";
-          };
-        };
-      }
-    ];
+    users.users = select [ "users" "users" ] { } generated;
+    systemd.services = select [ "systemd" "services" ] { } generated;
     systemd.sockets = select [ "systemd" "sockets" ] { } generated;
-    systemd.tmpfiles.rules = lib.mkMerge [
-      (lib.optional hasDiscovery "d /run/realm-discovery 0711 ${discoveryUser} root -")
-      (select [ "systemd" "tmpfiles" "rules" ] [ ] generated)
-    ];
+    systemd.tmpfiles.rules = select [ "systemd" "tmpfiles" "rules" ] [ ] generated;
     realm.spire.registrations = select [ "realm" "spire" "registrations" ] { } generated;
     realm.serviceDiscovery.publish = select [ "realm" "serviceDiscovery" "publish" ] { } generated;
     assertions = lib.mkMerge [
@@ -1102,10 +832,6 @@ in
         {
           assertion = config.realm.serviceDiscovery.enable;
           message = "realm: CoreDNS service discovery must be enabled.";
-        }
-        {
-          assertion = !cfg.discovery.integrateCaddy || (config.systemd.services.caddy.enable or false);
-          message = "realm.discovery.integrateCaddy requires the shared Caddy service.";
         }
       ]
     ];

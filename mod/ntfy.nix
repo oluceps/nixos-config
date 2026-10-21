@@ -7,13 +7,13 @@
         user = "ntfy-sh";
         group = "ntfy-sh";
         isolation.runtimePaths = [ "/run/ntfy-sh" ];
+        ingressGroups = [ "ntfy-sh" ];
         ingress = {
           http = {
             port = 12586;
-            target = "127.0.0.1:2586";
-            privateLoopback = true;
+            target = "unix:/run/ntfy-sh/http.sock";
             service = "ntfy";
-            allowedIDs = [ "spiffe://nyaw.xyz/service/caddy" ];
+            allowedIDs = config.realm.caddy.allowedIDs.ntfy;
           };
           metrics = {
             port = 19099;
@@ -47,6 +47,8 @@
           NO_PROXY = "localhost,127.0.0.1,::1";
         };
         serviceConfig = {
+          RuntimeDirectory = "ntfy-sh";
+          UMask = "0007";
           AmbientCapabilities = lib.mkForce [ ];
           CapabilityBoundingSet = lib.mkForce [ ];
         };
@@ -54,7 +56,9 @@
       services.ntfy-sh = {
         enable = true;
         settings = {
-          listen-http = "127.0.0.1:2586";
+          listen-http = "-";
+          listen-unix = "/run/ntfy-sh/http.sock";
+          listen-unix-mode = 432;
           behind-proxy = true;
           auth-default-access = "deny-all";
           base-url = "http://ntfy.nyaw.xyz";

@@ -13,8 +13,9 @@
             ssl_mode = "disable";
           };
           server = {
-            http_addr = "127.0.0.1";
-            http_port = 3002;
+            protocol = "socket";
+            socket = "/run/grafana/grafana.sock";
+            socket_mode = "0660";
             domain = "gf.nyaw.xyz";
             root_url = "https://gf.nyaw.xyz/";
             serve_from_sub_path = false;
@@ -29,12 +30,12 @@
       realm.workloads.grafana = {
         isolation.runtimePaths = [ "/run/grafana" ];
         isolation.allowUnixSockets = [ "/run/postgresql" ];
+        ingressGroups = [ "grafana" ];
         ingress.http = {
           port = 13002;
-          target = "127.0.0.1:3002";
-          privateLoopback = true;
+          target = "unix:/run/grafana/grafana.sock";
           service = "grafana";
-          allowedIDs = [ "spiffe://nyaw.xyz/service/caddy" ];
+          allowedIDs = config.realm.caddy.allowedIDs.grafana;
         };
         egress = {
           loki = {

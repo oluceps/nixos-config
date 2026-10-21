@@ -41,21 +41,19 @@
             runtimePaths = [ "/run/matrix-synapse" ];
             allowUnixSockets = [ "/run/postgresql" ];
           };
+          ingressGroups = [ "matrix-synapse" ];
           ingress = {
             http = {
               port = 18196;
-              target = "127.0.0.1:8196";
-              privateLoopback = true;
+              target = "unix:/run/matrix-synapse/http.sock";
               service = "synapse";
-              allowedIDs = [
-                "spiffe://nyaw.xyz/service/caddy"
+              allowedIDs = config.realm.caddy.allowedIDs.synapse ++ [
                 "spiffe://nyaw.xyz/service/mautrix-telegram"
               ];
             };
             metrics = {
               port = 19031;
-              target = "127.0.0.1:9031";
-              privateLoopback = true;
+              target = "unix:/run/matrix-synapse/metrics.sock";
               service = "synapse-metrics";
               allowedIDs = [ "spiffe://nyaw.xyz/service/observability-${config.networking.hostName}" ];
             };
@@ -95,6 +93,7 @@
       };
       services.matrix-synapse = {
         enable = true;
+        enableRegistrationScript = false;
         withJemalloc = true;
         plugins = with config.services.matrix-synapse.package.plugins; [
           matrix-synapse-s3-storage-provider
@@ -148,16 +147,14 @@
 
           listeners = [
             {
-              port = 9031;
-              type = "metrics";
-              bind_addresses = [ "127.0.0.1" ];
-              tls = false;
-              resources = [ ];
+              path = "/run/matrix-synapse/metrics.sock";
+              mode = "660";
+              type = "http";
+              resources = [ { names = [ "metrics" ]; } ];
             }
             {
-              bind_addresses = [ "127.0.0.1" ];
-              port = 8196;
-              tls = false;
+              path = "/run/matrix-synapse/http.sock";
+              mode = "660";
               type = "http";
               x_forwarded = true;
               resources = [

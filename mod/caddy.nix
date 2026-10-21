@@ -39,18 +39,15 @@
           group = "caddy";
         };
         realm.workloads.caddy = {
+          spiffeID = config.realm.caddy.localID;
           # Public HTTP/3, ACME and DNS need the host network. Keep the same
           # runtime socket isolation as other systemd workloads.
           isolation = {
             privateNetwork = false;
-            runtimePaths = [
-              "/run/caddy"
-              "/run/realm-discovery"
-            ];
+            runtimePaths = [ "/run/caddy" ];
             allowUnixSockets = [ "-/run/systemd/resolve" ];
           };
         };
-        realm.discovery.integrateCaddy = true;
         realm.observability.endpoints.caddy.port = 20242;
         vaultix.secrets.caddy = { };
         networking.firewall = lib.mkIf (!config.data.node.${config.networking.hostName}.nat) {
@@ -72,7 +69,6 @@
             insecure = false;
           };
           apps = {
-            layer4.servers = mkIf config.realm.enable config.realm.discovery.servers;
             http.servers.observability = {
               listen = [ "127.0.0.1:20242" ];
               automatic_https.disable = true;
@@ -130,9 +126,6 @@
               RestrictSUIDSGID = true;
               RestrictRealtime = true;
               LockPersonality = true;
-              ReadWritePaths = lib.optionals (config.realm.enable && config.realm.discovery.servers != { }) [
-                "/run/realm-discovery"
-              ];
               AmbientCapabilities = [ "CAP_NET_BIND_SERVICE" ];
               CapabilityBoundingSet = [ "CAP_NET_BIND_SERVICE" ];
               UMask = "0027";
