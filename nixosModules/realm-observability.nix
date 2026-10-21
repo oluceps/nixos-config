@@ -392,6 +392,9 @@ in
       # ignored until the next reboot.
       restartTriggers = [ configfile ];
       requires = [ "spire-agent.service" ];
+      # Caddy loads the SVID and trust bundle at startup. Restart it after each
+      # successful Agent start so a rotated SPIRE identity replaces that cache.
+      partOf = [ "spire-agent.service" ];
       after = [
         "network.target"
         "spire-agent.service"

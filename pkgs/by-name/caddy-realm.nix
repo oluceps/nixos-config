@@ -16,9 +16,9 @@
     # no tags, so this pseudo-version pins the commit it was reviewed at.
     "github.com/caddyserver/forwardproxy@v0.0.0-20260321230143-0aab84dad4fc"
     "github.com/oluceps/caddy-plugins-realm/srv@v0.1.0"
-    "github.com/oluceps/caddy-plugins-realm/spiffe@v0.1.0"
+    "github.com/oluceps/caddy-plugins-realm/spiffe@v0.0.0-20261021095302-203d2c138a9e"
   ];
-  hash = "sha256-qgI73jvC3R2OG4stukNiktCrZU7xJrqVNr6AffqulV8=";
+  hash = "sha256-tqLJwrtKXtX2w+4smd83Q73sYhVaZRJP4GJQVotT+Pg=";
 }).overrideAttrs
   (previous: {
     # build-info proves the modules were required; list-modules proves they
