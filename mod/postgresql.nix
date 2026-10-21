@@ -42,13 +42,13 @@
             backendUser = "realm-pg-atuin";
             allowedIDs = [ "spiffe://nyaw.xyz/service/atuin" ];
           };
-          telegram-search = {
-            port = 15436;
-            target = "unix:/run/postgresql/.s.PGSQL.5432";
-            service = "postgresql-telegram-search";
-            backendUser = "realm-pg-telegram-search";
-            allowedIDs = [ "spiffe://nyaw.xyz/service/telegram-search" ];
-          };
+          # telegram-search = {
+          #   port = 15436;
+          #   target = "unix:/run/postgresql/.s.PGSQL.5432";
+          #   service = "postgresql-telegram-search";
+          #   backendUser = "realm-pg-telegram-search";
+          #   allowedIDs = [ "spiffe://nyaw.xyz/service/telegram-search" ];
+          # };
           immich = {
             port = 15435;
             target = "unix:/run/postgresql/.s.PGSQL.5432";

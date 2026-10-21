@@ -206,8 +206,8 @@
         "pre-commit-hooks": "pre-commit-hooks"
       },
       "locked": {
-        "lastModified": 1792528627,
-        "narHash": "sha256-xUBqJLbz1PQZsZBCsFR2WVZrLMBlIHIQlvOYQ0buaII=",
+        "lastModified": 1792565094,
+        "narHash": "sha256-gxW1hZuzcVFr5oIyWl8zWUPn8FqPpptWDMqahzdY/1s=",
         "path": "/home/riro/Src/nyaw-dn42-autopeer",
         "type": "path"
       },

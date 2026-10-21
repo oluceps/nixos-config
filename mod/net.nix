@@ -78,13 +78,6 @@ in
             allowedUDPPorts = [ 1901 ];
           };
 
-          timeServers = [
-            "ntp1.aliyun.com"
-            "240e:982:13a3:f700:70c6:e4fd:a208:19d3"
-            "edu.ntp.org.cn"
-            "2001:250:380a:5::10"
-          ];
-
           nftables = {
             enable = true;
             tables.filter = {
@@ -206,13 +199,6 @@ in
             allowedUDPPorts = [ ];
           };
           hostId = "0bc55a2e";
-
-          timeServers = [
-            "ntp1.aliyun.com"
-            "240e:982:13a3:f700:70c6:e4fd:a208:19d3"
-            "edu.ntp.org.cn"
-            "2001:250:380a:5::10"
-          ];
         };
         systemd.network = {
           enable = true;

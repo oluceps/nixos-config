@@ -107,6 +107,7 @@
               {
                 imports = [
                   # ../../nixosModules/hysteria.nix
+                  inputs.flyline.nixosModules.default
                 ];
                 networking.hostName = "sept";
                 networking.useNetworkd = true;
@@ -139,6 +140,10 @@
                   };
                 };
                 networking.enableIPv6 = true;
+                programs = {
+                  fish.enable = true;
+                  flyline.enable = true;
+                };
                 services.prometheus.exporters = {
                   # forbid end
 
@@ -350,6 +355,7 @@
                     "L+ /root/.config/containers/containers.conf - - - - ${rootPodmanConf}"
                   ];
                 microvm = {
+                  mem = 2048;
                   interfaces = [
                     {
                       id = "vm${toString index}";
