@@ -43,6 +43,7 @@
             wgmesh
 
             security-toolkit
+            shellbox
           ])
         )
         ++ [
