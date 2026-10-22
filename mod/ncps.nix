@@ -10,7 +10,6 @@
         requires = [ "seaweedfs.service" ];
         serviceConfig = {
           EnvironmentFile = config.vaultix.secrets.ncps.path;
-          ReadWritePaths = [ "/tmp" ];
         };
       };
       realm.observability.endpoints.ncps.socket = "/run/realm/observability/egress/ncps.sock";

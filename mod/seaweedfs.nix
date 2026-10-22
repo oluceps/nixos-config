@@ -76,8 +76,9 @@
         LoadCredential = [ "weed-s3:${config.vaultix.secrets.weed-s3.path}" ];
         ReadWritePaths = [
           dataDir
-          # SeaweedFS creates its local master gRPC sockets and scratch files here.
-          "/tmp"
+          # No "/tmp" here: that path is the host /tmp, and listing it also
+          # cancels the workload's private tmpfs. SeaweedFS scratch files belong
+          # in the private tmpfs, which the workload module already mounts.
         ];
         MemoryMax = "8G";
         MemoryHigh = "6G";

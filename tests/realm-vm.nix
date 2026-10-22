@@ -518,6 +518,13 @@ pkgs.testers.runNixOSTest {
     with subtest("host sockets are hidden from workload"):
         machine.succeed("nsenter -t $(systemctl show -p MainPID --value sender.service) -m ${pkgs.coreutils}/bin/test ! -e /run/spire/agent/public/api.sock")
         machine.succeed("nsenter -t $(systemctl show -p MainPID --value sender.service) -m ${pkgs.coreutils}/bin/test ! -e /run/realm/imposter/egress/receiver.sock")
+    with subtest("workload keeps a private writable /tmp"):
+        # Joining realm-net-<name> suppresses PrivateTmp's tmpfs, so the module
+        # mounts one explicitly. Host files must stay invisible, and a workload
+        # that spools payloads into /tmp must still be able to write there.
+        machine.succeed("touch /tmp/host-only-marker")
+        machine.succeed("nsenter -t $(systemctl show -p MainPID --value sender.service) -m ${pkgs.coreutils}/bin/test ! -e /tmp/host-only-marker")
+        machine.succeed("nsenter -t $(systemctl show -p MainPID --value sender.service) -m ${pkgs.coreutils}/bin/touch /tmp/workload-marker")
     with subtest("workload cannot connect directly to ingress"):
         machine.fail("nsenter -t $(systemctl show -p MainPID --value sender.service) -n curl -skf --max-time 2 https://[::1]:19429/")
     with subtest("idempotent registration synchronization"):

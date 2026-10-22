@@ -103,7 +103,16 @@ lib.runTests {
   };
   testNoRuntimeSockets = {
     expr = cfg.systemd.services.sender.serviceConfig.TemporaryFileSystem;
-    expected = [ "/run:ro" ];
+    expected = [
+      "/run:ro"
+      "/tmp:mode=1777"
+    ];
+  };
+  # Joining realm-net-<name> suppresses PrivateTmp, so the explicit tmpfs is the
+  # only thing that keeps /tmp private and writable inside a workload.
+  testPrivateTmpfs = {
+    expr = cfg.systemd.services.realm-backend-receiver-http.serviceConfig.TemporaryFileSystem;
+    expected = [ "/tmp:mode=1777" ];
   };
   testBackendPrivate = {
     expr = cfg.systemd.services.realm-backend-receiver-http.serviceConfig.PrivateNetwork;
