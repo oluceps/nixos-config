@@ -352,20 +352,20 @@
           native = true;
           port = 19328;
           service = "internet-proxy";
-          allowedIDs = [
-            "${config.realm.servicePrefix}misskey"
-            "${config.realm.servicePrefix}grafana"
-            "${config.realm.servicePrefix}immich-ml"
-            "${config.realm.servicePrefix}jellyfin"
-            "${config.realm.servicePrefix}vaultwarden"
-            "${config.realm.servicePrefix}forgejo"
-            "${config.realm.servicePrefix}ncps"
-            "${config.realm.servicePrefix}synapse"
-            "${config.realm.servicePrefix}calibre"
-            "${config.realm.servicePrefix}mautrix-telegram"
-            "${config.realm.servicePrefix}ntfy"
-            "${config.realm.servicePrefix}subs"
-            "${config.realm.servicePrefix}pocket-id"
+          allowedIDs = map (n: config.realm.servicePrefix + n) [
+            "misskey"
+            "grafana"
+            "immich-ml"
+            "jellyfin"
+            "vaultwarden"
+            "forgejo"
+            "ncps"
+            "synapse"
+            "calibre"
+            "mautrix-telegram"
+            "ntfy"
+            "subs"
+            "pocket-id"
           ];
         };
       };
