@@ -19,26 +19,10 @@ let
   # Public path per endpoint. Probe endpoints additionally require the exact
   # module/target pair, so only enumerated checks can be run.
   publicPath = name: e: "/${name}/${if e.kind == "probe" then "probe" else "metrics"}";
-  spiffeCA = {
-    provider = "spiffe";
-    socket_path = config.realm.spire.socket;
-  };
   denied = {
     handler = "static_response";
     status_code = 403;
   };
-  # Callers authenticate with an SVID from the SPIRE trust bundle; the exact URI
-  # SAN is then compared against the configured allowlist. Matching the ID rather
-  # than the issuing CA keeps every other workload out.
-  #
-  # The SAN placeholder yields an URL value, which the expression matcher cannot
-  # convert, so the regular-expression matcher is used: it stringifies the value
-  # and anchors the pattern to the complete ID.
-  authorized =
-    ids:
-    map (id: {
-      vars_regexp."{http.request.tls.client.san.uris.0}".pattern = "^${lib.escapeRegex id}$";
-    }) ids;
   # Upstream exporters expect their loopback name, not the mesh host name.
   proxy = e: {
     handler = "reverse_proxy";
@@ -135,12 +119,6 @@ let
     ];
     handle = [ denied ];
   };
-  # Anything on an mTLS listener that does not present an allowlisted identity
-  # is refused before routing.
-  identityGuard = ids: {
-    match = [ { not = authorized ids; } ];
-    handle = [ denied ];
-  };
   # Paths a business or public listener must never expose, even though all
   # other traffic there is forwarded verbatim.
   # Path policy for listeners that forward everything else verbatim.
@@ -164,12 +142,9 @@ let
     }
     { handle = [ (proxy e) ]; }
   ];
-  # The mTLS business listener additionally requires an allowlisted identity;
-  # the plaintext compatibility port keeps only the path policy.
-  businessRoutes = e: [ (identityGuard e.businessAllowedIDs) ] ++ forwardedRoutes e;
   # mTLS for callers: client certificate required and verified against the
   # SPIRE bundle, TLS 1.3 only, SVID served by the get_certificate module.
-  mtls = {
+  mtls = ids: {
     automatic_https.disable = true;
     # With client authentication Caddy otherwise requires the request Host to
     # match the TLS SNI. Callers reach this listener through a local adapter and
@@ -180,8 +155,14 @@ let
         default_sni = certSubject;
         protocol_min = "tls1.3";
         client_authentication = {
-          mode = "require_and_verify";
-          ca = spiffeCA;
+          mode = "require";
+          verifiers = [
+            {
+              verifier = "spiffe";
+              socket_path = config.realm.spire.socket;
+              allowed_ids = ids;
+            }
+          ];
         };
       }
     ];
@@ -228,10 +209,9 @@ let
         }
       ];
       http.servers = {
-        observation = mtls // {
+        observation = mtls cfg.allowedIDs // {
           listen = [ "${address}:${toString cfg.port}" ];
           routes = [
-            (identityGuard cfg.allowedIDs)
             escapedSlashGuard
             pathGuard
           ]
@@ -242,10 +222,10 @@ let
       // lib.mapAttrs' (
         name: e:
         lib.nameValuePair "business-${name}" (
-          mtls
+          mtls e.businessAllowedIDs
           // {
             listen = [ "${address}:${toString e.businessProxyPort}" ];
-            routes = businessRoutes e;
+            routes = forwardedRoutes e;
           }
         )
       ) (lib.filterAttrs (_: e: e.businessProxyPort != null) endpoints)
@@ -392,8 +372,7 @@ in
       # ignored until the next reboot.
       restartTriggers = [ configfile ];
       requires = [ "spire-agent.service" ];
-      # Caddy loads the SVID and trust bundle at startup. Restart it after each
-      # successful Agent start so a rotated SPIRE identity replaces that cache.
+      # Keep the gateway lifecycle tied to the local Agent.
       partOf = [ "spire-agent.service" ];
       after = [
         "network.target"

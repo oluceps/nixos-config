@@ -400,17 +400,16 @@ query parameters, and non-GET methods are rejected. Blackbox probe module and
 target pairs are enumerated from the configured jobs; extra and duplicate
 parameters are rejected. Redirects are disabled for HTTP probes.
 
-The gateway runs on `caddy-realm`, whose `tls.get_certificate.spiffe` module
-serves the workload SVID from the Workload API on every handshake, so SVID
-rotation needs no reload and no key ever reaches disk. Client certificates are
-verified against the SPIRE trust bundle (`tls.ca_pool.source.spiffe`), and the
-URI SAN is then matched against `allowedIDs` with an anchored regular
-expression: the SAN placeholder yields a URL value, which the expression
-matcher cannot convert. The patched TLS policy gets the provider's current CA
-pool for each handshake. CA rotation therefore needs no reload. Public paths
-are only the gateway's names for an
-exporter path; a URI rewrite restores the exporter's own `/metrics` or `/probe`
-before proxying and keeps the probe query string intact.
+The gateway uses `caddy-realm` with the published SPIFFE plugin. The
+`tls.get_certificate.spiffe` module serves the current SVID from the Workload
+API. The `tls.client_auth.verifier.spiffe` module verifies client SVIDs against
+the current trust bundle and the listener's exact identity allowlist. Each TLS
+policy uses `mode = "require"` without a static CA pool. The verifier checks
+both the certificate chain and the client-auth purpose before it accepts an
+identity. SVID and CA updates need no reload or Caddy source patch.
+
+Public paths name exporter endpoints. A URI rewrite restores the exporter's
+own `/metrics` or `/probe` path before proxying and keeps the probe query string.
 
 The observation gateway keeps its own process, `realm-observability.service`,
 rather than merging into the public Caddy instance. One process holds one SPIFFE
