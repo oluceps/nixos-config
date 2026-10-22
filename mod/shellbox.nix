@@ -11,6 +11,13 @@ let
   # systemd-socket-proxyd, same pattern as mod/vms/sep.nix.
   hostSshPort = 22022;
   hostSparePort = 22023;
+
+  # Loopback ports the container publishes to. They MUST differ from
+  # hostSshPort/hostSparePort: the socket units below bind the host ports on
+  # [::] with BindIPv6Only=both, which also occupies 127.0.0.1:<host port>, so
+  # pasta cannot publish the container port on the same number.
+  backendSshPort = 12222;
+  backendSparePort = 12223;
 in
 {
   flake.modules.nixos.shellbox =
@@ -94,7 +101,10 @@ in
       };
 
       # ---------------------------------------------------------------- files
-      authorizedKeys = pkgs.writeTextDir "authorized_keys.d/root" ''
+      # writeTextDir takes a path INSIDE its output dir, and the result is
+      # bind-mounted at /etc/ssh/authorized_keys.d, so the name here must be
+      # just the file name.
+      authorizedKeys = pkgs.writeTextDir "root" ''
         sk-ssh-ed25519@openssh.com AAAAGnNrLXNzaC1lZDI1NTE5QG9wZW5zc2guY29tAAAAIH+HwSzDbhJOIs8cMuUaCsvwqfla4GY6EuD1yGuNkX6QAAAADnNzaDoxNjg5NTQzMzc1
         ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMDcYqby4TnhKV6xGyuZUtxOmTtXjKYp8r+uCxbGph65
         ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMlk4fFt1HfVenQFTyGgxHfxqPB8spVtZqzBC5R2gYNg ed-login-250928
@@ -253,8 +263,8 @@ in
             sdnotify = "healthy";
           };
           ports = [
-            "127.0.0.1:${toString hostSshPort}:${toString sshPort}"
-            "127.0.0.1:${toString hostSparePort}:${toString sparePort}"
+            "127.0.0.1:${toString backendSshPort}:${toString sshPort}"
+            "127.0.0.1:${toString backendSparePort}:${toString sparePort}"
           ];
           volumes = [
             # alpine image + nix store: no image rebuild needed for tools
@@ -308,11 +318,14 @@ in
       systemd.services.shellbox-ssh = {
         description = "Forward :${toString hostSshPort} to the shellbox container";
         serviceConfig = {
-          ExecStart = "${config.systemd.package}/lib/systemd/systemd-socket-proxyd 127.0.0.1:${toString hostSshPort}";
+          ExecStart = "${config.systemd.package}/lib/systemd/systemd-socket-proxyd 127.0.0.1:${toString backendSshPort}";
           DynamicUser = true;
           NoNewPrivileges = true;
           ProtectSystem = "strict";
           ProtectHome = true;
+          # One fd pair per proxied connection; the default 1024 soft limit is
+          # too low when the container is down and clients keep connecting.
+          LimitNOFILE = 65536;
         };
       };
 
@@ -331,11 +344,12 @@ in
       systemd.services.shellbox-tcp = {
         description = "Forward :${toString hostSparePort} to the shellbox container";
         serviceConfig = {
-          ExecStart = "${config.systemd.package}/lib/systemd/systemd-socket-proxyd 127.0.0.1:${toString hostSparePort}";
+          ExecStart = "${config.systemd.package}/lib/systemd/systemd-socket-proxyd 127.0.0.1:${toString backendSparePort}";
           DynamicUser = true;
           NoNewPrivileges = true;
           ProtectSystem = "strict";
           ProtectHome = true;
+          LimitNOFILE = 65536;
         };
       };
 
