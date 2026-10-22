@@ -23,6 +23,9 @@ let
 in
 {
   flake.overlays.kernel = kernelOverlay;
+  flake.overlays.envoy = final: _prev: {
+    envoy = final.callPackage ../pkgs/by-name/envoy-realm.nix { };
+  };
   flake.modules.nixos.overlay =
     # Go: https://github.com/NixOS/nixpkgs/issues/86349#issuecomment-624489806
     # Rust:
@@ -91,6 +94,7 @@ in
         ++ [
           inputs.self.overlays.default
           kernelOverlay
+          inputs.self.overlays.envoy
           inputs.nix-topology.overlays.default
           inputs.nix-minecraft.overlay
         ]

@@ -19,10 +19,13 @@
         verifyID = "spiffe://nyaw.xyz/service/ncps";
       };
       realm.workloads.ncps = {
+        http = {
+          internet = true;
+          internal = [ "s3.nyaw.xyz" ];
+        };
         isolation = {
           runtimePaths = [ "/run/ncps" ];
           allowUnixSockets = [ "/run/postgresql" ];
-          hosts."s3.nyaw.xyz" = "127.0.0.1";
         };
         ingress = {
           http = {
@@ -40,23 +43,6 @@
             allowedIDs = [ "spiffe://nyaw.xyz/service/observability-${config.networking.hostName}" ];
           };
         };
-        egress = {
-          s3 = {
-            service = "s3-https";
-            verifyID = config.realm.caddy.entrypointID;
-            localPort = 443;
-          };
-          internet = {
-            service = "internet-proxy";
-            verifyID = "spiffe://nyaw.xyz/service/internet";
-            localPort = 13128;
-          };
-        };
-      };
-      systemd.services.ncps.environment = {
-        HTTP_PROXY = "http://127.0.0.1:13128";
-        HTTPS_PROXY = "http://127.0.0.1:13128";
-        NO_PROXY = "localhost,127.0.0.1,::1,s3.nyaw.xyz";
       };
       services.ncps = {
         enable = true;

@@ -1,0 +1,14 @@
+diff --git a/vendor/github.com/caddyserver/caddy/v2/modules/caddytls/connpolicy.go b/vendor/github.com/caddyserver/caddy/v2/modules/caddytls/connpolicy.go
+--- a/vendor/github.com/caddyserver/caddy/v2/modules/caddytls/connpolicy.go
++++ b/vendor/github.com/caddyserver/caddy/v2/modules/caddytls/connpolicy.go
+@@ -136 +136,9 @@ func (cp ConnectionPolicies) TLSConfig(ctx caddy.Context) *tls.Config {
+-			return pol.TLSConfig, nil
++			if clientAuth := pol.ClientAuthentication; clientAuth != nil && clientAuth.ca != nil {
++				// CA providers may rotate their trust pools after provisioning.
++				// Take a fresh snapshot for this handshake without mutating the
++				// policy's shared config or retaining removed trust anchors.
++				cfg := pol.TLSConfig.Clone()
++				cfg.ClientCAs = clientAuth.ca.CertPool()
++				return cfg, nil
++			}
++			return pol.TLSConfig, nil

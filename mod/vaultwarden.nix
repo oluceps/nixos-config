@@ -4,6 +4,10 @@
     {
       vaultix.secrets.vault = { };
       realm.workloads.vaultwarden = {
+        http = {
+          internet = true;
+          internal = [ "oidc.nyaw.xyz" ];
+        };
         isolation.hosts."box.nyaw.xyz" = "127.0.0.1";
         ingress.http = {
           port = 18003;
@@ -18,22 +22,12 @@
             verifyID = "spiffe://nyaw.xyz/service/stalwart";
             localPort = 465;
           };
-          internet = {
-            service = "internet-proxy";
-            verifyID = "spiffe://nyaw.xyz/service/internet";
-            localPort = 13128;
-          };
         };
       };
       systemd.services.vaultwarden = {
         after = [ "postgresql.target" ];
         requires = [ "postgresql.target" ];
         serviceConfig.BindReadOnlyPaths = [ "/run/postgresql" ];
-      };
-      systemd.services.vaultwarden.environment = {
-        HTTP_PROXY = "http://127.0.0.1:13128";
-        HTTPS_PROXY = "http://127.0.0.1:13128";
-        NO_PROXY = "localhost,127.0.0.1,::1,box.nyaw.xyz";
       };
       services.vaultwarden = {
         enable = true;

@@ -11,13 +11,14 @@
     in
     {
       realm.workloads.forgejo = {
+        http = {
+          internet = true;
+          internal = [ "s3.nyaw.xyz" ];
+        };
         isolation = {
           runtimePaths = [ "/run/forgejo" ];
           allowUnixSockets = [ "/run/postgresql" ];
-          hosts = {
-            "s3.nyaw.xyz" = "127.0.0.1";
-            "box.nyaw.xyz" = "127.0.0.1";
-          };
+          hosts."box.nyaw.xyz" = "127.0.0.1";
         };
         ingressGroups = [ "forgejo" ];
         ingress.http = {
@@ -27,31 +28,12 @@
           allowedIDs = config.realm.caddy.allowedIDs.forgejo;
         };
         egress = {
-          s3 = {
-            service = "s3-https";
-            verifyID = config.realm.caddy.entrypointID;
-            localPort = 443;
-          };
           smtp = {
             service = "smtp-submission";
             verifyID = "spiffe://nyaw.xyz/service/stalwart";
             localPort = 465;
           };
-          internet = {
-            service = "internet-proxy";
-            verifyID = "spiffe://nyaw.xyz/service/internet";
-            localPort = 13128;
-          };
         };
-      };
-      systemd.services.forgejo.environment = {
-        HTTP_PROXY = "http://127.0.0.1:13128";
-        HTTPS_PROXY = "http://127.0.0.1:13128";
-        NO_PROXY = "localhost,127.0.0.1,::1,s3.nyaw.xyz,box.nyaw.xyz";
-        # Git subprocesses use libcurl's lowercase http_proxy.
-        http_proxy = "http://127.0.0.1:13128";
-        https_proxy = "http://127.0.0.1:13128";
-        no_proxy = "localhost,127.0.0.1,::1,s3.nyaw.xyz,box.nyaw.xyz";
       };
       services.forgejo = {
         enable = true;

@@ -83,12 +83,9 @@
           target = "127.0.0.1:443";
           hostLoopback = true;
           service = "s3-https";
-          allowedIDs = [
-            "spiffe://nyaw.xyz/service/forgejo"
-            "spiffe://nyaw.xyz/service/ncps"
+          allowedIDs = config.realm.http.gatewayClientIDs.eihort ++ [
             "spiffe://nyaw.xyz/service/misskey"
             "spiffe://nyaw.xyz/service/telegram-search"
-            "spiffe://nyaw.xyz/service/synapse"
           ];
         };
       };

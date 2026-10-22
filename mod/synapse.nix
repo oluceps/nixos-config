@@ -37,6 +37,10 @@
           unit = "matrix-synapse.service";
           user = "matrix-synapse";
           group = "matrix-synapse";
+          http = {
+            internet = true;
+            internal = [ "oidc.nyaw.xyz" ];
+          };
           isolation = {
             runtimePaths = [ "/run/matrix-synapse" ];
             allowUnixSockets = [ "/run/postgresql" ];
@@ -63,11 +67,6 @@
               service = "seaweedfs-s3";
               verifyID = "spiffe://nyaw.xyz/service/seaweedfs";
               localPort = 18333;
-            };
-            internet = {
-              service = "internet-proxy";
-              verifyID = "spiffe://nyaw.xyz/service/internet";
-              localPort = 13128;
             };
             telegram = {
               service = "mautrix-telegram";
@@ -252,11 +251,6 @@
       systemd.services.matrix-synapse.requires = [ "postgresql.service" ];
       systemd.services.matrix-synapse-s3-upload.after = [ "postgresql.service" ];
       systemd.services.matrix-synapse-s3-upload.requires = [ "postgresql.service" ];
-      systemd.services.matrix-synapse.environment = {
-        HTTP_PROXY = "http://127.0.0.1:13128";
-        HTTPS_PROXY = "http://127.0.0.1:13128";
-        NO_PROXY = "localhost,127.0.0.1,::1";
-      };
 
     };
 }

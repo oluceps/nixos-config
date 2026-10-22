@@ -15,7 +15,7 @@
 
       realm.observability.endpoints = {
         sept-node = {
-          address = "fec0::1";
+          address = "10.255.0.1";
           port = 9100;
         };
         sept-wg = {
