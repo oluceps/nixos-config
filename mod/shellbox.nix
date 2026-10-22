@@ -241,19 +241,6 @@ in
         };
       };
 
-      # linger-users.service only orders itself after systemd-logind, while
-      # userborn.service is restarted in the same switch transaction. On a switch
-      # that introduces a new user the two race, loginctl then dies with
-      # "Failed to look up user shellbox: No such process" and the unit
-      # start-limit-hits. Force userborn to run first.
-      systemd.services.linger-users = {
-        wants = [ "userborn.service" ];
-        after = [
-          "userborn.service"
-          "systemd-sysusers.service"
-        ];
-      };
-
       # ----------------------------------------------------------------- rootless container
       virtualisation.oci-containers = {
         backend = "podman";
