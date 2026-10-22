@@ -167,6 +167,10 @@ let
   # what PrivateTmp would use, because applications such as ncps write there as
   # an unprivileged user.
   privateTmp = "/tmp:mode=1777";
+  # ghostunnel drains open connections on SIGTERM. An idle keep-alive peer holds
+  # a connection until --max-conn-lifetime, so without this bound a restart waits
+  # for systemd's stop timeout and is killed instead of exiting cleanly.
+  drainTimeout = "15s";
   hardened = {
     NoNewPrivileges = true;
     CapabilityBoundingSet = "";
@@ -430,6 +434,8 @@ let
                   e.verifyID
                   "--max-conn-lifetime"
                   "1h"
+                  "--shutdown-timeout"
+                  drainTimeout
                   "--target"
                   target
                 ]);
@@ -569,6 +575,8 @@ let
                     (if i.privateLoopback then "unix:${ingressPath name route}" else i.target)
                     "--max-conn-lifetime"
                     "1h"
+                    "--shutdown-timeout"
+                    drainTimeout
                   ]
                   ++ lib.concatMap (id: [
                     "--allow-uri"
