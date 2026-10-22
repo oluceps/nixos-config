@@ -231,12 +231,25 @@
       systemd.services.sept-proxy = {
         description = "Forward connections to Sept";
         requires = [ "sept-proxy.socket" ];
-        serviceConfig = {
+        serviceConfig = (import ../../lib/proxy-hardening.nix) // {
           ExecStart = "${config.systemd.package}/lib/systemd/systemd-socket-proxyd 10.255.0.1:1095";
           DynamicUser = true;
           NoNewPrivileges = true;
+          CapabilityBoundingSet = "";
+          PrivateTmp = true;
+          PrivateDevices = true;
           ProtectSystem = "strict";
           ProtectHome = true;
+          ProtectProc = "ptraceable";
+          ProcSubset = "pid";
+          RestrictSUIDSGID = true;
+          RestrictNamespaces = true;
+          RestrictAddressFamilies = [
+            "AF_UNIX"
+            "AF_INET"
+            "AF_INET6"
+          ];
+          SystemCallArchitectures = "native";
         };
       };
 
@@ -256,6 +269,7 @@
         };
         cloudflared = {
           enable = true;
+          edgeDnsOverHttps = true;
           environmentFile = config.vaultix.secrets.cfd.path;
         };
         nuanmonito = {

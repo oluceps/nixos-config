@@ -334,7 +334,19 @@ pkgs.testers.runNixOSTest {
             serviceConfig = {
               User = "receiver";
               Group = "receiver";
-              ExecStart = "${pkgs.python3}/bin/python3 -m http.server 3030 --bind 127.0.0.1";
+              ExecStart = "${pkgs.python3}/bin/python3 ${pkgs.writeText "realm-receiver.py" ''
+                import http.server
+
+                class Handler(http.server.SimpleHTTPRequestHandler):
+                    def do_POST(self):
+                        body = self.rfile.read(int(self.headers["Content-Length"]))
+                        self.send_response(200)
+                        self.send_header("Content-Length", str(len(body)))
+                        self.end_headers()
+                        self.wfile.write(body)
+
+                http.server.ThreadingHTTPServer(("127.0.0.1", 3030), Handler).serve_forever()
+              ''}";
               WorkingDirectory = "/etc";
             };
           };
@@ -527,6 +539,19 @@ pkgs.testers.runNixOSTest {
         machine.succeed("nsenter -t $(systemctl show -p MainPID --value sender.service) -m ${pkgs.coreutils}/bin/touch /tmp/workload-marker")
     with subtest("workload cannot connect directly to ingress"):
         machine.fail("nsenter -t $(systemctl show -p MainPID --value sender.service) -n curl -skf --max-time 2 https://[::1]:19429/")
+    def payload():
+        machine.succeed("dd if=/dev/urandom of=/tmp/realm-payload.bin bs=1M count=1")
+        machine.succeed("nsenter -t $(systemctl show -p MainPID --value sender.service) -n curl -fsS --max-time 15 --data-binary @/tmp/realm-payload.bin http://127.0.0.1:13100/echo -o /tmp/realm-response.bin")
+        machine.succeed("cmp /tmp/realm-payload.bin /tmp/realm-response.bin")
+
+    with subtest("binary request and response cross the local adapters and mTLS proxies"):
+        payload()
+    with subtest("proxy restart preserves socket activation and workload identity"):
+        machine.succeed("systemctl restart realm-local-sender-receiver.service realm-egress-sender-receiver.service realm-ingress-receiver-http.service realm-backend-receiver-http.service")
+        machine.succeed(probe("sender"))
+        payload()
+        machine.fail(probe("imposter"))
+        machine.fail(probe("wrong-server"))
     with subtest("idempotent registration synchronization"):
         machine.succeed("systemctl restart realm-spire-register.service")
         machine.succeed(probe("sender"))
