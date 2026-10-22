@@ -23,10 +23,16 @@
       systemd.services.podman-magpie = {
         after = [
           "network-online.target"
-          "vaultix-activate.service"
+          # "vaultix-activate.service"
         ];
-        wants = [ "network-online.target" ];
-        requires = [ "vaultix-activate.service" ];
+        # Start after the secret files exist, but do not tie the container's
+        # lifetime to that unit. Every switch restarts vaultix-activate, and a
+        # Requires edge turned that into a stop of this container mid-flight; the
+        # podman stop then failed and left the unit failed instead of restarting.
+        wants = [
+          "network-online.target"
+          # "vaultix-activate.service"
+        ];
         serviceConfig.Restart = lib.mkForce "always";
       };
 

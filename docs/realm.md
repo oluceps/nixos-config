@@ -89,6 +89,12 @@ Certificates and ghostunnel connections have a one-hour maximum lifetime.
 Removing a SPIRE entry does not immediately close an established connection.
 Restart the affected ingress when a policy change must close its connections.
 
+ghostunnel drains open connections on `SIGTERM`, and an idle keep-alive
+connection waits for that one-hour limit. The module therefore passes
+`--shutdown-timeout 15s`, so a restart finishes in seconds instead of hitting
+systemd's stop timeout and being killed. A restart drops connections that are
+still open after those 15 seconds.
+
 ## PostgreSQL peer authentication
 
 PostgreSQL runs in a private network namespace with `listen_addresses = ""`.

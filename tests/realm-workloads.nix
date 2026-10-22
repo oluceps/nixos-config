@@ -157,6 +157,12 @@ lib.runTests {
       && !(lib.hasInfix "python3" command);
     expected = true;
   };
+  testProxyStopIsBounded = {
+    expr =
+      lib.hasInfix "--shutdown-timeout 15s" cfg.systemd.services.realm-egress-sender-receiver.serviceConfig.ExecStart
+      && lib.hasInfix "--shutdown-timeout 15s" cfg.systemd.services.realm-ingress-receiver-http.serviceConfig.ExecStart;
+    expected = true;
+  };
   testDefaultEgressConnectsDirectly = {
     expr =
       let
