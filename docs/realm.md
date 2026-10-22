@@ -144,7 +144,7 @@ authenticated egress.
 
 Caddy is a systemd edge workload with host networking and a private `/run`
 view. Its management API listens on `/run/caddy/admin.sock` (0600), inside a
-0700 directory. Only its own egress directories, runtime directory and DNS resolver sockets are exposed. The Internet gateway is a separate Caddy process.
+0700 directory. Only its own egress directories, runtime directory and DNS resolver sockets are exposed. The Internet gateway is a separate Envoy process.
 vmagent keeps its existing network access while its other monitoring targets
 are migrated; its SeaweedFS egress is already authenticated. These exceptions
 use `isolation.privateNetwork = false` explicitly; the Internet gateway and vmagent
@@ -223,29 +223,30 @@ other optional server-side network integrations require separate egress
 declarations when enabled. Check database extension upgrades and backup
 privileges separately from the SPIFFE/peer authentication path.
 
-Internet access uses Caddy's forward proxy and CONNECT termination. Caddy is
-the native SPIFFE ingress on port 19328, registered as `internet-proxy`; there
-is no separate gateway ghostunnel or plaintext proxy listener. The clients'
-local proxy addresses remain unchanged. Caddy obtains its SVID and trust bundle
-directly from the SPIRE Agent over the Workload API and requires a client
-certificate with one of the ingress's exact `allowedIDs` URI SANs.
+Internet access uses Envoy's dynamic forward proxy and CONNECT termination.
+Envoy is the native SPIFFE ingress on port 19328, registered as
+`internet-proxy`. Clients retain their local proxy addresses. SPIRE supplies
+its SVID and trust bundle through SDS. Updates apply to new connections without
+restarting the gateway or writing private keys to disk. The listener requires
+a client certificate whose URI SAN matches an exact ingress `allowedIDs` entry.
 
-The gateway has no domain whitelist and performs no application TLS
-interception. The proxy resolves a destination, checks the ACL against the
-resolved address, and then dials exactly that address, so a name cannot resolve
-somewhere else between the check and the connection. The ACL denies private,
-loopback, link-local, multicast and Yggdrasil destinations, including names
-resolving into those ranges, and then permits the rest. Two route groups split
-the ports, because the proxy cannot tell CONNECT from a plain request when it
-checks a port: a tunnel may reach 443, an absolute-URI request 80 and 443, and
-Synapse additionally reaches 8448 through a route its identity selects. The
-listener becomes available once the Workload API has issued the SVID; DNS
-publication does not wait for it. Misskey's public proxy bypasses are removed.
-Its only bypass is s3.nyaw.xyz, mapped inside the container to the dedicated
-local adapter through Caddy, instead of the public Internet gateway.
+The gateway permits public destinations without a domain allowlist. CONNECT
+preserves application TLS. The DNS cache removes private, loopback, link-local,
+multicast and Yggdrasil addresses from DNS answers. RBAC checks the saved
+resolved address and the selected upstream address, including IP literals.
+Private IPv4-mapped IPv6 destinations are also blocked. CONNECT permits port 443, with port
+8448 also permitted for the Synapse identity. Ordinary HTTP proxy requests
+permit ports 80 and 443. The listener waits for SDS credentials before it
+accepts connections. DNS publication does not wait for this readiness.
+Misskey's only proxy bypass is s3.nyaw.xyz, which uses its local adapter to the
+internal Caddy gateway.
 
-The Internet gateway uses Caddy. The local Nix cache adapter still uses Envoy
-in `mod/ncps-client.nix`, so Envoy remains a live dependency.
+`mod/overlay.nix` exports and applies `overlays.envoy`. The package in
+`pkgs/by-name/envoy-realm.nix` pins Envoy 1.40.0 release binaries and hashes for
+x86_64-linux and aarch64-linux. The optional local Nix cache adapter is also
+configured for Envoy.
+Static gateway configuration changes restart `realm-internet.service`.
+Certificate updates use SDS and do not need a configuration reload.
 
 ## Vaultix
 
@@ -405,8 +406,9 @@ rotation needs no reload and no key ever reaches disk. Client certificates are
 verified against the SPIRE trust bundle (`tls.ca_pool.source.spiffe`), and the
 URI SAN is then matched against `allowedIDs` with an anchored regular
 expression: the SAN placeholder yields a URL value, which the expression
-matcher cannot convert. The trust bundle is built once per configuration, so CA
-rotation requires a reload. Public paths are only the gateway's names for an
+matcher cannot convert. The patched TLS policy gets the provider's current CA
+pool for each handshake. CA rotation therefore needs no reload. Public paths
+are only the gateway's names for an
 exporter path; a URI rewrite restores the exporter's own `/metrics` or `/probe`
 before proxying and keeps the probe query string intact.
 

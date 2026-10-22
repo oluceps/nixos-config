@@ -64,6 +64,9 @@ pkgs.testers.runNixOSTest {
           listen-address = "127.0.0.1";
           bind-interfaces = true;
           no-resolv = true;
+          addn-hosts = "/run/realm-dns-hosts";
+          local-ttl = 1;
+          log-queries = true;
           address = [
             "/public.test/198.51.100.1"
             "/public-v6.test/2001:db8::1"
@@ -73,6 +76,62 @@ pkgs.testers.runNixOSTest {
           ];
         };
       };
+      environment.etc."realm-dns-hosts".text = ''
+        198.51.100.1 transition.test mixed.test
+        127.0.0.1 mixed.test
+      '';
+      environment.etc."realm-internet-fixture.py".text = ''
+        import http.server
+        import pathlib
+        import socket
+        import ssl
+        import threading
+
+        logs = pathlib.Path("/run/realm-internet-fixture")
+        logs.mkdir(exist_ok=True)
+        for name in ["connections", "private-connections"]:
+            (logs / name).touch()
+        context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
+        context.load_cert_chain("/tmp/public.crt", "/tmp/public.key")
+
+        class Handler(http.server.BaseHTTPRequestHandler):
+            def do_GET(self):
+                body = b"realm Internet fixture\n"
+                self.send_response(200)
+                self.send_header("Content-Length", str(len(body)))
+                self.end_headers()
+                self.wfile.write(body)
+
+        class Server(http.server.ThreadingHTTPServer):
+            daemon_threads = True
+
+            def get_request(self):
+                connection, peer = super().get_request()
+                address, port = connection.getsockname()[:2]
+                entry = f"{address} {port}\n"
+                with (logs / "connections").open("a") as log:
+                    log.write(entry)
+                if address not in ["198.51.100.1", "2001:db8::1"]:
+                    with (logs / "private-connections").open("a") as log:
+                        log.write(entry)
+                connection.settimeout(10)
+                if connection.recv(1, socket.MSG_PEEK) == b"\x16":
+                    connection = context.wrap_socket(connection, server_side=True)
+                return connection, peer
+
+        class Server6(Server):
+            address_family = socket.AF_INET6
+
+            def server_bind(self):
+                self.socket.setsockopt(socket.IPPROTO_IPV6, socket.IPV6_V6ONLY, 1)
+                super().server_bind()
+
+        for server_type, address in [(Server, "0.0.0.0"), (Server6, "::")]:
+            for port in [80, 443, 8448, 8443]:
+                server = server_type((address, port), Handler)
+                threading.Thread(target=server.serve_forever, daemon=True).start()
+        threading.Event().wait()
+      '';
       services.postgresql = {
         enable = true;
         authentication = pkgs.lib.mkForce "local sender sender peer map=realm\nlocal all all peer";
@@ -236,6 +295,25 @@ pkgs.testers.runNixOSTest {
           };
         }))
         // {
+          # The reconciler sets a one-hour TTL. Shorten this fixture entry
+          # before the agent issues the gateway's first SVID.
+          realm-spire-register.postStart = ''
+            entry_id=$(${pkgs.spire}/bin/spire-server entry show \
+              -socketPath /run/spire/server/private/api.sock \
+              -spiffeID ${config.realm.workloads.internet.spiffeID} -output json \
+              | ${pkgs.jq}/bin/jq -er '.entries[0].id')
+            ${pkgs.spire}/bin/spire-server entry update \
+              -socketPath /run/spire/server/private/api.sock \
+              -entryID "$entry_id" \
+              -parentID spiffe://nyaw.xyz/agent/machine \
+              -spiffeID ${config.realm.workloads.internet.spiffeID} \
+              -selector systemd:id:realm-internet.service \
+              -selector unix:user:${config.realm.workloads.internet.user} \
+              -x509SVIDTTL 30
+          '';
+          dnsmasq.preStart = ''
+            cp /etc/realm-dns-hosts /run/realm-dns-hosts
+          '';
           observation-fixture = {
             wantedBy = [ "multi-user.target" ];
             serviceConfig.ExecStart = "${pkgs.python3}/bin/python3 ${pkgs.writeText "observation-fixture.py" ''
@@ -283,39 +361,112 @@ pkgs.testers.runNixOSTest {
         machine.fail(probe("wrong-server"))
     with subtest("PostgreSQL peer authentication survives the tunnel"):
         machine.wait_until_succeeds("nsenter -t $(systemctl show -p MainPID --value sender.service) -n psql postgresql://sender@127.0.0.1:15432/sender -Atc 'select current_user' | grep -x sender", timeout=30)
+    def internet(url, name="sender", tunnel=False, flags="-f"):
+        tunnel_flag = "--proxytunnel" if tunnel else ""
+        return (
+            f"nsenter -t $(systemctl show -p MainPID --value {name}.service) -n "
+            f"curl --noproxy \"\" -gsS --max-time 10 {flags} {tunnel_flag} "
+            f"--proxy http://127.0.0.1:13128 {url}"
+        )
+
+    def connections(private=False):
+        name = "private-connections" if private else "connections"
+        return machine.succeed(f"cat /run/realm-internet-fixture/{name}")
+
+    def denied(url, tunnel=False, statuses=("403",), name="sender"):
+        before = connections()
+        code = "%{http_connect}" if tunnel else "%{http_code}"
+        status, output = machine.execute(internet(url, name, tunnel, f"--no-show-error -o /dev/null -w '{code}'"))
+        # curl versions report rejected CONNECT requests as exit 7 or 56.
+        # The required HTTP status and unchanged backend log prove rejection.
+        assert status in ([0, 7, 56] if tunnel else [0]), (url, status, output)
+        assert output.strip() in statuses, (url, output)
+        assert connections() == before, f"Rejected request reached the backend: {url}"
+
     with subtest("authenticated Internet proxy permits public destinations"):
-        machine.succeed("ip address add 198.51.100.1/32 dev lo")
-        machine.succeed("systemd-run --unit=public-fixture ${pkgs.python3}/bin/python3 -m http.server 80 --bind 198.51.100.1 --directory /etc")
-        machine.wait_until_succeeds("nsenter -t $(systemctl show -p MainPID --value sender.service) -n curl --noproxy \"\" -fsS --max-time 10 --proxy http://127.0.0.1:13128 http://198.51.100.1/hostname", timeout=30)
-        machine.succeed("nsenter -t $(systemctl show -p MainPID --value sender.service) -n curl --noproxy \"\" -fsS --max-time 10 --proxy http://127.0.0.1:13128 http://public.test/hostname")
-    with subtest("Internet proxy requires an authorized SPIFFE client and the expected server identity"):
-        for name in ["imposter", "wrong-server"]:
-            machine.fail(f"nsenter -t $(systemctl show -p MainPID --value {name}.service) -n curl --noproxy \"\" -fsS --max-time 5 --proxy http://127.0.0.1:13128 http://198.51.100.1/hostname")
-        machine.fail("curl --noproxy '*' -skf --max-time 3 https://[::1]:19328/")
-    with subtest("CONNECT passes application TLS unchanged"):
+        for address in ["198.51.100.1/32", "10.1.2.3/32", "100.64.0.1/32", "169.254.1.1/32", "172.16.0.1/32", "192.168.1.1/32"]:
+            machine.succeed(f"ip address add {address} dev lo")
+        for address in ["2001:db8::1/128", "fdcc::3/128", "200::1/128"]:
+            machine.succeed(f"ip -6 address add {address} dev lo")
         machine.succeed("openssl req -x509 -newkey rsa:2048 -nodes -keyout /tmp/public.key -out /tmp/public.crt -days 1 -subj /CN=public.test -addext subjectAltName=DNS:public.test")
         machine.succeed("cp /tmp/public.crt /etc/public-fixture.crt")
-        machine.succeed("systemd-run --unit=tls-fixture ${pkgs.python3}/bin/python3 -c 'import http.server,ssl; s=http.server.HTTPServer((\"198.51.100.1\",443),http.server.SimpleHTTPRequestHandler); c=ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER); c.load_cert_chain(\"/tmp/public.crt\",\"/tmp/public.key\"); s.socket=c.wrap_socket(s.socket,server_side=True); s.serve_forever()' --directory /etc")
-        machine.wait_until_succeeds("nsenter -t $(systemctl show -p MainPID --value sender.service) -n curl --noproxy \"\" --cacert /etc/public-fixture.crt -fsS --max-time 10 --proxy http://127.0.0.1:13128 https://public.test/", timeout=30)
+        machine.succeed("systemd-run --unit=internet-fixture ${pkgs.python3}/bin/python3 /etc/realm-internet-fixture.py")
+        machine.wait_until_succeeds(internet("http://198.51.100.1/hostname"), timeout=30)
+        machine.succeed(internet("http://public.test/hostname"))
+        machine.succeed(internet("http://public.test:443/hostname"))
+        assert connections(), "The fixture must record successful connections"
+        assert connections(private=True) == ""
+    with subtest("Internet proxy requires an authorized SPIFFE client and the expected server identity"):
+        before = connections()
+        for name in ["imposter", "wrong-server"]:
+            machine.fail(internet("http://198.51.100.1/hostname", name=name))
+        machine.fail("curl --noproxy '*' -skf --max-time 3 https://[::1]:19328/")
+        assert connections() == before
+        machine.succeed(internet("http://public.test/hostname"))
+    with subtest("CONNECT passes application TLS unchanged"):
+        machine.wait_until_succeeds(internet("https://public.test/", flags="--cacert /etc/public-fixture.crt -f"), timeout=30)
+    with subtest("SDS rotates the gateway certificate without a process restart"):
+        process = "systemctl show realm-internet.service -p MainPID -p NRestarts"
+        before = machine.succeed(process)
+        # The server sends its certificate before it rejects the missing client SVID.
+        serial_command = "(timeout 5 openssl s_client -connect '[::1]:19328' -showcerts </dev/null 2>/dev/null || true) | openssl x509 -noout -serial"
+        serial = machine.succeed(serial_command).strip()
+        assert serial.startswith("serial=") and len(serial) > len("serial="), serial
+        machine.wait_until_succeeds(
+            f"serial=$( {serial_command} ); test -n \"$serial\" && test \"$serial\" != '{serial}'",
+            timeout=90,
+        )
+        assert machine.succeed(process) == before
+        machine.succeed(internet("http://public.test/hostname"))
+        machine.succeed(internet("https://public.test/", flags="--cacert /etc/public-fixture.crt -f"))
     with subtest("SOCKS clients traverse the authenticated HTTP gateway"):
         machine.wait_until_succeeds("nsenter -t $(systemctl show -p MainPID --value sender.service) -n curl --noproxy \"\" --cacert /etc/public-fixture.crt -fsS --max-time 10 --socks5-hostname 127.0.0.1:11080 https://public.test/", timeout=30)
+        before = connections()
         machine.fail("nsenter -t $(systemctl show -p MainPID --value sender.service) -n curl --noproxy \"\" -ksf --max-time 5 --socks5-hostname 127.0.0.1:11080 https://private.test/")
+        assert connections() == before
     with subtest("only Synapse may use federation port 8448"):
-        machine.succeed("systemd-run --unit=federation-fixture ${pkgs.python3}/bin/python3 -m http.server 8448 --bind 198.51.100.1")
-        machine.wait_until_succeeds("nsenter -t $(systemctl show -p MainPID --value synapse.service) -n curl --noproxy \"\" --proxytunnel -fsS --max-time 10 --proxy http://127.0.0.1:13128 http://public.test:8448/", timeout=30)
-        machine.fail("nsenter -t $(systemctl show -p MainPID --value sender.service) -n curl --noproxy \"\" --proxytunnel -fsS --max-time 5 --proxy http://127.0.0.1:13128 http://public.test:8448/")
+        machine.wait_until_succeeds(internet("http://public.test:8448/", name="synapse", tunnel=True), timeout=30)
+        denied("http://public.test:8448/", tunnel=True)
+        for name in ["sender", "synapse"]:
+            denied("http://public.test:8448/", name=name)
     with subtest("public IPv6 destination"):
-        machine.succeed("ip -6 address add 2001:db8::1/128 dev lo")
-        machine.succeed("systemd-run --unit=public-v6-fixture ${pkgs.python3}/bin/python3 -m http.server 80 --bind 2001:db8::1 --directory /etc")
-        machine.wait_until_succeeds("nsenter -t $(systemctl show -p MainPID --value sender.service) -n curl --noproxy \"\" -fsS --max-time 10 --proxy http://127.0.0.1:13128 http://public-v6.test/hostname", timeout=30)
-    with subtest("Internet proxy denies private and Yggdrasil destinations"):
-        for destination in ["127.0.0.1", "[fdcc::3]", "[200::1]", "[::ffff:127.0.0.1]", "private.test", "mesh.test", "ygg.test"]:
-            result = machine.succeed(f"nsenter -t $(systemctl show -p MainPID --value sender.service) -n curl --noproxy \"\" -sS -o /dev/null -w '%{{http_code}}' --max-time 10 --proxy http://127.0.0.1:13128 http://{destination}/")
-            assert result == "403", (destination, result)
+        machine.wait_until_succeeds(internet("http://public-v6.test/hostname"), timeout=30)
+        machine.succeed(internet("http://[2001:db8::1]/hostname"))
+    with subtest("mixed DNS answers select a public destination"):
+        answers = machine.succeed("dig @127.0.0.1 +short A mixed.test").splitlines()
+        assert set(answers) == {"198.51.100.1", "127.0.0.1"}, answers
+        before = connections(private=True)
+        for _ in range(6):
+            machine.succeed(internet("http://mixed.test/hostname"))
+        assert connections(private=True) == before
+    with subtest("a cached public DNS name cannot reach a private address after refresh"):
+        machine.succeed(internet("http://transition.test/hostname"))
+        before = connections(private=True)
+        machine.succeed("printf '127.0.0.1 transition.test\\n198.51.100.1 mixed.test\\n127.0.0.1 mixed.test\\n' > /run/realm-dns-hosts")
+        machine.succeed("systemctl kill --signal=HUP dnsmasq.service")
+        # Wait for a gateway refresh that receives the changed DNS answer.
+        machine.wait_until_succeeds("journalctl -u dnsmasq.service -o cat --no-pager | grep -F 'transition.test is 127.0.0.1'", timeout=90)
+        assert machine.succeed("dig @127.0.0.1 +short A transition.test").strip() == "127.0.0.1"
+        # A failed refresh may retain the previous public address.
+        for _ in range(6):
+            result = machine.succeed(internet("http://transition.test/hostname", flags="-o /dev/null -w '%{http_code}'"))
+            assert result in ["200", "403", "503"], result
+        assert connections(private=True) == before
+        machine.succeed(internet("http://public.test/hostname"))
+    with subtest("Internet proxy denies private literal addresses"):
+        for destination in ["127.0.0.1", "10.1.2.3", "100.64.0.1", "169.254.1.1", "172.16.0.1", "192.168.1.1", "[::1]", "[fdcc::3]", "[200::1]", "[::ffff:127.0.0.1]", "[::ffff:10.1.2.3]"]:
+            denied(f"http://{destination}/", statuses=("403", "503"))
+            denied(f"http://{destination}:443/", tunnel=True, statuses=("403", "503"))
+    with subtest("Internet proxy denies private DNS answers"):
+        for destination in ["private.test", "mesh.test", "ygg.test"]:
+            # DNS filtering can remove every address before upstream RBAC runs.
+            denied(f"http://{destination}/", statuses=("403", "503"))
+            denied(f"http://{destination}:443/", tunnel=True, statuses=("403", "503"))
     with subtest("CONNECT destination and port restrictions"):
-        for destination in ["private.test:443", "[fdcc::3]:443", "[200::1]:443", "public.test:80", "public.test:8443"]:
-            result = machine.succeed(f"nsenter -t $(systemctl show -p MainPID --value sender.service) -n curl --noproxy \"\" --proxytunnel -sS -o /dev/null -w '%{{http_connect}}' --max-time 10 --proxy http://127.0.0.1:13128 http://{destination}/ || true")
-            assert result.strip() == "403", (destination, result)
+        for name in ["sender", "synapse"]:
+            for port in [80, 8443]:
+                denied(f"http://public.test:{port}/", tunnel=True, name=name)
+            denied("http://public.test:8443/", name=name)
     with subtest("native ingress replaces the gateway ghostunnel"):
         machine.fail("systemctl cat realm-ingress-internet-http.service")
         machine.fail("ss -lnt | grep -E '127.0.0.1:3128\\b'")

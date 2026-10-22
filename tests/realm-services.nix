@@ -61,6 +61,7 @@ let
   dependency = pkgs.writeText "realm-dependency-fixture.py" ''
     import http.server
     import hashlib
+    import json
     import pathlib
     import socket
     import ssl
@@ -109,7 +110,9 @@ let
                 self.reply()
             def do_GET(self):
                 url = urllib.parse.urlsplit(self.path)
-                if 'versioning' in url.query:
+                if url.path == '/.well-known/openid-configuration':
+                    self.reply(json.dumps({'issuer': 'https://oidc.nyaw.xyz'}).encode(), content_type='application/json')
+                elif 'versioning' in url.query:
                     self.reply(b'<VersioningConfiguration xmlns="http://s3.amazonaws.com/doc/2006-03-01/"/>')
                 elif 'location' in url.query:
                     self.reply(b'<LocationConstraint xmlns="http://s3.amazonaws.com/doc/2006-03-01/">ap-east-1</LocationConstraint>')
@@ -132,6 +135,7 @@ pkgs.testers.runNixOSTest {
     {
       imports = [
         ../nixosModules/realm-workloads.nix
+        ../nixosModules/realm-http.nix
         ../nixosModules/realm-spire.nix
         ../nixosModules/realm-observability.nix
         ../nixosModules/service-discovery.nix
@@ -263,6 +267,14 @@ pkgs.testers.runNixOSTest {
             ) config.realm.spire.registrations;
           };
         };
+        http.gateways.eihort = {
+          hosts = [
+            "s3.nyaw.xyz"
+            "oidc.nyaw.xyz"
+          ];
+          service = "s3-https";
+          verifyID = config.realm.caddy.entrypointID;
+        };
         workloads = {
           caddy = {
             spiffeID = config.realm.caddy.entrypointID;
@@ -275,6 +287,7 @@ pkgs.testers.runNixOSTest {
               allowedIDs = [
                 "spiffe://nyaw.xyz/service/forgejo"
                 "spiffe://nyaw.xyz/service/ncps"
+                "spiffe://nyaw.xyz/service/vaultwarden"
               ];
             };
             egress = lib.genAttrs [ "jellyfin" "vaultwarden" "forgejo" "grafana" "atuin" ] (name: {
@@ -357,7 +370,7 @@ pkgs.testers.runNixOSTest {
     };
   testScript = ''
     machine.start()
-    machine.succeed("openssl req -x509 -newkey rsa:2048 -nodes -keyout /var/lib/fixture/key.pem -out /var/lib/fixture/cert.pem -days 1 -subj /CN=mesh-fixture -addext 'subjectAltName=DNS:s3.nyaw.xyz,DNS:box.nyaw.xyz'")
+    machine.succeed("openssl req -x509 -newkey rsa:2048 -nodes -keyout /var/lib/fixture/key.pem -out /var/lib/fixture/cert.pem -days 1 -subj /CN=mesh-fixture -addext 'subjectAltName=DNS:s3.nyaw.xyz,DNS:box.nyaw.xyz,DNS:oidc.nyaw.xyz'")
     machine.succeed("nix-store --generate-binary-cache-key cache.nyaw.xyz /var/lib/fixture/cache.key /var/lib/fixture/cache.pub")
     machine.succeed("chmod 644 /var/lib/fixture/key.pem /var/lib/fixture/cache.key")
     machine.wait_for_unit("realm-spire-register.service")
@@ -392,6 +405,8 @@ pkgs.testers.runNixOSTest {
             machine.succeed(f"nsenter -t $(systemctl show -p MainPID --value {unit}.service) -n -m ${pkgs.python3}/bin/python3 -c 'import socket; assert {{entry[4][0] for entry in socket.getaddrinfo(\"{host}\", {port}, type=socket.SOCK_STREAM)}} == {{\"127.0.0.1\"}}'")
             machine.wait_until_succeeds(f"nsenter -t $(systemctl show -p MainPID --value {unit}.service) -n -m sh -c 'printf \"QUIT\\r\\n\" | openssl s_client -connect {host}:{port} -servername {host} -verify_hostname {host} -verify_return_error -CAfile /var/lib/fixture/cert.pem >/dev/null'", timeout=45)
         machine.fail("getent hosts s3.nyaw.xyz | grep 127.0.0.1")
+    with subtest("internal OIDC discovery bypasses the public proxy"):
+        machine.wait_until_succeeds("nsenter -t $(systemctl show -p MainPID --value vaultwarden.service) -n -m env HTTPS_PROXY=http://127.0.0.1:13128 NO_PROXY=oidc.nyaw.xyz ${pkgs.python3}/bin/python3 -c 'import json, ssl, urllib.request; ctx = ssl.create_default_context(cafile=\"/var/lib/fixture/cert.pem\"); assert json.load(urllib.request.urlopen(\"https://oidc.nyaw.xyz/.well-known/openid-configuration\", context=ctx, timeout=10))[\"issuer\"] == \"https://oidc.nyaw.xyz\"'", timeout=45)
     with subtest("PostgreSQL peer identity is bound to the application route"):
         machine.succeed("nsenter -t $(systemctl show -p MainPID --value vaultwarden.service) -m runuser -u vaultwarden -- psql -h /run/postgresql -U vault -d vaultwarden -Atc 'select current_user' | grep -x vault")
         machine.fail("nsenter -t $(systemctl show -p MainPID --value vaultwarden.service) -m runuser -u vaultwarden -- psql -h /run/postgresql -U forgejo -d forgejo -Atc 'select current_user'")
