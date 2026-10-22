@@ -171,7 +171,7 @@ let
   # a connection until --max-conn-lifetime, so without this bound a restart waits
   # for systemd's stop timeout and is killed instead of exiting cleanly.
   drainTimeout = "15s";
-  hardened = {
+  hardened = (import ../lib/proxy-hardening.nix) // {
     NoNewPrivileges = true;
     CapabilityBoundingSet = "";
     PrivateTmp = true;
