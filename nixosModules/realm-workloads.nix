@@ -158,10 +158,20 @@ let
   # Baseline sandbox for every unit this module creates. Proxy, adapter and
   # helper processes need no privileges, no writable system paths and only Unix
   # and IP sockets, so none of these settings has to be relaxed per workload.
+  #
+  # systemd does not mount PrivateTmp's tmpfs for a unit that joins another
+  # unit's network namespace: the unit then keeps the host /tmp, which
+  # ProtectSystem=strict has made read-only. An explicit tmpfs keeps /tmp
+  # private and writable for every generated unit, including the ones that join
+  # realm-net-<name>, and hides host /tmp contents from them. The mode matches
+  # what PrivateTmp would use, because applications such as ncps write there as
+  # an unprivileged user.
+  privateTmp = "/tmp:mode=1777";
   hardened = {
     NoNewPrivileges = true;
     CapabilityBoundingSet = "";
     PrivateTmp = true;
+    TemporaryFileSystem = [ privateTmp ];
     ProtectSystem = "strict";
     ProtectHome = true;
     PrivateDevices = true;
@@ -302,7 +312,10 @@ let
                     "AF_INET6"
                   ];
                   # Hide host runtime sockets, then expose only declared capabilities.
-                  TemporaryFileSystem = [ "/run:ro" ];
+                  TemporaryFileSystem = [
+                    "/run:ro"
+                    privateTmp
+                  ];
                   BindReadOnlyPaths = [
                     "-/run/credentials/${w.unit}"
                     "-/run/systemd/notify"
