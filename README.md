@@ -1,4 +1,4 @@
-# NixOS cluster
+# NixOSs
 
 [![nixos cfg](https://img.shields.io/badge/NixOS%20cfg-3A8FB7?style=for-the-badge&logo=nixos&logoColor=BBDDE5)](https://nixos.org/)
 ![works](https://img.shields.io/badge/works-on%20my%20machines-FEDFE1?style=for-the-badge)
