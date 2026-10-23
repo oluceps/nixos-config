@@ -169,6 +169,7 @@
         };
         services = {
 
+          # 452 MB RAM: Alloy causes memory pressure; Envoy logs stay local.
           alloy.enable = lib.mkForce false;
 
           metrics.enable = true;

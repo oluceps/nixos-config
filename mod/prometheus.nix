@@ -212,6 +212,7 @@
               (observed "alertmanager" "alertmanager" { })
               (observed "victoriametrics" "victoriametrics" { })
               (observed "caddy" "caddy" { })
+              (observed "envoy" "envoy" { })
               (observed "metrics" "node" { })
               (observed "ncps" "ncps" { })
               (observed "minecraft_metrics" "mc" { })
@@ -508,6 +509,32 @@
                   annotations = {
                     summary = "Autopeer challenge probe failed on {{ $labels.node }}";
                     description = "Probe source: {{ $labels.monitor }}. Target: {{ $labels.backend }}. Check the exporter, Worker routing, TLS, and database connectivity.";
+                  };
+                }
+              ];
+            }
+            {
+              name = "envoy";
+              rules = [
+                {
+                  alert = "EnvoyDown";
+                  expr = ''up{job="envoy"} == 0'';
+                  for = "2m";
+                  labels.severity = "critical";
+                  annotations = {
+                    summary = "Envoy egress gateway down on {{ $labels.instance }}";
+                  };
+                }
+                {
+                  alert = "EnvoyHighErrorRate";
+                  expr = ''
+                    sum by (instance) (rate(envoy_http_downstream_rq_xx{job="envoy",envoy_http_conn_manager_prefix="internet",envoy_response_code_class="5"}[5m]))
+                    / (sum by (instance) (rate(envoy_http_downstream_rq_completed{job="envoy",envoy_http_conn_manager_prefix="internet"}[5m])) > 0) * 100 > 5
+                  '';
+                  for = "5m";
+                  labels.severity = "warning";
+                  annotations = {
+                    summary = "Envoy 5xx error rate > 5% on {{ $labels.instance }}";
                   };
                 }
               ];

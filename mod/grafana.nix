@@ -66,6 +66,7 @@
             type = "prometheus";
             access = "proxy";
             url = "http://127.0.0.1:13090";
+            isDefault = true;
             jsonData = {
               httpMethod = "POST";
               prometheusType = "VictoriaMetrics";

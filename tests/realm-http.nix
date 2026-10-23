@@ -98,6 +98,21 @@ let
     }
   ];
   cfg = evaluate [ ];
+  localGateway = evaluate [
+    ../nixosModules/realm-observability.nix
+    (import ../mod/realm-internet.nix).flake.modules.nixos.realm-internet
+    (
+      { config, ... }:
+      {
+        realm.serviceDiscovery.catalog.fixture = config.realm.serviceDiscovery.publish;
+        realm.workloads.manual.egress.internet.service = "internet-proxy";
+        realm.workloads.remote.egress.internet = {
+          service = "internet-proxy";
+          node = "eihort";
+        };
+      }
+    )
+  ];
   realmAssertions =
     c: builtins.filter (a: !a.assertion && lib.hasPrefix "realm" a.message) c.assertions;
   rejected = c: lib.any (a: !a.assertion) (realmAssertions c);
@@ -165,6 +180,37 @@ let
     );
 in
 lib.runTests {
+  testLocalGatewaySupportsMultiplePublishers = {
+    expr = realmAssertions localGateway;
+    expected = [ ];
+  };
+  testAutomaticAndManualInternetRoutesUseLocalGateway = {
+    expr = map (name: localGateway.realm.workloads.${name}.egress.internet.node) [
+      "sender"
+      "manual"
+    ];
+    expected = [
+      "fixture"
+      "fixture"
+    ];
+  };
+  testLocalGatewayTargetAndIdentity = {
+    expr =
+      let
+        command = localGateway.systemd.services.realm-egress-sender-internet.serviceConfig.ExecStart;
+      in
+      lib.hasInfix "[fdcc::3]:19328" command
+      && lib.hasInfix "--verify-uri spiffe://nyaw.xyz/service/internet" command;
+    expected = true;
+  };
+  testExplicitInternetNodeRemainsSupported = {
+    expr = localGateway.realm.workloads.remote.egress.internet.node;
+    expected = "eihort";
+  };
+  testInternalGatewaySelectionUnchanged = {
+    expr = localGateway.realm.workloads.sender.egress.http-eihort.node;
+    expected = null;
+  };
   testExplicitGatewayPreservesGeneratedUnits = {
     expr = map (c: c.systemd.units."realm-egress-sender-http-eihort.service".text) [
       cfg

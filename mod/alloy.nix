@@ -2,6 +2,7 @@
   flake.modules.nixos.alloy-realm =
     { config, lib, ... }:
     {
+      services.alloy.enable = lib.mkIf (config.realm.internet.enable or false) (lib.mkDefault true);
       realm.workloads.alloy = lib.mkIf config.services.alloy.enable {
         isolation.allowUnixSockets = [
           "-/run/log/journal"
@@ -11,6 +12,27 @@
           service = "loki";
           localPort = 13030;
         };
+      };
+      environment.etc = lib.mkIf (config.realm.internet.enable or false) {
+        "alloy/realm-internet.alloy".text = # alloy
+          ''
+            loki.source.journal "realm_internet" {
+                max_age       = "12h0m0s"
+                forward_to    = [loki.write.realm_internet.receiver]
+                matches       = "_SYSTEMD_UNIT=realm-internet.service"
+                labels        = {
+                    host = "${config.networking.hostName}",
+                    job  = "systemd-journal",
+                    unit = "realm-internet.service",
+                }
+            }
+            loki.write "realm_internet" {
+              endpoint {
+                url = "http://127.0.0.1:13030/loki/api/v1/push"
+              }
+              external_labels = {}
+            }
+          '';
       };
     };
   flake.modules.nixos.alloy =

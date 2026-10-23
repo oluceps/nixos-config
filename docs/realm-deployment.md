@@ -1,9 +1,28 @@
 # Realm 首次部署
 
 当前应按 **eihort → abhoth → eihort 业务验收 → hastur / uubboo → 其余节点** 的顺序切换。
-eihort 提供 SPIRE Server、Internet 出口及主要业务；abhoth 提供新的 SMTP ingress。
+eihort 提供 SPIRE Server 和主要业务；每个 Realm 节点提供本机 Internet Envoy，abhoth 提供 SMTP ingress。
 这里的命令在仓库根目录、Bash 中执行，假设已有 `root@<hostname>` SSH 连通性。
 每个 mesh 节点运行本地 CoreDNS，继续在 127.0.0.1:8600 提供发现域解析。ghostunnel 直接连接构建期 catalog 中的目标，不再通过 Caddy 解析 SRV。VXLAN mesh 必须可用，各 Agent 必须能连接 eihort 的 SPIRE Server TCP 8081。
+
+## 每节点 Internet Envoy
+
+先部署 eihort，更新各节点的 SPIRE 注册和 vmagent 抓取列表。然后逐节点部署并检查
+`realm-internet.service`、`realm-observability.service` 和 Alloy。检查网关取得证书后，
+再从应用的本地代理发起请求。服务启动和指标可抓取不能代替实际出网检查。
+
+所有 `internet-proxy` 出口声明默认选择本机，包括容器手写的 `egress`。
+现有 SPIFFE 许可名单、CONNECT 端口规则和主机公网路由保持原样。
+网关故障时不会自动改为直连或切换到其他节点。SPIRE Server 仍在 eihort。
+
+azasos 的 ntfy 和 subs 从 eihort 出口切换为本机出口。其 IPv4 默认路由走 WARP，
+IPv6 走原生网络，验收时分别检查两类目标。其他已有出口调用方位于 eihort。
+无法连接的节点保留待部署状态，不能仅凭 catalog 中存在记录就视为网关上线。
+
+Alloy 从 `/etc/alloy/realm-internet.alloy` 采集网关日志，按 `host` 标记。
+该文件通过 `environment.etc` 写入，已运行的 Alloy 重载看不到新文件，需要重启 `alloy.service`。
+yidhra 只有 452 MB 内存，不启用 Alloy，网关日志只留在本机 journal。
+新增节点后需要部署 vmagent，抓取列表由 Nix 配置生成。
 
 ## 从 Consul 迁移到 CoreDNS
 
