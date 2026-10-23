@@ -106,7 +106,6 @@
             grafana
 
             loki
-            realm-internet
             alloy
             zeek
             jellyfin

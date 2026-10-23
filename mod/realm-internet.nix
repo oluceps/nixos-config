@@ -1,10 +1,30 @@
 {
   flake.modules.nixos.realm-internet =
-    { config, ... }:
+    { config, lib, ... }:
+    let
+      hostName = config.networking.hostName;
+    in
     {
       imports = [ ../nixosModules/realm-internet.nix ];
 
-      realm.internet = {
+      options.realm.workloads = lib.mkOption {
+        type = lib.types.attrsOf (
+          lib.types.submodule {
+            options.egress = lib.mkOption {
+              type = lib.types.attrsOf (
+                lib.types.submodule (
+                  { config, ... }:
+                  {
+                    config.node = lib.mkIf (config.service == "internet-proxy") (lib.mkDefault hostName);
+                  }
+                )
+              );
+            };
+          }
+        );
+      };
+
+      config.realm.internet = {
         enable = true;
         allowedIDs = map (n: config.realm.servicePrefix + n) [
           "misskey"

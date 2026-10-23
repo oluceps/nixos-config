@@ -6,6 +6,7 @@
       imports = [
         self.modules.nixos.alloy-realm
         self.modules.nixos.ncps-client
+        self.modules.nixos.realm-internet
       ];
       realm = {
         observability.enable = true;

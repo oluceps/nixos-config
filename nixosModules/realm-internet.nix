@@ -18,7 +18,7 @@ let
     allowedIDs = ingress.allowedIDs;
     trustDomain = config.realm.trustDomain;
     spireSocket = config.realm.spire.socket;
-    inherit (cfg) extraConnectPorts extraConnectPolicies;
+    inherit (cfg) extraConnectPorts extraConnectPolicies adminPort;
   };
   envoy = pkgs.callPackage ../pkgs/by-name/envoy-realm.nix { };
   configfile = (pkgs.formats.json { }).generate "realm-internet.json" settings;
@@ -36,6 +36,11 @@ in
       type = types.port;
       default = 19328;
       description = "Port for the native mTLS Internet listener.";
+    };
+    adminPort = mkOption {
+      type = types.port;
+      default = 19329;
+      description = "Port for the loopback Envoy admin interface and Prometheus metrics.";
     };
     allowedIDs = mkOption {
       type = types.listOf types.str;
@@ -97,6 +102,10 @@ in
       }
     ];
     environment.etc."realm-internet/config.json".source = configfile;
+    realm.observability.endpoints.envoy = {
+      port = cfg.adminPort;
+      path = "/stats/prometheus";
+    };
     # Keep the gateway in its own unit and SPIFFE identity. SPIRE streams
     # the SVID and trust bundle over SDS; private keys stay in memory.
     systemd.services.realm-internet = {

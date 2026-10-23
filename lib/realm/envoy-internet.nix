@@ -3,6 +3,7 @@
   nodeID,
   address,
   port,
+  adminPort ? 19329,
   spiffeID,
   allowedIDs,
   trustDomain,
@@ -166,6 +167,12 @@ let
     };
   };
   settings = {
+    admin = {
+      address.socket_address = {
+        address = "127.0.0.1";
+        port_value = adminPort;
+      };
+    };
     node = {
       id = nodeID;
       cluster = "realm-internet";
@@ -205,6 +212,31 @@ let
                     "@type" =
                       "type.googleapis.com/envoy.extensions.filters.network.http_connection_manager.v3.HttpConnectionManager";
                     stat_prefix = "internet";
+                    access_log = [
+                      {
+                        name = "envoy.access_loggers.stdout";
+                        typed_config = {
+                          "@type" = "type.googleapis.com/envoy.extensions.access_loggers.stream.v3.StdoutAccessLog";
+                          log_format = {
+                            json_format = {
+                              start_time = "%START_TIME%";
+                              protocol = "%PROTOCOL%";
+                              method = "%REQ(:METHOD)%";
+                              authority = "%REQ(:AUTHORITY)%";
+                              path = "%REQ(X-ENVOY-ORIGINAL-PATH?:PATH)%";
+                              response_code = "%RESPONSE_CODE%";
+                              response_flags = "%RESPONSE_FLAGS%";
+                              duration_ms = "%DURATION%";
+                              upstream_host = "%UPSTREAM_HOST%";
+                              upstream_cluster = "%UPSTREAM_CLUSTER%";
+                              caller_spiffe_id = "%DOWNSTREAM_PEER_URI_SAN%";
+                              bytes_received = "%BYTES_RECEIVED%";
+                              bytes_sent = "%BYTES_SENT%";
+                            };
+                          };
+                        };
+                      }
+                    ];
                     # Twisted HTTPClient sends CONNECT as HTTP/1.0. Without this,
                     # Envoy answers 426 and Synapse cannot fetch server keys.
                     http_protocol_options.accept_http_10 = true;

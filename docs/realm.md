@@ -327,7 +327,13 @@ privileges separately from the SPIFFE/peer authentication path.
 
 Internet access uses Envoy's dynamic forward proxy and CONNECT termination.
 Envoy is the native SPIFFE ingress on port 19328, registered as
-`internet-proxy`. Clients retain their local proxy addresses. SPIRE supplies
+`internet-proxy`. Each Realm node runs a gateway. Both generated and manual
+`internet-proxy` egress declarations select the local node by default. An explicit
+`egress.<route>.node` can override that default. Clients retain their local proxy
+addresses, and the gateway uses the host's existing DNS and Internet routes.
+The shared caller allowlist and CONNECT port rules remain the same on every node.
+Local target selection does not restrict the listener to local callers or add
+automatic fallback to another gateway. SPIRE supplies
 its SVID and trust bundle through SDS. Updates apply to new connections without
 restarting the gateway or writing private keys to disk. The listener requires
 a client certificate whose URI SAN matches an exact ingress `allowedIDs` entry.
