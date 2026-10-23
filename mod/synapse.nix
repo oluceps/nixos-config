@@ -45,15 +45,19 @@
           };
           isolation = {
             runtimePaths = [ "/run/matrix-synapse" ];
-            allowUnixSockets = [ "/run/postgresql" ];
+            allowUnixSockets = [
+              "/run/postgresql"
+              "/run/systemd/journal/socket"
+            ];
           };
           ingressGroups = [ "matrix-synapse" ];
           ingress = {
             http = {
               port = 18196;
+              # Synapse registration reads the client IP, which Unix peers do not supply.
               backend = {
-                kind = "unix";
-                path = "/run/matrix-synapse/http.sock";
+                kind = "private-tcp";
+                port = 8008;
               };
               service = "synapse";
               allow.identities = config.realm.caddy.allowedIDs.synapse ++ [
@@ -157,8 +161,9 @@
               resources = [ { names = [ "metrics" ]; } ];
             }
             {
-              path = "/run/matrix-synapse/http.sock";
-              mode = "660";
+              bind_addresses = [ "127.0.0.1" ];
+              port = 8008;
+              tls = false;
               type = "http";
               x_forwarded = true;
               resources = [
