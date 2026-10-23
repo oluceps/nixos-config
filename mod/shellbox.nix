@@ -1,36 +1,22 @@
-{
-  inputs,
-  ...
-}:
+{ ... }:
 let
   # Ports inside the container (adjacent pair).
   sshPort = 2222;
   sparePort = 2223;
 
-  # Ports on the host (adjacent pair), forwarded to the container by
-  # systemd-socket-proxyd, same pattern as mod/vms/sep.nix.
+  # Ports on the host, published directly by rootless Podman.
   hostSshPort = 22022;
   hostSparePort = 22023;
-
-  # Loopback ports the container publishes to. They MUST differ from
-  # hostSshPort/hostSparePort: the socket units below bind the host ports on
-  # [::] with BindIPv6Only=both, which also occupies 127.0.0.1:<host port>, so
-  # pasta cannot publish the container port on the same number.
-  backendSshPort = 12222;
-  backendSparePort = 12223;
 in
 {
   flake.modules.nixos.shellbox =
     {
-      config,
+      lib,
       pkgs,
       ...
     }:
     let
-      flyline = inputs.flyline.packages.${pkgs.stdenv.hostPlatform.system}.flyline;
-
-      # Everything the container shell can use. The alpline image itself stays
-      # untouched: /nix/store is bind-mounted read-only, so these run inside it.
+      # Tools use a read-only Nix store mount inside the persistent rootfs.
       tools = pkgs.buildEnv {
         name = "shellbox-tools";
         paths = with pkgs; [
@@ -115,6 +101,7 @@ in
         Port ${toString sshPort}
         AddressFamily any
         ListenAddress 0.0.0.0
+        ListenAddress ::
 
         HostKey /etc/ssh/hostkeys/ssh_host_ed25519_key
         HostKey /etc/ssh/hostkeys/ssh_host_rsa_key
@@ -129,7 +116,7 @@ in
         AuthorizedKeysFile /etc/ssh/authorized_keys.d/%u
         AllowUsers root
         # tools are not in the alpine PATH, put them in every session
-        SetEnv PATH=${tools}/bin
+        SetEnv PATH=${tools}/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 
         StrictModes no
         UseDNS no
@@ -154,54 +141,6 @@ in
         root:x:0:
         sshd:x:74:
         nobody:x:65534:
-      '';
-
-      profile = pkgs.writeText "shellbox-profile" ''
-        export PATH=${tools}/bin
-        export LANG=C.UTF-8
-        : "''${TERM:=xterm-256color}"
-        export TERM
-        case $- in
-          *i*) . /etc/bashrc ;;
-        esac
-      '';
-
-      bashrc = pkgs.writeText "shellbox-bashrc" ''
-        case $- in
-          *i*) ;;
-          *) return 0 ;;
-        esac
-
-        HISTFILE=/root/.bash_history
-        HISTSIZE=100000
-        HISTFILESIZE=100000
-        shopt -s histappend checkwinsize
-        shopt -s cdspell dirspell globstar
-
-        PS1='\[\e[1;32m\]\u@\h\[\e[0m\]:\[\e[1;34m\]\w\[\e[0m\]\$ '
-
-        alias ls='ls --color=auto'
-        alias grep='grep --color=auto'
-        alias ip='ip -color=auto'
-
-        if [ -f ${pkgs.bash-completion}/share/bash-completion/bash_completion ]; then
-          . ${pkgs.bash-completion}/share/bash-completion/bash_completion
-        fi
-
-        bind 'set completion-ignore-case on' 2>/dev/null
-        bind 'set show-all-if-ambiguous on' 2>/dev/null
-
-        # flyline replaces bash's readline line editor. It is a loadable builtin,
-        # so it must match the bash above (same nixpkgs -> same bash).
-        enable -f ${flyline}/lib/libflyline.so flyline
-      '';
-
-      rootBashrc = pkgs.writeText "shellbox-root-bashrc" ''
-        . /etc/bashrc
-      '';
-
-      rootBashProfile = pkgs.writeText "shellbox-root-bash_profile" ''
-        . /etc/profile
       '';
 
       entrypoint = pkgs.writeTextFile {
@@ -255,33 +194,34 @@ in
       virtualisation.oci-containers = {
         backend = "podman";
         containers.shellbox = {
-          image = "docker.io/library/alpine:3.22";
+          # Provision this directory from the existing container export.
+          # --rootfs keeps all filesystem changes across container replacement.
+          image = "/var/lib/shellbox/rootfs";
+          pull = "never";
           hostname = "shellbox";
           entrypoint = "/init";
           podman = {
             user = "shellbox";
             sdnotify = "healthy";
           };
+          # Omit the host IP to publish on both IPv4 and IPv6.
           ports = [
-            "127.0.0.1:${toString backendSshPort}:${toString sshPort}"
-            "127.0.0.1:${toString backendSparePort}:${toString sparePort}"
+            "${toString hostSshPort}:${toString sshPort}"
+            "${toString hostSparePort}:${toString sparePort}"
           ];
           volumes = [
-            # alpine image + nix store: no image rebuild needed for tools
+            "/var/lib/shellbox/root:/root:rw"
             "/nix/store:/nix/store:ro"
             "${entrypoint}:/init:ro"
             "${sshdConfig}:/etc/ssh/shellbox_sshd_config:ro"
             "${authorizedKeys}:/etc/ssh/authorized_keys.d:ro"
             "${passwd}:/etc/passwd:ro"
             "${group}:/etc/group:ro"
-            "${profile}:/etc/profile:ro"
-            "${bashrc}:/etc/bashrc:ro"
-            "${rootBashrc}:/root/.bashrc:ro"
-            "${rootBashProfile}:/root/.bash_profile:ro"
             # ssh host keys survive container replacement
             "shellbox-ssh-hostkeys:/etc/ssh/hostkeys:rw"
           ];
           extraOptions = [
+            "--rootfs"
             "--sysctl=net.ipv4.ip_unprivileged_port_start=0"
             "--cap-add=NET_RAW"
             "--cap-add=NET_ADMIN"
@@ -294,63 +234,19 @@ in
         };
       };
 
+      systemd.tmpfiles.rules = [
+        "d /var/lib/shellbox/root 0700 shellbox shellbox -"
+      ];
+
       # A container that comes up before its user manager exists (first
       # activation) should keep retrying instead of hitting the start limit.
       systemd.services.podman-shellbox = {
+        preStart = lib.mkBefore ''
+          test -d /var/lib/shellbox/rootfs/etc
+          test -d /var/lib/shellbox/root
+        '';
         startLimitIntervalSec = 0;
         serviceConfig.RestartSec = "5s";
-      };
-
-      # ------------------------------------------------- host side exposure
-      # Container ports are published on loopback only; these sockets expose
-      # them on [::] (both families) like mod/vms/sep.nix does.
-      systemd.sockets.shellbox-ssh = {
-        description = "Socket for shellbox SSH";
-        wantedBy = [ "sockets.target" ];
-        listenStreams = [ "[::]:${toString hostSshPort}" ];
-        socketConfig = {
-          Accept = false;
-          BindIPv6Only = "both";
-          FreeBind = true;
-        };
-      };
-
-      systemd.services.shellbox-ssh = {
-        description = "Forward :${toString hostSshPort} to the shellbox container";
-        serviceConfig = {
-          ExecStart = "${config.systemd.package}/lib/systemd/systemd-socket-proxyd 127.0.0.1:${toString backendSshPort}";
-          DynamicUser = true;
-          NoNewPrivileges = true;
-          ProtectSystem = "strict";
-          ProtectHome = true;
-          # One fd pair per proxied connection; the default 1024 soft limit is
-          # too low when the container is down and clients keep connecting.
-          LimitNOFILE = 65536;
-        };
-      };
-
-      # Free TCP port for whatever you run inside the container on 0.0.0.0:2223.
-      systemd.sockets.shellbox-tcp = {
-        description = "Socket for shellbox spare TCP port";
-        wantedBy = [ "sockets.target" ];
-        listenStreams = [ "[::]:${toString hostSparePort}" ];
-        socketConfig = {
-          Accept = false;
-          BindIPv6Only = "both";
-          FreeBind = true;
-        };
-      };
-
-      systemd.services.shellbox-tcp = {
-        description = "Forward :${toString hostSparePort} to the shellbox container";
-        serviceConfig = {
-          ExecStart = "${config.systemd.package}/lib/systemd/systemd-socket-proxyd 127.0.0.1:${toString backendSparePort}";
-          DynamicUser = true;
-          NoNewPrivileges = true;
-          ProtectSystem = "strict";
-          ProtectHome = true;
-          LimitNOFILE = 65536;
-        };
       };
 
       networking.firewall.allowedTCPPorts = [
