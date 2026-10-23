@@ -205,6 +205,9 @@ let
                     "@type" =
                       "type.googleapis.com/envoy.extensions.filters.network.http_connection_manager.v3.HttpConnectionManager";
                     stat_prefix = "internet";
+                    # Twisted HTTPClient sends CONNECT as HTTP/1.0. Without this,
+                    # Envoy answers 426 and Synapse cannot fetch server keys.
+                    http_protocol_options.accept_http_10 = true;
                     http_protocol_options.allow_absolute_url = true;
                     upgrade_configs = [ { upgrade_type = "CONNECT"; } ];
                     route_config = {
