@@ -7,25 +7,12 @@
       ...
     }:
     let
-      routes = pkgs.writeText "telegram-search-routes.json" (
-        builtins.toJSON (
-          lib.mapAttrsToList (name: route: {
-            port = route.localPort;
-            socket = "/realm/egress/${name}.sock";
-          }) config.realm.workloads.telegram-search.egress
-          ++ [
-            {
-              port = 11080;
-              socket = "/realm/egress/socks.sock";
-            }
-          ]
-        )
-      );
       cabundle = pkgs.cacert.override {
         extraCertificateFiles = [ config.fn.pki.root_file ];
       };
     in
     {
+      imports = [ ../nixosModules/realm-container.nix ];
       vaultix.secrets.tg-search = {
         owner = "telegram-search";
         mode = "400";
@@ -74,18 +61,24 @@
       realm.workloads.telegram-search = {
         unit = "podman-telegram-search-app.service";
         runtime = "container";
+        container = {
+          name = "telegram-search-app";
+          backendPath = "/run/realm-telegram-search/backend";
+        };
         ingressGroups = [ "telegram-search" ];
         socksProxy.enable = true;
         ingress.http = {
           port = 13336;
-          target = "unix:/run/realm-telegram-search/backend/http.sock";
+          backend = {
+            kind = "unix";
+            path = "/run/realm-telegram-search/backend/http.sock";
+          };
           service = "telegram-search";
-          allowedIDs = [ "spiffe://nyaw.xyz/service/caddy" ];
+          allow.identities = [ "spiffe://nyaw.xyz/service/caddy" ];
         };
         egress = {
           postgresql = {
             service = "postgresql-telegram-search";
-            verifyID = "spiffe://nyaw.xyz/service/postgresql";
             localPort = 15432;
           };
           s3 = {
@@ -95,7 +88,6 @@
           };
           internet = {
             service = "internet-proxy";
-            verifyID = "spiffe://nyaw.xyz/service/internet";
             localPort = 13128;
           };
         };
@@ -119,11 +111,6 @@
           "${cabundle}/etc/ssl/certs/ca-bundle.crt:/search/ca.crt:ro"
           "${cabundle}/etc/ssl/certs/ca-bundle.crt:/etc/ssl/certs/ca-certificates.crt:ro"
           "/var/lib/tg-search/data:/app/data:rw"
-          "/run/realm/telegram-search/egress:/realm/egress:ro"
-          "/run/realm-telegram-search/backend:/realm/backend:rw"
-          "${routes}:/realm/routes.json:ro"
-          "${config.realm.helperPackage}/bin/realm-helper:/realm/helper:ro"
-          "${../nixosModules/realm/container-health.cjs}:/realm/health.cjs:ro"
         ];
         extraOptions = [
           "--userns=keep-id:uid=0,gid=0"

@@ -3,55 +3,14 @@
   ...
 }:
 [
-  {
-    handle = [
+  (import ./immich.nix {
+    basicAuthAccounts = [
       {
-        handler = "subroute";
-        routes = [
-          {
-            handle = [
-              {
-                handler = "reverse_proxy";
-                upstreams = [ { dial = "unix//run/realm/caddy/egress/immich-public-proxy.sock"; } ];
-              }
-            ];
-            match = [
-              {
-                path = [
-                  "/share/*"
-                  "/share"
-                ];
-              }
-            ];
-          }
-          {
-            handle = [
-              {
-                handler = "authentication";
-                providers.http_basic.accounts = [
-                  {
-                    username = "immich";
-                    password = "$2b$05$9CaXvrYtguDwi190/llO9.qytgqCyPp1wqyO0.umxsTEfKkhpwr4q";
-                  }
-                ];
-              }
-              {
-                handler = "reverse_proxy";
-                upstreams = [ { dial = "unix//run/realm/caddy/egress/immich.sock"; } ];
-              }
-            ];
-          }
-        ];
-      }
-
-    ];
-    match = [
-      {
-        host = [ "photo.nyaw.xyz" ];
+        username = "immich";
+        password = "$2b$05$9CaXvrYtguDwi190/llO9.qytgqCyPp1wqyO0.umxsTEfKkhpwr4q";
       }
     ];
-    terminal = true;
-  }
+  })
   {
     handle = [
       {

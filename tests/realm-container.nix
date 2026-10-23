@@ -1,10 +1,345 @@
-{ nixpkgs }:
+{
+  nixpkgs,
+  evalOnly ? false,
+}:
 let
   pkgs = import nixpkgs {
     system = "x86_64-linux";
     config.allowUnfree = true;
   };
   inherit (pkgs) lib;
+  evaluate =
+    extra:
+    (import (nixpkgs + "/nixos/lib/eval-config.nix") {
+      inherit pkgs;
+      modules = [
+        ../nixosModules/realm-workloads.nix
+        ../nixosModules/realm-container.nix
+        ../nixosModules/realm-spire.nix
+        ../nixosModules/service-discovery.nix
+        {
+          system.stateVersion = "26.05";
+          realm = {
+            enable = true;
+            serviceDiscovery = {
+              enable = true;
+              address = "::1";
+            };
+            workloads.fixture = {
+              runtime = "container";
+              container = {
+                name = "fixture-app";
+                backendPath = "/run/fixture/backend";
+                extraRoutes = [
+                  {
+                    port = 5432;
+                    socket = "/run/postgresql/.s.PGSQL.5432";
+                  }
+                ];
+              };
+              egress = {
+                database = {
+                  service = "database";
+                  verifyID = "spiffe://nyaw.xyz/service/database";
+                  target = "[::1]:15432";
+                  localPort = 15432;
+                };
+                direct = {
+                  service = "direct";
+                  verifyID = "spiffe://nyaw.xyz/service/direct";
+                  target = "[::1]:15433";
+                };
+              };
+            };
+          };
+          virtualisation.oci-containers.containers.fixture-app.image = "fixture:test";
+        }
+      ]
+      ++ extra;
+    }).config;
+  cfg = evaluate [ ];
+  volumes = c: c.virtualisation.oci-containers.containers.fixture-app.volumes;
+  failures =
+    c:
+    map (a: a.message) (
+      lib.filter (
+        a: !a.assertion && lib.hasPrefix "realm.workloads.fixture.container" a.message
+      ) c.assertions
+    );
+  duplicateInstance = evaluate [
+    {
+      realm.workloads.second = {
+        runtime = "container";
+        container = {
+          name = "fixture-app";
+          backendPath = "/run/second/backend";
+        };
+      };
+    }
+  ];
+  custom = evaluate [
+    { realm.workloads.fixture.egress.database.socket = "/run/custom/database.sock"; }
+  ];
+  socks = evaluate [
+    {
+      realm.workloads.fixture = {
+        socksProxy = {
+          enable = true;
+          port = 11081;
+        };
+        egress.internet = {
+          service = "internet-proxy";
+          verifyID = "spiffe://nyaw.xyz/service/internet";
+          target = "[::1]:15434";
+          localPort = 13128;
+        };
+      };
+    }
+  ];
+  disabled = evaluate [
+    {
+      realm.workloads.fixture = {
+        enable = false;
+        container.name = lib.mkForce "absent";
+      };
+    }
+  ];
+  routesVolume =
+    routes: "${pkgs.writeText "fixture-routes.json" (builtins.toJSON routes)}:/realm/routes.json:ro";
+  expectedRoutes = [
+    {
+      port = 5432;
+      socket = "/run/postgresql/.s.PGSQL.5432";
+    }
+    {
+      port = 15432;
+      socket = "/realm/egress/database.sock";
+    }
+  ];
+  profileModules = [
+    (import ../mod/realm-caddy-policy.nix).flake.modules.nixos.realm
+    (import ../mod/misskey.nix).flake.modules.nixos.misskey
+    (import ../mod/telegram-search.nix).flake.modules.nixos.telegram-search
+    (
+      { ... }:
+      {
+        options.vaultix.secrets = lib.mkOption {
+          type = lib.types.attrsOf (
+            lib.types.submodule {
+              options = {
+                path = lib.mkOption {
+                  type = lib.types.str;
+                  default = toString source;
+                };
+                owner = lib.mkOption { type = lib.types.str; };
+                mode = lib.mkOption { type = lib.types.str; };
+              };
+            }
+          );
+        };
+        options.fn = lib.mkOption {
+          type = lib.types.attrs;
+          default.pki.root_file = "${pkgs.cacert}/etc/ssl/certs/ca-bundle.crt";
+        };
+      }
+    )
+  ];
+  profiles = evaluate profileModules;
+  profileFileStable =
+    name:
+    let
+      w = profiles.realm.workloads.${name};
+      oldRoutes =
+        lib.optionals (name == "misskey") [
+          {
+            port = 5432;
+            socket = "/run/postgresql/.s.PGSQL.5432";
+          }
+        ]
+        ++ lib.mapAttrsToList (route: e: {
+          port = e.localPort;
+          socket = "/realm/egress/${route}.sock";
+        }) w.egress
+        ++ lib.optional w.socksProxy.enable {
+          port = 11080;
+          socket = "/realm/egress/socks.sock";
+        };
+      oldFile = pkgs.writeText "${name}-routes.json" (builtins.toJSON oldRoutes);
+    in
+    lib.elem "${oldFile}:/realm/routes.json:ro"
+      profiles.virtualisation.oci-containers.containers.${w.container.name}.volumes;
+  evalTests = lib.runTests {
+    testMisskeyRouteFileStable = {
+      expr = profileFileStable "misskey";
+      expected = true;
+    };
+    testTelegramSearchRouteFileStable = {
+      expr = profileFileStable "telegram-search";
+      expected = true;
+    };
+    testProfileIngressTargetsPreserved = {
+      expr = [
+        profiles.realm.workloads.misskey.ingress.http.target
+        profiles.realm.workloads.redis-misskey.ingress.redis.target
+        profiles.realm.workloads.telegram-search.ingress.http.target
+      ];
+      expected = [
+        "unix:/run/realm-misskey/backend/http.sock"
+        "unix:/run/redis-misskey/redis.sock"
+        "unix:/run/realm-telegram-search/backend/http.sock"
+      ];
+    };
+    testProfileIngressIdentitiesPreserved = {
+      expr = [
+        profiles.realm.workloads.misskey.ingress.http.allowedIDs
+        profiles.realm.workloads.redis-misskey.ingress.redis.allowedIDs
+        profiles.realm.workloads.telegram-search.ingress.http.allowedIDs
+      ];
+      expected = [
+        profiles.realm.caddy.allowedIDs.misskey
+        [ "spiffe://nyaw.xyz/service/misskey" ]
+        [ "spiffe://nyaw.xyz/service/caddy" ]
+      ];
+    };
+    testTelegramSearchLegacyS3IdentityPreserved = {
+      expr = profiles.realm.workloads.telegram-search.egress.s3.verifyID;
+      expected = "spiffe://nyaw.xyz/service/caddy";
+    };
+    testContainerInstanceCannotCombineWorkloads = {
+      expr = failures duplicateInstance != [ ];
+      expected = true;
+    };
+    testValidContainer = {
+      expr = failures cfg;
+      expected = [ ];
+    };
+    testCommonMounts = {
+      expr = volumes cfg;
+      expected = [
+        "/run/realm/fixture/egress:/realm/egress:ro"
+        "/run/fixture/backend:/realm/backend:rw"
+        (routesVolume expectedRoutes)
+        "${cfg.realm.helperPackage}/bin/realm-helper:/realm/helper:ro"
+        "${../nixosModules/realm/container-health.cjs}:/realm/health.cjs:ro"
+      ];
+    };
+    testNullPortExcludedAndRouteFileStable = {
+      expr = lib.elem (routesVolume expectedRoutes) (volumes cfg);
+      expected = true;
+    };
+    testCustomSocketAddsReadOnlyMount = {
+      expr = lib.sort builtins.lessThan (volumes custom);
+      expected = lib.sort builtins.lessThan (
+        lib.filter (volume: volume != routesVolume expectedRoutes) (volumes cfg)
+        ++ [
+          (routesVolume [
+            (builtins.head expectedRoutes)
+            {
+              port = 15432;
+              socket = "/realm/egress-database/database.sock";
+            }
+          ])
+          "/run/custom:/realm/egress-database:ro"
+        ]
+      );
+    };
+    testSocksUsesConfiguredPort = {
+      expr = lib.elem (routesVolume (
+        expectedRoutes
+        ++ [
+          {
+            port = 13128;
+            socket = "/realm/egress/internet.sock";
+          }
+          {
+            port = 11081;
+            socket = "/realm/egress/socks.sock";
+          }
+        ]
+      )) (volumes socks);
+      expected = true;
+    };
+    testRejectSystemdRuntime = {
+      expr = builtins.length (
+        failures (evaluate [ { realm.workloads.fixture.runtime = lib.mkForce "systemd"; } ])
+      );
+      expected = 1;
+    };
+    testRejectMissingInstance = {
+      expr = builtins.length (
+        failures (evaluate [ { realm.workloads.fixture.container.name = lib.mkForce "absent"; } ])
+      );
+      expected = 1;
+    };
+    testMissingInstanceNotCreated = {
+      expr =
+        builtins.hasAttr "absent"
+          (evaluate [ { realm.workloads.fixture.container.name = lib.mkForce "absent"; } ])
+          .virtualisation.oci-containers.containers;
+      expected = false;
+    };
+    testInstanceNameRequired = {
+      expr =
+        (builtins.tryEval
+          (evaluate [
+            { realm.workloads.fixture.container = lib.mkForce { backendPath = "/run/fixture/backend"; }; }
+          ]).realm.workloads.fixture.container.name
+        ).success;
+      expected = false;
+    };
+    testRejectDuplicateExtraAndEgressPort = {
+      expr = builtins.length (
+        failures (evaluate [ { realm.workloads.fixture.egress.database.localPort = lib.mkForce 5432; } ])
+      );
+      expected = 1;
+    };
+    testRejectDuplicateEgressPorts = {
+      expr = builtins.length (
+        failures (evaluate [ { realm.workloads.fixture.egress.direct.localPort = 15432; } ])
+      );
+      expected = 1;
+    };
+    testRejectDuplicateSocksPort = {
+      expr = builtins.length (
+        failures (evaluate [
+          {
+            realm.workloads.fixture = {
+              socksProxy.enable = true;
+              socksProxy.port = 15432;
+            };
+          }
+        ])
+      );
+      expected = 1;
+    };
+    testDisabledNoMounts = {
+      expr = volumes disabled;
+      expected = [ ];
+    };
+    testDisabledNoAssertions = {
+      expr = failures disabled;
+      expected = [ ];
+    };
+    testDisabledNoUnits = {
+      expr = lib.filter (name: lib.hasPrefix "realm-" name) (
+        builtins.attrNames disabled.systemd.services
+      );
+      expected = [ ];
+    };
+    testDisabledNoSockets = {
+      expr = lib.filter (name: lib.hasPrefix "realm-" name) (builtins.attrNames disabled.systemd.sockets);
+      expected = [ ];
+    };
+    testDisabledNoRegistrations = {
+      expr = disabled.realm.spire.registrations;
+      expected = { };
+    };
+    testRealmDisabledNoMounts = {
+      expr = volumes (evaluate [ { realm.enable = lib.mkForce false; } ]);
+      expected = [ ];
+    };
+  };
+  runTest = if evalOnly then _: evalTests else pkgs.testers.runNixOSTest;
   backend = pkgs.writeText "fixture.cjs" ''
     const fs = require('node:fs');
     const http = require('node:http');
@@ -52,40 +387,16 @@ let
             client.sendall(client.recv(65536))
   '';
 in
-pkgs.testers.runNixOSTest {
+assert evalOnly || evalTests == [ ];
+runTest {
   name = "realm-rootless-container";
   nodes.machine = {
     imports = [
       ../nixosModules/realm-workloads.nix
       ../nixosModules/realm-spire.nix
       ../nixosModules/service-discovery.nix
-      (import ../mod/realm-caddy-policy.nix).flake.modules.nixos.realm
-      (import ../mod/misskey.nix).flake.modules.nixos.misskey
-      (import ../mod/telegram-search.nix).flake.modules.nixos.telegram-search
-      (
-        { ... }:
-        {
-          options.vaultix.secrets = lib.mkOption {
-            type = lib.types.attrsOf (
-              lib.types.submodule {
-                options = {
-                  path = lib.mkOption {
-                    type = lib.types.str;
-                    default = toString source;
-                  };
-                  owner = lib.mkOption { type = lib.types.str; };
-                  mode = lib.mkOption { type = lib.types.str; };
-                };
-              }
-            );
-          };
-          options.fn = lib.mkOption {
-            type = lib.types.attrs;
-            default.pki.root_file = "${pkgs.cacert}/etc/ssl/certs/ca-bundle.crt";
-          };
-        }
-      )
-    ];
+    ]
+    ++ profileModules;
     virtualisation.memorySize = 2048;
     virtualisation.diskSize = 4096;
     networking.hostName = "machine";
@@ -107,10 +418,20 @@ pkgs.testers.runNixOSTest {
               "s3-https"
               "internet-proxy"
             ]
-            (_: {
+            (service: {
               address = "::1";
               port = 1;
               unit = "fixture.service";
+              serverID = "spiffe://nyaw.xyz/service/${
+                {
+                  postgresql-telegram-search = "postgresql";
+                  redis-misskey = "redis-misskey";
+                  meilisearch = "meilisearch";
+                  s3-https = "caddy";
+                  internet-proxy = "internet";
+                }
+                .${service}
+              }";
             });
       };
     };
@@ -134,6 +455,11 @@ pkgs.testers.runNixOSTest {
         imageFile = image;
       };
     };
+    realm.workloads.telegram-search.egress.postgresql.socket =
+      "/run/realm-telegram-search/custom-egress/postgresql.sock";
+    systemd.tmpfiles.rules = [
+      "d /run/realm-telegram-search/custom-egress 0750 root telegram-search -"
+    ];
     systemd.services.realm-egress-telegram-search-postgresql = {
       requires = lib.mkForce [ ];
       after = lib.mkForce [ ];
@@ -168,6 +494,12 @@ pkgs.testers.runNixOSTest {
         assert actual == "postgresql://telegram_search@127.0.0.1:15432/telegram_search?sslmode=disable", actual
         machine.fail("runuser -u nobody -- curl -sf --max-time 2 --unix-socket /run/realm-telegram-search/backend/http.sock http://localhost/")
         machine.fail("curl -sf --max-time 2 http://127.0.0.1:3336/")
+    with subtest("custom egress sockets use an extra read-only bind mount"):
+        machine.succeed("runuser -u telegram-search -- podman inspect telegram-search-app --format '{{json .Mounts}}' | ${pkgs.python3}/bin/python3 -c 'import json,sys; mounts=json.load(sys.stdin); assert any(m[\"Source\"] == \"/run/realm-telegram-search/custom-egress\" and m[\"Destination\"] == \"/realm/egress-postgresql\" and not m[\"RW\"] for m in mounts)' ")
+    with subtest("custom socket replacement remains visible through the directory mount"):
+        machine.succeed("systemctl stop realm-egress-telegram-search-postgresql.service realm-egress-telegram-search-postgresql.socket")
+        machine.succeed("systemctl start realm-egress-telegram-search-postgresql.socket")
+        machine.wait_until_succeeds("curl -sf --unix-socket /run/realm-telegram-search/backend/http.sock http://localhost/ | grep -x 0:0:mesh", timeout=30)
     with subtest("the SOCKS adapter is bridged to the container through a Unix socket"):
         # The bridge service is socket-activated, so this also proves that
         # realm-helper receives the listening descriptor from systemd.

@@ -15,10 +15,12 @@
         isolation.runtimePaths = [ "/run/meilisearch" ];
         ingress.http = {
           port = 17700;
-          target = "127.0.0.1:7700";
-          privateLoopback = true;
+          backend = {
+            kind = "private-tcp";
+            port = 7700;
+          };
           service = "meilisearch";
-          allowedIDs = config.realm.caddy.allowedIDs.meilisearch ++ [
+          allow.identities = config.realm.caddy.allowedIDs.meilisearch ++ [
             "spiffe://nyaw.xyz/service/misskey"
           ];
         };

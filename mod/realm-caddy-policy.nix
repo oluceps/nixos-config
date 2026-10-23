@@ -17,6 +17,7 @@
       ];
     in
     {
+      config.realm.authorization.groups.public-caddy = policy.publicIDs;
       options.realm.caddy = {
         ids = value (lib.types.attrsOf lib.types.str) (
           lib.genAttrs (lib.unique (

@@ -24,6 +24,23 @@ let
           defaultText = lib.literalExpression "config.realm.serviceDiscovery.address";
           description = "IPv6 address of the ingress.";
         };
+        serverID = lib.mkOption {
+          type = lib.types.nullOr lib.types.str;
+          default = null;
+          description = "Expected SPIFFE server identity from the declarative publisher.";
+        };
+        allowedIDs = lib.mkOption {
+          type = lib.types.listOf lib.types.str;
+          default = [ ];
+          description = "Caller identities enforced by this endpoint.";
+        };
+        transport = lib.mkOption {
+          type = lib.types.enum [
+            "spiffe-tls"
+            "plain"
+          ];
+          default = "spiffe-tls";
+        };
         port = lib.mkOption {
           type = lib.types.nullOr lib.types.port;
           default = null;

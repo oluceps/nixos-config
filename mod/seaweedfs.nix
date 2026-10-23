@@ -10,7 +10,6 @@
       realm.observability.endpoints.seaweedfs.socket = "/run/realm/observability/egress/seaweedfs.sock";
       realm.workloads.observability.egress.seaweedfs = {
         service = "seaweedfs-metrics";
-        verifyID = "spiffe://nyaw.xyz/service/seaweedfs";
       };
       vaultix.secrets.weed-s3 = {
         owner = "seaweedfs";
@@ -40,10 +39,12 @@
         ingress = {
           s3 = {
             port = 18333;
-            target = "127.0.0.1:8333";
-            privateLoopback = true;
+            backend = {
+              kind = "private-tcp";
+              port = 8333;
+            };
             service = "seaweedfs-s3";
-            allowedIDs = [
+            allow.identities = [
               "spiffe://nyaw.xyz/service/loki"
             ]
             ++ config.realm.caddy.allowedIDs.seaweedfs-s3
@@ -54,17 +55,21 @@
           };
           master = {
             port = 19333;
-            target = "127.0.0.1:9333";
-            privateLoopback = true;
+            backend = {
+              kind = "private-tcp";
+              port = 9333;
+            };
             service = "seaweedfs-master";
-            allowedIDs = config.realm.caddy.allowedIDs.seaweedfs-master;
+            allow.identities = config.realm.caddy.allowedIDs.seaweedfs-master;
           };
           metrics = {
             port = 19768;
-            target = "127.0.0.1:9768";
-            privateLoopback = true;
+            backend = {
+              kind = "private-tcp";
+              port = 9768;
+            };
             service = "seaweedfs-metrics";
-            allowedIDs = [ "spiffe://nyaw.xyz/service/observability-${config.networking.hostName}" ];
+            allow.identities = [ "spiffe://nyaw.xyz/service/observability-${config.networking.hostName}" ];
           };
         };
       };

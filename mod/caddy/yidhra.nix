@@ -18,7 +18,6 @@
       imports = [ self.modules.nixos.caddy ];
       realm.workloads.caddy.egress.public-http = {
         service = "public-http";
-        verifyID = config.realm.caddy.entrypointID;
       };
       systemd.services.caddy = {
         environment = {

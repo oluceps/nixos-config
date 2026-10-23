@@ -11,6 +11,10 @@ let
               type = lib.types.str;
               default = "eihort";
             };
+            realm.authorization.groups = lib.mkOption {
+              type = lib.types.attrsOf (lib.types.listOf lib.types.str);
+              default = { };
+            };
             realm.servicePrefix = lib.mkOption {
               type = lib.types.str;
               default = "spiffe://nyaw.xyz/service/";

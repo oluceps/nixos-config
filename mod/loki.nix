@@ -24,17 +24,18 @@
       realm.workloads.loki = {
         egress.s3 = {
           service = "seaweedfs-s3";
-          verifyID = "spiffe://nyaw.xyz/service/seaweedfs";
           localPort = 18333;
         };
         ingress.http = {
           port = 19429;
-          target = "127.0.0.1:3030";
-          privateLoopback = true;
+          backend = {
+            kind = "private-tcp";
+            port = 3030;
+          };
           service = "loki";
-          allowedIDs = [
-            "spiffe://nyaw.xyz/service/alloy"
-            "spiffe://nyaw.xyz/service/grafana"
+          allow.workloads = [
+            "alloy"
+            "grafana"
           ];
         };
       };

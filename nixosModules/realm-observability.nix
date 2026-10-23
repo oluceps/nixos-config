@@ -427,19 +427,20 @@ in
       inherit spiffeID;
       isolation.privateNetwork = false;
       ingress.metrics = {
-        native = true;
+        backend.kind = "native";
         port = cfg.port;
         service = "observability-${hostName}";
         allowedIDs = cfg.allowedIDs;
       };
     };
-    # Business listeners are published like any other ingress, so egresses use
-    # SRV discovery instead of a hard-coded host:port.
+    # Business listeners export their identity and address through the same catalog.
     realm.serviceDiscovery.publish = lib.mapAttrs' (
       name: e:
       lib.nameValuePair e.businessService {
         unit = "realm-observability.service";
         port = e.businessProxyPort;
+        serverID = spiffeID;
+        allowedIDs = e.businessAllowedIDs;
       }
     ) (lib.filterAttrs (_: e: e.businessProxyPort != null) endpoints);
   };

@@ -30,11 +30,13 @@ let
                   unit = "realm-ingress-caddy-eihort-https.service";
                   address = "fdcc::9";
                   port = 443;
+                  serverID = "spiffe://nyaw.xyz/service/caddy-eihort";
                 };
                 internet-proxy = {
                   unit = "realm-ingress-caddy-internet.service";
                   address = "fdcc::9";
                   port = 13128;
+                  serverID = "spiffe://nyaw.xyz/service/internet";
                 };
               };
             };
@@ -84,6 +86,17 @@ let
       ]
       ++ extra;
     }).config;
+  modern = evaluate [
+    {
+      realm.workloads.sender.http = {
+        internal = lib.mkForce [ ];
+        gateway = {
+          ref = "eihort";
+          resolveHosts = [ "oidc.nyaw.xyz" ];
+        };
+      };
+    }
+  ];
   cfg = evaluate [ ];
   realmAssertions =
     c: builtins.filter (a: !a.assertion && lib.hasPrefix "realm" a.message) c.assertions;
@@ -152,6 +165,17 @@ let
     );
 in
 lib.runTests {
+  testExplicitGatewayPreservesGeneratedUnits = {
+    expr = map (c: c.systemd.units."realm-egress-sender-http-eihort.service".text) [
+      cfg
+      modern
+    ];
+    expected = lib.replicate 2 cfg.systemd.units."realm-egress-sender-http-eihort.service".text;
+  };
+  testInternetIdentityComesFromPublisher = {
+    expr = lib.hasInfix "--verify-uri spiffe://nyaw.xyz/service/internet" cfg.systemd.services.realm-egress-sender-internet.serviceConfig.ExecStart;
+    expected = true;
+  };
   testDeclarationsValid = {
     expr = realmAssertions cfg;
     expected = [ ];
@@ -212,7 +236,8 @@ lib.runTests {
     expr = cfg.realm.workloads.sender.egress.internet;
     expected = {
       service = "internet-proxy";
-      verifyID = "spiffe://nyaw.xyz/service/internet";
+      verifyID = null;
+      node = null;
       localPort = 13128;
       target = null;
       socket = null;
@@ -223,6 +248,7 @@ lib.runTests {
     expected = {
       service = "https-fixture";
       verifyID = "spiffe://nyaw.xyz/service/caddy-eihort";
+      node = null;
       localPort = 443;
       target = null;
       socket = null;

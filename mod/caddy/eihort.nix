@@ -16,19 +16,15 @@
         egress = {
           pocket-id = {
             service = "pocket-id";
-            verifyID = "${config.realm.servicePrefix}pocket-id";
           };
           jellyfin = {
             service = "jellyfin";
-            verifyID = "spiffe://nyaw.xyz/service/jellyfin";
           };
           vaultwarden = {
             service = "vaultwarden";
-            verifyID = "spiffe://nyaw.xyz/service/vaultwarden";
           };
           forgejo = {
             service = "forgejo";
-            verifyID = "spiffe://nyaw.xyz/service/forgejo";
           };
           # telegram-search = {
           #   service = "telegram-search";
@@ -36,54 +32,51 @@
           # };
           synapse = {
             service = "synapse";
-            verifyID = "spiffe://nyaw.xyz/service/synapse";
           };
           calibre = {
             service = "calibre";
-            verifyID = "spiffe://nyaw.xyz/service/calibre";
           };
           s3 = {
             service = "seaweedfs-s3";
-            verifyID = "spiffe://nyaw.xyz/service/seaweedfs";
           };
           seaweedfs = {
             service = "seaweedfs-master";
-            verifyID = "spiffe://nyaw.xyz/service/seaweedfs";
           };
           grafana = {
             service = "grafana";
-            verifyID = "spiffe://nyaw.xyz/service/grafana";
           };
           misskey = {
             service = "misskey";
-            verifyID = "spiffe://nyaw.xyz/service/misskey";
           };
           meilisearch = {
             service = "meilisearch";
-            verifyID = "spiffe://nyaw.xyz/service/meilisearch";
           };
           immich = {
             service = "immich";
-            verifyID = "spiffe://nyaw.xyz/service/immich";
           };
           immich-public-proxy = {
             service = "immich-public-proxy";
-            verifyID = "spiffe://nyaw.xyz/service/immich-public-proxy";
           };
         };
         ingress.public-edge = {
           port = 19444;
-          target = "127.0.0.1:443";
-          hostLoopback = true;
+          backend = {
+            kind = "host-tcp";
+            address = "127.0.0.1";
+            port = 443;
+          };
           service = "internal-https";
-          allowedIDs = config.realm.caddy.allowedIDs.internal-https;
+          allow.identities = config.realm.caddy.allowedIDs.internal-https;
         };
         ingress.https = {
           port = 19443;
-          target = "127.0.0.1:443";
-          hostLoopback = true;
+          backend = {
+            kind = "host-tcp";
+            address = "127.0.0.1";
+            port = 443;
+          };
           service = "s3-https";
-          allowedIDs = config.realm.http.gatewayClientIDs.eihort ++ [
+          allow.identities = config.realm.http.gatewayClientIDs.eihort ++ [
             "spiffe://nyaw.xyz/service/misskey"
             "spiffe://nyaw.xyz/service/telegram-search"
           ];
@@ -234,16 +227,7 @@
                         match = [ { host = [ "memos.nyaw.xyz" ]; } ];
                         terminal = true;
                       }
-                      {
-                        handle = [
-                          {
-                            handler = "reverse_proxy";
-                            upstreams = [ { dial = "unix//run/realm/caddy/egress/immich-public-proxy.sock"; } ];
-                          }
-                        ];
-                        match = [ { host = [ "photo.nyaw.xyz" ]; } ];
-                        terminal = true;
-                      }
+                      (import ../../caddy/immich.nix { })
                       {
                         handle = [
                           {

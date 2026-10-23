@@ -9,7 +9,6 @@
       isolation.privateNetwork = false;
       egress.ncps = {
         service = "ncps";
-        verifyID = "spiffe://nyaw.xyz/service/ncps";
       };
     };
     services.envoy.settings.static_resources = {

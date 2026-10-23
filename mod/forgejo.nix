@@ -13,7 +13,10 @@
       realm.workloads.forgejo = {
         http = {
           internet = true;
-          internal = [ "s3.nyaw.xyz" ];
+          gateway = {
+            ref = "eihort";
+            resolveHosts = [ "s3.nyaw.xyz" ];
+          };
         };
         isolation = {
           runtimePaths = [ "/run/forgejo" ];
@@ -23,14 +26,16 @@
         ingressGroups = [ "forgejo" ];
         ingress.http = {
           port = 16462;
-          target = "unix:/run/forgejo/forgejo.sock";
+          backend = {
+            kind = "unix";
+            path = "/run/forgejo/forgejo.sock";
+          };
           service = "forgejo";
-          allowedIDs = config.realm.caddy.allowedIDs.forgejo;
+          allow.identities = config.realm.caddy.allowedIDs.forgejo;
         };
         egress = {
           smtp = {
             service = "smtp-submission";
-            verifyID = "spiffe://nyaw.xyz/service/stalwart";
             localPort = 465;
           };
         };

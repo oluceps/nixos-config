@@ -5,11 +5,107 @@ eihort; mesh nodes run an Agent. Each node runs a local CoreDNS discovery
 listener. The trust domain is `nyaw.xyz`, independently of the discovery
 DNS domain `mesh.nyaw.xyz`.
 
+## Declaration model and compilation
+
+Realm compiles local declarations into a fixed output record. No runtime controller resolves these declarations.
+
+| File | Responsibility |
+| --- | --- |
+| `lib/realm/types.nix` | Workload and legacy option types |
+| `nixosModules/realm-model.nix` | Backend normalization, identity references and authorization reports |
+| `lib/realm/compile.nix` | Compose the local compiler stages |
+| `lib/realm/{base,egress,ingress,socks,native}.nix` | Generate isolation, adapters and identity registrations |
+| `lib/realm/outputs.nix` | Merge the fixed output fields |
+| `nixosModules/realm-http.nix` | HTTP access intent and local gateway routing |
+| `nixosModules/realm-container.nix` | Shared container mounts and loopback routes |
+| `nixosModules/realm-internet.nix` | Reusable Internet gateway service |
+| `mod/realm-internet.nix` | Site caller policy and extra CONNECT permissions |
+
+The compiler returns `services`, `sockets`, `userGroups`, `users`, `tmpfiles`, `registrations`, `publications` and `assertions`. Each field has its own merge. The compiler does not inspect the internal representation of `mkIf` or `mkMerge`.
+
+Local identity exports depend only on enabled workload declarations. Cluster aggregation collects these exports and the published endpoints. Egress resolution uses the resulting catalog. Keep exports independent of egress resolution to avoid an evaluation cycle.
+
+`mod/custom-modules.nix` exports module paths. This lets Nix deduplicate a reusable module imported by both the default module collection and a standalone service profile.
+
+### Backend types and receiver policy
+
+Declare `ingress.<name>.backend` with one of these kinds:
+
+| Kind | Fields | Connection |
+| --- | --- | --- |
+| `unix` | `path`, optional `peerUser` | Unix socket |
+| `private-tcp` | `port`, optional loopback `address` | Adapter inside the workload namespace |
+| `host-tcp` | `port`, IPv4 loopback `address` | Explicit host networking exception |
+| `native` | No backend address | Application terminates SPIFFE TLS |
+
+Native consumers must enforce the declared identities themselves. The Caddy and Envoy generators use the final ingress policy. The native flag alone does not implement authorization.
+
+Receiver grants support three forms:
+
+- `allow.workloads`: references to declared workloads. Use `node/workload` when a name resolves to different identities on different nodes.
+- `allow.groups`: named SPIFFE identity lists in `realm.authorization.groups`.
+- `allow.identities`: explicit SPIFFE URIs, including external callers.
+
+The receiver needs a nonempty final policy. Unknown references and groups fail validation. A Unix `peerUser` still requires one authorized identity and a dedicated unprivileged account. Workloads that share a SPIFFE ID share its permissions.
+
+Legacy `target`, `native`, `privateLoopback`, `hostLoopback`, `backendUser` and `allowedIDs` remain available for existing integrations. Use one backend declaration style per ingress. The current service profiles use typed backends.
+
+### Endpoint identities
+
+Each publication records `unit`, `address`, `port`, `serverID`, `allowedIDs` and `transport`. Publishers supply the identity. DNS generates address records from this catalog but does not supply trust decisions.
+
+An egress normally declares only `service` and optional `localPort`. Use `node` to select a publisher when the service has multiple endpoints. Unknown or ambiguous endpoints fail validation. An explicit `verifyID` must match the published identity.
+
+A manual `target` remains supported. It uses an explicit identity or the selected publisher's identity. This override can select an external endpoint or a test fixture. Its actual receiver policy cannot be inferred from the catalog.
+
+### HTTP gateways
+
+Use `http.internet = true` for the authenticated Internet proxy. It generates the egress and both uppercase and lowercase proxy variables. Applications with their own proxy settings still need those application settings.
+
+For an internal HTTPS gateway, declare:
+
+```nix
+http.gateway = {
+  ref = "eihort";
+  resolveHosts = [ "oidc.nyaw.xyz" ];
+};
+```
+
+`resolveHosts` creates local aliases and proxy bypass entries. It does not restrict the HTTP Host header or authorize individual domains. Authorization applies to the gateway listener.
+
+Each gateway selects `admission = "explicit"` or `"declared-clients"`. Explicit admission uses its `allowedIDs`. Declared-client admission also collects the identities of enabled workloads that select that gateway. The site gateway selects declared-client admission explicitly, preserving its existing listener permissions.
+
+The legacy `http.internal` list remains supported. It selects a gateway by the declared hostnames. A workload still uses only one HTTPS gateway on local port 443.
+
+### Containers
+
+A container workload declares `container.name` and `container.backendPath`. The shared adapter generates its egress routes, optional SOCKS route, and helper, health script and socket mounts. `container.extraRoutes` describes additional sockets already mounted into the container, such as PostgreSQL.
+
+The application profile retains its image, entrypoint, command, user mapping, environment, writable data paths and health check. Each OCI instance belongs to one Realm workload. Local route ports must be unique.
+
+A custom egress socket uses a read-only mount of its parent directory so socket replacement remains visible. Select a directory dedicated to that route. Other accessible entries in that directory are also visible inside the container.
+
+### Authorization reports
+
+Inspect the receiver table and local outgoing connections:
+
+```sh
+nix eval --json .#nixosConfigurations.eihort.config.realm.authorization.matrix
+nix eval --json .#nixosConfigurations.eihort.config.realm.authorization.connections
+```
+
+The receiver table contains the final listener identities and grants. The connection report compares each caller with those grants. Manual targets have an unknown authorization result, represented by `null`.
+
+These reports describe identity admission. Caddy path rules, Envoy destination restrictions, database roles and application permissions still apply separately.
+
+The current Azasos Caddy declares Atuin and Rustypaste egresses that their receivers do not admit. The report marks both connections as denied. Their existing receiver policies remain unchanged.
+
+
 ## Workload declarations
 
-Keep declarations next to their service configuration in `mod/`. The reusable
-implementation is in `nixosModules/realm-workloads.nix`; SPIRE configuration
-and enrollment are in `nixosModules/realm-spire.nix`.
+Keep declarations next to their service configuration in `mod/`.
+The interface is in `nixosModules/realm-workloads.nix`, and its compiler is in `lib/realm/`.
+SPIRE configuration and enrollment are in `nixosModules/realm-spire.nix`.
 
 Migrated cluster service profiles require realm and have no legacy network
 fallback. The reusable modules retain `realm.enable` as their activation
@@ -24,16 +120,17 @@ realm.workloads.example = {
 
   egress.loki = {
     service = "loki";
-    verifyID = "spiffe://nyaw.xyz/service/loki";
     localPort = 13030;
   };
 
   ingress.http = {
     port = 18080;
-    target = "127.0.0.1:8080";
-    privateLoopback = true;
+    backend = {
+      kind = "private-tcp";
+      port = 8080;
+    };
     service = "example";
-    allowedIDs = [ config.realm.caddy.localID ];
+    allow.identities = [ config.realm.caddy.localID ];
   };
 };
 ```
@@ -61,7 +158,7 @@ SPIFFE ID is `spiffe://nyaw.xyz/service/<workload>`. Caddy uses
 `mod/realm-caddy-policy.nix` and admit only the nodes that need each route.
 Other instances that share an ID still share authorization. Root on a node remains trusted.
 
-An ingress requires an explicit nonempty `allowedIDs` list. Declaring an
+An ingress requires an explicit nonempty receiver policy. Declaring an
 egress does not grant access at the receiver. ghostunnel enforces connection
 authorization; database roles and HTTP operation/tenant authorization remain
 application responsibilities.
@@ -71,11 +168,11 @@ application responsibilities.
 The ghostunnel client connects directly to the receiver's mesh address and port.
 Nix gets that destination from `realm.serviceDiscovery.catalog`, the same catalog
 that generates the CoreDNS zone. No Caddy SRV connector or discovery socket sits
-between the two ghostunnel processes. The client still checks the exact
-`verifyID`, and the receiver still checks its explicit `allowedIDs`.
+between the two ghostunnel processes. The client checks the published
+`serverID` or its explicit `verifyID` override. The receiver checks its final caller policy.
 
-A service must have exactly one catalog endpoint unless its egress declares an
-explicit `target`. Missing or multiple endpoints fail configuration validation.
+A service must have exactly one selected catalog endpoint unless its egress declares an
+explicit `target`. The optional `node` selector narrows the catalog search. Missing or multiple endpoints fail configuration validation.
 There is no runtime endpoint selection, SRV cache or automatic failover.
 Address and port changes require deployment to the affected clients.
 
@@ -135,7 +232,7 @@ Unix sockets. Their ingress proxies receive only the group access needed to
 connect. Synapse has separate HTTP and metrics sockets. ntfy uses a Unix
 business socket and retains a separate private TCP adapter for metrics.
 
-TCP-only applications retain `privateLoopback` adapters in their private
+TCP-only applications retain `backend.kind = "private-tcp"` adapters in their private
 network namespaces. These adapters remain necessary for Atuin, Vaultwarden,
 Immich and other backends without a verified Unix listener.
 
@@ -220,9 +317,8 @@ verify model downloading and inference with the installed model versions.
 Immich retains `settings = null`. Before deployment, set its persisted
 `machineLearning.urls` setting to `[ "http://127.0.0.1:3003" ]` through the
 administration UI. Do not rely on `IMMICH_MACHINE_LEARNING_URL` alone.
-`photo.nyaw.xyz` routes through Caddy's public proxy egress; the public proxy
-connects to its own 127.0.0.1:2283 adapter. The full Immich server remains
-available through its mesh ingress rather than this public hostname.
+`photo.nyaw.xyz/share` and `/share/*` use the public proxy, including its static assets and media paths. Other paths use the main Immich server. The private eihort listener has no Caddy Basic Auth. Public entrypoints and the public relay require Basic Auth for the main server. Share paths remain public. Both entrypoint types use `caddy/immich.nix` to keep their path selection consistent. Immich's own authentication remains unchanged.
+The public proxy connects to its own 127.0.0.1:2283 adapter.
 Its existing Vaultix file contains only a database password and is unchanged;
 the Unix peer connection does not use that password. SMTP, OAuth and
 other optional server-side network integrations require separate egress
@@ -314,7 +410,7 @@ private loopback 9464, behind a separate observation-only ingress.
 ## Native certificate consumers
 
 An application implementing SPIFFE TLS itself can declare
-`ingress.<name>.native = true`, omitting the proxy `target`. The module binds
+`ingress.<name>.backend.kind = "native"`, omitting the proxy address. The module binds
 the workload's SPIRE registration to its application unit and Unix user,
 grants access to the Agent socket, and publishes its ingress in the generated DNS zone.
 The application must configure its own listener, consume SDS updates and
@@ -355,7 +451,17 @@ enrollment tools are administrative commands, not workload capabilities.
 
 ## Verification
 
-`tests/realm-workloads.nix` checks evaluation and policy wiring.
+The refactor comparison covered 550 related units on eight Realm nodes. Unit names, SPIFFE registrations, identities, listener addresses, ports and socket paths stayed unchanged. Receiver grants stayed unchanged. Container mount sets and route files also stayed unchanged.
+
+Seven application units gained lowercase proxy variables with the same values as their existing uppercase variables. Three dependency lists changed order. Misskey's mount order changed, which changed its generated start script path. The mount set and application command stayed unchanged.
+
+The refactor passed the networking, container, Immich and actual-service integration suites. The networking suite reused its previous successful output because its generated VM derivation stayed identical. The other three suites ran their VMs again. Cluster, backend, identity and HTTP evaluation tests also passed.
+
+These checks did not deploy the refactor to production nodes. The independent Shellbox change made during the comparison was excluded from Realm container comparisons.
+
+`tests/realm-model.nix` checks typed backends, identity references and endpoint selection.
+`tests/realm-cluster.nix` checks cross-node aggregation, receiver admission and disabled workloads.
+`tests/realm-workloads.nix` checks evaluation and legacy policy wiring.
 `tests/realm-vm.nix` checks actual SPIRE enrollment, direct TLS connections, authorized
 and rejected mTLS peers, PostgreSQL peer authentication, socket isolation,
 Internet proxy destination restrictions and registration

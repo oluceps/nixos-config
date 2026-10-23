@@ -9,7 +9,6 @@
         ];
         egress.loki = {
           service = "loki";
-          verifyID = "spiffe://nyaw.xyz/service/loki";
           localPort = 13030;
         };
       };

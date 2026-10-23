@@ -11,6 +11,9 @@
         observability.enable = true;
         enable = true;
         address = config.data.node.${config.networking.hostName}.unique_addr_nomask;
+        identityCatalog = lib.mapAttrs (_: system: system.config.realm.localIdentities) (
+          lib.filterAttrs (_: system: system.config.realm.enable or false) self.nixosConfigurations
+        );
         spire.serverAddress = config.data.node.eihort.unique_addr_nomask;
         spire.server = lib.mkIf (config.networking.hostName == "eihort") {
           enable = true;

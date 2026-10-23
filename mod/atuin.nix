@@ -5,10 +5,12 @@
       realm.workloads.atuin = {
         ingress.http = {
           port = 18888;
-          target = "127.0.0.1:8888";
-          privateLoopback = true;
+          backend = {
+            kind = "private-tcp";
+            port = 8888;
+          };
           service = "atuin";
-          allowedIDs = config.realm.caddy.allowedIDs.atuin;
+          allow.identities = config.realm.caddy.allowedIDs.atuin;
         };
       };
 

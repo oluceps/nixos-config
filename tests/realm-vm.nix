@@ -237,11 +237,13 @@ pkgs.testers.runNixOSTest {
           wrong-server.egress.receiver = {
             service = "receiver";
             verifyID = "spiffe://nyaw.xyz/service/not-receiver";
+            target = "[::1]:19429";
             localPort = 13100;
           };
           wrong-server.egress.internet = {
             service = "internet-proxy";
             verifyID = "spiffe://nyaw.xyz/service/not-internet";
+            target = "[::1]:19328";
             localPort = 13128;
           };
           receiver.ingress.http = {

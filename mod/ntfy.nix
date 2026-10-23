@@ -11,41 +11,35 @@
         ingress = {
           http = {
             port = 12586;
-            target = "unix:/run/ntfy-sh/http.sock";
+            backend = {
+              kind = "unix";
+              path = "/run/ntfy-sh/http.sock";
+            };
             service = "ntfy";
-            allowedIDs = config.realm.caddy.allowedIDs.ntfy;
+            allow.identities = config.realm.caddy.allowedIDs.ntfy;
           };
           metrics = {
             port = 19099;
-            target = "127.0.0.1:9099";
-            privateLoopback = true;
+            backend = {
+              kind = "private-tcp";
+              port = 9099;
+            };
             service = "ntfy-metrics";
-            allowedIDs = [ "spiffe://nyaw.xyz/service/observability-${config.networking.hostName}" ];
+            allow.identities = [ "spiffe://nyaw.xyz/service/observability-${config.networking.hostName}" ];
           };
         };
-        egress.internet = {
-          service = "internet-proxy";
-          verifyID = "spiffe://nyaw.xyz/service/internet";
-          localPort = 13128;
-        };
+        http.internet = true;
       };
       realm.workloads.caddy = lib.mkIf (config ? caddy) {
         egress.ntfy = {
           service = "ntfy";
-          verifyID = "spiffe://nyaw.xyz/service/ntfy";
         };
       };
       realm.workloads.observability.egress.ntfy = {
         service = "ntfy-metrics";
-        verifyID = "spiffe://nyaw.xyz/service/ntfy";
       };
       realm.observability.endpoints.ntfy.socket = "/run/realm/observability/egress/ntfy.sock";
       systemd.services.ntfy-sh = {
-        environment = {
-          HTTP_PROXY = "http://127.0.0.1:13128";
-          HTTPS_PROXY = "http://127.0.0.1:13128";
-          NO_PROXY = "localhost,127.0.0.1,::1";
-        };
         serviceConfig = {
           RuntimeDirectory = "ntfy-sh";
           UMask = "0007";

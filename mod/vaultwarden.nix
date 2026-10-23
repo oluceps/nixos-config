@@ -6,20 +6,24 @@
       realm.workloads.vaultwarden = {
         http = {
           internet = true;
-          internal = [ "oidc.nyaw.xyz" ];
+          gateway = {
+            ref = "eihort";
+            resolveHosts = [ "oidc.nyaw.xyz" ];
+          };
         };
         isolation.hosts."box.nyaw.xyz" = "127.0.0.1";
         ingress.http = {
           port = 18003;
-          target = "127.0.0.1:8003";
-          privateLoopback = true;
+          backend = {
+            kind = "private-tcp";
+            port = 8003;
+          };
           service = "vaultwarden";
-          allowedIDs = config.realm.caddy.allowedIDs.vaultwarden;
+          allow.identities = config.realm.caddy.allowedIDs.vaultwarden;
         };
         egress = {
           smtp = {
             service = "smtp-submission";
-            verifyID = "spiffe://nyaw.xyz/service/stalwart";
             localPort = 465;
           };
         };

@@ -20,10 +20,13 @@
         };
         ingress.http = {
           port = 19341;
-          target = "127.0.0.1:${toString cfg.port}";
-          hostLoopback = true;
+          backend = {
+            kind = "host-tcp";
+            address = "127.0.0.1";
+            port = cfg.port;
+          };
           service = "autopeer-${config.networking.hostName}";
-          allowedIDs = [ config.realm.caddy.localID ];
+          allow.identities = [ config.realm.caddy.localID ];
         };
         egress.postgresql = {
           service = "postgresql-autopeer";
@@ -34,7 +37,6 @@
       realm.workloads.caddy = lib.mkIf (config ? caddy) {
         egress.autopeer = {
           service = "autopeer-${config.networking.hostName}";
-          verifyID = "spiffe://nyaw.xyz/service/autopeer";
         };
       };
       systemd.services.autopeer.serviceConfig = {
