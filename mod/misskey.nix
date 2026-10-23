@@ -3,26 +3,10 @@
     {
       config,
       pkgs,
-      lib,
       ...
     }:
-    let
-      routes = pkgs.writeText "misskey-routes.json" (
-        builtins.toJSON (
-          [
-            {
-              port = 5432;
-              socket = "/run/postgresql/.s.PGSQL.5432";
-            }
-          ]
-          ++ lib.mapAttrsToList (name: route: {
-            port = route.localPort;
-            socket = "/realm/egress/${name}.sock";
-          }) config.realm.workloads.misskey.egress
-        )
-      );
-    in
     {
+      imports = [ ../nixosModules/realm-container.nix ];
       vaultix.secrets.misskey = {
         owner = "misskey";
         mode = "400";
@@ -35,32 +19,41 @@
         misskey = {
           unit = "podman-misskey.service";
           runtime = "container";
+          container = {
+            name = "misskey";
+            backendPath = "/run/realm-misskey/backend";
+            extraRoutes = [
+              {
+                port = 5432;
+                socket = "/run/postgresql/.s.PGSQL.5432";
+              }
+            ];
+          };
           ingressGroups = [ "misskey" ];
           ingress.http = {
             port = 13012;
-            target = "unix:/run/realm-misskey/backend/http.sock";
+            backend = {
+              kind = "unix";
+              path = "/run/realm-misskey/backend/http.sock";
+            };
             service = "misskey";
-            allowedIDs = config.realm.caddy.allowedIDs.misskey;
+            allow.identities = config.realm.caddy.allowedIDs.misskey;
           };
           egress = {
             redis = {
               service = "redis-misskey";
-              verifyID = "spiffe://nyaw.xyz/service/redis-misskey";
               localPort = 6379;
             };
             meilisearch = {
               service = "meilisearch";
-              verifyID = "spiffe://nyaw.xyz/service/meilisearch";
               localPort = 7700;
             };
             s3 = {
               service = "s3-https";
-              verifyID = config.realm.caddy.entrypointID;
               localPort = 443;
             };
             internet = {
               service = "internet-proxy";
-              verifyID = "spiffe://nyaw.xyz/service/internet";
               localPort = 13128;
             };
           };
@@ -70,9 +63,12 @@
           ingressGroups = [ "redis-misskey" ];
           ingress.redis = {
             port = 16379;
-            target = "unix:/run/redis-misskey/redis.sock";
+            backend = {
+              kind = "unix";
+              path = "/run/redis-misskey/redis.sock";
+            };
             service = "redis-misskey";
-            allowedIDs = [ "spiffe://nyaw.xyz/service/misskey" ];
+            allow.workloads = [ "misskey" ];
           };
         };
       };
@@ -127,11 +123,6 @@
               "${cabundle}/etc/ssl/certs/ca-bundle.crt:/misskey/ca.crt:ro"
               "${cabundle}/etc/ssl/certs/ca-bundle.crt:/etc/ssl/certs/ca-certificates.crt"
               "/run/postgresql:/run/postgresql:ro"
-              "/run/realm/misskey/egress:/realm/egress:ro"
-              "/run/realm-misskey/backend:/realm/backend:rw"
-              "${routes}:/realm/routes.json:ro"
-              "${config.realm.helperPackage}/bin/realm-helper:/realm/helper:ro"
-              "${../nixosModules/realm/container-health.cjs}:/realm/health.cjs:ro"
             ];
           # pull = "always";
           image = "misskey/misskey:latest";

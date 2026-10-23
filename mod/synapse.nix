@@ -30,7 +30,6 @@
       };
       realm.workloads.observability.egress.synapse = {
         service = "synapse-metrics";
-        verifyID = "spiffe://nyaw.xyz/service/synapse";
       };
       realm.workloads = {
         synapse = {
@@ -39,7 +38,10 @@
           group = "matrix-synapse";
           http = {
             internet = true;
-            internal = [ "oidc.nyaw.xyz" ];
+            gateway = {
+              ref = "eihort";
+              resolveHosts = [ "oidc.nyaw.xyz" ];
+            };
           };
           isolation = {
             runtimePaths = [ "/run/matrix-synapse" ];
@@ -49,28 +51,32 @@
           ingress = {
             http = {
               port = 18196;
-              target = "unix:/run/matrix-synapse/http.sock";
+              backend = {
+                kind = "unix";
+                path = "/run/matrix-synapse/http.sock";
+              };
               service = "synapse";
-              allowedIDs = config.realm.caddy.allowedIDs.synapse ++ [
+              allow.identities = config.realm.caddy.allowedIDs.synapse ++ [
                 "spiffe://nyaw.xyz/service/mautrix-telegram"
               ];
             };
             metrics = {
               port = 19031;
-              target = "unix:/run/matrix-synapse/metrics.sock";
+              backend = {
+                kind = "unix";
+                path = "/run/matrix-synapse/metrics.sock";
+              };
               service = "synapse-metrics";
-              allowedIDs = [ "spiffe://nyaw.xyz/service/observability-${config.networking.hostName}" ];
+              allow.identities = [ "spiffe://nyaw.xyz/service/observability-${config.networking.hostName}" ];
             };
           };
           egress = {
             s3 = {
               service = "seaweedfs-s3";
-              verifyID = "spiffe://nyaw.xyz/service/seaweedfs";
               localPort = 18333;
             };
             telegram = {
               service = "mautrix-telegram";
-              verifyID = "spiffe://nyaw.xyz/service/mautrix-telegram";
               localPort = 29317;
             };
           };
@@ -85,7 +91,6 @@
           };
           egress.s3 = {
             service = "seaweedfs-s3";
-            verifyID = "spiffe://nyaw.xyz/service/seaweedfs";
             localPort = 18333;
           };
         };

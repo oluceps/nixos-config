@@ -132,7 +132,6 @@
           in
           {
             service = "observability-${host}";
-            verifyID = "spiffe://nyaw.xyz/service/observability-${host}";
           }
         );
       };

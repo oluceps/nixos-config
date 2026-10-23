@@ -41,27 +41,20 @@
         socksProxy.enable = true;
         ingress.appservice = {
           port = 19317;
-          target = "unix:/run/mautrix-telegram/appservice.sock";
+          backend = {
+            kind = "unix";
+            path = "/run/mautrix-telegram/appservice.sock";
+          };
           service = "mautrix-telegram";
-          allowedIDs = [ "spiffe://nyaw.xyz/service/synapse" ];
+          allow.identities = [ "spiffe://nyaw.xyz/service/synapse" ];
         };
+        http.internet = true;
         egress = {
           synapse = {
             service = "synapse";
-            verifyID = "spiffe://nyaw.xyz/service/synapse";
             localPort = 18196;
           };
-          internet = {
-            service = "internet-proxy";
-            verifyID = "spiffe://nyaw.xyz/service/internet";
-            localPort = 13128;
-          };
         };
-      };
-      systemd.services.mautrix-telegram.environment = {
-        HTTP_PROXY = "http://127.0.0.1:13128";
-        HTTPS_PROXY = "http://127.0.0.1:13128";
-        NO_PROXY = "localhost,127.0.0.1,::1";
       };
       systemd.services.mautrix-telegram.serviceConfig = {
         RuntimeMaxSec = 86400;

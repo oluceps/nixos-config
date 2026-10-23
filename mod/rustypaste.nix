@@ -4,10 +4,12 @@
     {
       realm.workloads.rustypaste.ingress.http = {
         port = 13999;
-        target = "127.0.0.1:3999";
-        privateLoopback = true;
+        backend = {
+          kind = "private-tcp";
+          port = 3999;
+        };
         service = "rustypaste";
-        allowedIDs = config.realm.caddy.allowedIDs.rustypaste;
+        allow.identities = config.realm.caddy.allowedIDs.rustypaste;
       };
       services.rustypaste = {
         enable = true;

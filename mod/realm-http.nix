@@ -6,26 +6,34 @@
       config.realm.http.gateways.eihort = {
         hosts = config.data.serviceHosts.eihort;
         service = "s3-https";
-        verifyID = config.realm.caddy.entrypointID;
+        admission = "declared-clients";
       };
       options.realm.http.gatewayClientIDs = lib.mkOption {
         type = lib.types.attrsOf (lib.types.listOf lib.types.str);
         readOnly = true;
-        description = "Caller identities collected from internal HTTPS declarations across the cluster.";
+        description = "Final gateway admission identities from explicit policy and declared clients.";
         default = lib.mapAttrs (
-          _: gateway:
+          gatewayName: gateway:
           lib.unique (
-            lib.concatLists (
-              lib.mapAttrsToList (
-                _: system:
-                map (w: w.spiffeID) (
-                  builtins.attrValues (
-                    lib.filterAttrs (
-                      _: w: w.enable && lib.any (domain: lib.elem domain gateway.hosts) w.http.internal
-                    ) system.config.realm.workloads
+            gateway.allowedIDs
+            ++ lib.optionals (gateway.admission == "declared-clients") (
+              lib.concatLists (
+                lib.mapAttrsToList (
+                  _: system:
+                  map (w: w.spiffeID) (
+                    builtins.attrValues (
+                      lib.filterAttrs (
+                        _: w:
+                        w.enable
+                        && (
+                          w.http.gateway.ref == gatewayName
+                          || (w.http.gateway.ref == null && lib.any (domain: lib.elem domain gateway.hosts) w.http.internal)
+                        )
+                      ) system.config.realm.workloads
+                    )
                   )
-                )
-              ) (lib.filterAttrs (_: system: system.config.realm.enable or false) self.nixosConfigurations)
+                ) (lib.filterAttrs (_: system: system.config.realm.enable or false) self.nixosConfigurations)
+              )
             )
           )
         ) config.realm.http.gateways;

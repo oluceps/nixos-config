@@ -6,6 +6,33 @@ let
   };
   inherit (pkgs) lib;
   secret = pkgs.writeText "dummy-immich.env" "DB_PASSWORD=dummy\n";
+  photoRoute = import ../caddy/immich.nix;
+  photoConfig = pkgs.writeText "immich-photo-routing.json" (
+    builtins.toJSON {
+      admin.disabled = true;
+      apps.http.servers = {
+        internal = {
+          listen = [ "127.0.0.1:18081" ];
+          automatic_https.disable = true;
+          routes = [ (photoRoute { }) ];
+        };
+        public = {
+          listen = [ "127.0.0.1:18080" ];
+          automatic_https.disable = true;
+          routes = [
+            (photoRoute {
+              basicAuthAccounts = [
+                {
+                  username = "fixture";
+                  password = "$2a$14$QnBImTL.2HXKKWcx62rwEutSwD5rUj5TT98UFszOC.83pqQfjY66G";
+                }
+              ];
+            })
+          ];
+        };
+      };
+    }
+  );
   fixture = pkgs.writeText "immich-fixture.py" ''
     import http.server
     import json
@@ -41,8 +68,12 @@ let
                 self.send_error(503, "dependency unavailable")
                 return
             self.send_response(200)
+            self.send_header("X-Realm-Fixture", mode)
+            self.send_header("X-Realm-Fixture-Path", self.path)
             self.end_headers()
             self.wfile.write(result)
+
+        do_POST = do_GET
 
     port = int(os.environ["IPP_PORT"] if mode == "proxy" else os.environ["IMMICH_PORT"])
     http.server.ThreadingHTTPServer(("127.0.0.1", port), Handler).serve_forever()
@@ -131,7 +162,7 @@ pkgs.testers.runNixOSTest {
               verifyID = "spiffe://nyaw.xyz/service/immich";
               localPort = 12283;
             };
-            public-proxy = {
+            immich-public-proxy = {
               service = "immich-public-proxy";
               verifyID = "spiffe://nyaw.xyz/service/immich-public-proxy";
               localPort = 13001;
@@ -162,7 +193,11 @@ pkgs.testers.runNixOSTest {
           serviceConfig = {
             User = name;
             Group = name;
-            ExecStart = "${pkgs.coreutils}/bin/sleep infinity";
+            ExecStart =
+              if name == "caddy" then
+                "${pkgs.caddy}/bin/caddy run --config ${photoConfig}"
+              else
+                "${pkgs.coreutils}/bin/sleep infinity";
           };
         })
         // {
@@ -189,6 +224,43 @@ pkgs.testers.runNixOSTest {
         result = json.loads(machine.succeed(request))
         assert result == {"database": "immich|immich", "redis": "+PONG", "ml": "immich-ml"}, result
         machine.succeed(inside("caddy", "curl -fsS --max-time 20 http://127.0.0.1:12283/"))
+
+    def photo(path, public=False, credentials=None, method="GET"):
+        port = 18080 if public else 18081
+        auth = f"--user {credentials}" if credentials else ""
+        return inside("caddy", f"curl --path-as-is -sS --max-time 20 -X {method} {auth} -H 'Host: photo.nyaw.xyz' -D /tmp/photo-headers -o /tmp/photo-body -w '%{{http_code}}' 'http://127.0.0.1:{port}{path}'")
+
+    def check_photo(path, backend, public=False, credentials=None, method="GET"):
+        status = machine.succeed(photo(path, public, credentials, method)).strip()
+        assert status == "200", (path, public, status)
+        headers = machine.succeed("cat /tmp/photo-headers").lower()
+        assert f"x-realm-fixture: {backend}" in headers, (path, headers)
+        assert f"x-realm-fixture-path: {path}".lower() in headers, (path, headers)
+        assert "www-authenticate:" not in headers, (path, headers)
+
+    with subtest("internal photo main site has no Basic Auth and shares use the public proxy"):
+        machine.wait_until_succeeds(photo("/") + " | grep -x 200", timeout=60)
+        for path in ["/", "/auth/login", "/api/server/ping", "/share-other"]:
+            check_photo(path, "server")
+        for path in ["/share", "/share/", "/share/key", "/share/static/app.js", "/share/photo/key/id?size=thumbnail"]:
+            check_photo(path, "proxy")
+        check_photo("/share/unlock", "proxy", method="POST")
+
+    with subtest("public photo main site requires Basic Auth while shares stay public"):
+        for path in ["/", "/api/server/ping", "/auth/login", "/share-other", "/shares"]:
+            assert machine.succeed(photo(path, public=True)).strip() == "401", path
+            assert "www-authenticate: basic" in machine.succeed("cat /tmp/photo-headers").lower()
+        for path in ["/share", "/share/", "/share/key", "/share/static/app.js", "/share/photo/key/id?size=thumbnail"]:
+            check_photo(path, "proxy", public=True)
+        check_photo("/share/unlock", "proxy", public=True, method="POST")
+        assert machine.succeed(photo("/", public=True, credentials="fixture:wrong")).strip() == "401"
+        check_photo("/", "server", public=True, credentials="fixture:realm-photo-fixture")
+        check_photo("/api/server/ping", "server", public=True, credentials="fixture:realm-photo-fixture")
+        for path in ["/share/../api/server/ping", "/share%2f..%2fapi/server/ping"]:
+            status = machine.succeed(photo(path, public=True)).strip()
+            assert status in ["200", "400", "401", "404"], (path, status)
+            if status == "200":
+                assert "x-realm-fixture: proxy" in machine.succeed("cat /tmp/photo-headers").lower(), path
 
     with subtest("local PostgreSQL peer identity cannot become another database role"):
         machine.succeed("runuser -u immich -- psql -h /run/postgresql -U immich -d immich -Atc 'select current_user' | grep -x immich")

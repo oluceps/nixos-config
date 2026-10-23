@@ -24,44 +24,38 @@
         ingress = {
           http = {
             port = 11411;
-            target = "unix:/run/pocket-id/http.sock";
+            backend = {
+              kind = "unix";
+              path = "/run/pocket-id/http.sock";
+            };
             service = "pocket-id";
-            allowedIDs = config.realm.caddy.allowedIDs.pocket-id;
+            allow.identities = config.realm.caddy.allowedIDs.pocket-id;
           };
           metrics = {
             port = 19464;
-            target = "127.0.0.1:9464";
-            privateLoopback = true;
+            backend = {
+              kind = "private-tcp";
+              port = 9464;
+            };
             service = "pocket-id-metrics";
-            allowedIDs = [ config.realm.workloads.observability.spiffeID ];
+            allow.identities = [ config.realm.workloads.observability.spiffeID ];
           };
         };
+        http.internet = true;
         egress = {
           smtp = {
             service = "smtp-submission";
-            verifyID = "${config.realm.servicePrefix}stalwart";
             localPort = 465;
-          };
-          internet = {
-            service = "internet-proxy";
-            verifyID = "${config.realm.servicePrefix}internet";
-            localPort = 13128;
           };
         };
       };
       realm.workloads.observability.egress.pocket-id = {
         service = "pocket-id-metrics";
-        verifyID = "${config.realm.servicePrefix}pocket-id";
       };
       realm.observability.endpoints.pocket-id.socket = "/run/realm/observability/egress/pocket-id.sock";
       systemd.services.pocket-id = {
         requires = [ "postgresql.target" ];
         after = [ "postgresql.target" ];
-        environment = {
-          HTTP_PROXY = "http://127.0.0.1:13128";
-          HTTPS_PROXY = "http://127.0.0.1:13128";
-          NO_PROXY = "localhost,127.0.0.1,::1,box.nyaw.xyz";
-        };
         serviceConfig = {
           PrivateNetwork = lib.mkForce true;
           RuntimeDirectory = "pocket-id";

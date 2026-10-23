@@ -15,12 +15,14 @@
       realm.observability.endpoints.ncps.socket = "/run/realm/observability/egress/ncps.sock";
       realm.workloads.observability.egress.ncps = {
         service = "ncps-metrics";
-        verifyID = "spiffe://nyaw.xyz/service/ncps";
       };
       realm.workloads.ncps = {
         http = {
           internet = true;
-          internal = [ "s3.nyaw.xyz" ];
+          gateway = {
+            ref = "eihort";
+            resolveHosts = [ "s3.nyaw.xyz" ];
+          };
         };
         isolation = {
           runtimePaths = [ "/run/ncps" ];
@@ -29,17 +31,21 @@
         ingress = {
           http = {
             port = 18501;
-            target = "127.0.0.1:8501";
-            privateLoopback = true;
+            backend = {
+              kind = "private-tcp";
+              port = 8501;
+            };
             service = "ncps";
-            allowedIDs = [ "spiffe://nyaw.xyz/service/nix-cache" ];
+            allow.identities = [ "spiffe://nyaw.xyz/service/nix-cache" ];
           };
           metrics = {
             port = 19501;
-            target = "127.0.0.1:8501";
-            privateLoopback = true;
+            backend = {
+              kind = "private-tcp";
+              port = 8501;
+            };
             service = "ncps-metrics";
-            allowedIDs = [ "spiffe://nyaw.xyz/service/observability-${config.networking.hostName}" ];
+            allow.identities = [ "spiffe://nyaw.xyz/service/observability-${config.networking.hostName}" ];
           };
         };
       };

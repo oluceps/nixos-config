@@ -8,9 +8,12 @@
         isolation.runtimePaths = [ "/run/realm/caddy/public" ];
         ingress.public-relay = {
           port = 19445;
-          target = "unix:/run/realm/caddy/public/http.sock";
+          backend = {
+            kind = "unix";
+            path = "/run/realm/caddy/public/http.sock";
+          };
           service = "public-http";
-          allowedIDs = config.realm.caddy.allowedIDs.public-http;
+          allow.identities = config.realm.caddy.allowedIDs.public-http;
         };
       };
       systemd.tmpfiles.rules = [ "d /run/realm/caddy/public 2750 caddy realm-caddy -" ];

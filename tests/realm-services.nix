@@ -253,6 +253,10 @@ pkgs.testers.runNixOSTest {
 
       realm = {
         enable = true;
+        identityCatalog = {
+          machine = config.realm.localIdentities;
+          fixture.alloy = "spiffe://nyaw.xyz/service/alloy";
+        };
         observability.enable = true;
         serviceDiscovery = {
           enable = true;
@@ -296,8 +300,14 @@ pkgs.testers.runNixOSTest {
             });
           };
           # These optional dependencies are not exercised by this fixture.
-          grafana.egress.victoriametrics.target = "[::1]:1";
-          loki.egress.s3.target = "[::1]:1";
+          grafana.egress.victoriametrics = {
+            target = "[::1]:1";
+            verifyID = "spiffe://nyaw.xyz/service/observability-machine";
+          };
+          loki.egress.s3 = {
+            target = "[::1]:1";
+            verifyID = "spiffe://nyaw.xyz/service/seaweedfs";
+          };
           vmagent.egress.observation = {
             service = "observability-machine";
             verifyID = "spiffe://nyaw.xyz/service/observability-machine";

@@ -33,25 +33,22 @@
         ingressGroups = [ "grafana" ];
         ingress.http = {
           port = 13002;
-          target = "unix:/run/grafana/grafana.sock";
+          backend = {
+            kind = "unix";
+            path = "/run/grafana/grafana.sock";
+          };
           service = "grafana";
-          allowedIDs = config.realm.caddy.allowedIDs.grafana;
+          allow.groups = [ "public-caddy" ];
         };
+        http.internet = true;
         egress = {
           loki = {
             service = "loki";
-            verifyID = "spiffe://nyaw.xyz/service/loki";
             localPort = 13030;
           };
           victoriametrics = {
             service = "victoriametrics-${config.networking.hostName}";
-            verifyID = "spiffe://nyaw.xyz/service/observability-${config.networking.hostName}";
             localPort = 13090;
-          };
-          internet = {
-            service = "internet-proxy";
-            verifyID = "spiffe://nyaw.xyz/service/internet";
-            localPort = 13128;
           };
         };
       };
@@ -79,11 +76,6 @@
       systemd.services.grafana = {
         requires = [ "postgresql.service" ];
         after = [ "postgresql.service" ];
-        environment = {
-          HTTP_PROXY = "http://127.0.0.1:13128";
-          HTTPS_PROXY = "http://127.0.0.1:13128";
-          NO_PROXY = "localhost,127.0.0.1,::1";
-        };
         serviceConfig.LoadCredential = [
           "grafana-secretkey:${config.vaultix.secrets.grafana-secretkey.path}"
         ];

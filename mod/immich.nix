@@ -24,9 +24,6 @@
               IMMICH_HOST = lib.mkForce "127.0.0.1";
               HF_XET_CACHE = "/var/cache/immich/huggingface-xet";
               MPLCONFIGDIR = "/var/cache/immich/mplconfig";
-              HTTP_PROXY = "http://127.0.0.1:13128";
-              HTTPS_PROXY = "http://127.0.0.1:13128";
-              NO_PROXY = "localhost,127.0.0.1,::1";
               HF_HUB_DISABLE_XET = "1";
             };
           };
@@ -70,22 +67,22 @@
           isolation.runtimePaths = [ "/run/immich" ];
           ingress.http = {
             port = 12283;
-            target = "127.0.0.1:2283";
-            privateLoopback = true;
+            backend = {
+              kind = "private-tcp";
+              port = 2283;
+            };
             service = "immich";
-            allowedIDs = config.realm.caddy.allowedIDs.immich ++ [
+            allow.identities = config.realm.caddy.allowedIDs.immich ++ [
               "spiffe://nyaw.xyz/service/immich-public-proxy"
             ];
           };
           egress = {
             redis = {
               service = "redis-immich";
-              verifyID = "spiffe://nyaw.xyz/service/redis-immich";
               localPort = 6379;
             };
             ml = {
               service = "immich-ml";
-              verifyID = "spiffe://nyaw.xyz/service/immich-ml";
               localPort = 3003;
             };
           };
@@ -95,39 +92,41 @@
           ingressGroups = [ "redis-immich" ];
           ingress.redis = {
             port = 16380;
-            target = "unix:/run/redis-immich/redis.sock";
+            backend = {
+              kind = "unix";
+              path = "/run/redis-immich/redis.sock";
+            };
             service = "redis-immich";
-            allowedIDs = [ "spiffe://nyaw.xyz/service/immich" ];
+            allow.workloads = [ "immich" ];
           };
         };
         immich-ml = {
           unit = "immich-machine-learning.service";
           ingress.http = {
             port = 13003;
-            target = "127.0.0.1:3003";
-            privateLoopback = true;
+            backend = {
+              kind = "private-tcp";
+              port = 3003;
+            };
             service = "immich-ml";
-            allowedIDs = [ "spiffe://nyaw.xyz/service/immich" ];
+            allow.workloads = [ "immich" ];
           };
-          egress.internet = {
-            service = "internet-proxy";
-            verifyID = "spiffe://nyaw.xyz/service/internet";
-            localPort = 13128;
-          };
+          http.internet = true;
         };
         immich-public-proxy = {
           user = "ipp";
           group = "ipp";
           ingress.http = {
             port = 13001;
-            target = "127.0.0.1:3001";
-            privateLoopback = true;
+            backend = {
+              kind = "private-tcp";
+              port = 3001;
+            };
             service = "immich-public-proxy";
-            allowedIDs = config.realm.caddy.allowedIDs.immich-public-proxy;
+            allow.identities = config.realm.caddy.allowedIDs.immich-public-proxy;
           };
           egress.immich = {
             service = "immich";
-            verifyID = "spiffe://nyaw.xyz/service/immich";
             localPort = 2283;
           };
         };

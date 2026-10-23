@@ -10,7 +10,6 @@
       imports = [ self.modules.nixos.caddy-public ];
       realm.workloads.caddy.egress.stalwart-web = {
         service = "stalwart-web";
-        verifyID = config.realm.workloads.observability.spiffeID;
       };
 
       vaultix.secrets."nyaw.key" = {

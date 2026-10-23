@@ -21,10 +21,13 @@
           # };
           autopeer = {
             port = 15438;
-            target = "unix:/run/postgresql/.s.PGSQL.5432";
+            backend = {
+              kind = "unix";
+              path = "/run/postgresql/.s.PGSQL.5432";
+              peerUser = "realm-pg-autopeer";
+            };
             service = "postgresql-autopeer";
-            backendUser = "realm-pg-autopeer";
-            allowedIDs = [ "spiffe://nyaw.xyz/service/autopeer" ];
+            allow.identities = [ "spiffe://nyaw.xyz/service/autopeer" ];
           };
         };
       };

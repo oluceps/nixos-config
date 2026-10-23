@@ -10,7 +10,6 @@
       imports = [ self.modules.nixos.caddy-public ];
       realm.workloads.caddy.egress.stalwart-web = {
         service = "stalwart-web";
-        verifyID = "spiffe://nyaw.xyz/service/observability-abhoth";
       };
 
       caddy = {

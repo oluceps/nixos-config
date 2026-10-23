@@ -12,7 +12,7 @@
         587
         465
         995
-        4091
+        4190
       ];
       systemd.services.stalwart.serviceConfig = {
         EnvironmentFile = config.vaultix.secrets.stalwart.path;
@@ -23,10 +23,13 @@
         isolation.allowUnixSockets = [ "-/run/systemd/resolve" ];
         ingress.submission = {
           port = 14650;
-          target = "127.0.0.1:465";
-          hostLoopback = true;
+          backend = {
+            kind = "host-tcp";
+            address = "127.0.0.1";
+            port = 465;
+          };
           service = "smtp-submission";
-          allowedIDs = [
+          allow.identities = [
             "spiffe://nyaw.xyz/service/forgejo"
             "spiffe://nyaw.xyz/service/vaultwarden"
             "${config.realm.servicePrefix}pocket-id"
