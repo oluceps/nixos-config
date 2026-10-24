@@ -58,6 +58,7 @@
         )
         ++ [
           (inputs.nixpkgs + "/nixos/modules/installer/scan/not-detected.nix")
+          inputs.owly.nixosModules.default
         ];
 
       identity.user = "riro";
@@ -238,6 +239,17 @@
         sing-box.enable = true;
         gvfs.enable = false;
         alloy.enable = true;
+
+        # AirDrop over awdl0 on the RTL8852CE. The card is in Owly's quirks
+        # table but not marked tested, so allow_untested is required. Shared
+        # mode needs the AP on channel 6, 44 or 149.
+        owly = {
+          enable = true;
+          settings = {
+            station = "wlan0";
+            allow_untested = true;
+          };
+        };
 
         xserver.videoDrivers = [ "modesetting" ];
       };

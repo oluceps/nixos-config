@@ -3451,6 +3451,26 @@
         "url": "file:///home/riro/Src/monitou"
       }
     },
+    "owly": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1792824717,
+        "narHash": "sha256-tI+5wtLkUzaVmC7sSIV06++7vXAqHm7/6MIK2Sn2Kts=",
+        "owner": "t4t5",
+        "repo": "owly",
+        "rev": "7ff594a61e1e158fe56f22b9efb9d8ea88dd918b",
+        "type": "github"
+      },
+      "original": {
+        "owner": "t4t5",
+        "repo": "owly",
+        "type": "github"
+      }
+    },
     "pgvectors-nixpkgs": {
       "locked": {
         "lastModified": 1732355829,
@@ -3834,6 +3854,7 @@
         "nuanmonito": "nuanmonito",
         "nuenv": "nuenv_2",
         "online-exporter": "online-exporter",
+        "owly": "owly",
         "pgvectors-nixpkgs": "pgvectors-nixpkgs",
         "pre-commit-hooks": "pre-commit-hooks_4",
         "preservation": "preservation",
