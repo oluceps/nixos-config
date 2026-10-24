@@ -107,13 +107,12 @@
 
             loki
             alloy
-            zeek
+            suricata
             jellyfin
             samba
             ncps
             forgejo
             sept
-            zeek
             virt
             # clickhouse
 
