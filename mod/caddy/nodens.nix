@@ -128,15 +128,9 @@
                   terminal = true;
                 }
 
-                {
-                  handle = [
-                    {
-                      handler = "reverse_proxy";
-                      upstreams = [ { dial = "unix//run/realm/caddy/egress/autopeer.sock"; } ];
-                    }
-                  ];
-                  match = [ { host = [ "jp-tyo-2.dn42.nyaw.xyz" ]; } ];
-                }
+                (import ../../caddy/dn42-cors.nix {
+                  hosts = [ "jp-tyo-2.dn42.nyaw.xyz" ];
+                })
                 (import ../../caddy/nyaw-xyz-zone-apex.nix)
               ];
 

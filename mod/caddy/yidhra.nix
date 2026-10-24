@@ -51,16 +51,9 @@
                 ];
                 terminal = true;
               }
-              {
-                match = [ { host = [ "sgp-1.dn42.nyaw.xyz" ]; } ];
-                handle = [
-                  {
-                    handler = "reverse_proxy";
-                    upstreams = [ { dial = "unix//run/realm/caddy/egress/autopeer.sock"; } ];
-                  }
-                ];
-                terminal = true;
-              }
+              (import ../../caddy/dn42-cors.nix {
+                hosts = [ "sgp-1.dn42.nyaw.xyz" ];
+              })
             ];
 
             tls_connection_policies = [

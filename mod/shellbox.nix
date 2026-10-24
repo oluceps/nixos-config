@@ -151,6 +151,11 @@ in
           set -euo pipefail
           export PATH=${tools}/bin
 
+          # Keep Python in the writable Alpine rootfs, including venv support.
+          if [ ! -x /usr/bin/python3.14 ]; then
+            PATH=/usr/sbin:/usr/bin:/sbin:/bin /sbin/apk add --no-cache 'python3~3.14'
+          fi
+
           mkdir -p /run/sshd /var/empty /etc/ssh/hostkeys
           chmod 0755 /run/sshd /var/empty
           chown 0:0 /var/empty
@@ -194,7 +199,7 @@ in
       virtualisation.oci-containers = {
         backend = "podman";
         containers.shellbox = {
-          # Provision this directory from the existing container export.
+          # Alpine 3.24 rootfs, upgraded in place with apk to preserve data.
           # --rootfs keeps all filesystem changes across container replacement.
           image = "/var/lib/shellbox/rootfs";
           pull = "never";
