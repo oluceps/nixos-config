@@ -29,10 +29,24 @@
             service = "postgresql-autopeer";
             allow.identities = [ "spiffe://nyaw.xyz/service/autopeer" ];
           };
+          artex = {
+            port = 15439;
+            backend = {
+              kind = "unix";
+              path = "/run/postgresql/.s.PGSQL.5432";
+              peerUser = "realm-pg-artex";
+            };
+            service = "postgresql-artex";
+            allow.workloads = [ "artex" ];
+          };
         };
       };
       users.groups.realm-pg = { };
       users.users.realm-pg-autopeer = {
+        isSystemUser = true;
+        group = "realm-pg";
+      };
+      users.users.realm-pg-artex = {
         isSystemUser = true;
         group = "realm-pg";
       };
@@ -93,6 +107,7 @@
           local-atuin atuin atuin
           local-immich immich immich
           realm-autopeer realm-pg-autopeer dn42
+          realm-artex realm-pg-artex artex
         '';
         # type db db_user auth_type map
         authentication = lib.mkForce ''
@@ -102,6 +117,7 @@
           local atuin atuin peer map=local-atuin
           local immich immich peer map=local-immich
           local dn42abhoth,dn42nodens,dn42yidhra dn42 peer map=realm-autopeer
+          local artex artex peer map=realm-artex
           local all all peer
         '';
       };
