@@ -131,6 +131,10 @@
     lanzaboote = {
       url = "github:nix-community/lanzaboote";
     };
+    owly = {
+      url = "github:t4t5/owly";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     preservation.url = "github:WilliButz/preservation";
     prismlauncher = {
       url = "github:PrismLauncher/PrismLauncher";
