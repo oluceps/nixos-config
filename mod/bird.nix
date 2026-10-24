@@ -161,9 +161,10 @@
           checkConfig = false;
         };
 
+        realm.observability.endpoints.bird.port = config.services.prometheus.exporters.bird.port;
         services.prometheus.exporters.bird = {
           enable = true;
-          listenAddress = "[::]";
+          listenAddress = "127.0.0.1";
         };
       };
     };

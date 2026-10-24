@@ -66,6 +66,9 @@
         };
 
         environment.etc."alloy/config.alloy".text = ''
+          livedebugging {
+            enabled = false
+          }
           discovery.relabel "journal" {
             targets = []
             rule {
@@ -105,7 +108,9 @@
           }
           loki.write "default" {
             endpoint {
-              url = "http://[fdcc::3]:3030/loki/api/v1/push"
+              url = "http://127.0.0.1:13030/loki/api/v1/push"
+              batch_size = "64KiB"
+              batch_wait = "1s"
             }
             external_labels = {}
           }
@@ -136,7 +141,7 @@
             };
           };
 
-          kernelPackages = pkgs.linuxPackages_latest;
+          kernelPackages = pkgs.linuxPackages_testing;
           kernelModules = [ "tcp_bbr" ];
           kernelParams = [
             "audit=0"
@@ -164,7 +169,8 @@
         };
         services = {
 
-          alloy.enable = true;
+          # 452 MB RAM: Alloy causes memory pressure; Envoy logs stay local.
+          alloy.enable = lib.mkForce false;
 
           metrics.enable = true;
           qemuGuest.enable = false;
