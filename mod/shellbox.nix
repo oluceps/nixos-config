@@ -7,6 +7,7 @@ let
   # Ports on the host, published directly by rootless Podman.
   hostSshPort = 22022;
   hostSparePort = 22023;
+  udpPort = 24642;
 in
 {
   flake.modules.nixos.shellbox =
@@ -213,6 +214,7 @@ in
           ports = [
             "${toString hostSshPort}:${toString sshPort}"
             "${toString hostSparePort}:${toString sparePort}"
+            "${toString udpPort}:${toString udpPort}/udp"
           ];
           volumes = [
             "/var/lib/shellbox/root:/root:rw"
@@ -254,6 +256,7 @@ in
         serviceConfig.RestartSec = "5s";
       };
 
+      networking.firewall.allowedUDPPorts = [ udpPort ];
       networking.firewall.allowedTCPPorts = [
         hostSshPort
         hostSparePort
