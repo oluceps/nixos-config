@@ -121,6 +121,13 @@
       };
       boot = {
         # binfmt.emulatedSystems = [ "aarch64-linux" ];
+        zswap = {
+          enable = true;
+          compressor = "zstd";
+          zpool = "zsmalloc";
+          maxPoolPercent = 20;
+          shrinkerEnabled = true;
+        };
         kernel.sysctl = {
           "vm.vfs_cache_pressure" = lib.mkForce 200;
         };
@@ -186,12 +193,6 @@
           "zswap.shrinker_enabled=1"
         ];
 
-      };
-      zramSwap = {
-        enable = false;
-        swapDevices = 1;
-        memoryPercent = 50;
-        algorithm = "lz4";
       };
       systemd = {
         enableEmergencyMode = false;

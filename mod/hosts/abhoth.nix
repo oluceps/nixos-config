@@ -55,8 +55,16 @@
       # xray.configFile = config.vaultix.secrets.xray.path;
       wgmesh.configFile = "/var/lib/wgmesh/config.json";
 
+      swapDevices = [
+        {
+          device = "/var/swapfile";
+          size = 2048;
+          priority = 0;
+        }
+      ];
+
       zramSwap = {
-        enable = true;
+        enable = false;
         swapDevices = 1;
         memoryPercent = 50;
         algorithm = "lz4";
@@ -67,6 +75,13 @@
         stateVersion = "25.05";
       };
       boot = {
+        zswap = {
+          enable = true;
+          compressor = "lz4";
+          zpool = "zsmalloc";
+          maxPoolPercent = 25;
+          shrinkerEnabled = true;
+        };
         supportedFilesystems = [ ];
         kernelModules = [
           "tcp_bbr"

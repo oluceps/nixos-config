@@ -107,20 +107,14 @@
         # map_name connect_unix_user db_user
         identMap = ''
           local-vaultwarden vaultwarden vault
-          local-misskey misskey misskey
           local-seaweedfs seaweedfs seaweed
-          local-atuin atuin atuin
-          local-immich immich immich
           realm-autopeer realm-pg-autopeer dn42
           realm-artex realm-pg-artex artex
         '';
         # type db db_user auth_type map
         authentication = lib.mkForce ''
           local vaultwarden vault peer map=local-vaultwarden
-          local misskey misskey peer map=local-misskey
           local seaweedfs seaweed peer map=local-seaweedfs
-          local atuin atuin peer map=local-atuin
-          local immich immich peer map=local-immich
           local dn42abhoth,dn42nodens,dn42yidhra dn42 peer map=realm-autopeer
           local artex artex peer map=realm-artex
           local all all peer
