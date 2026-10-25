@@ -59,10 +59,15 @@
           };
         };
       };
-      systemd.services.mautrix-telegram.serviceConfig = {
-        RuntimeMaxSec = 86400;
-        RuntimeDirectory = "mautrix-telegram";
-        UMask = lib.mkForce "0007";
+      # Start PostgreSQL first without coupling the bridge's stop/restart lifecycle.
+      systemd.services.mautrix-telegram = {
+        after = [ "postgresql.service" ];
+        wants = [ "postgresql.service" ];
+        serviceConfig = {
+          RuntimeMaxSec = 86400;
+          RuntimeDirectory = "mautrix-telegram";
+          UMask = lib.mkForce "0007";
+        };
       };
       services.mautrix-telegram = {
         enable = true;

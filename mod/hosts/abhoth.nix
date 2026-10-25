@@ -37,7 +37,7 @@
             earlyoom
             chrony
             # sing-server
-            xray
+            # xray
             stalwart
             rustypaste
             wgmesh
@@ -52,7 +52,7 @@
         ];
 
       identity.user = "elen";
-      xray.configFile = config.vaultix.secrets.xray.path;
+      # xray.configFile = config.vaultix.secrets.xray.path;
       wgmesh.configFile = "/var/lib/wgmesh/config.json";
 
       zramSwap = {

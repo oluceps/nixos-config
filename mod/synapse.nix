@@ -47,7 +47,8 @@
             runtimePaths = [ "/run/matrix-synapse" ];
             allowUnixSockets = [
               "/run/postgresql"
-              "/run/systemd/journal/socket"
+              # Follow socket replacement inside journald's preserved directory.
+              "/run/systemd/journal"
             ];
           };
           ingressGroups = [ "matrix-synapse" ];

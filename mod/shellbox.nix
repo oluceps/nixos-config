@@ -215,6 +215,7 @@ in
             "${toString hostSshPort}:${toString sshPort}"
             "${toString hostSparePort}:${toString sparePort}"
             "${toString udpPort}:${toString udpPort}/udp"
+            "22024:443/tcp"
           ];
           volumes = [
             "/var/lib/shellbox/root:/root:rw"
