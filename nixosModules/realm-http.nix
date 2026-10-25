@@ -2,16 +2,8 @@
 let
   inherit (lib) mkIf mkOption types;
   cfg = config.realm;
-  gatewayNames =
-    domains:
-    builtins.attrNames (
-      lib.filterAttrs (
-        _: gateway: lib.any (domain: builtins.elem domain gateway.hosts) domains
-      ) cfg.http.gateways
-    );
-  hosts = w: lib.unique (w.http.internal ++ w.http.gateway.resolveHosts);
-  gateways =
-    w: if w.http.gateway.ref != null then [ w.http.gateway.ref ] else gatewayNames w.http.internal;
+  hosts = w: lib.unique w.http.gateway.resolveHosts;
+  gateways = w: lib.optional (w.http.gateway.ref != null) w.http.gateway.ref;
   clients = lib.filterAttrs (
     _: w: w.enable && (w.http.internet || hosts w != [ ] || w.http.gateway.ref != null)
   ) cfg.workloads;
@@ -23,8 +15,14 @@ in
     type = types.attrsOf (
       types.submodule {
         options = {
-          hosts = mkOption { type = types.listOf types.str; };
-          service = mkOption { type = types.str; };
+          hosts = mkOption {
+            type = types.listOf types.str;
+            description = "HTTPS hostnames available through this shared gateway listener.";
+          };
+          service = mkOption {
+            type = types.str;
+            description = "Realm catalog service for the shared HTTPS listener. One listener can serve multiple hostnames.";
+          };
           verifyID = mkOption {
             type = types.nullOr types.str;
             default = null;
@@ -59,17 +57,13 @@ in
               ref = mkOption {
                 type = types.nullOr types.str;
                 default = null;
+                description = "Gateway name declared in realm.http.gateways.";
               };
               resolveHosts = mkOption {
                 type = types.listOf types.str;
                 default = [ ];
-                description = "Local DNS aliases for the selected gateway, without host-level authorization.";
+                description = "Workload-local host aliases and proxy bypass entries for this gateway. These aliases do not authorize individual hostnames.";
               };
-            };
-            internal = mkOption {
-              type = types.listOf types.str;
-              default = [ ];
-              description = "Legacy gateway selection by hostname. Use gateway.ref and gateway.resolveHosts for new declarations.";
             };
           };
           config = lib.mkMerge [
@@ -106,10 +100,8 @@ in
           message = "realm.workloads.${name}.http: HTTP adapters require a systemd workload with a private network.";
         }
         {
-          assertion =
-            lib.all (domain: builtins.length (gatewayNames [ domain ]) == 1) (hosts w)
-            && lib.all (gateway: cfg.http.gateways ? ${gateway}) (gateways w);
-          message = "realm.workloads.${name}.http: each name and gateway reference must resolve to one declared gateway.";
+          assertion = lib.all (gateway: cfg.http.gateways ? ${gateway}) (gateways w);
+          message = "realm.workloads.${name}.http.gateway.ref: select a gateway declared in realm.http.gateways.";
         }
         {
           assertion =
@@ -117,21 +109,17 @@ in
             || lib.all (domain: builtins.elem domain (cfg.http.gateways.${w.http.gateway.ref}.hosts or [ ])) (
               hosts w
             );
-          message = "realm.workloads.${name}.http: resolveHosts must belong to the selected gateway.";
+          message = "realm.workloads.${name}.http.gateway.resolveHosts: each hostname must belong to the selected gateway.";
         }
         {
           assertion = hosts w == [ ] || gateways w != [ ];
-          message = "realm.workloads.${name}.http: resolveHosts requires a gateway reference.";
+          message = "realm.workloads.${name}.http.gateway.resolveHosts: set realm.workloads.${name}.http.gateway.ref before declaring aliases.";
         }
         {
           assertion =
             gateways w == [ ]
             || builtins.length (lib.filter (e: e.localPort == 443) (builtins.attrValues w.egress)) == 1;
           message = "realm.workloads.${name}.http: port 443 must belong only to the generated HTTPS adapter.";
-        }
-        {
-          assertion = builtins.length (gateways w) <= 1;
-          message = "realm.workloads.${name}.http: one workload can use only one internal HTTPS gateway on port 443.";
         }
       ]) clients
     );

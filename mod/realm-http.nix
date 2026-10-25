@@ -5,7 +5,7 @@
     {
       config.realm.http.gateways.eihort = {
         hosts = config.data.serviceHosts.eihort;
-        service = "s3-https";
+        service = "https-gateway";
         admission = "declared-clients";
       };
       options.realm.http.gatewayClientIDs = lib.mkOption {
@@ -22,14 +22,7 @@
                   _: system:
                   map (w: w.spiffeID) (
                     builtins.attrValues (
-                      lib.filterAttrs (
-                        _: w:
-                        w.enable
-                        && (
-                          w.http.gateway.ref == gatewayName
-                          || (w.http.gateway.ref == null && lib.any (domain: lib.elem domain gateway.hosts) w.http.internal)
-                        )
-                      ) system.config.realm.workloads
+                      lib.filterAttrs (_: w: w.enable && w.http.gateway.ref == gatewayName) system.config.realm.workloads
                     )
                   )
                 ) (lib.filterAttrs (_: system: system.config.realm.enable or false) self.nixosConfigurations)

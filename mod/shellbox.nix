@@ -269,7 +269,11 @@ in
           test -d /var/lib/shellbox/root
         '';
         startLimitIntervalSec = 0;
-        serviceConfig.RestartSec = "5s";
+        serviceConfig = {
+          # Restart even when PID 1 exits cleanly after receiving SIGTERM.
+          Restart = lib.mkForce "always";
+          RestartSec = "5s";
+        };
       };
 
       networking.firewall.allowedUDPPorts = [ udpPort ];

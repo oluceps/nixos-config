@@ -49,7 +49,7 @@
               localPort = 7700;
             };
             s3 = {
-              service = "s3-https";
+              service = "https-gateway";
               localPort = 443;
             };
             internet = {

@@ -415,7 +415,7 @@ runTest {
               "postgresql-telegram-search"
               "redis-misskey"
               "meilisearch"
-              "s3-https"
+              "https-gateway"
               "internet-proxy"
             ]
             (service: {
@@ -427,7 +427,7 @@ runTest {
                   postgresql-telegram-search = "postgresql";
                   redis-misskey = "redis-misskey";
                   meilisearch = "meilisearch";
-                  s3-https = "caddy";
+                  https-gateway = "caddy";
                   internet-proxy = "internet";
                 }
                 .${service}

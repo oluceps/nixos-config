@@ -75,7 +75,7 @@
             address = "127.0.0.1";
             port = 443;
           };
-          service = "s3-https";
+          service = "https-gateway";
           allow.identities = config.realm.http.gatewayClientIDs.eihort ++ [
             "spiffe://nyaw.xyz/service/misskey"
             "spiffe://nyaw.xyz/service/telegram-search"
