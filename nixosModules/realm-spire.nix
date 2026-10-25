@@ -143,12 +143,14 @@ in
             TimeoutStartSec = "300s";
             # Dependent units get a working API socket instead of racing startup.
             ExecStartPost = pkgs.writeShellScript "wait-spire-agent" ''
-              while true; do
-                if test -S ${lib.escapeShellArg scfg.socket} && ${spire}/bin/spire-agent healthcheck -socketPath ${lib.escapeShellArg scfg.socket} >/dev/null 2>&1; then
+              while kill -0 "$MAINPID" 2>/dev/null; do
+                if test -S ${lib.escapeShellArg scfg.socket} && ${pkgs.coreutils}/bin/timeout 5s ${spire}/bin/spire-agent healthcheck -socketPath ${lib.escapeShellArg scfg.socket} >/dev/null 2>&1; then
                   exit 0
                 fi
                 ${pkgs.coreutils}/bin/sleep 3
               done
+              echo "SPIRE agent exited before its API became ready" >&2
+              exit 1
             '';
           };
         };

@@ -114,6 +114,7 @@ outputs.merge (
         services = lib.optionalAttrs (!i.native) {
           ${unit} = {
             wantedBy = [ "multi-user.target" ];
+            upheldBy = [ "spire-agent.service" ];
             requires = [
               "spire-agent.service"
               "${unit}.socket"

@@ -22,6 +22,8 @@ outputs.merge (
         ];
       };
       services.${appName w} = {
+        # Retry canceled starts after the Agent becomes ready again.
+        upheldBy = [ "spire-agent.service" ];
         requires = [ "spire-agent.service" ];
         after = [ "spire-agent.service" ];
         serviceConfig.SupplementaryGroups = [ "realm-proxies" ];

@@ -30,6 +30,7 @@
             users
             empheral-root
             # base
+            nix
             cut
             bash
             env
@@ -115,14 +116,23 @@
             external_labels = {}
           }
         '';
-        zramSwap = {
-          enable = true;
-          swapDevices = 1;
-          memoryPercent = 80;
-          algorithm = "lz4";
-        };
+        swapDevices = [
+          {
+            device = "/var/swapfile";
+            size = 512;
+            priority = 0;
+          }
+        ];
+        zramSwap.enable = false;
 
         boot = {
+          zswap = {
+            enable = true;
+            compressor = "lz4";
+            zpool = "zsmalloc";
+            maxPoolPercent = 20;
+            shrinkerEnabled = true;
+          };
           # supportedFilesystems = [ "tcp_bbr" ]; # removed typo
           loader = {
             timeout = 10;
