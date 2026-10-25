@@ -82,7 +82,7 @@
             localPort = 15432;
           };
           s3 = {
-            service = "s3-https";
+            service = "https-gateway";
             verifyID = "spiffe://nyaw.xyz/service/caddy";
             localPort = 443;
           };

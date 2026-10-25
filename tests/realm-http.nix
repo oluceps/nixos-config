@@ -52,7 +52,10 @@ let
               sender = {
                 http = {
                   internet = true;
-                  internal = [ "oidc.nyaw.xyz" ];
+                  gateway = {
+                    ref = "eihort";
+                    resolveHosts = [ "oidc.nyaw.xyz" ];
+                  };
                 };
                 isolation.hosts = {
                   "box.nyaw.xyz" = "127.0.0.1";
@@ -66,7 +69,10 @@ let
                 enable = false;
                 http = {
                   internet = true;
-                  internal = [ "oidc.nyaw.xyz" ];
+                  gateway = {
+                    ref = "eihort";
+                    resolveHosts = [ "oidc.nyaw.xyz" ];
+                  };
                 };
               };
             };
@@ -86,15 +92,12 @@ let
       ]
       ++ extra;
     }).config;
-  modern = evaluate [
+  multipleHosts = evaluate [
     {
-      realm.workloads.sender.http = {
-        internal = lib.mkForce [ ];
-        gateway = {
-          ref = "eihort";
-          resolveHosts = [ "oidc.nyaw.xyz" ];
-        };
-      };
+      realm.workloads.sender.http.gateway.resolveHosts = lib.mkForce [
+        "oidc.nyaw.xyz"
+        "s3.nyaw.xyz"
+      ];
     }
   ];
   cfg = evaluate [ ];
@@ -138,9 +141,9 @@ let
   };
   # A name that no gateway serves.
   unknownDomain = evaluate [
-    { realm.workloads.sender.http.internal = lib.mkForce [ "unknown.nyaw.xyz" ]; }
+    { realm.workloads.sender.http.gateway.resolveHosts = lib.mkForce [ "unknown.nyaw.xyz" ]; }
   ];
-  # One name claimed by two gateways is ambiguous.
+  # An explicit gateway reference disambiguates shared hostnames.
   sharedDomain = evaluate [
     {
       realm.http.gateways.second = gateway // {
@@ -148,17 +151,20 @@ let
       };
     }
   ];
-  # Names served by two different gateways would both want port 443.
-  twoGateways = evaluate [
+  # Aliases must belong to the explicitly selected gateway.
+  wrongGateway = evaluate [
     {
       realm.http.gateways.mail = gateway // {
         hosts = [ "mail.nyaw.xyz" ];
       };
-      realm.workloads.sender.http.internal = lib.mkForce [
+      realm.workloads.sender.http.gateway.resolveHosts = lib.mkForce [
         "oidc.nyaw.xyz"
         "mail.nyaw.xyz"
       ];
     }
+  ];
+  missingReference = evaluate [
+    { realm.workloads.sender.http.gateway.ref = lib.mkForce null; }
   ];
   duplicatePort = evaluate [
     {
@@ -211,12 +217,32 @@ lib.runTests {
     expr = localGateway.realm.workloads.sender.egress.http-eihort.node;
     expected = null;
   };
-  testExplicitGatewayPreservesGeneratedUnits = {
+  testMultipleHostnamesShareOneGatewayProxy = {
     expr = map (c: c.systemd.units."realm-egress-sender-http-eihort.service".text) [
       cfg
-      modern
+      multipleHosts
     ];
     expected = lib.replicate 2 cfg.systemd.units."realm-egress-sender-http-eihort.service".text;
+  };
+  testMultipleHostnamesUseOneHTTPSAdapter = {
+    expr = {
+      aliases = multipleHosts.realm.workloads.sender.isolation.hosts;
+      routes = builtins.attrNames multipleHosts.realm.workloads.sender.egress;
+      listeners = multipleHosts.systemd.sockets.realm-local-sender-http-eihort.listenStreams;
+    };
+    expected = {
+      aliases = {
+        "box.nyaw.xyz" = "127.0.0.1";
+        "oidc.nyaw.xyz" = "127.0.0.1";
+        "s3.nyaw.xyz" = "127.0.0.1";
+        "smtp.nyaw.xyz" = "127.0.0.1";
+      };
+      routes = [
+        "http-eihort"
+        "internet"
+      ];
+      listeners = [ "127.0.0.1:443" ];
+    };
   };
   testInternetIdentityComesFromPublisher = {
     expr = lib.hasInfix "--verify-uri spiffe://nyaw.xyz/service/internet" cfg.systemd.services.realm-egress-sender-internet.serviceConfig.ExecStart;
@@ -334,12 +360,16 @@ lib.runTests {
     expr = rejected unknownDomain;
     expected = true;
   };
-  testSharedDomainRejected = {
-    expr = rejected sharedDomain;
+  testExplicitGatewayDisambiguatesSharedDomain = {
+    expr = realmAssertions sharedDomain;
+    expected = [ ];
+  };
+  testHostnamesOutsideSelectedGatewayRejected = {
+    expr = rejected wrongGateway;
     expected = true;
   };
-  testMultipleGatewaysRejected = {
-    expr = rejected twoGateways;
+  testHostnamesWithoutGatewayReferenceRejected = {
+    expr = rejected missingReference;
     expected = true;
   };
   testDuplicateAdapterPortRejected = {

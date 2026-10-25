@@ -255,7 +255,10 @@ pkgs.testers.runNixOSTest {
         enable = true;
         identityCatalog = {
           machine = config.realm.localIdentities;
-          fixture.alloy = "spiffe://nyaw.xyz/service/alloy";
+          fixture = {
+            alloy = "spiffe://nyaw.xyz/service/alloy";
+            artex = "spiffe://nyaw.xyz/service/artex";
+          };
         };
         observability.enable = true;
         serviceDiscovery = {
@@ -276,7 +279,7 @@ pkgs.testers.runNixOSTest {
             "s3.nyaw.xyz"
             "oidc.nyaw.xyz"
           ];
-          service = "s3-https";
+          service = "https-gateway";
           verifyID = config.realm.caddy.entrypointID;
         };
         workloads = {
@@ -287,7 +290,7 @@ pkgs.testers.runNixOSTest {
               port = 19443;
               target = "127.0.0.1:18443";
               hostLoopback = true;
-              service = "s3-https";
+              service = "https-gateway";
               allowedIDs = [
                 "spiffe://nyaw.xyz/service/forgejo"
                 "spiffe://nyaw.xyz/service/ncps"

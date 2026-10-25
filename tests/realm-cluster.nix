@@ -41,7 +41,7 @@ let
                             isolation.privateNetwork = false;
                             spiffeID = "spiffe://nyaw.xyz/service/caddy-eihort";
                             ingress.https = {
-                              service = "s3-https";
+                              service = "https-gateway";
                               port = 19443;
                               backend = {
                                 kind = "host-tcp";
@@ -102,7 +102,7 @@ lib.runTests {
     expected = [ ];
   };
   testPublisherExportsIdentity = {
-    expr = cfg.eihort.realm.serviceDiscovery.publish.s3-https.serverID;
+    expr = cfg.eihort.realm.serviceDiscovery.publish.https-gateway.serverID;
     expected = "spiffe://nyaw.xyz/service/caddy-eihort";
   };
   testCallerIdentityReachesReceiverPolicy = {
@@ -145,7 +145,7 @@ lib.runTests {
     expr = map (e: { inherit (e) service serverID allowedIDs; }) cfg.caller.realm.authorization.matrix;
     expected = [
       {
-        service = "s3-https";
+        service = "https-gateway";
         serverID = "spiffe://nyaw.xyz/service/caddy-eihort";
         allowedIDs = [ "spiffe://nyaw.xyz/service/sender" ];
       }

@@ -16,7 +16,7 @@ Realm compiles local declarations into a fixed output record. No runtime control
 | `lib/realm/compile.nix` | Compose the local compiler stages |
 | `lib/realm/{base,egress,ingress,socks,native}.nix` | Generate isolation, adapters and identity registrations |
 | `lib/realm/outputs.nix` | Merge the fixed output fields |
-| `nixosModules/realm-http.nix` | HTTP access intent and local gateway routing |
+| `nixosModules/realm-http.nix` | HTTP proxy settings and shared internal HTTPS gateway adapters |
 | `nixosModules/realm-container.nix` | Shared container mounts and loopback routes |
 | `nixosModules/realm-internet.nix` | Reusable Internet gateway service |
 | `mod/realm-internet.nix` | Site caller policy and extra CONNECT permissions |
@@ -60,22 +60,64 @@ A manual `target` remains supported. It uses an explicit identity or the selecte
 
 ### HTTP gateways
 
-Use `http.internet = true` for the authenticated Internet proxy. It generates the egress and both uppercase and lowercase proxy variables. Applications with their own proxy settings still need those application settings.
+All option paths below start at the NixOS configuration root.
+`realm.http.gateways.<gateway>` defines a shared HTTPS gateway.
+`realm.workloads.<workload>.http` declares one application's HTTP access.
 
-For an internal HTTPS gateway, declare:
+For Internet access, set:
 
 ```nix
-http.gateway = {
-  ref = "eihort";
-  resolveHosts = [ "oidc.nyaw.xyz" ];
-};
+realm.workloads.example.http.internet = true;
 ```
 
-`resolveHosts` creates local aliases and proxy bypass entries. It does not restrict the HTTP Host header or authorize individual domains. Authorization applies to the gateway listener.
+This generates an `internet-proxy` egress and uppercase and lowercase proxy variables.
+Applications with their own proxy settings still need those settings.
+The Internet gateway must also admit the application's SPIFFE identity.
 
-Each gateway selects `admission = "explicit"` or `"declared-clients"`. Explicit admission uses its `allowedIDs`. Declared-client admission also collects the identities of enabled workloads that select that gateway. The site gateway selects declared-client admission explicitly, preserving its existing listener permissions.
+For internal HTTPS access, the site defines this gateway:
 
-The legacy `http.internal` list remains supported. It selects a gateway by the declared hostnames. A workload still uses only one HTTPS gateway on local port 443.
+```nix
+realm.http.gateways.eihort.hosts = config.data.serviceHosts.eihort;
+realm.http.gateways.eihort.service = "https-gateway";
+realm.http.gateways.eihort.admission = "declared-clients";
+```
+
+`realm.http.gateways.eihort.service` names one shared Realm catalog listener.
+On eihort, `https-gateway` listens on port 19443 and forwards to Caddy's HTTPS port 443.
+Caddy selects the business service from the HTTPS hostname.
+One Realm listener can therefore carry requests for multiple domains.
+The separate `internal-https` listener on port 19444 admits public Caddy entrypoints.
+
+An application selects the gateway and declares its local hostname aliases:
+
+```nix
+realm.workloads.example.http.gateway.ref = "eihort";
+realm.workloads.example.http.gateway.resolveHosts = [
+  "oidc.nyaw.xyz"
+  "s3.nyaw.xyz"
+];
+```
+
+`realm.workloads.example.http.gateway.ref` selects the definition at `realm.http.gateways.eihort`.
+`realm.workloads.example.http.gateway.resolveHosts` maps these names to `127.0.0.1` inside the application and adds proxy bypass entries.
+Both names use the same private port 443 adapter and authenticated Realm channel.
+The application's HTTPS connection retains its original hostname and certificate check.
+These requests bypass the Internet proxy but still cross a Realm egress proxy.
+Each alias must belong to the selected gateway's `realm.http.gateways.eihort.hosts` list.
+One workload can select one internal HTTPS gateway on private port 443.
+
+The aliases do not filter the HTTP Host header or authorize individual domains.
+Realm authorizes the connection to the shared gateway listener.
+Caddy and the backend application enforce any additional domain, path or application permissions.
+
+`realm.http.gateways.eihort.admission` controls how the gateway client list is generated:
+
+- `"explicit"` uses `realm.http.gateways.eihort.allowedIDs`.
+- `"declared-clients"` also collects the identities of enabled workloads that select `"eihort"` through `realm.workloads.<workload>.http.gateway.ref`.
+
+The site selects `"declared-clients"` explicitly.
+It computes `realm.http.gatewayClientIDs.eihort` during Nix evaluation.
+The receiver at `realm.workloads.caddy.ingress.https.allow.identities` uses that list plus its explicit additional identities.
 
 ### Containers
 
@@ -262,8 +304,8 @@ Public entrypoints (abhoth, nodens and azasos) import
 egress sockets, with direct catalog destinations and fixed remote SPIFFE IDs. Legacy routes
 for seed, Memos, Alertmanager and heartrate cross the mesh through
 eihort's separately authorized `internal-https` ingress (19444); their final
-legacy backend connections are unchanged. The existing `s3-https` ingress
-keeps its application allowlist. The zone apex reaches Misskey directly via
+legacy backend connections are unchanged. The `https-gateway` ingress (19443)
+serves application clients through the shared HTTPS listener. The zone apex reaches Misskey directly via
 its own ingress and still serves Matrix discovery responses.
 
 Yidhra has fixed 457 MiB memory and uses a smaller edge profile: local TLS
