@@ -169,6 +169,21 @@ in
             fi
           done
 
+          # Run the optional startup script from the persistent home directory.
+          if [ -f /root/rc.local ]; then
+            if (
+              export HOME=/root
+              export PATH=${tools}/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+              cd /root
+              ${pkgs.bashInteractive}/bin/bash /root/rc.local
+            ); then
+              echo "shellbox: /root/rc.local completed" >&2
+            else
+              rc=$?
+              echo "shellbox: /root/rc.local exited with status $rc" >&2
+            fi
+          fi
+
           exec ${pkgs.openssh}/bin/sshd -D -e -f /etc/ssh/shellbox_sshd_config
         '';
       };
