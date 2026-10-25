@@ -142,16 +142,14 @@ in
             RestartSec = "5s";
             TimeoutStartSec = "300s";
             # Dependent units get a working API socket instead of racing startup.
-            ExecStartPost = pkgs.writeShellScript "wait-spire-agent" ''
-              while kill -0 "$MAINPID" 2>/dev/null; do
-                if test -S ${lib.escapeShellArg scfg.socket} && ${pkgs.coreutils}/bin/timeout 5s ${spire}/bin/spire-agent healthcheck -socketPath ${lib.escapeShellArg scfg.socket} >/dev/null 2>&1; then
-                  exit 0
-                fi
-                ${pkgs.coreutils}/bin/sleep 3
-              done
-              echo "SPIRE agent exited before its API became ready" >&2
-              exit 1
-            '';
+            ExecStartPost = lib.escapeShellArgs [
+              (lib.getExe' cfg.helperPackage "realm-helper")
+              "wait-spire-agent"
+              "--spire-agent"
+              (lib.getExe' spire "spire-agent")
+              "--socket"
+              scfg.socket
+            ];
           };
         };
         environment.systemPackages = [ installEnrollment ];

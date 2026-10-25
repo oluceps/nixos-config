@@ -8,6 +8,7 @@
 //	realm-helper bridge --target ADDRESS     splice a socket-activated listener
 //	realm-helper launch COMMAND [ARG...]     container entrypoint adapter
 //	realm-helper spire-register ...          apply the declared SPIRE entries
+//	realm-helper wait-spire-agent ...        wait for the Agent API
 //	realm-helper enroll NODE                 issue a join token and trust bundle
 //	realm-helper install-enrollment         consume that JSON on the target node
 //
@@ -25,6 +26,7 @@ const usage = `usage:
   realm-helper bridge --target ADDRESS
   realm-helper launch COMMAND [ARG...]
   realm-helper spire-register --spire-server PATH --socket PATH --manifest PATH --state PATH
+  realm-helper wait-spire-agent --spire-agent PATH --socket PATH
   realm-helper enroll NODE --spire-server PATH --socket PATH --manifest PATH --trust-domain DOMAIN
   realm-helper install-enrollment --node HOSTNAME --systemctl PATH < enrollment.json
 `
@@ -56,6 +58,8 @@ func run(args []string) (int, error) {
 		return launchCommand(args[1:])
 	case "spire-register":
 		return 0, spireRegisterCommand(args[1:])
+	case "wait-spire-agent":
+		return 0, waitSpireAgentCommand(args[1:])
 	case "enroll":
 		return 0, enrollCommand(args[1:])
 	case "install-enrollment":
