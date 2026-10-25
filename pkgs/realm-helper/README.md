@@ -9,6 +9,7 @@ images.
 realm-helper bridge --target ADDRESS      socket-activated listener -> TCP address or Unix socket
 realm-helper launch COMMAND [ARG...]      container entrypoint adapter
 realm-helper spire-register ...           reconcile SPIRE registrations
+realm-helper wait-spire-agent ...         wait for the Agent API
 realm-helper enroll NODE                  issue a join token and trust bundle
 realm-helper install-enrollment           consume that JSON on the target node
 ```
@@ -44,6 +45,14 @@ Entry IDs are UUIDv5 of `nyaw-realm:<node>:<name>`, deliberately identical to
 the Python implementation this replaced: existing registrations keep their IDs,
 so a deployment updates in place instead of creating a second set. Entries that
 were never created by this command are never deleted.
+
+## wait-spire-agent
+
+Runs as `spire-agent.service`'s `ExecStartPost`. It reads `MAINPID` from systemd
+and waits for the Workload API socket and a successful `spire-agent healthcheck`.
+Each check has a five-second timeout. Failed checks retry after three seconds.
+If the Agent exits before the API is ready, the command fails.
+The unit's `TimeoutStartSec=300s` limits the total wait.
 
 ## enroll / install-enrollment
 
