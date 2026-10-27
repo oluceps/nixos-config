@@ -20,8 +20,6 @@
           unit = "podman-misskey.service";
           runtime = "container";
           transparent = {
-            enable = true;
-            internetRoute = "internet";
             dnsHosts."s3.nyaw.xyz" = [ "127.0.0.1" ];
           };
           container = {

@@ -1,9 +1,82 @@
 # Realm agent remote rollout
 
-Validated on 2026-10-27 on branch `feat/realm-ebpf-agent`. These deployments
-use normal persistent NixOS system generations, not runtime unit overrides.
-Every deployed machine was rebooted and its new boot ID and running system
-closure checked. Previous system generations were retained.
+Validated on 2026-10-27 on branch `feat/realm-ebpf-agent`. Deployments use
+normal persistent NixOS generations. Previous generations were retained.
+
+## Automatic enrollment
+
+The per-host service whitelist has been removed. The reusable module defaults
+to capturing enabled, private-network systemd workloads and supported rootless
+containers. Host-network gateways and external runtimes stay outside capture.
+`mod/realm-agent.nix` now only opts the developer machines hastur and kaambl out.
+New workloads on enabled hosts do not need another enrollment entry.
+
+A unique declared `internet-proxy` egress supplies the Internet route, including
+manually declared egresses such as Misskey's. No matching route, or several
+ambiguous matches, defaults to no public TCP or external DNS. An explicit
+`internetRoute` selects an existing route; explicit `null` disables it.
+Synapse retains its existing 443/8448 client ports and receiver-side policy.
+
+| Host | Automatically enrolled | Latest validation |
+| --- | --- | --- |
+| eihort | 22 declarations: 21 continuously running workloads and the scheduled Synapse uploader | Full reboot, all 20 native daemon probes passed, Misskey avatar regression passed |
+| azasos | alloy, ntfy, subs | Persistent switch, DNS/TCP policy and application health passed |
+| abhoth | alloy, rustypaste | Persistent switch, DNS/TCP policy and application health passed |
+| nodens | alloy | ARM native build and persistent switch, DNS/TCP policy and application health passed |
+
+Native gates now require the configured **system unit**, in addition to the
+numeric UID. Slice ancestors are allowed; user-manager units and names nested
+inside another delegated service are rejected. The unit's complete cgroup is
+captured, including a gate's `.control` subgroup. This separates gate requests
+from Synapse and its uploader despite their shared Unix UID; it does not turn
+that UID into two distinct Linux security principals. Rootless containers still
+require a workload-exclusive UID. Both Nix and runtime account checks reject
+unsupported sharing.
+
+The x86_64 and ARM64 integration fixtures refused a gate from a different unit
+running under the correct UID. Their DNS/TCP, concurrent resolver, half-close,
+private-address denial, worker crash and controller restart checks all passed.
+Module tests cover automatic eligibility, per-workload and per-host opt-out,
+Internet route inference, ambiguous routes, and proxy environment fallback.
+
+On eihort, the new boot ID was
+`32293267-60f0-4c6c-af07-1991ae857a89`. The expected persistent generation and
+agent/PostgreSQL/Redis/Misskey units were ready 143.3 seconds after the reboot
+request. The 20 native daemon probes then passed inside their actual cgroups
+and namespaces. Services with Internet egress resolved DNS and fetched HTTPS
+without proxy environment variables; other services returned DNS REFUSED and
+closed public TCP connections. The scheduled uploader was not manually invoked.
+
+Both production Misskey avatar paths returned HTTP 200: the original S3 avatar
+was WebP / 20,168 bytes, and the GitHub avatar was WebP / 3,032 bytes. A subsequent
+controlled agent restart recovered 21 running cgroup/namespace pairs in about
+1.3 seconds, with all 21 application main PIDs unchanged and no failed units.
+The agent cgroup used approximately 111 MiB after this restart; this is a sample,
+not a capacity guarantee.
+
+### Pilot migration edge cases
+
+The first eihort hot switch updated unit files but retained the old pilot agent
+process with its one-workload configuration. New native gates consequently
+waited for absent control sockets; some units exhausted startup limits, and
+some bind mounts failed before the new control directories existed. Explicitly
+restarting the agent loaded all 22 declarations. Resetting the affected units
+and sockets restored them. The later full boot needed none of those repairs.
+For migration from runtime overrides, stop the old pilot before the switch or
+perform a controlled boot into the new generation; replacing unit files alone
+is insufficient evidence that the old process has gone away.
+
+The first hot switch also left PostgreSQL's old process running without the new
+gate, despite listing the unit for stop/start. Its declared restart/stop policy
+was enabled; the precise activation race was not isolated. A full reboot ran its
+gate, and both its capture log and its DNS/TCP policy probe passed. Check actual
+PIDs and captured state when first enrolling existing services.
+
+## Initial rollout and reboot baseline
+
+The earlier whitelist deployment rebooted azasos, abhoth and nodens, checking
+new boot IDs and running system generations. These results precede automatic
+enrollment and the native unit binding above.
 
 | Host | Architecture / kernel | Captured workloads | Policy | Reboot result |
 | --- | --- | --- | --- | --- |
@@ -17,13 +90,13 @@ boot. Public HTTPS probes explicitly disabled proxy settings. The probe child
 joined the actual application's cgroup and network namespace, then dropped to
 its UID/GID before opening sockets.
 
-The host selection is declared in [mod/realm-agent.nix](../mod/realm-agent.nix).
-uubboo is prepared there but could not be deployed: mesh SSH timed out and its
+uubboo inherits automatic enrollment but could not be deployed: mesh SSH timed out and its
 LAN address was unreachable. yidhra passed loading and attaching all nine BPF
 programs in a dedicated empty cgroup; it currently has no eligible isolated
 application. Its host-network gateways were not captured or rebooted.
-The developer machine and laptop were excluded. eihort's existing Misskey pilot
-was left in place; see [its separate validation record](realm-agent-eihort-validation.md).
+The developer machine and laptop were excluded. The earlier Misskey pilot is
+recorded [separately](realm-agent-eihort-validation.md); eihort now uses the
+persistent automatic configuration described above.
 
 ## Compatibility fixes
 
@@ -102,5 +175,6 @@ data, read credential files or output environment values; it checks only
 proxy-variable names. Re-upload disposable `/tmp` probes after a reboot.
 
 For rollback, activate the retained previous system generation and reboot if
-needed. For declarative rollback, remove the host/workload from the rollout
-selection (or disable its `transparent.enable`) and deploy normally.
+needed. For declarative rollback, set `realm.agent.enable = false` on the host or
+`realm.workloads.<name>.transparent.enable = false` for a workload, then deploy
+normally.

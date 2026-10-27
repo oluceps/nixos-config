@@ -196,6 +196,7 @@ def runner(agent, internet, user, group, worker_user, internet_socket):
         threading.Thread(target=accept, daemon=True).start()
         config = {"workloads": [{
             "name": "fixture", "user": user, "group": group, "workerUser": worker_user,
+            "unit": "realm-agent-integration-fixture.service",
             "socket": str(directory / "control.sock"),
             "dnsHosts": {"s3.nyaw.xyz": ["127.0.0.1"]},
             "routes": [{"prefix": prefix, "port": 4443, "socket": str(directory / "echo.sock")}
@@ -219,6 +220,15 @@ def runner(agent, internet, user, group, worker_user, internet_socket):
                 if controller.poll() is not None:
                     raise RuntimeError("agent exited before readiness")
                 time.sleep(.05)
+            refused = subprocess.run([
+                "systemd-run", "--quiet", "--wait", "--pipe", "--collect",
+                "--unit=realm-agent-integration-impostor", "--property=PrivateNetwork=yes",
+                "--property=NoNewPrivileges=yes", "--property=CapabilityBoundingSet=",
+                f"--uid={user}", f"--gid={group}", agent, "gate",
+                "--socket", str(directory / "control.sock"),
+            ], capture_output=True, text=True, timeout=30)
+            assert refused.returncode != 0 and "does not belong to system unit" in refused.stderr, refused
+            print("same UID, different unit: gate refused", flush=True)
             child = run_fixture(agent, directory, internet, str(directory / "lifecycle.sock"), user, group)
             deadline = time.monotonic() + 90
             while True:

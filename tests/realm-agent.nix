@@ -8,6 +8,7 @@ let
       inherit pkgs;
       modules = [
         ../nixosModules/realm-agent.nix
+        ../nixosModules/realm-http.nix
         ../nixosModules/realm-spire.nix
         ../nixosModules/service-discovery.nix
         {
@@ -18,7 +19,7 @@ let
               enable = true;
               address = "::1";
             };
-            workloads.fixture.transparent.enable = true;
+            workloads.fixture = { };
           };
           systemd.services.fixture.serviceConfig = {
             User = "fixture";
@@ -33,7 +34,34 @@ let
     map (a: a.message) (lib.filter (a: !a.assertion && lib.hasPrefix "realm" a.message) c.assertions);
   cfg = evaluate [ ];
   disabled = evaluate [ { realm.workloads.fixture.transparent.enable = lib.mkForce false; } ];
-  unsafe = evaluate [ { realm.workloads.fixture.isolation.privateNetwork = false; } ];
+  hostDisabled = evaluate [ { realm.agent.enable = false; } ];
+  hostNetwork = evaluate [ { realm.workloads.fixture.isolation.privateNetwork = false; } ];
+  external = evaluate [ { realm.workloads.fixture.runtime = "external"; } ];
+  unsupportedContainer = evaluate [ { realm.workloads.fixture.runtime = "container"; } ];
+  proxyFallback = evaluate [
+    {
+      realm.agent.enable = false;
+      realm.workloads.fixture.http.internet = true;
+    }
+  ];
+  transparentHTTP = evaluate [ { realm.workloads.fixture.http.internet = true; } ];
+  unsafe = evaluate [
+    {
+      realm.workloads.fixture = {
+        isolation.privateNetwork = false;
+        transparent.enable = true;
+      };
+    }
+  ];
+  internet = evaluate [ { realm.workloads.fixture.egress.outside.service = "internet-proxy"; } ];
+  ambiguous = evaluate [
+    {
+      realm.workloads.fixture.egress = {
+        first.service = "internet-proxy";
+        second.service = "internet-proxy";
+      };
+    }
+  ];
   badRoute = evaluate [ { realm.workloads.fixture.transparent.internetRoute = "missing"; } ];
   overlap = evaluate [ { realm.workloads.fixture.transparent.tcpPort = 15053; } ];
   dynamic = evaluate [
@@ -59,6 +87,15 @@ assert failures dynamic == [ ];
 assert failures implicitDynamic == [ ];
 assert lib.any (lib.hasInfix "configured workload user") (failures wrongUser);
 assert !(disabled.systemd.services ? realm-agent);
+assert !(hostDisabled.systemd.services ? realm-agent);
+assert !(hostNetwork.systemd.services ? realm-agent);
+assert !(external.systemd.services ? realm-agent);
+assert !(unsupportedContainer.systemd.services ? realm-agent);
+assert proxyFallback.systemd.services.fixture.environment.HTTPS_PROXY == "http://127.0.0.1:13128";
+assert !(transparentHTTP.systemd.services.fixture.environment ? HTTPS_PROXY);
+assert cfg.realm.workloads.fixture.transparent.internetRoute == null;
+assert internet.realm.workloads.fixture.transparent.internetRoute == "outside";
+assert ambiguous.realm.workloads.fixture.transparent.internetRoute == null;
 assert lib.any (lib.hasInfix "isolated") (failures unsafe);
 assert lib.any (lib.hasInfix "internetRoute") (failures badRoute);
 assert lib.any (lib.hasInfix "overlap") (failures overlap);

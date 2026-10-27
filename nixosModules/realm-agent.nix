@@ -7,7 +7,9 @@
 let
   inherit (lib) mkOption types;
   cfg = config.realm;
-  active = lib.filterAttrs (_: w: cfg.enable && w.enable && w.transparent.enable) cfg.workloads;
+  active = lib.filterAttrs (
+    _: w: cfg.enable && cfg.agent.enable && w.enable && w.transparent.enable
+  ) cfg.workloads;
   directory = name: "/run/realm-agent/${name}";
   control = name: "${directory name}/control.sock";
   workerUser = name: "rnet-${name}";
@@ -28,6 +30,7 @@ let
       networkTool = "${pkgs.iproute2}/bin/ip";
       workloads = lib.mapAttrsToList (name: w: {
         inherit name;
+        unit = if w.runtime == "systemd" then w.unit else "";
         user = w.user;
         group = w.group;
         workerUser = workerUser name;
@@ -56,6 +59,11 @@ in
     ./realm-container.nix
   ];
   options.realm = {
+    agent.enable = mkOption {
+      type = types.bool;
+      default = true;
+      description = "Automatically capture isolated Realm workloads; false disables the host agent and all gates.";
+    };
     agent.package = mkOption {
       type = types.package;
       default = pkgs.callPackage ../pkgs/realm-agent { };
@@ -63,61 +71,77 @@ in
     };
     workloads = mkOption {
       type = types.attrsOf (
-        types.submodule {
-          options.transparent = {
-            enable = lib.mkEnableOption "cgroup BPF capture inside this workload's namespace without external links";
-            internetRoute = mkOption {
-              type = types.nullOr types.str;
-              default = null;
-              description = "Declared HTTP CONNECT egress; null disables public Internet and external DNS.";
-            };
-            internetPorts = mkOption {
-              type = types.listOf types.port;
-              default = [ 443 ];
-              description = "Public TCP ports; the remote gateway must independently authorize CONNECT to them.";
-            };
-            dnsUpstream = mkOption {
-              type = types.str;
-              default = "https://cloudflare-dns.com/dns-query";
-            };
-            dnsHosts = mkOption {
-              type = types.attrsOf (types.listOf types.str);
-              default = { };
-              description = "Workload-local authoritative DNS overrides, merged with isolation.hosts.";
-            };
-            tcpPort = mkOption {
-              type = types.port;
-              default = 15001;
-            };
-            dnsBase = mkOption {
-              type = types.port;
-              default = 15053;
-              description = "First of eight UDP DNS adapter ports in each address family.";
-            };
-            maxConnections = mkOption {
-              type = types.ints.between 1 4096;
-              default = 256;
-            };
-            routes = mkOption {
-              default = [ ];
-              type = types.listOf (
-                types.submodule {
-                  options = {
-                    prefix = mkOption {
-                      type = types.str;
-                      description = "Destination IP prefix selected by this route.";
+        types.submodule (
+          { config, ... }:
+          let
+            w = config;
+            internetRoutes = builtins.attrNames (
+              lib.filterAttrs (_: e: e.service == "internet-proxy") w.egress
+            );
+          in
+          {
+            options.transparent = {
+              enable = mkOption {
+                type = types.bool;
+                default =
+                  cfg.agent.enable
+                  && w.isolation.privateNetwork
+                  && (w.runtime == "systemd" || (w.runtime == "container" && w.container != null));
+                description = "Capture this isolated workload with cgroup BPF; set false to retain its existing adapters only.";
+              };
+              internetRoute = mkOption {
+                type = types.nullOr types.str;
+                default = if builtins.length internetRoutes == 1 then builtins.head internetRoutes else null;
+                description = "Declared HTTP CONNECT egress, inferred from a unique internet-proxy route; null disables public Internet and external DNS.";
+              };
+              internetPorts = mkOption {
+                type = types.listOf types.port;
+                default = [ 443 ];
+                description = "Public TCP ports; the remote gateway must independently authorize CONNECT to them.";
+              };
+              dnsUpstream = mkOption {
+                type = types.str;
+                default = "https://cloudflare-dns.com/dns-query";
+              };
+              dnsHosts = mkOption {
+                type = types.attrsOf (types.listOf types.str);
+                default = { };
+                description = "Workload-local authoritative DNS overrides, merged with isolation.hosts.";
+              };
+              tcpPort = mkOption {
+                type = types.port;
+                default = 15001;
+              };
+              dnsBase = mkOption {
+                type = types.port;
+                default = 15053;
+                description = "First of eight UDP DNS adapter ports in each address family.";
+              };
+              maxConnections = mkOption {
+                type = types.ints.between 1 4096;
+                default = 256;
+              };
+              routes = mkOption {
+                default = [ ];
+                type = types.listOf (
+                  types.submodule {
+                    options = {
+                      prefix = mkOption {
+                        type = types.str;
+                        description = "Destination IP prefix selected by this route.";
+                      };
+                      port = mkOption { type = types.port; };
+                      egress = mkOption {
+                        type = types.str;
+                        description = "Name of an existing workload egress.";
+                      };
                     };
-                    port = mkOption { type = types.port; };
-                    egress = mkOption {
-                      type = types.str;
-                      description = "Name of an existing workload egress.";
-                    };
-                  };
-                }
-              );
+                  }
+                );
+              };
             };
-          };
-        }
+          }
+        )
       );
     };
   };
@@ -125,6 +149,18 @@ in
     boot.kernelModules = [ "dummy" ];
     assertions = lib.concatLists (
       lib.mapAttrsToList (name: w: [
+        {
+          assertion =
+            w.runtime != "container"
+            || lib.all (
+              otherName:
+              let
+                other = cfg.workloads.${otherName};
+              in
+              otherName == name || !other.enable || other.user != w.user
+            ) (builtins.attrNames cfg.workloads);
+          message = "realm.workloads.${name}.transparent: rootless containers require a workload-exclusive user; native workloads are additionally bound to their system unit.";
+        }
         {
           assertion =
             builtins.elem w.runtime [
@@ -173,7 +209,8 @@ in
           assertion =
             w.runtime != "container"
             || (
-              config.virtualisation.oci-containers.containers.${w.container.name}.networks == [ "none" ]
+              w.container != null
+              && config.virtualisation.oci-containers.containers.${w.container.name}.networks == [ "none" ]
               && config.virtualisation.oci-containers.containers.${w.container.name}.podman.user == w.user
             );
           message = "realm.workloads.${name}.transparent: containers require network=none and the configured workload user.";

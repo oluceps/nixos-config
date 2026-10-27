@@ -93,7 +93,7 @@ func (c *controller) recover(ctx context.Context) error {
 			proc.Close()
 			continue
 		}
-		group, ns, key, e := processNetwork(proc)
+		group, ns, key, e := processNetwork(proc, c.workload.Unit)
 		proc.Close()
 		if e != nil {
 			continue
