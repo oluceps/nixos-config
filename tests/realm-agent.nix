@@ -36,8 +36,28 @@ let
   unsafe = evaluate [ { realm.workloads.fixture.isolation.privateNetwork = false; } ];
   badRoute = evaluate [ { realm.workloads.fixture.transparent.internetRoute = "missing"; } ];
   overlap = evaluate [ { realm.workloads.fixture.transparent.tcpPort = 15053; } ];
+  dynamic = evaluate [
+    {
+      systemd.services.fixture.serviceConfig = {
+        User = lib.mkForce "fixture";
+        DynamicUser = true;
+      };
+    }
+  ];
+  implicitDynamic = evaluate [
+    {
+      systemd.services.fixture.serviceConfig = {
+        User = lib.mkForce "";
+        DynamicUser = true;
+      };
+    }
+  ];
+  wrongUser = evaluate [ { systemd.services.fixture.serviceConfig.User = lib.mkForce "other"; } ];
 in
 assert failures cfg == [ ];
+assert failures dynamic == [ ];
+assert failures implicitDynamic == [ ];
+assert lib.any (lib.hasInfix "configured workload user") (failures wrongUser);
 assert !(disabled.systemd.services ? realm-agent);
 assert lib.any (lib.hasInfix "isolated") (failures unsafe);
 assert lib.any (lib.hasInfix "internetRoute") (failures badRoute);

@@ -64,6 +64,10 @@ to 443 by default. The agent cannot grant itself new receiver permissions.
    and default routes. It creates an isolated `realm0` dummy with
    `192.0.2.254/32` and `2001:db8::ffff/128`. These addresses satisfy
    AI_ADDRCONFIG clients but provide no external link or default route.
+   Kernel-created `ip6tnl0`, `gre0`, `gretap0` and `erspan0` fallbacks may remain
+   only when marked namespace-immutable and DOWN, without addresses, endpoints
+   or routes. Neither the app nor worker can
+   configure it. Operational tunnel interfaces are rejected.
 4. BPF hooks attach to that cgroup. A worker joins **only** the network namespace
    with `nsenter` before the Go runtime starts, then runs under a distinct
    `rnet-<workload>` UID and the workload's socket-access group. It remains

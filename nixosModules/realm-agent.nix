@@ -141,8 +141,23 @@ in
         {
           assertion =
             w.runtime != "systemd"
-            ||
-              (config.systemd.services.${lib.removeSuffix ".service" w.unit}.serviceConfig.User or "") == w.user;
+            || (
+              let
+                unit = lib.removeSuffix ".service" w.unit;
+                service = config.systemd.services.${unit}.serviceConfig;
+                # DynamicUser defaults User to the unit name. Realm declares
+                # that account statically, so the attested UID remains stable.
+                configuredUser = service.User or "";
+                user =
+                  if configuredUser != "" then
+                    configuredUser
+                  else if service.DynamicUser or false then
+                    unit
+                  else
+                    "";
+              in
+              user == w.user
+            );
           message = "realm.workloads.${name}.transparent: the application unit must run as its configured workload user.";
         }
         {
