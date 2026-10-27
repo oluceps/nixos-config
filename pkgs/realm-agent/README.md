@@ -13,8 +13,7 @@ with a separate unprivileged worker and BPF attachment per workload.
 
 Set `realm.agent.enable = false` to disable the host daemon and all gates, or
 `realm.workloads.<name>.transparent.enable = false` to exclude one workload.
-`mod/realm-agent.nix` excludes the developer machines hastur and kaambl from this
-rollout. No per-host service list is needed, including for newly added workloads.
+`mod/realm-agent.nix` excludes the laptop kaambl from automatic enrollment. No per-host service list is needed, including for newly added workloads.
 
 A unique declared egress whose service is `internet-proxy` becomes the default
 `internetRoute`, regardless of whether it came from `http.internet` or a manual

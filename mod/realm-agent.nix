@@ -2,13 +2,7 @@
   flake.modules.nixos.realm =
     { config, lib, ... }:
     {
-      # Isolated workloads opt in automatically in the reusable module. Keep
-      # developer machines outside this rollout until explicitly enabled.
-      realm.agent.enable = lib.mkDefault (
-        !(builtins.elem config.networking.hostName [
-          "hastur"
-          "kaambl"
-        ])
-      );
+      # Isolated workloads opt in automatically. The laptop remains excluded.
+      realm.agent.enable = lib.mkDefault (config.networking.hostName != "kaambl");
     };
 }
