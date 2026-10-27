@@ -103,6 +103,12 @@ func runWorker(ctx context.Context) error {
 		return e
 	}
 	for _, iface := range interfaces {
+		if fallbackTunnelKinds[iface.Name] != "" && iface.Flags&net.FlagUp == 0 {
+			addresses, err := iface.Addrs()
+			if err == nil && len(addresses) == 0 {
+				continue // Controller also checked the tunnel's kind and endpoints.
+			}
+		}
 		if iface.Flags&net.FlagLoopback == 0 && iface.Name != "realm0" {
 			return fmt.Errorf("refusing namespace with non-loopback interface %s", iface.Name)
 		}

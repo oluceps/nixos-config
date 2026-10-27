@@ -4,6 +4,7 @@
 The runner creates transient PrivateNetwork systemd units and attaches BPF
 only after the fixture's readiness gate. Pass the static agent binary as argv[1].
 """
+import argparse
 import concurrent.futures
 import json
 import os
@@ -156,20 +157,20 @@ def fixture(control, internet, lifecycle=None):
                             channel.sendall(b"ESCAPED\n")
 
 
-def run_fixture(agent, directory, internet, lifecycle):
+def run_fixture(agent, directory, internet, lifecycle, user, group):
     unit = "realm-agent-integration-fixture"
     script = str(Path(__file__).resolve())
     return subprocess.Popen([
         "systemd-run", "--quiet", "--wait", "--pipe", "--collect",
         f"--unit={unit}", "--property=PrivateNetwork=yes",
         "--property=NoNewPrivileges=yes", "--property=CapabilityBoundingSet=",
-        "--property=RuntimeMaxSec=90", "--uid=misskey", "--gid=misskey",
+        "--property=RuntimeMaxSec=90", f"--uid={user}", f"--gid={group}",
         sys.executable, script, "fixture", str(directory / "control.sock"), str(int(internet)),
         lifecycle,
     ])
 
 
-def runner(agent, internet):
+def runner(agent, internet, user, group, worker_user, internet_socket):
     if os.geteuid() != 0:
         raise SystemExit("remote integration runner requires root")
     with tempfile.TemporaryDirectory(prefix="realm-agent-test-") as temp:
@@ -194,12 +195,12 @@ def runner(agent, internet):
                 threading.Thread(target=serve, args=(client,), daemon=True).start()
         threading.Thread(target=accept, daemon=True).start()
         config = {"workloads": [{
-            "name": "fixture", "user": "misskey", "group": "misskey", "workerUser": "nobody",
+            "name": "fixture", "user": user, "group": group, "workerUser": worker_user,
             "socket": str(directory / "control.sock"),
             "dnsHosts": {"s3.nyaw.xyz": ["127.0.0.1"]},
             "routes": [{"prefix": prefix, "port": 4443, "socket": str(directory / "echo.sock")}
                        for prefix in ["203.0.113.7/32", "2001:db8::7/128"]],
-            "internetSocket": "/run/realm/misskey/egress/internet.sock" if internet else "",
+            "internetSocket": internet_socket if internet else "",
             "internetPorts": [443] if internet else [],
         }]}
         path = directory / "config.json"
@@ -210,7 +211,7 @@ def runner(agent, internet):
         lifecycle.bind(str(directory / "lifecycle.sock"))
         os.chmod(directory / "lifecycle.sock", 0o666)
         lifecycle.listen(1)
-        lifecycle.settimeout(90)
+        lifecycle.settimeout(.2)
         try:
             for _ in range(100):
                 if (directory / "control.sock").exists():
@@ -218,8 +219,17 @@ def runner(agent, internet):
                 if controller.poll() is not None:
                     raise RuntimeError("agent exited before readiness")
                 time.sleep(.05)
-            child = run_fixture(agent, directory, internet, str(directory / "lifecycle.sock"))
-            channel, _ = lifecycle.accept()
+            child = run_fixture(agent, directory, internet, str(directory / "lifecycle.sock"), user, group)
+            deadline = time.monotonic() + 90
+            while True:
+                try:
+                    channel, _ = lifecycle.accept()
+                    break
+                except socket.timeout:
+                    if child.poll() is not None:
+                        raise RuntimeError(f"fixture exited before readiness: {child.returncode}")
+                    if time.monotonic() >= deadline:
+                        raise TimeoutError("fixture readiness timed out")
             channel.settimeout(10)
             replies = channel.makefile("rb")
             assert replies.readline() == b"READY\n"
@@ -270,4 +280,14 @@ if __name__ == "__main__":
     if len(sys.argv) > 1 and sys.argv[1] == "fixture":
         fixture(sys.argv[2], bool(int(sys.argv[3])), sys.argv[4] if len(sys.argv) > 4 else None)
     else:
-        runner(str(Path(sys.argv[1]).resolve()), "--internet" in sys.argv)
+        parser = argparse.ArgumentParser(description=__doc__)
+        parser.add_argument("agent")
+        parser.add_argument("--internet", action="store_true")
+        parser.add_argument("--user", default="misskey")
+        parser.add_argument("--group")
+        parser.add_argument("--worker-user", default="nobody")
+        parser.add_argument("--internet-socket")
+        args = parser.parse_args()
+        runner(str(Path(args.agent).resolve()), args.internet, args.user,
+               args.group or args.user, args.worker_user,
+               args.internet_socket or f"/run/realm/{args.user}/egress/internet.sock")
