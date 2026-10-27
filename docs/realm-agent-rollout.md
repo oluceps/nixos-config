@@ -1,4 +1,4 @@
-# Realm agent remote rollout
+# Realm agent rollout
 
 Validated on 2026-10-27 on branch `feat/realm-ebpf-agent`. Deployments use
 normal persistent NixOS generations. Previous generations were retained.
@@ -8,7 +8,7 @@ normal persistent NixOS generations. Previous generations were retained.
 The per-host service whitelist has been removed. The reusable module defaults
 to capturing enabled, private-network systemd workloads and supported rootless
 containers. Host-network gateways and external runtimes stay outside capture.
-`mod/realm-agent.nix` now only opts the developer machines hastur and kaambl out.
+`mod/realm-agent.nix` now only opts the laptop kaambl out.
 New workloads on enabled hosts do not need another enrollment entry.
 
 A unique declared `internet-proxy` egress supplies the Internet route, including
@@ -23,6 +23,7 @@ Synapse retains its existing 443/8448 client ports and receiver-side policy.
 | azasos | alloy, ntfy, subs | Persistent switch, DNS/TCP policy and application health passed |
 | abhoth | alloy, rustypaste | Persistent switch, DNS/TCP policy and application health passed |
 | nodens | alloy | ARM native build and persistent switch, DNS/TCP policy and application health passed |
+| hastur | alloy | Persistent local switch on Linux 7.2.8, DNS/TCP policy and Alloy/Loki health passed |
 
 Native gates now require the configured **system unit**, in addition to the
 numeric UID. Slice ancestors are allowed; user-manager units and names nested
@@ -71,6 +72,29 @@ gate, despite listing the unit for stop/start. Its declared restart/stop policy
 was enabled; the precise activation race was not isolated. A full reboot ran its
 gate, and both its capture log and its DNS/TCP policy probe passed. Check actual
 PIDs and captured state when first enrolling existing services.
+
+## Local enrollment: hastur
+
+Hastur was subsequently enabled at the user's request. kaambl stays excluded;
+uubboo and kaambl require no further deployment work for this rollout. Hastur's
+only eligible workload is Alloy. Its host-network edge and external workloads
+remain outside capture.
+
+The new system generation was activated without rebooting the machine. A
+`dry-activate` review preceded activation. The main PIDs for systemd-networkd,
+Caddy, the Internet gateway and SPIRE stayed unchanged through deployment and
+verification. The kernel was Linux 7.2.8 with BTF available.
+
+A probe in Alloy's actual cgroup and namespace, running under its UID, verified
+DNS REFUSED for external names, denied public TCP, and HTTP 200 from both Alloy's
+`/-/ready` and Loki's `/ready` through the existing SPIFFE egress. The first Loki
+probe failed transiently; subsequent probes, including repeated checks after an
+agent restart, passed. Its initial failure cause was not isolated.
+
+A controlled agent restart recovered Alloy in 0.36 seconds without changing
+its main PID. The host boot ID and the four host-service PIDs above also stayed
+unchanged. No failed system units remained. The previous system generation was
+retained.
 
 ## Initial rollout and reboot baseline
 
@@ -154,7 +178,7 @@ failed host boot.
 
 ## Reproduce
 
-Run only on authorized remote hosts; these scripts manipulate test cgroups or
+Run only on authorized deployment hosts; these scripts manipulate test cgroups or
 join existing service namespaces.
 
 ```sh
