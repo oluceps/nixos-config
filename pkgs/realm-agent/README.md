@@ -9,7 +9,8 @@ The NixOS integration is in `nixosModules/realm-agent.nix`. Enabled workloads
 with private networking join automatically: native systemd services and rootless
 containers declared through `workload.container`. Host-network gateways and
 `runtime = "external"` entries stay outside capture. There is one host daemon,
-with a separate unprivileged worker and BPF attachment per workload.
+with a separate unprivileged worker, resource cgroup, mount namespace and BPF
+attachment per workload.
 
 Set `realm.agent.enable = false` to disable the host daemon and all gates, or
 `realm.workloads.<name>.transparent.enable = false` to exclude one workload.
@@ -70,7 +71,9 @@ to 443 by default. The agent cannot grant itself new receiver permissions.
 1. The root host agent owns a distinct, group-accessible Unix control socket per
    workload. The client supplies no PID, cgroup, namespace or identity.
 2. `SO_PEERCRED` supplies the caller UID and host PID. The agent requires the
-   configured application UID, opens a proc directory descriptor, and obtains
+   configured application UID and uses `SO_PEERPIDFD` to pin the socket's original
+   peer. A liveness check after opening its proc directory rejects exit/PID reuse
+   before that open; subsequent `openat` calls stay bound to the original proc. It obtains
    its real cgroup and network namespace with `openat`. Native callers must also
    belong to the configured system unit beneath host-managed slices. A sibling
    unit with the same UID, a user-manager unit, or a name inside another
@@ -84,10 +87,18 @@ to 443 by default. The agent cannot grant itself new receiver permissions.
    only when marked namespace-immutable and DOWN, without addresses, endpoints
    or routes. Neither the app nor worker can
    configure it. Operational tunnel interfaces are rejected.
-4. BPF hooks attach to that cgroup. A worker joins **only** the network namespace
-   with `nsenter` before the Go runtime starts, then runs under a distinct
-   `rnet-<workload>` UID and the workload's socket-access group. It remains
-   outside the application's cgroup and does not receive the SPIRE socket.
+4. BPF hooks attach to that cgroup. A trusted root bootstrap joins the network
+   namespace with `nsenter` before the Go runtime starts, enters the workload's
+   independent worker resource cgroup, and creates a private mount namespace.
+   It pivots into a read-only root containing the Nix store, the configured CA
+   bundle and only declared egress socket directories. Socket directories are
+   bound read-only so socket replacement remains visible. Broad runtime roots
+   and symlinked source directories are rejected. `/proc`, `/sys`, host runtime
+   sockets, application state, and writable cgroup descriptors are absent.
+   The bootstrap clears supplementary groups and capabilities, changes to the
+   distinct `rnet-<workload>` UID and workload socket-access group, closes the
+   namespace descriptor, and execs the worker. The worker is outside the
+   application's cgroup and does not receive the SPIRE socket.
 5. The worker binds both address families and signals readiness. Only then does
    the application gate open. No `CAP_NET_ADMIN` or BPF privilege reaches the app.
 
@@ -153,7 +164,13 @@ cgroup for a process with the expected UID and matching namespace before
 reattaching. Recycled PIDs/cgroup paths do not suffice. An empty cgroup releases
 its worker and state. A crashed worker is recreated on the next reconciliation.
 
-Workers inherit a read-only connection-map descriptor and a parent-liveness
+Each workload has its own reconciliation goroutine. Occupied listeners, bad
+saved state or slow recovery affect that workload only; controller readiness
+means all control sockets exist, while each application gate still requires its
+own forwarding worker to be ready. Recovery is retried every two seconds,
+including after an independently enforced worker OOM.
+
+Workers inherit a read-only connection-map descriptor, sealed read-only config and a parent-liveness
 pipe. EOF on the pipe stops the worker even if the controller is killed. The
 systemd unit also uses `KillMode=control-group`. There is no fallback Internet
 route when the controller, worker, BPF links or DNS upstream are unavailable.
@@ -161,9 +178,25 @@ Existing proxied connections can break during recovery and must be retried by
 the application; this is not a connection-preserving hot upgrade.
 
 Defaults are 256 concurrent TCP connections per workload, 64 concurrent DoH
-queries and 16,384 original-destination records. Adapter ports are private to
-each namespace. The host service has a memory and process limit. Worker accounts
-have no login shell, no new privileges and are not dumpable.
+queries and 16,384 original-destination records. UDP DNS has 64 fixed workers
+and a 128-datagram queue shared by all listeners; excess requests are dropped
+before parsing, and truncated datagrams are rejected. Adapter ports are private
+to each namespace. Worker accounts have no login shell, no new privileges and
+are not dumpable.
+
+The controller requires a cgroup-v2 systemd unit with `Delegate=cpu memory pids`
+and `DelegateSubgroup=supervisor`; it refuses arbitrary/non-delegated launch
+cgroups. The supervisor has a 256 MiB/128-task budget. Each worker defaults to
+128 MiB, zero swap, 64 tasks, and 100% of one CPU (`cpu.max`), with grouped OOM
+inside that leaf. Set `transparent.workerMemoryMiB`, `workerTasks` or
+`workerCPUQuota` to tune a workload. The parent unit limit is the sum of leaf
+budgets plus headroom, and `OOMPolicy=continue` lets one worker's OOM recover
+without killing the supervisor or siblings. The writable host cgroup mount is
+limited to `system.slice/realm-agent.service`; changing that unit's slice also
+requires adjusting the mount exception.
+
+`SO_PEERPIDFD` requires Linux 6.5 or newer. The sandbox also requires `openat2`,
+`mount_setattr` and mount namespace support; there is no unsandboxed fallback.
 
 This version supports TCP and ordinary UDP/TCP DNS. Other external UDP is
 rejected, including QUIC. DoH/DoT used by applications do not become ordinary
@@ -201,6 +234,13 @@ the real CacheableLookup DNS behavior, its ADDRCONFIG path, the public S3 avatar
 through the declared internal route, and public HTTPS with no proxy settings.
 It mounts the public CA bundle but does not mount application secrets or data.
 The production Misskey container is not restarted by these fixture runners.
+
+`tests/realm-agent-hardening.py` uses two synthetic workloads and a separate
+delegated controller. It verifies the minimal filesystem view and resource
+limits, holds a worker port across controller restart to check sibling recovery,
+and induces OOM only inside a synthetic 32 MiB worker cgroup. The controller and
+sibling must survive and the affected worker must recover. Production agents
+are not restarted by this fixture.
 
 An empty, dedicated cgroup can also validate kernel support:
 

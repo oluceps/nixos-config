@@ -7,6 +7,7 @@ import subprocess
 import sys
 import tempfile
 import time
+from realm_agent_controller import TestController
 
 agent, helper, fixture = map(lambda s: str(Path(s).resolve()), sys.argv[1:4])
 podman = ["systemd-run", "--machine=misskey@.host", "--user", "--quiet", "--pipe", "--wait", "--collect", "/run/current-system/sw/bin/podman"]
@@ -25,7 +26,7 @@ with tempfile.TemporaryDirectory(prefix="realm-agent-rootless-") as temp:
     }]}
     path = directory / "config.json"
     path.write_text(json.dumps(config))
-    controller = subprocess.Popen([agent, "serve", "--config", str(path)])
+    controller = TestController(agent, path, "realm-agent-rootless-controller.service")
     try:
         for _ in range(100):
             if (directory / "control.sock").exists():

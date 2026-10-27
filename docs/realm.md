@@ -130,6 +130,11 @@ namespace remains without external links or a default route. A dummy interface s
 ADDRCONFIG clients. Existing Realm egress sockets and SPIFFE receiver policy
 remain the authentication boundary.
 
+The controller pins gate peers using `SO_PEERPIDFD`. Workers have individual
+CPU/memory/task budgets and read-only filesystem views exposing only the Nix
+store, CA bundle and declared egress directories. Recovery runs independently
+per workload, including after listener conflicts or worker OOM.
+
 A container workload declares `container.name` and `container.backendPath`. The shared adapter generates its egress routes, optional SOCKS route, and helper, health script and socket mounts. `container.extraRoutes` describes additional sockets already mounted into the container, such as PostgreSQL.
 
 The application profile retains its image, entrypoint, command, user mapping, environment, writable data paths and health check. Each OCI instance belongs to one Realm workload. Local route ports must be unique.

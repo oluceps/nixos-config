@@ -105,6 +105,18 @@ assert !(builtins.elem "realm-agent.service" cfg.systemd.services.fixture.requir
 assert lib.any (lib.hasInfix "gate --socket /run/realm-agent/fixture/control.sock")
   cfg.systemd.services.fixture.serviceConfig.ExecStartPre;
 assert cfg.systemd.services.realm-agent.serviceConfig.KillMode == "control-group";
+assert cfg.systemd.services.realm-agent.serviceConfig.DelegateSubgroup == "supervisor";
+assert
+  cfg.systemd.services.realm-agent.serviceConfig.Delegate == [
+    "cpu"
+    "memory"
+    "pids"
+  ];
+assert cfg.systemd.services.realm-agent.serviceConfig.OOMPolicy == "continue";
+assert cfg.systemd.services.realm-agent.serviceConfig.MemoryMax == 416 * 1024 * 1024;
+assert cfg.realm.workloads.fixture.transparent.workerMemoryMiB == 128;
+assert cfg.realm.workloads.fixture.transparent.workerTasks == 64;
+assert cfg.realm.workloads.fixture.transparent.workerCPUQuota == 100;
 {
   passed = true;
   config = cfg.systemd.services.realm-agent.serviceConfig.ExecStart;

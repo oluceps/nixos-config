@@ -20,6 +20,10 @@ def child(args):
     uid, gid = map(int, args.identity.split(':'))
     assert uid != 0
     Path('/sys/fs/cgroup' + args.cgroup + '/cgroup.procs').write_text(str(os.getpid()))
+    if args.mount_pid:
+        mount = os.open(f'/proc/{args.mount_pid}/ns/mnt', os.O_RDONLY)
+        os.setns(mount, os.CLONE_NEWNS)
+        os.close(mount)
     os.setgroups([])
     os.setgid(gid)
     os.setuid(uid)
@@ -64,7 +68,7 @@ def child(args):
         response.read()
         connection.close()
         checks.append('application Unix HTTP health 200')
-    interfaces = [line.split(':')[0].strip() for line in Path('/proc/net/dev').read_text().splitlines() if ':' in line]
+    interfaces = [name for _, name in socket.if_nameindex()]
     assert {'lo', 'realm0'}.issubset(interfaces), interfaces
     assert set(interfaces).issubset({'lo', 'realm0', 'ip6tnl0', 'gre0', 'gretap0', 'erspan0'}), interfaces
     print(json.dumps({'unit': args.unit, 'uid': os.getuid(), 'interfaces': interfaces, 'checks': checks}), flush=True)
@@ -79,6 +83,7 @@ parser.add_argument('--path', default='/v1/health')
 parser.add_argument('--child', action='store_true')
 parser.add_argument('--identity')
 parser.add_argument('--cgroup')
+parser.add_argument('--mount-pid', type=int)
 args = parser.parse_args()
 if args.child:
     child(args)
@@ -95,4 +100,4 @@ else:
     assert proxies == [], proxies
     subprocess.run(['nsenter', f'--net=/proc/{pid}/ns/net', '--', sys.executable,
                     str(Path(__file__).resolve()), *sys.argv[1:], '--child',
-                    '--identity', f'{uid}:{gid}', '--cgroup', cgroup], check=True)
+                    '--identity', f'{uid}:{gid}', '--cgroup', cgroup, '--mount-pid', str(pid)], check=True)
