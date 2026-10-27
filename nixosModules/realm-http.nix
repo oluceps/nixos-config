@@ -142,7 +142,7 @@ in
           NO_PROXY = noProxy;
           no_proxy = noProxy;
         }
-        // lib.optionalAttrs w.http.internet {
+        // lib.optionalAttrs (w.http.internet && !(w.transparent.enable or false)) {
           HTTP_PROXY = "http://127.0.0.1:13128";
           HTTPS_PROXY = "http://127.0.0.1:13128";
           http_proxy = "http://127.0.0.1:13128";
