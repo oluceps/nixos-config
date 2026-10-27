@@ -121,10 +121,12 @@ The receiver at `realm.workloads.caddy.ingress.https.allow.identities` uses that
 
 ### Containers
 
-An optional [cgroup BPF host agent](../pkgs/realm-agent/README.md) can capture
-ordinary DNS and TCP without application proxy settings. Enable it per workload
-with `transparent.enable`; its namespace remains without external links or a
-default route. A dummy interface supplies address-family availability for
+The [cgroup BPF host agent](../pkgs/realm-agent/README.md) captures ordinary DNS
+and TCP without application proxy settings. Isolated systemd workloads and
+supported rootless container workloads join automatically. Set
+`realm.agent.enable = false` for a host or `transparent.enable = false` for one
+workload to opt out. Host-network and external workloads are excluded. Each
+namespace remains without external links or a default route. A dummy interface supplies address-family availability for
 ADDRCONFIG clients. Existing Realm egress sockets and SPIFFE receiver policy
 remain the authentication boundary.
 

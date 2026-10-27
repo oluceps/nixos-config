@@ -21,6 +21,7 @@ type route struct {
 
 type workload struct {
 	Name           string              `json:"name"`
+	Unit           string              `json:"unit,omitempty"`
 	User           string              `json:"user"`
 	Group          string              `json:"group"`
 	WorkerUser     string              `json:"workerUser"`
@@ -94,6 +95,9 @@ func loadConfig(path string) (configuration, error) {
 func (w *workload) validate() error {
 	if !regexp.MustCompile(`^[a-z][a-z0-9-]{0,30}$`).MatchString(w.Name) {
 		return errors.New("invalid name")
+	}
+	if w.Unit != "" && !regexp.MustCompile(`^[a-zA-Z0-9_:@.\\-]+\.service$`).MatchString(w.Unit) {
+		return errors.New("unit must be a concrete system service name")
 	}
 	if w.User == "" || w.User == "root" || w.WorkerUser == "" || w.WorkerUser == "root" || w.User == w.WorkerUser || w.Group == "" || w.Group == "root" {
 		return errors.New("distinct unprivileged application and worker accounts are required")

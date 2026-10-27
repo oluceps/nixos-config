@@ -5,15 +5,28 @@ It transparently adapts application sockets to existing Realm egress sockets.
 Ghostunnel and the receiving gateway retain all SPIFFE authentication, TLS,
 certificate rotation and authorization responsibilities.
 
-The NixOS integration is in `nixosModules/realm-agent.nix`. It is disabled for
-every workload unless `transparent.enable` is set. Misskey on eihort is the
-initial deployment; this does not change the developer machine's networking.
+The NixOS integration is in `nixosModules/realm-agent.nix`. Enabled workloads
+with private networking join automatically: native systemd services and rootless
+containers declared through `workload.container`. Host-network gateways and
+`runtime = "external"` entries stay outside capture. There is one host daemon,
+with a separate unprivileged worker and BPF attachment per workload.
+
+Set `realm.agent.enable = false` to disable the host daemon and all gates, or
+`realm.workloads.<name>.transparent.enable = false` to exclude one workload.
+`mod/realm-agent.nix` excludes the developer machines hastur and kaambl from this
+rollout. No per-host service list is needed, including for newly added workloads.
+
+A unique declared egress whose service is `internet-proxy` becomes the default
+`internetRoute`, regardless of whether it came from `http.internet` or a manual
+egress declaration. Several matching egresses require an explicit choice.
+Workloads with no such egress keep external DNS and public TCP disabled. This
+does not register new SPIFFE identities or grant new gateway permissions.
 
 ## Declaration
 
 ```nix
 realm.workloads.example.transparent = {
-  enable = true;
+  # Optional: inferred automatically from a unique internet-proxy egress.
   internetRoute = "internet"; # Must already exist in this workload's egress.
   internetPorts = [ 443 ];
   dnsHosts."s3.example.org" = [ "127.0.0.1" ];
@@ -59,7 +72,11 @@ to 443 by default. The agent cannot grant itself new receiver permissions.
    workload. The client supplies no PID, cgroup, namespace or identity.
 2. `SO_PEERCRED` supplies the caller UID and host PID. The agent requires the
    configured application UID, opens a proc directory descriptor, and obtains
-   its real cgroup and network namespace with `openat`.
+   its real cgroup and network namespace with `openat`. Native callers must also
+   belong to the configured system unit beneath host-managed slices. A sibling
+   unit with the same UID, a user-manager unit, or a name inside another
+   delegated service cannot select that workload. Capture covers the complete
+   unit, including a gate in its `.control` subgroup.
 3. The agent rejects the host network namespace, external-capable interfaces,
    and default routes. It creates an isolated `realm0` dummy with
    `192.0.2.254/32` and `2001:db8::ffff/128`. These addresses satisfy
@@ -78,8 +95,11 @@ to 443 by default. The agent cannot grant itself new receiver permissions.
 For rootless Podman, the actual container cgroup is discovered from the helper
 process. No guessed `libpod-*.scope` name, polling race, or broad user-slice
 attachment is required. One active cgroup/namespace pair is allowed per declared
-workload. Multiple independent workloads must use distinct application UIDs;
-these UIDs are already local capabilities to their existing Realm sockets.
+workload. Rootless containers require an exclusive application UID; the module
+and daemon reject sharing that UID with another declared workload. Native
+workloads can share a UID only with distinct attested system units. This binds
+gate requests to units; it does not make a shared Unix UID into separate Linux
+security principals or change permissions on existing Realm sockets.
 
 Root necessarily controls the host enforcement boundary. A workload's Unix
 credentials and cgroup are local attribution, not a remote cryptographic
@@ -170,7 +190,8 @@ nix-instantiate --eval --strict --json --expr \
 Remote integration fixtures live under `tests/realm-agent-*`. Run them only on
 an authorized test host. `realm-agent-integration.py` creates a transient
 PrivateNetwork service and tests IPv4/IPv6 TCP, UDP/TCP DNS, simultaneous resolver
-peers, bounded overflow, half-close, private-address denial, worker recovery,
+peers, bounded overflow, half-close, private-address denial, same-UID unit
+impersonation refusal, worker recovery,
 agent restart and lack of a direct route while stopped. `--internet` additionally
 uses the existing Misskey Internet egress to fetch example.com without proxy
 environment variables. It requires the existing `misskey` and `nobody` accounts.

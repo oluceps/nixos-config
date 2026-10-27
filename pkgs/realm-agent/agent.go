@@ -98,7 +98,30 @@ func openProcessFile(proc *os.File, path string) (*os.File, error) {
 	return os.NewFile(uintptr(fd), path), nil
 }
 
-func processNetwork(proc *os.File) (*os.File, *os.File, string, error) {
+// Native units are identified within the host system manager, never by a
+// same-named unit below a user manager or another delegated service. Slice
+// ancestors are controlled by systemd. Capture the whole unit, including an
+// ExecStartPre .control subgroup, so subsequent application processes inherit it.
+func workloadCgroup(path, unit string) (string, error) {
+	if path == "" || path == "/" || !strings.HasPrefix(path, "/") || filepath.Clean(path) != path {
+		return "", errors.New("peer must have a dedicated cgroup v2 group")
+	}
+	if unit == "" {
+		return path, nil
+	}
+	parts := strings.Split(strings.TrimPrefix(path, "/"), "/")
+	for n, part := range parts {
+		if part == unit {
+			return "/" + strings.Join(parts[:n+1], "/"), nil
+		}
+		if !strings.HasSuffix(part, ".slice") {
+			break
+		}
+	}
+	return "", fmt.Errorf("peer does not belong to system unit %s", unit)
+}
+
+func processNetwork(proc *os.File, unit string) (*os.File, *os.File, string, error) {
 	f, e := openProcessFile(proc, "cgroup")
 	if e != nil {
 		return nil, nil, "", e
@@ -115,8 +138,9 @@ func processNetwork(proc *os.File) (*os.File, *os.File, string, error) {
 			break
 		}
 	}
-	if path == "" || path == "/" || filepath.Clean(path) != path {
-		return nil, nil, "", errors.New("peer must have a dedicated cgroup v2 group")
+	path, e = workloadCgroup(path, unit)
+	if e != nil {
+		return nil, nil, "", e
 	}
 	cg, e := os.Open("/sys/fs/cgroup" + path)
 	if e != nil {
@@ -177,7 +201,7 @@ func (c *controller) prepare(ctx context.Context, conn *net.UnixConn) error {
 	if int(cred.Uid) != c.uid {
 		return fmt.Errorf("peer uid %d is not configured uid %d", cred.Uid, c.uid)
 	}
-	cg, ns, key, e := processNetwork(proc)
+	cg, ns, key, e := processNetwork(proc, c.workload.Unit)
 	if e != nil {
 		return e
 	}
@@ -385,6 +409,11 @@ func serve(ctx context.Context, config configuration) error {
 		}
 		if uid == 0 || workerUID == 0 || uid == workerUID {
 			return errors.New("unsafe account IDs")
+		}
+		for _, other := range controllers {
+			if uid == other.uid && (w.Unit == "" || other.workload.Unit == "" || w.Unit == other.workload.Unit) {
+				return errors.New("shared application UID requires distinct attested system units")
+			}
 		}
 		if e = os.MkdirAll(filepath.Dir(w.Socket), 0750); e != nil {
 			return e
