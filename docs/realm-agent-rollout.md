@@ -1,5 +1,81 @@
 # Realm agent rollout
 
+## Worker isolation hardening (2026-10-27)
+
+This revision is persistently deployed on **eihort**. Other production nodes,
+including hastur, remain on their previous revision in this rollout. nodens
+only ran native ARM64 builds and disposable fixtures; uubboo and kaambl were
+not contacted.
+
+- System: `/nix/store/mdlp7ys4gix0z04qa32ghl8n52d45w64-nixos-system-eihort-26.11.20260926.e158d9e`.
+- Agent: `/nix/store/qwixgsqfr0dw6hq6blillns0mbwan6p6-realm-agent-0.1.0/bin/realm-agent`.
+- Config: `/nix/store/9jzfzlj8hckfpv2wzaj7hx36n5bdikwg-realm-agent.json`.
+- Previous stable system: `/nix/store/2bpajq5m950mbwnrfq789pydjk42c7b7-nixos-system-eihort-26.11.20260926.e158d9e`.
+
+Recovery now runs independently per workload. A bad saved state, occupied
+listener, or slow worker startup cannot fail controller readiness or block
+other recoveries. Each worker has its own delegated cgroup (default 128 MiB,
+zero swap, 64 tasks, one CPU quota) and a minimal read-only mount namespace.
+Only the Nix store, configured CA bundle and declared egress socket directories
+are visible. The worker receives no writable cgroup or namespace descriptor.
+The supervisor has a separate 256 MiB/128-task budget. Parent limits cover the
+sum of the leaf budgets plus headroom; they are limits, not reservations.
+
+Gate peer pinning uses `SO_PEERPIDFD`, followed by a liveness check after opening
+the proc directory. UDP DNS uses a fixed pool of 64 handlers and a bounded queue
+of 128 datagrams before parsing. Applications still depend on their individual
+gate for adapter readiness; controller readiness means its control sockets exist.
+
+The x86_64 and ARM64 packages passed Go checks. On both eihort and nodens, two
+synthetic PrivateNetwork workloads passed minimal filesystem/credential checks,
+CPU/memory/pids limit checks, occupied-listener recovery across controller
+restart, and an OOM induced only in a synthetic worker's 32 MiB cgroup. The
+controller and sibling worker survived, and the affected worker recovered.
+IPv4/IPv6 DNS, eight resolver peers and overflow denial, TCP DNS, 128 concurrent
+TCP forwards, half-close, private/UDP denial and restart/crash recovery passed
+on both architectures. eihort also passed authenticated public HTTPS and two
+rootless container generations with CacheableLookup, S3 and Internet access.
+
+The final persistent activation exited successfully. All 21 running eihort
+workloads have independent worker cgroups; the 22nd declaration is the inactive
+scheduled Synapse S3 upload oneshot. All 20 native workload probes passed their
+DNS/TCP policy checks. Forgejo fetched OIDC discovery with HTTP 200 from its
+actual mount/hosts view; the production Misskey avatar returned HTTP 200.
+A subsequent controller restart recovered all workers in **0.61 seconds**,
+without changing any application PID. There were no failed units. Boot ID and
+networkd, Caddy, Internet gateway, SPIRE and sing-box PIDs stayed unchanged.
+Temporary runtime overrides used during migration have been removed.
+
+### Migration issues found and corrected
+
+1. The first production candidate inherited `UMask=0077` while constructing the
+   minimal root. Ancestor directories became 0700 and exec after dropping UID
+   failed. Application egress was interrupted for about 91 seconds during that
+   attempt; the previous agent restored it. The bootstrap now explicitly uses
+   0022 for its public sandbox directories. The synthetic fixture repeats the
+   production 0077 mask and other production sandbox settings. Errors include
+   the bootstrap stage instead of only reporting `permission denied`.
+2. Nix activation updated the unit's ExecStart while the previous daemon PID
+   remained alive. An explicit agent restart was required. Validation compares
+   `/proc/PID/exe`, command-line config and actual resource cgroups with the
+   intended deployment, not just unit contents or `active` status.
+3. A unit can be empty briefly between its gate and ExecStart. Immediate empty
+   cgroup cleanup had removed Synapse's recovery state. Empty instances now
+   retain state and capture for a 30-second grace period, reset when populated.
+   A regression test covers the startup gap and eventual release after a real
+   stop. The existing Synapse process was re-gated without restarting it, and
+   subsequent final deployment/restart checks retained all 21 workers.
+4. Forgejo's OIDC discovery and self URL resolved to the private mesh address
+   without a declared local alias. Both hostnames now use its existing HTTPS
+   gateway adapter, alongside S3. No receiver admission or Internet destination
+   policy was widened. The first activation reported a Forgejo startup failure
+   which its restart policy recovered; the final activation exited zero.
+
+The live probe now enters the application's mount namespace after joining its
+cgroup, before dropping UID/GID. This tests its real hosts view. Interface
+inspection uses socket APIs because some applications hide `/proc/net`.
+
+
 Validated on 2026-10-27 on branch `feat/realm-ebpf-agent`. Deployments use
 normal persistent NixOS generations. Previous generations were retained.
 

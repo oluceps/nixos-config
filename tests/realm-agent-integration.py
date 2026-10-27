@@ -18,6 +18,7 @@ import tempfile
 import threading
 import time
 import urllib.request
+from realm_agent_controller import TestController
 
 
 def question(name, ident=123):
@@ -206,7 +207,7 @@ def runner(agent, internet, user, group, worker_user, internet_socket):
         }]}
         path = directory / "config.json"
         path.write_text(json.dumps(config))
-        controller = subprocess.Popen([agent, "serve", "--config", str(path)])
+        controller = TestController(agent, path)
         child = None
         lifecycle = socket.socket(socket.AF_UNIX)
         lifecycle.bind(str(directory / "lifecycle.sock"))
@@ -266,7 +267,7 @@ def runner(agent, internet, user, group, worker_user, internet_socket):
             controller.terminate()
             controller.wait(timeout=10)
             assert command(b"DENIED") == b"DENIED\n", "direct route escaped after controller exit"
-            controller = subprocess.Popen([agent, "serve", "--config", str(path)])
+            controller = TestController(agent, path)
             wait_for_recovery()
             print("agent restart: recovered existing cgroup; no direct route while stopped", flush=True)
             channel.sendall(b"STOP\n")

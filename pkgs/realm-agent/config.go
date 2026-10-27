@@ -20,24 +20,28 @@ type route struct {
 }
 
 type workload struct {
-	Name           string              `json:"name"`
-	Unit           string              `json:"unit,omitempty"`
-	User           string              `json:"user"`
-	Group          string              `json:"group"`
-	WorkerUser     string              `json:"workerUser"`
-	Socket         string              `json:"socket"`
-	InternetSocket string              `json:"internetSocket,omitempty"`
-	InternetPorts  []uint16            `json:"internetPorts"`
-	DNSUpstream    string              `json:"dnsUpstream"`
-	DNSHosts       map[string][]string `json:"dnsHosts"`
-	Routes         []route             `json:"routes"`
-	TCPPort        uint16              `json:"tcpPort"`
-	DNSBase        uint16              `json:"dnsBase"`
-	MaxConnections int                 `json:"maxConnections"`
+	Name            string              `json:"name"`
+	Unit            string              `json:"unit,omitempty"`
+	User            string              `json:"user"`
+	Group           string              `json:"group"`
+	WorkerUser      string              `json:"workerUser"`
+	Socket          string              `json:"socket"`
+	InternetSocket  string              `json:"internetSocket,omitempty"`
+	InternetPorts   []uint16            `json:"internetPorts"`
+	DNSUpstream     string              `json:"dnsUpstream"`
+	DNSHosts        map[string][]string `json:"dnsHosts"`
+	Routes          []route             `json:"routes"`
+	TCPPort         uint16              `json:"tcpPort"`
+	DNSBase         uint16              `json:"dnsBase"`
+	MaxConnections  int                 `json:"maxConnections"`
+	WorkerMemoryMiB int                 `json:"workerMemoryMiB"`
+	WorkerTasks     int                 `json:"workerTasks"`
+	WorkerCPUQuota  int                 `json:"workerCPUQuota"`
 }
 
 type configuration struct {
 	NamespaceTool string     `json:"namespaceTool"`
+	CABundle      string     `json:"caBundle"`
 	NetworkTool   string     `json:"networkTool"`
 	Workloads     []workload `json:"workloads"`
 }
@@ -64,6 +68,12 @@ func decodeConfig(r io.Reader) (configuration, error) {
 	}
 	if !filepath.IsAbs(c.NamespaceTool) {
 		return c, errors.New("namespaceTool must be absolute")
+	}
+	if c.CABundle == "" {
+		c.CABundle = "/etc/ssl/certs/ca-certificates.crt"
+	}
+	if !filepath.IsAbs(c.CABundle) {
+		return c, errors.New("caBundle must be absolute")
 	}
 	seen := map[string]bool{}
 	sockets := map[string]bool{}
@@ -119,6 +129,18 @@ func (w *workload) validate() error {
 	}
 	if w.MaxConnections < 1 || w.MaxConnections > 4096 {
 		return errors.New("maxConnections must be 1..4096")
+	}
+	if w.WorkerMemoryMiB == 0 {
+		w.WorkerMemoryMiB = 128
+	}
+	if w.WorkerTasks == 0 {
+		w.WorkerTasks = 64
+	}
+	if w.WorkerCPUQuota == 0 {
+		w.WorkerCPUQuota = 100
+	}
+	if w.WorkerMemoryMiB < 32 || w.WorkerMemoryMiB > 4096 || w.WorkerTasks < 16 || w.WorkerTasks > 512 || w.WorkerCPUQuota < 1 || w.WorkerCPUQuota > 800 {
+		return errors.New("invalid worker resource budget")
 	}
 	if w.InternetSocket != "" && !filepath.IsAbs(w.InternetSocket) {
 		return errors.New("internetSocket must be absolute")

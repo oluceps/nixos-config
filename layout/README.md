@@ -41,3 +41,7 @@ bash layout/render.sh
 ```
 
 D2 uses its built-in fonts. `D2_BIN` selects another executable. `D2_FONT` selects a custom TTF font. After source changes, render the SVGs and inspect their text, arrows, and boundaries.
+
+Each forwarding worker now has a separate resource cgroup and a minimal read-only
+mount namespace. Gate attribution pins the socket peer with `SO_PEERPIDFD`.
+Recovery failures and worker OOM are handled independently per workload.

@@ -41,11 +41,15 @@ func run(ctx context.Context, args []string) error {
 	fs := flag.NewFlagSet(args[0], flag.ContinueOnError)
 	configPath := fs.String("config", "", "configuration JSON")
 	socket := fs.String("socket", "", "readiness socket")
+	uid := fs.Int("uid", 0, "sandbox worker UID")
+	gid := fs.Int("gid", 0, "sandbox worker GID")
 	cgroup := fs.String("cgroup", "", "dedicated test cgroup")
 	if e := fs.Parse(args[1:]); e != nil {
 		return e
 	}
 	switch args[0] {
+	case "sandbox":
+		return sandboxWorker(*uid, *gid)
 	case "worker":
 		return runWorker(ctx)
 	case "gate":

@@ -14,7 +14,7 @@ app_ns: "Workload A: private network namespace (ns)\nNative: realm-net-<app>.ser
   class: namespace
   app: "Application\nUser: <app user> / Group: <app group>\nNo SPIRE socket access" { class: node }
   capture: "BPF hooks on application cgroup\nTCP connect + UDP/TCP DNS" { class: agent }
-  worker: "realm-agent worker\nUser: rnet-<app> / Group: <app group>\nSame netns, outside app cgroup / No SPIRE API" { class: agent }
+  worker: "realm-agent worker\nUser: rnet-<app> / Group: <app group>\nSame netns / Own resource cgroup + minimal root\nNo SPIRE API" { class: agent }
   app -> capture: "Ordinary TCP / DNS"
   capture -> worker: "Private listeners + original destination"
   adapter: "Optional local TCP adapter\n127.0.0.1:<localPort>\nUser: realm-<app> / Extra group: <app group>" { class: gateway }
@@ -29,7 +29,7 @@ host_ns: "Host network namespaces (one per host)\nProxies use host networking / 
   receivers: "Realm receivers: Ghostunnel\nUser / Group: realm-<backend> (default)\nExtra groups: realm-proxies + ingressGroups\nChecks caller SPIFFE allowlist" { class: gateway }
   ingress: "Unix ingress socket for TCP backend\nOwner / Group: realm-<backend>\nSocket: 0660 / Directory: 0750" { class: node }
   native: "Gateways with their own mutual TLS\nObservability Caddy / Internet Envoy\nExtra group: realm-proxies" { class: gateway }
-  controller: "realm-agent controller: host root\nOne daemon / Gate checks UID + actual cgroup/netns\nNative unit binding / Exclusive container UID" { class: agent }
+  controller: "realm-agent controller: host root\nOne daemon / Gate pins peer with pidfd\nChecks UID + actual cgroup/netns\nNative unit binding / Exclusive container UID" { class: agent }
   agent: "Local SPIRE Agent on each host\nWorkload API access: realm-proxies group\nIssues identity by systemd unit + Unix user" { class: node }
   caddy -> clients: "Declared upstream socket"
   egress -> clients: "Socket activation"
@@ -55,7 +55,7 @@ app_ns.app -> host_ns.egress: "Direct Unix socket"
 app_ns.adapter -> host_ns.egress: "Unix socket"
 app_ns.worker -> host_ns.egress: "Declared route or Internet CONNECT / DNS DoH"
 host_ns.controller -> app_ns.capture: "Attach BPF to attested app cgroup" { style.stroke-dash: 5 }
-host_ns.controller -> app_ns.worker: "Enter netns, drop UID, supervise" { style.stroke-dash: 5 }
+host_ns.controller -> app_ns.worker: "Enter netns, isolate mounts/resources, drop UID" { style.stroke-dash: 5 }
 host_ns.ingress -> backend_ns.adapter: "Socket activation"
 host_ns.receivers -> backend_ns.backend: "Declared Unix backend\nGroup access"
 host_ns.agent -> server: "Identity control" { style.stroke-dash: 5 }

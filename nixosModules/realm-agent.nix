@@ -28,6 +28,7 @@ let
     builtins.toJSON {
       namespaceTool = "${pkgs.util-linux}/bin/nsenter";
       networkTool = "${pkgs.iproute2}/bin/ip";
+      caBundle = config.security.pki.caBundle;
       workloads = lib.mapAttrsToList (name: w: {
         inherit name;
         unit = if w.runtime == "systemd" then w.unit else "";
@@ -43,6 +44,9 @@ let
           tcpPort
           dnsBase
           maxConnections
+          workerMemoryMiB
+          workerTasks
+          workerCPUQuota
           ;
         dnsHosts = lib.mapAttrs (_: address: [ address ]) w.isolation.hosts // w.transparent.dnsHosts;
         routes = map (r: {
@@ -120,6 +124,21 @@ in
               maxConnections = mkOption {
                 type = types.ints.between 1 4096;
                 default = 256;
+              };
+              workerMemoryMiB = mkOption {
+                type = types.ints.between 32 4096;
+                default = 128;
+                description = "Independent worker memory limit in MiB, with swap disabled.";
+              };
+              workerTasks = mkOption {
+                type = types.ints.between 16 512;
+                default = 64;
+                description = "Independent worker process/thread limit.";
+              };
+              workerCPUQuota = mkOption {
+                type = types.ints.between 1 800;
+                default = 100;
+                description = "Independent worker CPU quota, as a percentage of one CPU.";
               };
               routes = mkOption {
                 default = [ ];
@@ -272,8 +291,22 @@ in
           ProtectKernelTunables = true;
           ProtectKernelLogs = true;
           PrivateTmp = true;
-          ReadWritePaths = [ "/run/realm-agent" ];
-          RestrictNamespaces = [ "net" ];
+          ReadWritePaths = [
+            "/run/realm-agent"
+            "/sys/fs/cgroup/system.slice/realm-agent.service"
+          ];
+          # The fixed writable delegation path above matches this unit slice.
+          Slice = "system.slice";
+          Delegate = [
+            "cpu"
+            "memory"
+            "pids"
+          ];
+          DelegateSubgroup = "supervisor";
+          RestrictNamespaces = [
+            "net"
+            "mnt"
+          ];
           RestrictAddressFamilies = [
             "AF_UNIX"
             "AF_INET"
@@ -293,8 +326,14 @@ in
             "CAP_FOWNER"
           ];
           LimitMEMLOCK = "infinity";
-          MemoryMax = "512M";
-          TasksMax = 1024;
+          # Parent limits cover all leaf budgets, avoiding a shared 512M
+          # bottleneck. The supervisor has its own 256M/128-task budget.
+          MemoryMax = lib.foldl' (sum: w: sum + w.transparent.workerMemoryMiB * 1024 * 1024) (
+            288 * 1024 * 1024
+          ) (builtins.attrValues active);
+          MemorySwapMax = 0;
+          TasksMax = lib.foldl' (sum: w: sum + w.transparent.workerTasks) 128 (builtins.attrValues active);
+          OOMPolicy = "continue";
         };
       };
     }

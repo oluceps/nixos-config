@@ -3,7 +3,6 @@ package main
 import (
 	"bufio"
 	"context"
-	"encoding/json"
 	"errors"
 	"fmt"
 	"io"
@@ -30,6 +29,8 @@ type instance struct {
 	lease         *os.File
 	cancel        context.CancelFunc
 	key           string
+	resources     *os.File
+	emptySince    time.Time
 }
 
 func (i *instance) close() {
@@ -45,6 +46,22 @@ func (i *instance) close() {
 	i.capture.Close()
 	i.cgroup.Close()
 	i.netns.Close()
+	i.resources.Close()
+}
+
+// ExecStartPre can leave a unit briefly empty between the gate and ExecStart.
+// Retain its state/capture across that gap so a controller restart can still
+// discover the application once it starts. Real stops release after 30 seconds.
+func (i *instance) expiredEmpty(now time.Time) bool {
+	if populated(i.cgroup) {
+		i.emptySince = time.Time{}
+		return false
+	}
+	if i.emptySince.IsZero() {
+		i.emptySince = now
+		return false
+	}
+	return now.Sub(i.emptySince) >= 30*time.Second
 }
 
 type controller struct {
@@ -53,6 +70,7 @@ type controller struct {
 	mu                  sync.Mutex
 	current             *instance
 	uid, gid, workerUID int
+	workerGroups        *os.File
 }
 
 func numericUser(name string) (int, error) {
@@ -70,24 +88,56 @@ func numericGroup(name string) (int, error) {
 	return strconv.Atoi(g.Gid)
 }
 
+// Pin the socket's original peer, not a fresh lookup of its numeric PID.
 func peerProcess(c *net.UnixConn) (*os.File, *unix.Ucred, error) {
 	var cred *unix.Ucred
 	var inner error
+	pidfd := -1
 	raw, e := c.SyscallConn()
 	if e != nil {
 		return nil, nil, e
 	}
-	e = raw.Control(func(fd uintptr) { cred, inner = unix.GetsockoptUcred(int(fd), unix.SOL_SOCKET, unix.SO_PEERCRED) })
+	e = raw.Control(func(fd uintptr) {
+		cred, inner = unix.GetsockoptUcred(int(fd), unix.SOL_SOCKET, unix.SO_PEERCRED)
+		if inner == nil {
+			pidfd, inner = unix.GetsockoptInt(int(fd), unix.SOL_SOCKET, unix.SO_PEERPIDFD)
+		}
+	})
+	if pidfd >= 0 {
+		defer unix.Close(pidfd)
+	}
 	if e != nil {
 		return nil, nil, e
 	}
 	if inner != nil {
-		return nil, nil, inner
+		return nil, nil, fmt.Errorf("pin gate peer (SO_PEERPIDFD required): %w", inner)
 	}
-	// Hold a proc directory descriptor. Subsequent openat calls cannot silently
-	// follow a recycled PID to a different process.
+	alive := func() error {
+		p := []unix.PollFd{{Fd: int32(pidfd), Events: unix.POLLIN}}
+		n, e := unix.Poll(p, 0)
+		if e != nil {
+			return e
+		}
+		if n != 0 {
+			return errors.New("gate peer exited")
+		}
+		return nil
+	}
+	if e := alive(); e != nil {
+		return nil, nil, e
+	}
 	f, e := os.Open(fmt.Sprintf("/proc/%d", cred.Pid))
-	return f, cred, e
+	if e != nil {
+		return nil, nil, e
+	}
+	// If the original process died before proc was opened, reject even if its
+	// number already refers to another process. After this point openat uses
+	// the pinned original proc directory and cannot follow subsequent reuse.
+	if e := alive(); e != nil {
+		f.Close()
+		return nil, nil, e
+	}
+	return f, cred, nil
 }
 
 func openProcessFile(proc *os.File, path string) (*os.File, error) {
@@ -269,13 +319,12 @@ func (c *controller) start(ctx context.Context, cg, ns *os.File, key string) (*i
 	}
 	defer readyR.Close()
 	defer readyW.Close()
-	configR, configW, e := os.Pipe()
+	configR, e := sealedWorkerConfig(w, c.config.CABundle)
 	if e != nil {
 		cancel()
 		return nil, e
 	}
 	defer configR.Close()
-	defer configW.Close()
 	leaseR, leaseW, e := os.Pipe()
 	if e != nil {
 		cancel()
@@ -300,29 +349,33 @@ func (c *controller) start(ctx context.Context, cg, ns *os.File, key string) (*i
 	unix.CloseOnExec(mapFD)
 	mapFile := os.NewFile(uintptr(mapFD), "connections")
 	defer mapFile.Close()
+	resources, e := workerCgroup(c.workerGroups, w)
+	if e != nil {
+		cancel()
+		return nil, e
+	}
+	defer func() {
+		if !ok {
+			resources.Close()
+		}
+	}()
 	// nsenter enters before exec, so every thread of the Go runtime starts in
 	// the right namespace. Calling setns on one Go thread is not sufficient.
-	cmd := exec.CommandContext(workerCtx, c.config.NamespaceTool, "--net=/proc/self/fd/3", "--setuid="+strconv.Itoa(c.workerUID), "--setgid="+strconv.Itoa(c.gid), "--", exe, "worker")
+	cmd := exec.CommandContext(workerCtx, c.config.NamespaceTool, "--net=/proc/self/fd/3", "--", exe, "sandbox", "--uid", strconv.Itoa(c.workerUID), "--gid", strconv.Itoa(c.gid))
 	cmd.Dir = "/"
-	cmd.Env = []string{"PATH=/run/current-system/sw/bin"}
-	cmd.ExtraFiles = []*os.File{ns, mapFile, readyW, configR, leaseR}
+	cmd.Env = []string{"PATH=/run/current-system/sw/bin", "GOMAXPROCS=2"}
+	cmd.ExtraFiles = []*os.File{ns, mapFile, readyW, configR, leaseR, resources}
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
 	if e = cmd.Start(); e != nil {
 		cancel()
 		return nil, e
 	}
-	i := &instance{capture: cap, cgroup: cg, netns: ns, command: cmd, done: make(chan struct{}), cancel: cancel, key: key, lease: leaseW}
+	i := &instance{capture: cap, cgroup: cg, netns: ns, command: cmd, done: make(chan struct{}), cancel: cancel, key: key, lease: leaseW, resources: resources}
 	go func() { i.waitErr = cmd.Wait(); close(i.done) }()
 	readyW.Close()
 	configR.Close()
 	leaseR.Close()
-	if e = json.NewEncoder(configW).Encode(w); e != nil {
-		cancel()
-		<-i.done
-		return nil, e
-	}
-	configW.Close()
 	result := make(chan error, 1)
 	go func() {
 		line, e := bufio.NewReader(io.LimitReader(readyR, 256)).ReadString('\n')
@@ -380,12 +433,22 @@ func serve(ctx context.Context, config configuration) error {
 	if os.Geteuid() != 0 {
 		return errors.New("serve requires host root privileges")
 	}
+	ctx, cancel := context.WithCancel(ctx)
+	groups, e := delegatedWorkerRoot()
+	if e != nil {
+		cancel()
+		return e
+	}
+	defer groups.Close()
 	var controllers []*controller
 	var listeners []*net.UnixListener
+	var reconciliations sync.WaitGroup
 	defer func() {
+		cancel()
 		for _, l := range listeners {
 			l.Close()
 		}
+		reconciliations.Wait()
 		for _, c := range controllers {
 			c.mu.Lock()
 			if c.current != nil {
@@ -407,7 +470,7 @@ func serve(ctx context.Context, config configuration) error {
 		if e != nil {
 			return e
 		}
-		if uid == 0 || workerUID == 0 || uid == workerUID {
+		if uid == 0 || gid == 0 || workerUID == 0 || uid == workerUID {
 			return errors.New("unsafe account IDs")
 		}
 		for _, other := range controllers {
@@ -442,45 +505,51 @@ func serve(ctx context.Context, config configuration) error {
 		if e = os.Chmod(w.Socket, 0660); e != nil {
 			return e
 		}
-		c := &controller{config: config, workload: w, uid: uid, gid: gid, workerUID: workerUID}
+		c := &controller{config: config, workload: w, uid: uid, gid: gid, workerUID: workerUID, workerGroups: groups}
 		controllers = append(controllers, c)
-		if e := c.recover(ctx); e != nil {
-			return fmt.Errorf("recover %s: %w", w.Name, e)
-		}
 		go c.serve(ctx, l)
+		reconciliations.Add(1)
+		go func() { defer reconciliations.Done(); c.reconcile(ctx) }()
 	}
 	notifyReady()
-	ticker := time.NewTicker(2 * time.Second)
-	defer ticker.Stop()
+	<-ctx.Done()
+	return nil
+}
+
+// Each workload reconciles independently. Slow setup, occupied listeners, or a
+// malformed state file must neither fail host startup nor block other workers.
+func (c *controller) reconcile(ctx context.Context) {
 	for {
+		c.mu.Lock()
+		if ctx.Err() != nil {
+			c.mu.Unlock()
+			return
+		}
+		if i := c.current; i != nil {
+			select {
+			case <-i.done:
+				slog.Error("worker exited", "workload", c.workload.Name, "error", i.waitErr)
+				i.close()
+				c.current = nil
+			default:
+			}
+			if c.current != nil && i.expiredEmpty(time.Now()) {
+				i.close()
+				c.current = nil
+				_ = os.Remove(c.statePath())
+				slog.Info("released empty workload", "workload", c.workload.Name)
+			}
+		}
+		if c.current == nil {
+			if e := c.recover(ctx); e != nil {
+				slog.Error("worker recovery failed", "workload", c.workload.Name, "error", e)
+			}
+		}
+		c.mu.Unlock()
 		select {
 		case <-ctx.Done():
-			return nil
-		case <-ticker.C:
-			for _, c := range controllers {
-				c.mu.Lock()
-				if i := c.current; i != nil {
-					select {
-					case <-i.done:
-						slog.Error("worker exited", "workload", c.workload.Name, "error", i.waitErr)
-						i.close()
-						c.current = nil
-					default:
-					}
-					if c.current != nil && !populated(i.cgroup) {
-						i.close()
-						c.current = nil
-						_ = os.Remove(c.statePath())
-						slog.Info("released empty workload", "workload", c.workload.Name)
-					}
-				}
-				if c.current == nil {
-					if e := c.recover(ctx); e != nil {
-						slog.Error("worker recovery failed", "workload", c.workload.Name, "error", e)
-					}
-				}
-				c.mu.Unlock()
-			}
+			return
+		case <-time.After(2 * time.Second):
 		}
 	}
 }

@@ -75,10 +75,11 @@ func runWorker(ctx context.Context) error {
 	go func() { _, _ = io.Copy(io.Discard, lease); cancel() }()
 	configFile := os.NewFile(6, "worker-config")
 	defer configFile.Close()
-	var w workload
-	if e := json.NewDecoder(configFile).Decode(&w); e != nil {
+	var wc workerConfiguration
+	if e := json.NewDecoder(configFile).Decode(&wc); e != nil {
 		return e
 	}
+	w := wc.Workload
 	if e := w.validate(); e != nil {
 		return e
 	}
@@ -114,15 +115,12 @@ func runWorker(ctx context.Context) error {
 		}
 	}
 	r := newResolver(w)
+	r.ctx = ctx
 	servers, e := startDNS(r, w.DNSBase)
 	if e != nil {
 		return e
 	}
-	defer func() {
-		for _, s := range servers {
-			_ = s.Shutdown()
-		}
-	}()
+	defer servers.Close()
 	var listeners []*net.TCPListener
 	for _, network := range []string{"tcp4", "tcp6"} {
 		host := "127.0.0.1"
