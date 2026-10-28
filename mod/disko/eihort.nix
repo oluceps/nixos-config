@@ -136,12 +136,16 @@
       };
     };
     swapDevices = [
-      # Overflow swap only. Deliberately left without an explicit priority: it
-      # currently holds ~14G of pages, and changing the unit would make
-      # systemd swapoff() it during activation, pulling all of that back into
-      # RAM. NVMe (disko plainSwap, priority 100) is the primary area.
+      # Overflow swap only, well below the NVMe area (priority 100 above).
+      # NOTE: applying a priority to an *active* swap area requires swapoff()
+      # first, and this device currently holds ~14G of pages - systemd would
+      # have to pull all of them back into RAM on the next activation, which
+      # thrashes (and can fail) on a box that is already short on memory.
+      # So: reboot (or `sudo swapoff /dev/sda` once memory allows) BEFORE the
+      # next `nixos-rebuild switch`.
       {
         device = "/dev/disk/by-id/ata-SanDisk_SD8SBAT032G_153873411000";
+        priority = 1;
       }
     ];
     # fileSystems."/three" = {
