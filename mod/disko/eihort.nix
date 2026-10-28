@@ -91,6 +91,12 @@
                   type = "swap";
                   discardPolicy = "both";
                   resumeDevice = true;
+                  # The NVMe swap area must outrank the SATA SanDisk DOM below.
+                  # Left unprioritized, the kernel auto-assigned -2/-3 in
+                  # activation order, so the slow SATA device became the
+                  # *preferred* swap: on 2026-10-28 every memory-reclaim burst
+                  # turned into a multi-minute IO stall (PSI full 88%).
+                  priority = 100;
                 };
               };
             };
@@ -130,6 +136,10 @@
       };
     };
     swapDevices = [
+      # Overflow swap only. Deliberately left without an explicit priority: it
+      # currently holds ~14G of pages, and changing the unit would make
+      # systemd swapoff() it during activation, pulling all of that back into
+      # RAM. NVMe (disko plainSwap, priority 100) is the primary area.
       {
         device = "/dev/disk/by-id/ata-SanDisk_SD8SBAT032G_153873411000";
       }
