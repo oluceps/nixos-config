@@ -84,7 +84,7 @@
       },
       "gridPos": {
         "h": 4,
-        "w": 4,
+        "w": 12,
         "x": 0,
         "y": 1
       },
@@ -121,26 +121,6 @@
         "type": "prometheus",
         "uid": "P4169E866C3094E38"
       },
-      "gridPos": {
-        "h": 4,
-        "w": 4,
-        "x": 4,
-        "y": 1
-      },
-      "id": 2,
-      "options": {
-        "mode": "markdown",
-        "content": "**未提供此指标 / No metric available**\n\n此看板没有经核实的 Caddy 运行时间指标。"
-      },
-      "title": "Caddy Internet gateway · 运行时间未提供",
-      "type": "text",
-      "description": "此看板没有经核实的 Caddy 运行时间指标。"
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "P4169E866C3094E38"
-      },
       "fieldConfig": {
         "defaults": {
           "thresholds": {
@@ -166,8 +146,8 @@
       },
       "gridPos": {
         "h": 4,
-        "w": 4,
-        "x": 8,
+        "w": 12,
+        "x": 12,
         "y": 1
       },
       "id": 3,
@@ -196,66 +176,6 @@
       "title": "Caddy Internet gateway · 处理中 HTTP / CONNECT 请求",
       "type": "stat",
       "description": "forward_proxy 当前正在处理的请求数；不是 TLS / TCP 连接数，也不统计隧道内请求。"
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "P4169E866C3094E38"
-      },
-      "gridPos": {
-        "h": 4,
-        "w": 4,
-        "x": 12,
-        "y": 1
-      },
-      "id": 4,
-      "options": {
-        "mode": "markdown",
-        "content": "**未提供此指标 / No metric available**\n\nCaddy app.http.metrics 不提供对应的 上游 TCP 连接数；缺失不能解释为零。"
-      },
-      "title": "Caddy Internet gateway · 上游连接指标未提供",
-      "type": "text",
-      "description": "Caddy app.http.metrics 不提供对应的 上游 TCP 连接数；缺失不能解释为零。"
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "P4169E866C3094E38"
-      },
-      "gridPos": {
-        "h": 4,
-        "w": 4,
-        "x": 16,
-        "y": 1
-      },
-      "id": 5,
-      "options": {
-        "mode": "markdown",
-        "content": "**未提供此指标 / No metric available**\n\nCaddy app.http.metrics 不提供对应的 缓存域名数；缺失不能解释为零。"
-      },
-      "title": "Caddy Internet gateway · DNS 缓存数量未提供",
-      "type": "text",
-      "description": "Caddy app.http.metrics 不提供对应的 缓存域名数；缺失不能解释为零。"
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "P4169E866C3094E38"
-      },
-      "gridPos": {
-        "h": 4,
-        "w": 4,
-        "x": 20,
-        "y": 1
-      },
-      "id": 6,
-      "options": {
-        "mode": "markdown",
-        "content": "**未提供此指标 / No metric available**\n\nCaddy app.http.metrics 不提供对应的 已核实内存指标；缺失不能解释为零。"
-      },
-      "title": "Caddy Internet gateway · 内存指标未映射",
-      "type": "text",
-      "description": "Caddy app.http.metrics 不提供对应的 已核实内存指标；缺失不能解释为零。"
     },
     {
       "collapsed": false,
@@ -430,7 +350,7 @@
       },
       "gridPos": {
         "h": 8,
-        "w": 12,
+        "w": 24,
         "x": 0,
         "y": 15
       },
@@ -481,26 +401,6 @@
       ],
       "title": "Caddy Internet gateway · 请求 / CONNECT 持续时间",
       "type": "timeseries"
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "P4169E866C3094E38"
-      },
-      "gridPos": {
-        "h": 8,
-        "w": 12,
-        "x": 12,
-        "y": 15
-      },
-      "id": 10,
-      "options": {
-        "mode": "markdown",
-        "content": "**未提供此指标 / No metric available**\n\nHTTP handler 耗时不是上游连接寿命或 TCP 建连延迟；app.http.metrics 没有对应 histogram。"
-      },
-      "title": "Caddy Internet gateway · 上游建连耗时未提供",
-      "type": "text",
-      "description": "HTTP handler 耗时不是上游连接寿命或 TCP 建连延迟；app.http.metrics 没有对应 histogram。"
     },
     {
       "collapsed": false,
@@ -721,58 +621,6 @@
         "x": 0,
         "y": 32
       },
-      "id": 104,
-      "title": "Caddy Internet gateway · DNS 指标可用性",
-      "type": "row"
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "P4169E866C3094E38"
-      },
-      "gridPos": {
-        "h": 8,
-        "w": 12,
-        "x": 0,
-        "y": 33
-      },
-      "id": 14,
-      "options": {
-        "mode": "markdown",
-        "content": "**未提供此指标 / No metric available**\n\nCaddy app.http.metrics 不提供对应的 DNS 成功/失败/超时计数；缺失不能解释为零。"
-      },
-      "title": "Caddy Internet gateway · DNS 解析计数未提供",
-      "type": "text",
-      "description": "Caddy app.http.metrics 不提供对应的 DNS 成功/失败/超时计数；缺失不能解释为零。"
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "P4169E866C3094E38"
-      },
-      "gridPos": {
-        "h": 8,
-        "w": 12,
-        "x": 12,
-        "y": 33
-      },
-      "id": 15,
-      "options": {
-        "mode": "markdown",
-        "content": "**未提供此指标 / No metric available**\n\nCaddy app.http.metrics 不提供对应的 域名新增/移除/地址变化计数；缺失不能解释为零。"
-      },
-      "title": "Caddy Internet gateway · DNS 目标生命周期未提供",
-      "type": "text",
-      "description": "Caddy app.http.metrics 不提供对应的 域名新增/移除/地址变化计数；缺失不能解释为零。"
-    },
-    {
-      "collapsed": false,
-      "gridPos": {
-        "h": 1,
-        "w": 24,
-        "x": 0,
-        "y": 41
-      },
       "id": 106,
       "title": "出站域名审计与访问日志 (Outbound Domains & Egress Log Analysis)",
       "type": "row"
@@ -798,7 +646,7 @@
         "h": 10,
         "w": 12,
         "x": 0,
-        "y": 42
+        "y": 33
       },
       "id": 19,
       "options": {
@@ -871,7 +719,7 @@
         "h": 10,
         "w": 12,
         "x": 12,
-        "y": 42
+        "y": 33
       },
       "id": 20,
       "options": {
@@ -920,7 +768,7 @@
         "h": 12,
         "w": 24,
         "x": 0,
-        "y": 52
+        "y": 43
       },
       "id": 21,
       "options": {
