@@ -82,6 +82,11 @@ let
 in
 {
   options.realm = {
+    systems = mkOption {
+      type = types.lazyAttrsOf types.raw;
+      default = { };
+      description = "Evaluated NixOS systems of every Realm node, for cluster-wide aggregation.";
+    };
     localIdentities = mkOption {
       type = types.attrsOf types.str;
       readOnly = true;
