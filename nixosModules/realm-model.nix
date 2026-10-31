@@ -208,40 +208,47 @@ in
     };
   };
   config = mkIf cfg.enable {
-    assertions = lib.concatLists (
-      lib.mapAttrsToList (
-        name: w:
-        lib.concatLists (
-          lib.mapAttrsToList (route: i: [
-            {
-              assertion =
-                i.backend == null
-                || (
-                  (
-                    if i.backend.kind == "unix" then
-                      i.backend.path != null && lib.hasPrefix "/" i.backend.path && i.backend.port == null
-                    else if i.backend.kind == "native" then
-                      i.backend.path == null && i.backend.port == null && i.backend.peerUser == null
-                    else
-                      i.backend.path == null && i.backend.port != null && i.backend.peerUser == null
-                  )
-                  && (i.backend.kind != "host-tcp" || i.backend.address == "127.0.0.1")
-                );
-              message = "realm.workloads.${name}.ingress.${route}.backend: declare the fields required by its kind.";
-            }
-            {
-              assertion = lib.all (ref: builtins.length (identitiesFor ref) == 1) i.allow.workloads;
-              message = "realm.workloads.${name}.ingress.${route}.allow: workload references must resolve to one identity. Qualify ambiguous names as node/workload.";
-            }
-            {
-              assertion =
-                lib.all (group: cfg.authorization.groups ? ${group}) i.allow.groups
-                && lib.all (id: lib.hasPrefix "spiffe://" id) i.allowedIDs;
-              message = "realm.workloads.${name}.ingress.${route}.allow: groups must exist and identities must be SPIFFE URIs.";
-            }
-          ]) w.ingress
-        )
-      ) active
-    );
+    # A declared egress the receiver does not admit can only fail at handshake;
+    # reject it during evaluation instead of generating a dead proxy.
+    assertions =
+      map (c: {
+        assertion = c.allowed != false;
+        message = "realm.workloads.${c.workload}.egress.${c.route}: receiver ${c.service} on ${c.node} does not admit ${c.callerID}.";
+      }) cfg.authorization.connections
+      ++ lib.concatLists (
+        lib.mapAttrsToList (
+          name: w:
+          lib.concatLists (
+            lib.mapAttrsToList (route: i: [
+              {
+                assertion =
+                  i.backend == null
+                  || (
+                    (
+                      if i.backend.kind == "unix" then
+                        i.backend.path != null && lib.hasPrefix "/" i.backend.path && i.backend.port == null
+                      else if i.backend.kind == "native" then
+                        i.backend.path == null && i.backend.port == null && i.backend.peerUser == null
+                      else
+                        i.backend.path == null && i.backend.port != null && i.backend.peerUser == null
+                    )
+                    && (i.backend.kind != "host-tcp" || i.backend.address == "127.0.0.1")
+                  );
+                message = "realm.workloads.${name}.ingress.${route}.backend: declare the fields required by its kind.";
+              }
+              {
+                assertion = lib.all (ref: builtins.length (identitiesFor ref) == 1) i.allow.workloads;
+                message = "realm.workloads.${name}.ingress.${route}.allow: workload references must resolve to one identity. Qualify ambiguous names as node/workload.";
+              }
+              {
+                assertion =
+                  lib.all (group: cfg.authorization.groups ? ${group}) i.allow.groups
+                  && lib.all (id: lib.hasPrefix "spiffe://" id) i.allowedIDs;
+                message = "realm.workloads.${name}.ingress.${route}.allow: groups must exist and identities must be SPIFFE URIs.";
+              }
+            ]) w.ingress
+          )
+        ) active
+      );
   };
 }

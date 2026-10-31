@@ -6,6 +6,10 @@
       # separate from the internal entrypoint and keeps the public route ACLs.
       realm.workloads.caddy = {
         isolation.runtimePaths = [ "/run/realm/caddy/public" ];
+        egress = {
+          atuin.service = "atuin";
+          rustypaste.service = "rustypaste";
+        };
         ingress.public-relay = {
           port = 19445;
           backend = {

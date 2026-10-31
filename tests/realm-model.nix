@@ -154,12 +154,26 @@ let
     }
   ];
   failed = c: builtins.filter (a: !a.assertion && lib.hasPrefix "realm" a.message) c.assertions;
+  denied = evaluate [
+    {
+      realm.workloads.receiver.ingress.http.allow = {
+        workloads = lib.mkForce [ ];
+        identities = [ "spiffe://nyaw.xyz/service/other" ];
+      };
+    }
+  ];
   receiver = c: c.realm.workloads.receiver.ingress.http;
 in
 lib.runTests {
   testManualTargetHasUnknownReceiverPolicy = {
     expr = builtins.head (map (e: e.allowed) manual.realm.authorization.connections);
     expected = null;
+  };
+  testDeniedConnectionRejected = {
+    expr = map (a: a.message) (failed denied);
+    expected = [
+      "realm.workloads.sender.egress.receiver: receiver receiver on fixture does not admit spiffe://nyaw.xyz/service/sender."
+    ];
   };
   testPlainEndpointRejected = {
     expr = failed plain != [ ];
