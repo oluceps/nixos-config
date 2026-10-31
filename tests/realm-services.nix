@@ -254,6 +254,8 @@ pkgs.testers.runNixOSTest {
 
       realm = {
         enable = true;
+        # Stub receivers and imposter callers exercise runtime rejection.
+        authorization.rejectDeniedConnections = false;
         identityCatalog = {
           machine = config.realm.localIdentities;
           fixture = {

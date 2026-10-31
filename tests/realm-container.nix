@@ -397,6 +397,8 @@ runTest {
     ];
     realm = {
       enable = true;
+      # Stub receivers and imposter callers exercise runtime rejection.
+      authorization.rejectDeniedConnections = false;
       serviceDiscovery = {
         enable = true;
         address = "::1";

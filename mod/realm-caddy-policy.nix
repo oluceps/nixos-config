@@ -9,18 +9,17 @@
           inherit type default;
           readOnly = true;
         };
-      idsFor = hosts: map (host: policy.ids.${host}) hosts;
+      caddyID = host: "${config.realm.servicePrefix}caddy-${host}";
+      idsFor = map caddyID;
     in
     {
       options.realm.caddy = {
         # One Caddy identity per mesh node, derived from the registry.
         ids = value (lib.types.attrsOf lib.types.str) (
-          lib.mapAttrs (
-            host: _: "${config.realm.servicePrefix}caddy-${host}"
-          ) config.realm.serviceDiscovery.nodes
+          lib.mapAttrs (host: _: caddyID host) config.realm.serviceDiscovery.nodes
         );
         localID = value lib.types.str policy.ids.${config.networking.hostName};
-        entrypointID = value lib.types.str policy.ids.eihort;
+        entrypointID = value lib.types.str (caddyID "eihort");
       };
 
       # Receivers reference these roles with `allow.groups`; the group set
@@ -42,7 +41,7 @@
             "nodens"
           ];
           # The internal entrypoint; sole caller of admin-grade backends.
-          entry-caddy = [ policy.entrypointID ];
+          entry-caddy = idsFor [ "eihort" ];
           # Entrypoints exposing the Stalwart web API.
           mail-caddy = idsFor [
             "abhoth"

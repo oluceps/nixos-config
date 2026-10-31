@@ -100,6 +100,11 @@ in
       default = { };
       description = "Named groups of explicit SPIFFE identities.";
     };
+    authorization.rejectDeniedConnections = mkOption {
+      type = types.bool;
+      default = true;
+      description = "Fail evaluation when a declared egress targets a receiver whose policy excludes the caller. Tests exercising runtime rejection disable it.";
+    };
     authorization.matrix = mkOption {
       type = types.listOf types.attrs;
       readOnly = true;
@@ -212,7 +217,7 @@ in
     # reject it during evaluation instead of generating a dead proxy.
     assertions =
       map (c: {
-        assertion = c.allowed != false;
+        assertion = !cfg.authorization.rejectDeniedConnections || c.allowed != false;
         message = "realm.workloads.${c.workload}.egress.${c.route}: receiver ${c.service} on ${c.node} does not admit ${c.callerID}.";
       }) cfg.authorization.connections
       ++ lib.concatLists (
