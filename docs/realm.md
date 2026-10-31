@@ -48,7 +48,7 @@ Receiver grants support three forms:
 
 The receiver needs a nonempty final policy. Unknown references and groups fail validation. A Unix `peerUser` still requires one authorized identity and a dedicated unprivileged account. Workloads that share a SPIFFE ID share its permissions.
 
-Legacy `target`, `native`, `privateLoopback`, `hostLoopback`, `backendUser` and `allowedIDs` remain available for existing integrations. Use one backend declaration style per ingress. The current service profiles use typed backends.
+`target`, `native`, `privateLoopback`, `hostLoopback`, `backendUser` and `allowedIDs` are internal options. The model derives them from `backend` and `allow`; the compiler and reports read them. Declare ingresses only through `backend` and `allow`.
 
 ### Endpoint identities
 

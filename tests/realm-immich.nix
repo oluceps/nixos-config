@@ -141,7 +141,7 @@ pkgs.testers.runNixOSTest {
         # Stub receivers and imposter callers exercise runtime rejection.
         authorization.rejectDeniedConnections = false;
         # The imposter declares an Internet egress but must stay unauthorized.
-        workloads.internet.ingress.http.allowedIDs = lib.mkForce [
+        internet.allowedIDs = lib.mkForce [
           "spiffe://nyaw.xyz/service/immich-ml"
         ];
         identityCatalog = {

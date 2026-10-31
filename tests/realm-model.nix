@@ -43,6 +43,7 @@ let
       ++ extra;
     }).config;
   cfg = evaluate [ ];
+  # The normalized internal options must compile to the same units.
   legacy = evaluate [
     {
       realm.workloads.receiver.ingress.http = {

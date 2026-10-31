@@ -49,7 +49,7 @@ let
                                 kind = "host-tcp";
                                 port = 443;
                               };
-                              allowedIDs = config.realm.http.gatewayClientIDs.eihort;
+                              allow.identities = config.realm.http.gatewayClientIDs.eihort;
                             };
                           };
                         }
