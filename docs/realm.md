@@ -19,7 +19,7 @@ Realm compiles local declarations into a fixed output record. No runtime control
 | `nixosModules/realm-http.nix` | HTTP proxy settings and shared internal HTTPS gateway adapters |
 | `nixosModules/realm-container.nix` | Shared container mounts and loopback routes |
 | `nixosModules/realm-internet.nix` | Reusable Internet gateway service |
-| `mod/realm-internet.nix` | Site caller policy and extra CONNECT permissions |
+| `mod/realm-internet.nix` | Caller admission collected from declarations and extra CONNECT permissions |
 
 The compiler returns `services`, `sockets`, `userGroups`, `users`, `tmpfiles`, `registrations`, `publications` and `assertions`. Each field has its own merge. The compiler does not inspect the internal representation of `mkIf` or `mkMerge`.
 
@@ -74,7 +74,10 @@ This generates an `internet-proxy` egress. With realm-agent and transparent
 capture enabled, ordinary TCP/DNS uses that declared route without proxy
 variable injection. Otherwise the module supplies uppercase and lowercase
 HTTP/HTTPS proxy variables; clients that ignore those variables need their own
-proxy settings. The Internet gateway must also admit the application's SPIFFE identity.
+proxy settings. `mod/realm-internet.nix` collects every enabled workload in the
+cluster that declares an `internet-proxy` egress into `realm.internet.allowedIDs`,
+so this declaration also admits the application's SPIFFE identity at the gateway.
+Destination ACLs and CONNECT port grants still apply per identity.
 
 For internal HTTPS access, the site defines this gateway:
 
