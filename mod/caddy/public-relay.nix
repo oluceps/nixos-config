@@ -17,7 +17,7 @@
             path = "/run/realm/caddy/public/http.sock";
           };
           service = "public-http";
-          allow.identities = config.realm.caddy.allowedIDs.public-http;
+          allow.groups = [ "caddy-yidhra" ];
         };
       };
       systemd.tmpfiles.rules = [ "d /run/realm/caddy/public 2750 caddy realm-caddy -" ];

@@ -212,8 +212,12 @@ SPIRE Agent socket to an application using proxy mode.
 Each workload has a separate proxy account. Its SPIRE registrations require
 both the actual proxy/helper systemd unit and its Unix user. The default
 SPIFFE ID is `spiffe://nyaw.xyz/service/<workload>`. Caddy uses
-`spiffe://nyaw.xyz/service/caddy-<host>`. Its receiver policies live in
-`mod/realm-caddy-policy.nix` and admit only the nodes that need each route.
+`spiffe://nyaw.xyz/service/caddy-<host>`, one per node in the registry.
+`mod/realm-caddy-policy.nix` defines Caddy role groups: `public-caddy`,
+`relay-caddy`, `entry-caddy`, `mail-caddy` and one `caddy-<host>` group per
+node. Receivers select a role with `allow.groups`, for example
+`allow.groups = [ "entry-caddy" ];`, and add non-Caddy callers through
+`allow.identities`. Each route admits only the nodes that need it.
 Other instances that share an ID still share authorization. Root on a node remains trusted.
 
 An ingress requires an explicit nonempty receiver policy. Declaring an
