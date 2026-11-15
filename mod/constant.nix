@@ -192,7 +192,7 @@ let
       );
     pki = (
       lib.foldl' (
-        acc: name: acc // { "${name}_file" = (pkgs.writeText "${name}.crt" pki-data.${name}); }
+        acc: name: acc // { "${name}_file" = builtins.toFile "${name}.crt" pki-data.${name}; }
       ) pki-data (builtins.attrNames pki-data)
     );
   };
