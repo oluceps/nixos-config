@@ -25,7 +25,7 @@ let
   ) node;
 
   serviceHosts = {
-    abhoth = [ "box.nyaw.xyz" ];
+    nodens = [ "box.nyaw.xyz" ];
     eihort = map (n: n + ".nyaw.xyz") [
       "matrix"
       "gf"

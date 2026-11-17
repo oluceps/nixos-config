@@ -887,10 +887,11 @@
             # is one board in one chat. A repeat only re-renders the message; it
             # refreshes durations and drops rows resolved since the last edit.
             #
-            # Board edits are silent, so a critical alert also gets a separate
-            # compact message in the same chat. That route continues to the
+            # Board edits are silent, so in the main chat a critical alert also
+            # gets a separate compact message. That route continues to the
             # board route; grouped by alertname, each newly firing critical
             # alert sends one more message, and a repeat re-sends it daily.
+            # The status channel has no such companion; see its routes.
             #
             # Once any child route matches, Alertmanager ignores the parent's
             # receiver, even when that child continues. The main-chat board is
@@ -926,13 +927,9 @@
                     group_interval: 2m
                     repeat_interval: 60m
                     continue: false
-                  - receiver: observability-critical
-                    matchers:
-                      - alertname=~"${statusAlerts}"
-                      - severity="critical"
-                    group_by: [alertname]
-                    repeat_interval: 24h
-                    continue: true
+                  # The status channel only carries boards: its alerts are
+                  # long-lived peer and endpoint state, so a companion message
+                  # for every critical row would just repeat the board.
                   # Edits are silent, so the BGP board re-renders often to keep
                   # its downtimes current and drop resolved peers sooner. The
                   # message id expires after twice this interval, so a Telegram
@@ -979,13 +976,6 @@
                   telegram_configs:
                     - bot_token_file: /run/credentials/alertmanager.service/notifychan
                       chat_id: -1002215131569
-                      parse_mode: HTML
-                      send_resolved: false
-                      message: '${telegramMessage}'
-                - name: observability-critical
-                  telegram_configs:
-                    - bot_token_file: /run/credentials/alertmanager.service/notifychan
-                      chat_id: -1004373971447
                       parse_mode: HTML
                       send_resolved: false
                       message: '${telegramMessage}'
