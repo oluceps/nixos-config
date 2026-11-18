@@ -42,15 +42,40 @@
   # refined inputs, which has no llm-agents packages.
   perSystem =
     { system, pkgs, ... }:
+    let
+      # llm-agents' claude-code is built against llm-agents' own nixpkgs, so
+      # everything added to it has to come from that same package set. See the
+      # glibc note on the patch below.
+      llmPkgs = inputs.llm-agents.inputs.nixpkgs.legacyPackages.${system};
+      llmClaude = inputs.llm-agents.packages.${system}.claude-code;
+    in
     {
       packages.claudeCodePatched = import ../pkgs/claude-code/patchClaude.nix {
-        drv = inputs.llm-agents.packages.${system}.claude-code;
+        drv = llmClaude.overrideAttrs (old: {
+          nativeBuildInputs = (old.nativeBuildInputs or [ ]) ++ [ llmPkgs.makeWrapper ];
+
+          # CLAUDE_CODE_EXPERIMENTAL_CODE_MODE=1 switches on the CLI's code-mode
+          # surface. `--set` (not `--set-default`) is deliberate: the wrapper
+          # should pin the flag rather than let an ambient value turn it off.
+          #
+          # This is a second wrapper layer, which llm-agents' own postFixup warns
+          # against for ps/htop readability. It cannot be avoided from outside:
+          # upstream's is a single literal `wrapProgram` call, and this nixpkgs'
+          # wrapper hooks ignore both `makeWrapperArgs` and `userWrapperArgs`, so
+          # there is no hook to add one flag to it. Both layers pass
+          # `--argv0 claude`, so the process is still named `claude` in ps.
+          postFixup = (old.postFixup or "") + ''
+            wrapProgram $out/bin/claude \
+              --argv0 claude \
+              --set CLAUDE_CODE_EXPERIMENTAL_CODE_MODE 1
+          '';
+        });
         # The python3 used for the patch has to come from llm-agents' own nixpkgs,
         # not this flake's. llm-agents links the claude binary against its glibc with
         # wrap-buddy (patch_elf), so an extra python3 from a different nixpkgs drags a
         # second glibc into the binary's rpath: two glibcs in one process aborts with
         # "stack smashing detected" before main() runs.
-        pkgs = inputs.llm-agents.inputs.nixpkgs.legacyPackages.${system};
+        pkgs = llmPkgs;
       };
 
       # Same patch on nixpkgs' claude-code. `pkgs.claude-code` here is unpatched:

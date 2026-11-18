@@ -201,6 +201,26 @@ nix run path:.#claudeCodeNixpkgsPatched -- --version
 nix build path:.#claudeCodeNixpkgsPatched
 ```
 
+### Code mode in the llm-agents variant
+
+`claudeCodePatched` also sets `CLAUDE_CODE_EXPERIMENTAL_CODE_MODE=1` in its
+wrapper. That costs one extra wrapper layer, which llm-agents' own `postFixup`
+warns against for `ps`/`htop` readability, but it cannot be avoided from outside:
+
+* upstream wraps with a single literal `wrapProgram` call, so there is no
+  attribute to append a flag to, and
+* this nixpkgs' wrapper hooks (`make-shell-wrapper-hook` /
+  `make-binary-wrapper-hook`) ignore both `makeWrapperArgs` and
+  `userWrapperArgs`, so the usual hook is not available either.
+
+Both layers pass `--argv0 claude`, so the process is still named `claude`: the
+final `exec -a claude` lands on the ELF, and `$0` inside the last process reads
+`claude`. `--set` rather than `--set-default` is deliberate — the wrapper pins the
+flag instead of letting an ambient `0` turn it off.
+
+The nixpkgs variant does **not** get the flag; add it there too if the installed
+CLI should use code mode.
+
 Because `mod/pkgs.nix` sets `overlayAttrs = config.packages` (flake-parts'
 `easyOverlay`), every `packages` attribute also lands in `overlays.default`, so
 both are available as `pkgs.claudeCodePatched` / `pkgs.claudeCodeNixpkgsPatched`
