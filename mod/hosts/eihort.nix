@@ -83,6 +83,7 @@
             dev
             plugIn
             vxlan-mesh
+            unlock-client
             yggdrasil
             scrutiny
             # secureboot
